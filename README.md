@@ -33,8 +33,8 @@ Creating a chroot is as simple as:
 chroot_setup /QOpenSys/chRootRiby
 ``` 
 
-Now yum supports an option (`--installroot`) that allows us to specify a chroot (already created) as the target for our installation.
-We can use it to prepare the safe environment to experiment with Ruby 3.
+Now, yum supports an option (`--installroot`) that allows us to specify a chroot (already created) as the target for our installation:
+we will use it to prepare the safe environment to experiment with Ruby 3.
 
 
 
