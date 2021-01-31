@@ -18,3 +18,24 @@ The most recent content will be on top of the README so, if you will join later 
 Let's go!
 
 ----
+### 1. to pave the way
+
+If you do not have experience with **IBM i chroot** I would suggest you to practice a bit.
+I assume you already have installed **yum** in your PASE environment so that installing IBM i chroot will be straightforward:
+
+```
+yum install ibmichroot
+``` 
+
+Creating a chroot is as simple as:
+
+```
+chroot_setup /QOpenSys/chRootRiby
+``` 
+
+Now yum supports an option (`--installroot`) that allows us to specify a chroot (already created) as the target for our installation.
+We can use it to prepare the safe environment to experiment with Ruby 3.
+
+
+
+
