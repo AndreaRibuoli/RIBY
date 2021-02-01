@@ -70,7 +70,7 @@ but not to install extra packages (`yum repolist all` returns *repolist: 0*)
 
 We can notice there are some refinements required:
 
-* if we execute `cd $HOME` we will notice that current user's home needs to be created in the chroot (`mkdir $HOME`, `chmod 0755 $HOME`)
+* if we execute `cd $HOME` we will notice that current user's home needs to be created in the chroot (`mkdir $HOME`; `chmod 0755 $HOME`)
 * the */tmp* directory is missing the *sticky bit* (execute `chmod +t /tmp`)
 * the */QOpenSys/etc/yum* is incomplete: */QOpenSys/etc/yum/repos.d* directory is missing so that no yum repository is identified (`mkdir /QOpenSys/etc/yum/repos.d`)
 
