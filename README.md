@@ -70,7 +70,7 @@ We can notice there are some refinements required:
 
 **Note**: in order to configure yum repository enter 5250 and 
 
-CPY OBJ('*/QOpenSys/etc/yum/repos.d/ibm.conf*') TODIR('*/QOpenSys/chRootRiby/QOpenSys/etc/yum/repos.d*')
+CPY OBJ('*/QOpenSys/etc/yum/repos.d/ibm.repo*') TODIR('*/QOpenSys/chRootRiby/QOpenSys/etc/yum/repos.d*')
 
 
 
