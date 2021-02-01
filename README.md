@@ -113,7 +113,7 @@ yum -y --installroot=/QOpenSys/chRootRiby install yum ca-certificates-mozilla
 
 We also add the package *ca-certificates-mozilla* because it will be useful later on.
 
-Yum handles all dependencies and we will end up installing more that forty pachages! One of these is *bash* so that entering the chroot we can actually use the newly installed **bash** shell:
+Yum handles all dependencies and we will end up installing almost fifty pachages! One of these is *bash* so that entering the chroot we can actually use the newly installed **bash** shell:
 
 ```
 chroot /QOpenSys/chRootRiby /QOpenSys/pkgs/bin/bash
