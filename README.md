@@ -35,15 +35,15 @@ chroot_setup -y /QOpenSys/chRootRiby
 
 Now, yum supports an option (`--installroot`) that allows us to specify a chroot (already created) as the target for our installation:
 we will use it to prepare the safe environment to experiment with Ruby 3. 
-First of all we install the yum package in the chroot so that the next installations will be issued from the chroot itself:
+First of all we install in the chroot the **yum** package itself (with its dependencies) so that we will be able to issue the next installations from the chroot:
 
 ```
-yum -y --installroot=/QOpenSys/chRootRiby install yum
+yum -y --installroot=/QOpenSys/chRootRiby install yum ca-certificates-mozilla
 ```
 
-Yum handles all dependencies and we will end up installing more that forty pachages! One of these is *bash*.
+We also add the package *ca-certificates-mozilla* because it will be useful later on.
 
-Entering the chroot we will use bash:
+Yum handles all dependencies and we will end up installing more that forty pachages! One of these is *bash* so that entering the chroot we can actually use the newly installed **bash** shell:
 
 ```
 chroot /QOpenSys/chRootRiby /QOpenSys/pkgs/bin/bash
@@ -71,6 +71,31 @@ We can notice there are some refinements required:
 **Note**: in order to configure yum repository enter 5250 and 
 
 CPY OBJ('*/QOpenSys/etc/yum/repos.d/ibm.repo*') TODIR('*/QOpenSys/chRootRiby/QOpenSys/etc/yum/repos.d*')
+
+Now, if we repeat the `yum repolist all` we get:
+
+```
+bash-4.4$ yum repolist all
+repo id                              repo name                         status
+ibm                                  ibm                               enabled: 661
+repolist: 661
+```
+
+----
+### 3. to install Ruby 3.0
+
+In the previous steps we organized a confortable home for our Ruby installation. 
+I organized a yum repository to host current and future builds of Ruby interpreter.
+
+To configure access to the mentioned repository we will use **git**:
+
+```
+yum -y install git
+```
+
+```
+git clone 
+```
 
 
 
