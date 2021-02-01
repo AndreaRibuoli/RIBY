@@ -22,39 +22,38 @@ Let's go!
 
 1. [to pave the way](#1-to-pave-the-way)
 2. [to refurbish the flat](#2-to-refurbish-the-flat)
-3. [to install Ruby 3.0](#3-to-install-Ruby-3.0)
+3. [to install Ruby 3.0](#3-to-install-ruby-30)
 
 ----
-### 1. to pave the way
+### 3. to install Ruby 3.0
 
-If you do not have experience with **IBM i chroot** I would suggest you to practice a bit.
-I assume you already have installed **yum** in your PASE environment so that installing IBM i chroot will be straightforward:
+In the previous steps we organized a confortable home for our Ruby installation. 
+I organized a yum repository to host current and future builds of Ruby interpreter.
 
-```
-yum install ibmichroot
-``` 
-
-Creating a chroot is as simple as (the `-y` options means *Auto respond yes to the prompts*):
+To configure access to the mentioned repository we will use **git**:
 
 ```
-chroot_setup -y /QOpenSys/chRootRiby
-``` 
-
-Now, yum supports an option (`--installroot`) that allows us to specify a chroot (already created) as the target for our installation:
-we will use it to prepare the safe environment to experiment with Ruby 3. 
-First of all we install in the chroot the **yum** package itself (with its dependencies) so that we will be able to issue the next installations from the chroot:
-
-```
-yum -y --installroot=/QOpenSys/chRootRiby install yum ca-certificates-mozilla
+yum -y install git
 ```
 
-We also add the package *ca-certificates-mozilla* because it will be useful later on.
-
-Yum handles all dependencies and we will end up installing more that forty pachages! One of these is *bash* so that entering the chroot we can actually use the newly installed **bash** shell:
+```
+git clone https://github.com/AndreaRibuoli/RIBY.git
+```
 
 ```
-chroot /QOpenSys/chRootRiby /QOpenSys/pkgs/bin/bash
+cp ./RIBY/andrearibuoli.repo /QOpenSys/etc/yum/repos.d/ibm.repo
 ```
+
+```
+yum -y install ruby-devel
+```
+
+```
+ruby -v
+```
+
+Here we are: you have **Ruby 3.0 interpreter installed in an IBM i PASE chroot!**
+
 ----
 ### 2. to refurbish the flat
 
@@ -89,31 +88,33 @@ repolist: 661
 ```
 
 ----
-### 3. to install Ruby 3.0
+### 1. to pave the way
 
-In the previous steps we organized a confortable home for our Ruby installation. 
-I organized a yum repository to host current and future builds of Ruby interpreter.
-
-To configure access to the mentioned repository we will use **git**:
+If you do not have experience with **IBM i chroot** I would suggest you to practice a bit.
+I assume you already have installed **yum** in your PASE environment so that installing IBM i chroot will be straightforward:
 
 ```
-yum -y install git
-```
+yum install ibmichroot
+``` 
+
+Creating a chroot is as simple as (the `-y` options means *Auto respond yes to the prompts*):
 
 ```
-git clone https://github.com/AndreaRibuoli/RIBY.git
-```
+chroot_setup -y /QOpenSys/chRootRiby
+``` 
+
+Now, yum supports an option (`--installroot`) that allows us to specify a chroot (already created) as the target for our installation:
+we will use it to prepare the safe environment to experiment with Ruby 3. 
+First of all we install in the chroot the **yum** package itself (with its dependencies) so that we will be able to issue the next installations from the chroot:
 
 ```
-cp ./RIBY/andrearibuoli.repo /QOpenSys/etc/yum/repos.d/ibm.repo
+yum -y --installroot=/QOpenSys/chRootRiby install yum ca-certificates-mozilla
 ```
 
-```
-yum -y install ruby-devel
-```
+We also add the package *ca-certificates-mozilla* because it will be useful later on.
+
+Yum handles all dependencies and we will end up installing more that forty pachages! One of these is *bash* so that entering the chroot we can actually use the newly installed **bash** shell:
 
 ```
-ruby -v
+chroot /QOpenSys/chRootRiby /QOpenSys/pkgs/bin/bash
 ```
-
-Here we are: you have **Ruby 3.0 interpreter installed in an IBM i PASE chroot!**
