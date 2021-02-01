@@ -45,7 +45,7 @@ git clone https://github.com/AndreaRibuoli/RIBY.git
 ```
 
 ```
-cp ./RIBY/andrearibuoli.repo /QOpenSys/etc/yum/repos.d/ibm.repo
+cp ./RIBY/andrearibuoli.repo /QOpenSys/etc/yum/repos.d
 ```
 
 ```
