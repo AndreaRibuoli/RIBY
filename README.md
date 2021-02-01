@@ -37,6 +37,10 @@ yum -y install git
 ```
 
 ```
+cd $HOME
+```
+
+```
 git clone https://github.com/AndreaRibuoli/RIBY.git
 ```
 
