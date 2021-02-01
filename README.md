@@ -56,6 +56,10 @@ yum -y install ruby-devel
 ruby -v
 ```
 
+```
+gem list
+```
+
 Here we are: you have **Ruby 3.0 interpreter installed in an IBM i PASE chroot!**
 
 ----
