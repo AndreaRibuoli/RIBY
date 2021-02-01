@@ -18,6 +18,13 @@ The most recent content will be on top of the README so, if you will join later 
 Let's go!
 
 ----
+## INDEX
+
+1. [to pave the way](#1-to-pave-the-way)
+2. [to refurbish the flat](#2-to-refurbish-the-flat)
+3. [to install Ruby 3.0](#3-to-install-Ruby-3.0)
+
+----
 ### 1. to pave the way
 
 If you do not have experience with **IBM i chroot** I would suggest you to practice a bit.
