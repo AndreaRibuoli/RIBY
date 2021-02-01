@@ -27,15 +27,50 @@ I assume you already have installed **yum** in your PASE environment so that ins
 yum install ibmichroot
 ``` 
 
-Creating a chroot is as simple as:
+Creating a chroot is as simple as (the `-y` options means *Auto respond yes to the prompts*):
 
 ```
-chroot_setup /QOpenSys/chRootRiby
+chroot_setup -y /QOpenSys/chRootRiby
 ``` 
 
 Now, yum supports an option (`--installroot`) that allows us to specify a chroot (already created) as the target for our installation:
-we will use it to prepare the safe environment to experiment with Ruby 3.
+we will use it to prepare the safe environment to experiment with Ruby 3. 
+First of all we install the yum package in the chroot so that the next installations will be issued from the chroot itself:
 
+```
+yum -y --installroot=/QOpenSys/chRootRiby install yum
+```
+
+Yum handles all dependencies and we will end up installing more that forty pachages! One of these is *bash*.
+
+Entering the chroot we will use bash:
+
+```
+chroot /QOpenSys/chRootRiby /QOpenSys/pkgs/bin/bash
+```
+----
+### 2. to refurbish the flat
+
+At the end of the first step we entered our newly created chroot for the first time.
+
+We had previously installed *yum* so it is available to list installed packages:
+
+```
+yum list installed
+```
+
+but not to install extra packages (`yum repolist all` returns *repolist: 0*)
+
+
+We can notice there are some refinements required:
+
+* if we execute `cd $HOME` we will notice that current user's home needs to be created in the chroot (`mkdir $HOME`, `chmod 0755 $HOME`)
+* the */tmp* directory is missing the *sticky bit* (execute `chmod +t /tmp`)
+* the */QOpenSys/etc/yum* is incomplete: */QOpenSys/etc/yum/repos.d* directory is missing so that no yum repository is identified (`mkdir /QOpenSys/etc/yum/repos.d`)
+
+**Note**: in order to configure yum repository enter 5250 and 
+
+CPY OBJ(*/QOpenSys/etc/yum/repos.d/ibm.conf*) TODIR(*/QOpenSys/chRootRiby/QOpenSys/etc/yum/repos.d*)
 
 
 
