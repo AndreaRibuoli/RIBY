@@ -94,8 +94,19 @@ yum -y install git
 ```
 
 ```
-git clone 
+git clone https://github.com/AndreaRibuoli/RIBY.git
 ```
 
+```
+cp ./RIBY/andrearibuoli.repo /QOpenSys/etc/yum/repos.d/ibm.repo
+```
 
+```
+yum -y install ruby-devel
+```
 
+```
+ruby -v
+```
+
+Here we are: you have **Ruby 3.0 interpreter installed in an IBM i PASE chroot!**
