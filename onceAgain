@@ -25,7 +25,7 @@ else
   chroot_setup -y /QOpenSys/${crn}
   yum -y --installroot=/QOpenSys/${crn} install yum ca-certificates-mozilla
   mkdir /QOpenSys/${crn}/QOpenSys/etc/yum/repos.d
-  system "CPY OBJ('/QOpenSys/etc/yum/repos.d/ibm.repo') TODIR('/QOpenSys/"${crn}"/QOpenSys/etc/yum/repos.d')"
+  system -q -i "CPY OBJ('/QOpenSys/etc/yum/repos.d/ibm.repo') TODIR('/QOpenSys/"${crn}"/QOpenSys/etc/yum/repos.d')"
   chroot /QOpenSys/${crn} /QOpenSys/pkgs/bin/bash
   mkdir $HOME
   chmod 0755 $HOME
