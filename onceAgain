@@ -26,7 +26,7 @@ else
   yum -y --installroot=/QOpenSys/${crn} install yum ca-certificates-mozilla
   mkdir /QOpenSys/${crn}/QOpenSys/etc/yum/repos.d
   system -q -i "CPY OBJ('/QOpenSys/etc/yum/repos.d/ibm.repo') TODIR('/QOpenSys/"${crn}"/QOpenSys/etc/yum/repos.d')"
-  chroot /QOpenSys/${crn} /QOpenSys/pkgs/bin/bash
+  chroot /QOpenSys/${crn} /QOpenSys/pkgs/bin/bash <<EOT
   mkdir $HOME
   chmod 0755 $HOME
   chmod +t /tmp
@@ -37,4 +37,5 @@ else
   yum -y install ${package}
   ruby -v
   exit
+EOT  
 fi
