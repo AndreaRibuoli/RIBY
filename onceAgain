@@ -37,5 +37,5 @@ else
   yum -y install ${package}
   ruby -v
   exit
-EOT  
+EOT
 fi
