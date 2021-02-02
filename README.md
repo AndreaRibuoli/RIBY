@@ -31,7 +31,7 @@ Let's go!
 **Repeatability** is a measure of the likelihood that, having produced one result from an experiment, you can try the same experiment, with the same setup, and produce that exact same result.
 
 It is fundamental for us to be able to automate what has been performed in steps 1 through 3 in a unique sequence of steps. We could also leverage *shell scripting* introducing a variable for assigning a name to the *chroot* and another for refining the choice of the *package* to be installed.
-In this repository the script named [onceAgain](onceAgain) is doing that.
+In this repository the script named [onceAgain (still in development)](onceAgain) is doing that.
 It accepts 0, 1 or 2 arguments. 
 
 * The first argument (when provided) will be the name of the chroot under */QOpenSys* (default: **chRootRiby**).
