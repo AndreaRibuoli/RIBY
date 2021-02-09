@@ -25,15 +25,13 @@ else
   chroot_setup -y /QOpenSys/${crn}
   yum -y --installroot=/QOpenSys/${crn} install yum ca-certificates-mozilla
   mkdir /QOpenSys/${crn}/QOpenSys/etc/yum/repos.d
-  system -q -i "CPY OBJ('/QOpenSys/etc/yum/repos.d/ibm.repo') TODIR('/QOpenSys/"${crn}"/QOpenSys/etc/yum/repos.d')"
+  cp /QOpenSys/etc/yum/repos.d/ibm.repo /QOpenSys/${crn}/QOpenSys/etc/yum/repos.d
+  cp ./andrearibuoli.repo /QOpenSys/${crn}/QOpenSys/etc/yum/repos.d
   chroot /QOpenSys/${crn} /QOpenSys/pkgs/bin/bash <<EOT
   mkdir $HOME
   chmod 0755 $HOME
   chmod +t /tmp
   yum -y install git
-  cd $HOME
-  git clone https://github.com/AndreaRibuoli/RIBY.git
-  cp ./RIBY/andrearibuoli.repo /QOpenSys/etc/yum/repos.d
   yum -y install ${package}
   ruby -v
   exit
