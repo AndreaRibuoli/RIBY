@@ -106,9 +106,6 @@ $ check_srvpgm.rb QSYS/QC2UTIL8
   'QSYS/QC2UTIL8' is not loadable from PASE
 ```
 
-`ls -1 /QSYS.LIB/*.SRVPGM`
-
-
 ### 4. to do everything once again
 
 **Repeatability** is a measure of the likelihood that, having produced one result from an experiment, you can try the same experiment, with the same setup, and produce that exact same result.
