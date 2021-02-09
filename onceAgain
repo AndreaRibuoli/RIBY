@@ -26,7 +26,7 @@ else
   yum -y --installroot=/QOpenSys/${crn} install yum ca-certificates-mozilla
   mkdir /QOpenSys/${crn}/QOpenSys/etc/yum/repos.d
   cp /QOpenSys/etc/yum/repos.d/ibm.repo /QOpenSys/${crn}/QOpenSys/etc/yum/repos.d
-  cp ./andrearibuoli.repo /QOpenSys/${crn}/QOpenSys/etc/yum/repos.d
+  cp $HOME/RIBY/andrearibuoli.repo /QOpenSys/${crn}/QOpenSys/etc/yum/repos.d
   chroot /QOpenSys/${crn} /QOpenSys/pkgs/bin/bash <<EOT
   mkdir $HOME
   chmod 0755 $HOME
