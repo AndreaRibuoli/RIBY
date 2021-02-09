@@ -24,8 +24,91 @@ Let's go!
 2. [to refurbish the flat](#2-to-refurbish-the-flat)
 3. [to install Ruby 3.0](#3-to-install-ruby-30)
 4. [to do everything once again](#4-to-do-everything-once-again)
+5. [to study IBM i through PASE with Ruby](#5-to-study-ibm-i-through-pase-with-ruby)
 
 ----
+
+### 5. to study IBM i through PASE with Ruby
+
+In my personal experience Ruby in PASE has always been a tool to better understand IBM i job dual nature. When IBM decided for PASE the way it is (this was more that twenty years ago), they thought it had been better to just implement an AIX runtime environment and so avoid AS/400 users' base the burden of managing another operating system.
+
+But how can a PASE Ruby script investigate this? 
+
+The first consideration is that **IBM i PASE libc.a** differs from **AIX libc.a**: it offers extra resources vital to sense the dual nature of an IBM i job. 
+
+Ruby interpreter comes with the Ruby Standard Library (**RSL**). Among many other goodies, RSL provides a **libffi** wrapper for Ruby named **fiddle**. 
+
+If you perform a dump of the ruby interpreter you can list the shared libraries it uses at load time:
+
+```
+$ which ruby
+  /QOpenSys/pkgs/bin/ruby
+$ dump -X64 -Hv /QOpenSys/pkgs/bin/ruby
+  . . .
+                        ***Import File Strings***
+INDEX  PATH                          BASE                MEMBER              
+0      /QOpenSys/pkgs/lib:/usr/lib:/lib                                         
+1                                    libbsd.a            shr_64.o            
+2                                    libutil.so.2        shr_64.o            
+3                                    libpthread.a        shr_xpg5_64.o       
+4                                    libgmp.so.10        shr_64.o            
+5                                    libdl.a             shr_64.o            
+6                                    libcrypt.a          shr_64.o            
+7                                    libc.a              shr_64.o              
+```
+
+So there is no *libffi.so* involved in default Ruby execution. 
+
+But if we search for libffi among the **.so** shared libraries that implement *powerpc-os400* RSL we discover it is there:
+
+```
+$ dump -X64 -Hv /QOpenSys/pkgs/lib/ruby/3.0.0/powerpc-os400/*.so | grep  libffi
+2                                    libffi.so.6         shr_64.o            
+```  
+
+The actual shared library depending on *libffi* is `/QOpenSys/pkgs/lib/ruby/3.0.0/powerpc-os400/fiddle.so`. In order to benefit from the services of libffi wrapped by fiddle we need to **require** it (`require 'fiddle'`). What fiddle offers us is the possibility 
+
+* to load shared libraries, 
+* to find exported functions and 
+* to call them.
+
+But if a shared library is already loaded there is no need to explicitly reload it.
+So we can access libc.a entries invoking `dlopen()` with *nil* argument. 
+
+One of the functions that IBM i PASE adds to AIX libc.a is **[_ILELOADX](https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_74/apis/pase__ileload.htm)**
+
+Let us save the following script as *check_srvpgm.rb*:
+
+``` 
+#! /QOpenSys/pkgs/bin/ruby
+require 'fiddle'
+require 'fiddle/import'
+extend Fiddle::Importer
+
+SrvPgmNm = struct [ 'char a[21]' ]
+preload  = Fiddle.dlopen(nil)
+ileloadx = Fiddle::Function.new( preload['_ILELOADX'], 
+                           [Fiddle::TYPE_VOIDP, Fiddle::TYPE_INT],
+                           Fiddle::TYPE_LONG_LONG )
+searched = SrvPgmNm.malloc
+searched[0, 21] = ARGV[0] 
+srvpgm = ileloadx.call(searched, 1)
+check = 'not ' if srvpgm == -1 
+puts "'#{ARGV[0]}' is #{check}loadable from PASE\n"                          
+```
+
+Then `chmod 0755 check_srvpgm.rb` to make it executable and test it:
+
+```
+$ check_srvpgm.rb QSYS/QC2UTIL1
+  'QSYS/QC2UTIL1' is loadable from PASE
+$ check_srvpgm.rb QSYS/QC2UTIL8
+  'QSYS/QC2UTIL8' is not loadable from PASE
+```
+
+`ls -1 /QSYS.LIB/*.SRVPGM`
+
+
 ### 4. to do everything once again
 
 **Repeatability** is a measure of the likelihood that, having produced one result from an experiment, you can try the same experiment, with the same setup, and produce that exact same result.
@@ -35,12 +118,22 @@ In this repository the script named [onceAgain](onceAgain) is doing that.
 It accepts 0, 1 or 2 arguments. 
 
 * The first argument (when provided) will be the name of the chroot under */QOpenSys* (default: **chRootRiby**).
-* The second argument will be the name of the package to be installed in the chroot (default: **ruby-devel** ).
+* The second argument will be the name of the package to be installed in the chroot (default: **ruby** ).
 
-This will allow us to create chroots at different level of *version-release* of Ruby. Let us test the script adopting the following arguments:
+Let us test the script passing no arguments (having removed previous installation):
 
 ```
-onceAgain chRootRibyPrv ruby-devel-3.0.0-1
+$ rm -r /QOpenSys/chRootRiby
+$ cd $HOME
+$ git clone https://github.com/AndreaRibuoli/RIBY.git
+$ RIBY/onceAgain
+```
+
+The script will allow us to create chroots at different level of *version-release* of Ruby. Let us test the script adopting the following arguments:
+
+```
+$ cd $HOME
+$ RIBY/onceAgain chRootRibyPrv ruby-devel
 ```
 
 ----
@@ -68,7 +161,7 @@ cp ./RIBY/andrearibuoli.repo /QOpenSys/etc/yum/repos.d
 ```
 
 ```
-yum -y install ruby-devel
+yum -y install ruby
 ```
 
 ```
