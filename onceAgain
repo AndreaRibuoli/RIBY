@@ -3,7 +3,7 @@ if [ -n "$2" ]
 then
   package="$2"
 else
-  package="ruby-devel"
+  package="ruby"
 fi
 cd /QOpenSys
 if [ -n "$1" ]
@@ -31,7 +31,6 @@ else
   mkdir $HOME
   chmod 0755 $HOME
   chmod +t /tmp
-  yum -y install git
   yum -y install ${package}
   ruby -v
   exit
