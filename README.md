@@ -65,7 +65,7 @@ INDEX  PATH                          BASE                MEMBER
 So there is no *libffi.so* involved in default Ruby execution. The actual shared library depending on *libffi* is `/QOpenSys/pkgs/lib/ruby/3.0.0/powerpc-os400/fiddle.so`. 
 
 ```
-chroot /QOpenSys/chRootRiby dump -X64 -Hv /QOpenSys/pkgs/lib/ruby/3.0.0/powerpc-os400/fiddle.so
+$ chroot /QOpenSys/chRootRiby dump -X64 -Hv /QOpenSys/pkgs/lib/ruby/3.0.0/powerpc-os400/fiddle.so
 
 /QOpenSys/pkgs/lib/ruby/3.0.0/powerpc-os400/fiddle.so:
 
@@ -103,23 +103,28 @@ irb(main):002:0> quit
 $ 
 ```
 
-We can also copy a script distributed with RIBY called `check_srvpgm.rb` in our
+We can also copy a script distributed with RIBY called **[check_srvpgm.rb](check_srvpgm.rb)** in our
 home folder in the chroot:
 
 ```
 cp ${HOME}/RIBY/check_srvpgm.rb /QOpenSys/chRootRiby${HOME}
 ```
 
-and execute it passing the argument
+and execute it passing as an argument the service program we want to load from PASE:
 
 ```
 $ chroot /QOpenSys/chRootRiby ${HOME}/check_srvpgm.rb QSYS/QC2UTIL1
   'QSYS/QC2UTIL1' is loadable from PASE
+```
+
+if the service program cannot be loaded (e.g. does not exist) we receive the following message:
+
+```
 $ chroot /QOpenSys/chRootRiby ${HOME}/check_srvpgm.rb QSYS/QC2UTIL8
   'QSYS/QC2UTIL8' is not loadable from PASE
 ```
 
-Note that accessing native (ILE) service programs is not limited by chroot: only current user profile matters!
+Note that accessing native (ILE) service programs is not limited by chroot: only the authorities of current user profile matter!
 
 ### 4. to do everything once again
 
