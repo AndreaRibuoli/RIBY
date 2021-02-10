@@ -38,12 +38,17 @@ The first consideration is that **IBM i PASE libc.a** differs from **AIX libc.a*
 
 Ruby interpreter comes with the Ruby Standard Library (**RSL**). Among many other goodies, RSL provides a **libffi** wrapper for Ruby named **fiddle**. 
 
-If you perform a dump of the ruby interpreter you can list the shared libraries it uses at load time:
+If you perform a dump of the ruby interpreter you can list the shared libraries it uses at load time. As soon as we installed Ruby interpreter only inside the chroot we will execute:
 
 ```
-$ which ruby
+$ chroot /QOpenSys/chRootRiby which ruby
   /QOpenSys/pkgs/bin/ruby
-$ dump -X64 -Hv /QOpenSys/pkgs/bin/ruby
+```
+
+and:
+
+```
+$ chroot /QOpenSys/chRootRiby dump -X64 -Hv /QOpenSys/pkgs/bin/ruby
   . . .
                         ***Import File Strings***
 INDEX  PATH                          BASE                MEMBER              
@@ -57,54 +62,64 @@ INDEX  PATH                          BASE                MEMBER
 7                                    libc.a              shr_64.o              
 ```
 
-So there is no *libffi.so* involved in default Ruby execution. 
-
-But if we search for libffi among the **.so** shared libraries that implement *powerpc-os400* RSL we discover it is there:
+So there is no *libffi.so* involved in default Ruby execution. The actual shared library depending on *libffi* is `/QOpenSys/pkgs/lib/ruby/3.0.0/powerpc-os400/fiddle.so`. 
 
 ```
-$ dump -X64 -Hv /QOpenSys/pkgs/lib/ruby/3.0.0/powerpc-os400/*.so | grep  libffi
-2                                    libffi.so.6         shr_64.o            
-```  
+chroot /QOpenSys/chRootRiby dump -X64 -Hv /QOpenSys/pkgs/lib/ruby/3.0.0/powerpc-os400/fiddle.so
 
-The actual shared library depending on *libffi* is `/QOpenSys/pkgs/lib/ruby/3.0.0/powerpc-os400/fiddle.so`. In order to benefit from the services of libffi wrapped by fiddle we need to **require** it (`require 'fiddle'`). What fiddle offers us is the possibility 
+/QOpenSys/pkgs/lib/ruby/3.0.0/powerpc-os400/fiddle.so:
+
+. . .
+
+                        ***Import File Strings***
+INDEX  PATH                          BASE                MEMBER              
+0      /QOpenSys/pkgs/lib:/usr/lib:/lib                                         
+1                                    libdl.a             shr_64.o            
+2                                    libffi.so.6         shr_64.o            
+3                                    libc.a              shr_64.o            
+4                                    libgcc_s.so.1       shr_64.o            
+5                                    ..                                      
+
+```
+
+In order to benefit from the services of libffi wrapped by fiddle we need to **require** it (`require 'fiddle'`). What fiddle offers us is the possibility 
 
 * to load shared libraries, 
 * to find exported functions and 
 * to call them.
 
-But if a shared library is already loaded there is no need to explicitly reload it.
-So we can access libc.a entries invoking `dlopen()` with *nil* argument. 
+When a shared library is already loaded there is no need to explicitly reload it.
+So we can access **libc.a** entries invoking a `dlopen()` with *nil* argument. 
 
-One of the functions that IBM i PASE adds to AIX libc.a is **[_ILELOADX](https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_74/apis/pase__ileload.htm)**
+One of the functions that IBM i PASE adds to original AIX libc.a is **[_ILELOADX](https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_74/apis/pase__ileload.htm)**
 
-Let us save the following script as *check_srvpgm.rb*:
-
-``` 
-#! /QOpenSys/pkgs/bin/ruby
-require 'fiddle'
-require 'fiddle/import'
-extend Fiddle::Importer
-
-SrvPgmNm = struct [ 'char a[21]' ]
-preload  = Fiddle.dlopen(nil)
-ileloadx = Fiddle::Function.new( preload['_ILELOADX'], 
-                           [Fiddle::TYPE_VOIDP, Fiddle::TYPE_INT],
-                           Fiddle::TYPE_LONG_LONG )
-searched = SrvPgmNm.malloc
-searched[0, 21] = ARGV[0] 
-srvpgm = ileloadx.call(searched, 1)
-check = 'not ' if srvpgm == -1 
-puts "'#{ARGV[0]}' is #{check}loadable from PASE\n"                          
-```
-
-Then `chmod 0755 check_srvpgm.rb` to make it executable and test it:
+We can run the Interactive RuBy (**irb**) from the chroot:
 
 ```
-$ check_srvpgm.rb QSYS/QC2UTIL1
+$ chroot /QOpenSys/chRootRiby /QOpenSys/pkgs/bin/irb
+irb(main):001:0> require 'fiddle'
+=> true
+irb(main):002:0> quit
+$ 
+```
+
+We can also copy a script distributed with RIBY called `check_srvpgm.rb` in our
+home folder in the chroot:
+
+```
+cp ${HOME}/RIBY/check_srvpgm.rb /QOpenSys/chRootRiby${HOME}
+```
+
+and execute it passing the argument
+
+```
+$ chroot /QOpenSys/chRootRiby ${HOME}/check_srvpgm.rb QSYS/QC2UTIL1
   'QSYS/QC2UTIL1' is loadable from PASE
-$ check_srvpgm.rb QSYS/QC2UTIL8
+$ chroot /QOpenSys/chRootRiby ${HOME}/check_srvpgm.rb QSYS/QC2UTIL8
   'QSYS/QC2UTIL8' is not loadable from PASE
 ```
+
+Note that accessing native (ILE) service programs is not limited by chroot: only current user profile matters!
 
 ### 4. to do everything once again
 
