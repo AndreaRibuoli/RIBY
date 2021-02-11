@@ -73,7 +73,7 @@ Let us use it combining previous study of **fiddle** and **_ILELOADX**.
 Ruby supports **Regular Expressions**. 
 
 If we perform `ls -1 \QSYS.LIB\*.SRVPGM` we get the list of service programs provided by IBM in QSYS.
-Building on this idea we decide to print out a list of those that can be loaded from PASE.
+Building on this idea we decide to print out a list of those that cannot be loaded from PASE.
 
 This is done with [the script named nonLoadables](nonLoadables).
 
