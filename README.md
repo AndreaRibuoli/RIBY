@@ -57,14 +57,14 @@ ruby-devel-3.0.0-2.ibmi7.3.ppc64.rpm                        | 335 kB  00:00
 bash-4.4$ 
 ```
 
-We are authorized to access the chroot from the outside so we perform our installation (the oredr matters):
+We are authorized to access the chroot from the outside so we perform our installation (the order matters):
 
 ```
 yum localinstall /QOpenSys/chRootRiby/ruby-3.0.0-2.ibmi7.3.ppc64.rpm 
 yum localinstall /QOpenSys/chRootRiby/ruby-devel-3.0.0-2.ibmi7.3.ppc64.rpm 
 ```
 
-Note that some prerequite packages may be missing and will be installed directly from ibm.repo.
+Note that some prerequite packages may be missing and will be installed directly from *ibm.repo*.
 Now Ruby interpreter is available for all users.
 
 Ruby is an excellent tool for system administration. 
