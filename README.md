@@ -77,6 +77,22 @@ Building on this idea we decide to print out a list of those that can be loaded 
 
 This is done with [the script named nonLoadables](nonLoadables).
 
+```
+bash-4.4$ RIBY/nonLoadables 
+'QSYS/QGLDCLNT64' is not loadable from PASE
+'QSYS/QLGICUNORM' is not loadable from PASE
+'QSYS/QLGICUSORT' is not loadable from PASE
+'QSYS/QP0LCNVMSG' is not loadable from PASE
+'QSYS/QP0WSTTS64' is not loadable from PASE
+'QSYS/QQQSVREG' is not loadable from PASE
+'QSYS/QQQSVXML' is not loadable from PASE
+   . . .
+'QSYS/QYUSVPDCOL' is not loadable from PASE
+'QSYS/QZLSSRV5' is not loadable from PASE
+'QSYS/QZRUDBG' is not loadable from PASE
+```
+
+It is not clear -to me- why some SRVPGM are loadable from PASE while others are not (as a general rule).
 
 ### 5. to study IBM i through PASE with Ruby
 
