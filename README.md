@@ -25,8 +25,58 @@ Let's go!
 3. [to install Ruby 3.0](#3-to-install-ruby-30)
 4. [to do everything once again](#4-to-do-everything-once-again)
 5. [to study IBM i through PASE with Ruby](#5-to-study-ibm-i-through-pase-with-ruby)
+6. [to build up confidence on Ruby language](#6-to-build-up-confidence-on-ruby-language)
 
 ----
+### 6. to build up confidence on Ruby language
+
+Assuming you are now confident in using a specific Ruby for powerpc-os400 release let us install it (out of a chroot). If you prefer not to officially add an extra repository (*andrearibuoli.repo*) you can download required RPMs **inside the chroot** and install them locally **out of the chroot**.
+
+We cannot install Ruby directly:
+```
+$ /QOpenSys/pkgs/bin/bash
+bash-4.4$ export PATH=/QOpenSys/pkgs/bin:$PATH
+bash-4.4$ yum list | grep ruby
+bash-4.4$
+``` 
+
+We first perform:
+
+```
+bash-4.4$ chroot /QOpenSys/chRootRiby/ yum install yum-utils
+
+```
+
+So we fetch the RPMs (no installation) via chroot using one of the utilities **yum-utils** provide:
+
+```
+bash-4.4$ chroot /QOpenSys/chRootRiby yumdownloader ruby
+ruby-3.0.0-2.ibmi7.3.ppc64.rpm                              |  24 MB  00:07     
+bash-4.4$ chroot /QOpenSys/chRootRiby yumdownloader ruby-devel
+ruby-devel-3.0.0-2.ibmi7.3.ppc64.rpm                        | 335 kB  00:00
+bash-4.4$ 
+```
+
+We are authorized to access the chroot from the outside so we perform our installation (the oredr matters):
+
+```
+yum localinstall /QOpenSys/chRootRiby/ruby-3.0.0-2.ibmi7.3.ppc64.rpm 
+yum localinstall /QOpenSys/chRootRiby/ruby-devel-3.0.0-2.ibmi7.3.ppc64.rpm 
+```
+
+Note that some prerequite packages may be missing and will be installed directly from ibm.repo.
+Now Ruby interpreter is available for all users.
+
+Ruby is an excellent tool for system administration. 
+Let us use it combining previous study of **fiddle** and **_ILELOADX**.  
+
+Ruby supports **Regular Expressions**. 
+
+If we perform `ls -1 \QSYS.LIB\*.SRVPGM` we get the list of service programs provided by IBM in QSYS.
+Building on this idea we decide to print out a list of those that can be loaded from PASE.
+
+This is done with [the script named nonLoadables](nonLoadables).
+
 
 ### 5. to study IBM i through PASE with Ruby
 

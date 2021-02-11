@@ -1,0 +1,31 @@
+#! /QOpenSys/pkgs/bin/ruby
+require 'fiddle'
+require 'fiddle/import'
+extend Fiddle::Importer
+SrvPgmNm = struct [ 'char a[21]' ]
+preload  = Fiddle.dlopen(nil)
+ileloadx = Fiddle::Function.new( preload['_ILELOADX'],
+                           [Fiddle::TYPE_VOIDP, Fiddle::TYPE_INT],
+                           Fiddle::TYPE_LONG_LONG )
+to_be_searched = SrvPgmNm.malloc
+
+require 'open3'
+def io2stream(shell, &block)
+  Open3.popen3(shell) do |_, stdout, stderr|
+    while line = stdout.gets
+      block.call(line)
+    end
+    while line = stderr.gets
+      block.call(line)
+    end
+  end
+end
+a = []
+io2stream("ls -1 /QSYS.LIB/*.SRVPGM", &lambda { |str| a << str[0..-2] } )
+a.each { |s|
+  m = s.match(/\/(?<lib>.*)\.LIB\/(?<srvpgm>.*)\.SRVPGM/)
+  lib_srvpgm = "#{m[1]}/#{m[2]}"
+  to_be_searched[0, 21] = lib_srvpgm
+  srvpgm = ileloadx.call(to_be_searched, 1)
+  puts "'#{lib_srvpgm}' is not loadable from PASE\n" if srvpgm == -1
+}
