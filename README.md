@@ -25,10 +25,10 @@ Let's go!
 3. [to install Ruby 3.0](#3-to-install-ruby-30)
 4. [to do everything once again](#4-to-do-everything-once-again)
 5. [to study IBM i through PASE with Ruby](#5-to-study-ibm-i-through-pase-with-ruby)
-6. [to build up confidence on Ruby language](#6-to-build-up-confidence-on-ruby-language)
+6. [to gain confidence on Ruby language](#6-to-gain-confidence-on-ruby-language)
 
 ----
-### 6. to build up confidence on Ruby language
+### 6. to gain confidence on Ruby language
 
 Assuming you are now confident in using a specific Ruby for powerpc-os400 release let us install it (out of a chroot). If you prefer not to officially add an extra repository (*andrearibuoli.repo*) you can download required RPMs **inside the chroot** and install them locally **out of the chroot**.
 
