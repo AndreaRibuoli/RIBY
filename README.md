@@ -26,7 +26,7 @@ Let's go!
 4. [to do everything once again](#4-to-do-everything-once-again)
 5. [to study IBM i through PASE with Ruby](#5-to-study-ibm-i-through-pase-with-ruby)
 6. [to gain confidence on Ruby language](#6-to-gain-confidence-on-ruby-language)
-7. [to get acquainted with QSYS/QC2UTILx service programs](#7-to-get-acquainted-with-qsys-qc2utilx-service-programs)
+7. [to get acquainted with QSYS/QC2UTILx service programs](#7-to-get-acquainted-with-qsysqc2utilx-service-programs)
 
 ----
 ### 7. to get acquainted with QSYS/QC2UTILx service programs 
