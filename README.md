@@ -51,7 +51,31 @@ After obtaining accessability to a service progra with *[_ILELOADX](https://www.
 
 In order for *fiddle* to be able to handle \_ILESYMX we need to prepare memory for an **ILEpointer**.
 
+``` ruby
 
+ . . . 
+ILEpointer = struct [ 'char b[16]' ]
+ . . .
+ilesymx = Fiddle::Function.new( preload['_ILESYMX'],
+                           [Fiddle::TYPE_VOIDP, Fiddle::TYPE_LONG_LONG, Fiddle::TYPE_VOIDP],
+                           Fiddle::TYPE_INT )
+ . . .
+ILEfunction = ILEpointer.malloc
+rc = ilesymx.call(ILEfunction, srvpgm, ARGV[1])
+raise "Searching for function entry '#{ARGV[1]}' in service program #{ARGV[0]} failed" if rc != 1
+```
+
+We prepared **[check_srvpgm_entry.rb](check_srvpgm_entry.rb)** accepting 2 arguments: 
+
+1. qualified service program name 
+2. function entry name
+
+If successful nothing occurs; in case of error (erroneous entry point) we get:
+
+```
+bash-4.4$ ./check_srvpgm_entry.rb QSYS/QC2UTIL1 mallocz
+./check_srvpgm_entry.rb:22:in `<main>': Searching for function entry 'mallocz' in service program QSYS/QC2UTIL1 failed (RuntimeError)
+```
 ----
 ### 6. to gain confidence on Ruby language
 
