@@ -3,6 +3,7 @@ require 'fiddle'
 require 'fiddle/import'
 extend Fiddle::Importer
 
+raise "Usage: check_srvpgm_entry.rb <lib>/<srvpgm> <entry_name>" if ARGV.length != 2 
 SrvPgmNm = struct [ 'char a[21]' ]
 ILEpointer = struct [ 'char b[16]' ]
 preload  = Fiddle.dlopen(nil)
