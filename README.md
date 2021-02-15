@@ -26,6 +26,31 @@ Let's go!
 4. [to do everything once again](#4-to-do-everything-once-again)
 5. [to study IBM i through PASE with Ruby](#5-to-study-ibm-i-through-pase-with-ruby)
 6. [to gain confidence on Ruby language](#6-to-gain-confidence-on-ruby-language)
+7. [to get acquainted with QSYS/QC2UTILx service programs](#7-to-get-acquainted-with-qsys-qc2utilx-service-programs)
+
+----
+### 7. to get acquainted with QSYS/QC2UTILx service programs 
+
+In IBM i ILE the role of **libc.a** is played by a group of service programs. 
+If we search for `malloc`, a C standard library function, we will find it inside a service program named **QSYS/QC2UTIL1**. 
+The QSYS/QC2UTIL1 service program can be loaded from PASE so we can imagine to extend our Ruby script dinamically introducing support for ILE native `malloc` function.
+
+The C template for malloc is inside include file member `QSYSINC/H(STDLIB)`:
+
+```
+void    *malloc   ( size_t );
+``` 
+
+After obtaining accessability to a service progra with *[_ILELOADX](https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_74/apis/pase__ileload.htm)* we can look for a specific entry with **[_ILESYMX](https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_74/apis/pase__ilesym.htm)**
+
+ ```
+ int _ILESYMX(ILEpointer          *export,
+              unsigned long long  actmark,
+              const char          *symbol);  
+ ```
+
+In order for *fiddle* to be able to handle \_ILESYMX we need to prepare memory for an **ILEpointer**.
+
 
 ----
 ### 6. to gain confidence on Ruby language
