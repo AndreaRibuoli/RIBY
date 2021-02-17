@@ -57,8 +57,8 @@ In order for *fiddle* to be able to handle \_ILESYMX we need to prepare memory f
 ILEpointer = struct [ 'char b[16]' ]
  . . .
 ilesymx = Fiddle::Function.new( preload['_ILESYMX'],
-                           [Fiddle::TYPE_VOIDP, Fiddle::TYPE_LONG_LONG, Fiddle::TYPE_VOIDP],
-                           Fiddle::TYPE_INT )
+            [Fiddle::TYPE_VOIDP, Fiddle::TYPE_LONG_LONG, Fiddle::TYPE_VOIDP],
+            Fiddle::TYPE_INT )
  . . .
 ILEfunction = ILEpointer.malloc
 rc = ilesymx.call(ILEfunction, srvpgm, ARGV[1])
