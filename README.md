@@ -45,7 +45,7 @@ When we approach the **[_ILECALLX](https://www.ibm.com/support/knowledgecenter/s
 
 We will start with very simple examples but the main goal will be to collect ideas in order to design and implement an abstraction that will offer us the ability to use ILE Service Programs (**\*SRVPGM**) from Ruby with ease: having *fiddle* as an inspiring model.
 
-Let us complete our ILE C `malloc` example.    
+Let us first complete our ILE C `malloc` example.    
 
 ----
 ### 7. to get acquainted with QSYS/QC2xx service programs 
