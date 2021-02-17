@@ -26,10 +26,29 @@ Let's go!
 4. [to do everything once again](#4-to-do-everything-once-again)
 5. [to study IBM i through PASE with Ruby](#5-to-study-ibm-i-through-pase-with-ruby)
 6. [to gain confidence on Ruby language](#6-to-gain-confidence-on-ruby-language)
-7. [to get acquainted with QSYS/QC2UTILx service programs](#7-to-get-acquainted-with-qsysqc2utilx-service-programs)
+7. [to get acquainted with QSYS/QC2xx service programs](#7-to-get-acquainted-with-qsysqc2xx-service-programs)
+8. [to execute a service program entry call from PASE](#8-to-execute-a-service-program-entry-call-from-pase)
+
 
 ----
-### 7. to get acquainted with QSYS/QC2UTILx service programs 
+### 8. to execute a service program entry call from PASE 
+
+By means of **fiddle** we managed to dinamically call **_ILELOADX** and **_ILESYMX** from a Ruby script.
+Fiddle offered us the support to -relatively easily- declare the argument list and return code types involved.
+It also offered us the ability to prepare memory consistently when calls are to be performed.
+
+The object oriented nature of the Ruby language enabled the designers of **fiddle** to simplify the final usage of 
+shared library entries: with `Fiddle::Function.new` we pass the templates and the object instance we are returned with is 
+capable of handling the parameters provided in a subsequent `call` method.
+
+When we approach the **[_ILECALLX](https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_74/apis/pase__ilecall.htm)** we understand the difference: the burden of invoking a service program entry with a well prepared set of arguments is all on our shoulders!
+
+We will start with very simple examples but the main goal will be to collect ideas in order to design and implement an abstraction that will offer us the ability to use ILE Service Programs (**\*SRVPGM**) from Ruby with ease: having *fiddle* as an inspiring model.
+
+Let us complete our ILE C `malloc` example.    
+
+----
+### 7. to get acquainted with QSYS/QC2xx service programs 
 
 In IBM i ILE the role of **libc.a** is played by a group of service programs. 
 If we search for `malloc`, a C standard library function, we will find it inside a service program named **QSYS/QC2UTIL1**. 
