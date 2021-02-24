@@ -43,9 +43,25 @@ capable of handling the parameters provided in a subsequent `call` method.
 
 When we approach the **[_ILECALLX](https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_74/apis/pase__ilecall.htm)** we understand the difference: the burden of invoking a service program entry with a well prepared set of arguments is all on our shoulders!
 
-We will start with very simple examples but the main goal will be to collect ideas in order to design and implement an abstraction that will offer us the ability to use ILE Service Programs (**\*SRVPGM**) from Ruby with ease: having *fiddle* as an inspiring model.
+We will start with very simple examples but the primary goal will be to collect ideas in order to design and implement an abstraction that will offer us the ability to use ILE Service Programs (**\*SRVPGM**) from Ruby with ease: having *fiddle* as an inspiring model.
 
 Let us first complete our ILE C `malloc` example.    
+
+So `malloc` returns a void pointer. In IBM i ILE terms we need to allocate a 16-byte aligned 16-byte chunk of memory and pass its PASE address as return value when we will call *_ILECALLX* for the *malloc* function entry *_ILESYMX* returned us. 
+
+All the memory in the `private address space` of the running PASE/AIX process is also memory the current IBM i job have access to.
+
+Let us suppose we will be able to have the ILE *malloc* function to execute from Ruby (and we will!), now, what a PASE process can do with a 16-byte long **ILE address**? 
+
+As I previously told there are various extensions to the *AIX libc.a*. Some of these take care of converting pointers.  
+The **[_CVTSPP](https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_74/apis/pase__cvtspp.htm)** function converts the teraspace address in a tagged space pointer to an equivalent IBM PASE for i memory address. 
+
+Assuming ILE malloc returns a teraspace address, we will be able to handle in PASE that same buffer of memory by -dynamically- using the *_CVTSSP* function to transform a teraspace address into a PASE memory address.
+
+Passing parameters to **_ILECALLX** is far from simple in a C program but is definitely complex in a dynamic fashion.
+Luckily *malloc* template is very basic: receives a size and returns a pointer.
+
+ 
 
 ----
 ### 7. to get acquainted with QSYS/QC2xx service programs 
