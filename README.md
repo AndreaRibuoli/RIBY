@@ -51,7 +51,7 @@ So `malloc` returns a void pointer. In IBM i ILE terms we need to allocate a 16-
 
 All the memory in the `private address space` of the running PASE/AIX process is also memory the current IBM i job have access to.
 
-Let us suppose we will be able to have the ILE *malloc* function to execute from Ruby (and we will!), now, what a PASE process can do with a 16-byte long **ILE address**? 
+Let us suppose we will be able to have the ILE *malloc* function execute from Ruby (and we will!), now, what a PASE process can do with a 16-byte long **ILE address**? 
 
 As I previously told there are various extensions to the *AIX libc.a*. Some of these take care of converting pointers.  
 The **[_CVTSPP](https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_74/apis/pase__cvtspp.htm)** function converts the teraspace address in a tagged space pointer to an equivalent IBM PASE for i memory address. 
