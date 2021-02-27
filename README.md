@@ -38,45 +38,108 @@ Fiddle offered us the support to -relatively easily- declare the argument list a
 It also offered us the ability to prepare memory consistently when calls are to be performed.
 
 The object oriented nature of the Ruby language enabled the designers of **fiddle** to simplify the final usage of 
-shared library entries: with `Fiddle::Function.new` we pass the templates and the object instance we are returned with is 
-capable of handling the parameters provided in a subsequent `call` method.
+shared library entries: with `Fiddle::Function.new` we SIMPLY pass the function templates: the object instance we are returned with is then capable of handling the parameters provided in a subsequent elegant `call` method.
 
-When we approach the **[_ILECALLX](https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_74/apis/pase__ilecall.htm)** we understand the difference: the burden of invoking a service program entry with a well prepared set of arguments is all on our shoulders!
+As we approach the **[_ILECALLX](https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_74/apis/pase__ilecall.htm)** documentation we understand the difference! The burden of invoking a service program entry with a prepared set of arguments is all on our shoulders!
 
-We will start with very simple examples but the primary goal will be to collect ideas in order to design and implement an abstraction that will offer us the ability to use ILE Service Programs (**\*SRVPGM**) from Ruby with ease: having *fiddle* as an inspiring model.
+We will start with simple working examples: we will be collecting ideas on how to design and implement an abstraction that will offer the ability to use ILE Service Programs (**\*SRVPGM**) from Ruby with the same ease *fiddle* is offering for shared libraries.
 
-Let us first complete our ILE C `malloc` example.    
+Let us first investigate our ILE C `system` example.    
 
-So `malloc` returns a void pointer. In IBM i ILE terms we need to allocate a 16-byte aligned 16-byte chunk of memory and pass its PASE address as return value when we will call *_ILECALLX* for the *malloc* function entry *_ILESYMX* returned us. 
+ILE C `system` returns an integer but receives an ILE native pointer (that is a quad-word).  
+We need to allocate a 16-byte aligned 16-byte chunk of memory prepared with the PASE address in the last 8 bytes.
+During the *\_ILECALLX* processing the PASE address in converted into a proper IBM i space pointer and finally the system call gets executed.
 
-All the memory in the `private address space` of the running PASE/AIX process is also memory the current IBM i job have access to.
+All storage in the `private address space` of the running PASE/AIX process is shared with the current IBM i job: ILE APIs have access to it. Passing parameters to **_ILECALLX** is far from simple in a PASE C program but it is definitely complex in a dynamic style. Let us shed some light on the deatails.
 
-Let us suppose we will be able to have the ILE *malloc* function execute from Ruby (and we will!), now, what a PASE process can do with a 16-byte long **ILE address**? 
+First of all we have to prepare the template for *_ILECALLX* that **fiddle** will use. The C notation is:
 
-As I previously told there are various extensions to the *AIX libc.a*. Some of these take care of converting pointers.  
-The **[_CVTSPP](https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_74/apis/pase__cvtspp.htm)** function converts the teraspace address in a tagged space pointer to an equivalent IBM PASE for i memory address. 
+```
+ int _ILECALLX(const ILEpointer  *target,
+               ILEarglist_base   *ILEarglist,
+               const arg_type_t  *signature,
+               result_type_t     result_type,
+               int               flags);
+```
 
-Assuming ILE malloc returns a teraspace address, we will be able to handle in PASE that same buffer of memory by -dynamically- using the *_CVTSSP* function to transform a teraspace address into a PASE memory address.
+In */usr/include/as400_types.h* we find the definition of *result\_type\_t*:
 
-Passing parameters to **_ILECALLX** is far from simple in a C program but is definitely complex in a dynamic fashion.
-Luckily *malloc* template is very basic: receives a size and returns a pointer.
+```
+typedef int16        result_type_t;
+```
 
- 
+In */usr/include/as400_types.h* we find the definition of *int16*:
+
+```
+typedef signed short         int16;
+```
+
+So far we know that we can prepare a Fiddle Function for **\_ILECALLX** this way:
+
+```
+ilecallx = Fiddle::Function.new( preload['_ILECALLX'],                                                                        
+                           [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_SHORT, Fiddle::TYPE_INT],
+                           Fiddle::TYPE_INT )                                                                                 
+```
+
+In a previous Ruby script (enhanced by *fiddle*) we already defined an `ILEpointer` type as `ILEpointer = struct [ 'char b[16]' ]`. It was valued by a call to **\_ILESYMX**. 
+
+The secret of using fiddle's `struct` in PASE is that **the actual memory reserved will be acquired with a PASE `malloc`**. This is a fundamental detour from how memory is usually handled by the Ruby interpreter (engineered to natively integrate with the garbage collector). 
+
+PASE `malloc` variant differs from AIX one: it is **always returning a 16-byte aligned address**, this implies that by using fiddle's `struct` we are guaranteed that those 16 bytes are suitable to hold a teraspace address when handled in ILE job mode.   
+
+The ILEarglist is (again) required to be 16-byte aligned.
+Apart from the global alignment of this struct we have an opening standard **base** struct followed by a variable sequence of arguments that need to be padded with extra bytes consistently with the data type length of the actual argument. 
+The logic to be consistent with is summurized by the following table:
+
+| Argument Length | Alignment       |
+| --------------- |:---------------:|
+| 1 byte	        |      any        |
+| 2 bytes	        |    2 bytes      |
+| 3-4 bytes       |    4 bytes      |
+| 5-8 bytes       |    8 bytes      |
+| 9 or more bytes |   16 bytes      |
+
+Let us keep these details in mind and try to apply them in invoking ILE `system` from Ruby PASE: we just have one argument.
+As soon as the *ILEarglist\_base* is 32 bytes long, the first argument will be implictly 16-byte aligned too. Being the only argument we do not have to care too much this time.
+
+We will try with: 
+
+```
+ILEarglist = struct [ 'char b1[16]', 'char b2[16]', 'char b3[16]' ]
+```
+
+The **signature** is a pointer to a list of `arg_type_t` values.
+The typedef introducing `arg_type_t` declares it as a signed short. So we have to prepare an array of shorts ready to be interpreted.
+The actual number of arguments processed by the *\_ILECALLX* function is determined by the number of entries in the signature list, which is determined by the location of the first 0 value in the list that ends the processing.
+We need 2 short integers to invoke ILE `system`: 
+
+1. the first qualifies the ILE pointer argument and will be set to ARG\_MEMPTR (i.e. **-11**)
+2. the second closes the list and will be set to ARG\_END (**0**)
+
+This is a struct that does not need to be passed to ILE so that its own alignment is not relevant (we can allocate it as a regular Ruby string).
+
+
+We will ignore the return code of `system` by setting **result_type** to 0.
+
+We need to provide memory after *ILEarglist\_base* for a 16 bytes (quad-word) for the ILE pointer.
+
+The [Ruby script I am presenting](invoke_system.rb) summarizes the steps described. Ruby can encode an **EBCDIC** content (through the support of **IBM037** encoding). That content is passed on as command argument in the `int system(const char *command)` ILE C standard library function.
 
 ----
 ### 7. to get acquainted with QSYS/QC2xx service programs 
 
 In IBM i ILE the role of **libc.a** is played by a group of service programs. 
-If we search for `malloc`, a C standard library function, we will find it inside a service program named **QSYS/QC2UTIL1**. 
-The QSYS/QC2UTIL1 service program can be loaded from PASE so we can imagine to extend our Ruby script dinamically introducing support for ILE native `malloc` function.
+If we search for `system`, a C standard library function, we will find it inside a service program named **QSYS/QC2SYS**. 
+The QSYS/QC2SYS service program can be loaded from PASE so we can imagine to extend our Ruby script dinamically introducing support for ILE native `system` function.
 
-The C template for malloc is inside include file member `QSYSINC/H(STDLIB)`:
+The C template for `system` is inside include file member `QSYSINC/H(STDLIB)`:
 
 ```
-void    *malloc   ( size_t );
+int      system   ( const char *command ); 
 ``` 
 
-After obtaining accessability to a service progra with *[_ILELOADX](https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_74/apis/pase__ileload.htm)* we can look for a specific entry with **[_ILESYMX](https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_74/apis/pase__ilesym.htm)**
+After obtaining accessability to a service program with *[_ILELOADX](https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_74/apis/pase__ileload.htm)* we can look for a specific entry with **[_ILESYMX](https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_74/apis/pase__ilesym.htm)**
 
  ```
  int _ILESYMX(ILEpointer          *export,
@@ -100,12 +163,12 @@ rc = ilesymx.call(ILEfunction, srvpgm, ARGV[1])
 raise "Searching for function entry '#{ARGV[1]}' in service program #{ARGV[0]} failed" if rc != 1
 ```
 
-We prepared **[check_srvpgm_entry.rb](check_srvpgm_entry.rb)** accepting 2 arguments: 
+I prepared **[check_srvpgm_entry.rb](check_srvpgm_entry.rb)** accepting 2 arguments: 
 
 1. qualified service program name 
 2. function entry name
 
-If successful nothing occurs; in case of error (erroneous entry point) we get:
+If successful nothing occurs; in case of error we get:
 
 ```
 bash-4.4$ ./check_srvpgm_entry.rb QSYS/QC2UTIL1 mallocz
