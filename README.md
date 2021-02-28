@@ -78,8 +78,8 @@ So far we know that we can prepare a Fiddle Function for **\_ILECALLX** this way
 
 ```
 ilecallx = Fiddle::Function.new( preload['_ILECALLX'],                                                                        
-                           [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_SHORT, Fiddle::TYPE_INT],
-                           Fiddle::TYPE_INT )                                                                                 
+            [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_SHORT, Fiddle::TYPE_INT],
+            Fiddle::TYPE_INT )                                                                                 
 ```
 
 In a previous Ruby script (enhanced by *fiddle*) we already defined an `ILEpointer` type as `ILEpointer = struct [ 'char b[16]' ]`. It was valued by a call to **\_ILESYMX**. 
