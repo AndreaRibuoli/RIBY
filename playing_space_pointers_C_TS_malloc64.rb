@@ -31,5 +31,5 @@ if rc == 1 then
   rc = ilecallx.call(ILEfunction, ILEarguments, ['FFF80000'].pack("H*"), 16, 0)
   raise "ILE system failed with rc=#{rc}" if rc != 0
   puts "ILE SPP      #{ILEreturn[0, 16].unpack("H*")}"
-  puts "PASE pointer from _CVTSPP    [\"#{cvtspp.call(ILEreturn).to_s(16).rjust(16,'0')}\"]"
+  puts "PASE pointer from _CVTSPP    #{cvtspp.call(ILEreturn)}"
 end
