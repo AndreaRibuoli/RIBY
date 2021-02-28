@@ -28,7 +28,7 @@ Let's go!
 6. [to gain confidence on Ruby language](#6-to-gain-confidence-on-ruby-language)
 7. [to get acquainted with QSYS/QC2xx service programs](#7-to-get-acquainted-with-qsysqc2xx-service-programs)
 8. [to execute a service program entry call from PASE](#8-to-execute-a-service-program-entry-call-from-pase)
-9. [o gather information on space pointers from PASE](#9-to-gather-information-on-space-pointers-from-pase)
+9. [to gather information on space pointers from PASE](#9-to-gather-information-on-space-pointers-from-pase)
 
 ----
 ### 9. to gather information on space pointers from PASE
