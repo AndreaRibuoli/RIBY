@@ -122,7 +122,7 @@ This is a struct that does not need to be passed to ILE so that its own alignmen
 
 We will ignore the return code of `system` by setting **result_type** to 0.
 
-We need to provide memory after *ILEarglist\_base* for a 16 bytes (quad-word) for the ILE pointer.
+We need to provide enough contiguos storage following *ILEarglist\_base* for a 16 bytes (quad-word), i.e. the ILE pointer.
 
 The [Ruby script I am presenting](invoke_system.rb) summarizes the steps described. Ruby can encode an **EBCDIC** content (through the support of **IBM037** encoding). That content is passed on as command argument in the `int system(const char *command)` ILE C standard library function.
 
