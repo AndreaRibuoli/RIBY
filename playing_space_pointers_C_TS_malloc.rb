@@ -21,7 +21,7 @@ cvtspp     = Fiddle::Function.new( preload['_CVTSPP'],
                            [Fiddle::TYPE_VOIDP],
                            Fiddle::TYPE_LONG_LONG )
 ILEfunction  = ILEpointer.malloc
-rc = ilesymx.call(ILEfunction, ileloadx.call('QSYS/QC2UTIL1', 1), '_C_TS_malloc')
+rc = ilesymx.call(ILEfunction, ileloadx.call('QSYS/QC2UTIL3', 1), '_C_TS_malloc')
 if rc == 1 then
   ILEreturn    = ILEpointer.malloc
   ILEarguments = ILEarglist.malloc
