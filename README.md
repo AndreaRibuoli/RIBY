@@ -69,6 +69,23 @@ The **[_CVTSPP](https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_74/apis/pa
 
 Assuming ILE malloc returns a teraspace address (as with *Qp2malloc*) we will be able to handle the conversion in PASE by -dynamically- using the *_CVTSPP* () function.
 
+Despite Qp2malloc'ed memory ILE address can be successfully converted back to PASE pointer with *\_CVTSPP* all the other APIs (`malloc`, `_C_TS_malloc` and `_C_TS_malloc64`) are using memory regions that do not have a PASE pointer equivalent: 
+
+```
+bash-4.4$ playing_space_pointers_malloc.rb 10
+ILE SPP      ["8000000000000000fd48a7a0ec0021e0"]
+PASE pointer from _CVTSPP    -1
+
+bash-4.4$ playing_space_pointers_C_TS_malloc.rb 10
+ILE SPP      ["800000000000000000008000440040a0"]
+PASE pointer from _CVTSPP    -1
+
+bash-4.4$ playing_space_pointers_C_TS_malloc64.rb 10       
+ILE SPP      ["800000000000000000008000440040a0"]
+PASE pointer from _CVTSPP    -1
+```
+
+
 ----
 ### 8. to execute a service program entry call from PASE 
 
