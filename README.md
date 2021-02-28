@@ -38,7 +38,7 @@ Fiddle offered us the support to -relatively easily- declare the argument list a
 It also offered us the ability to prepare memory consistently when calls are to be performed.
 
 The object oriented nature of the Ruby language enabled the designers of **fiddle** to simplify the final usage of 
-shared library entries: with `Fiddle::Function.new` we SIMPLY pass the function templates: the object instance we are returned with is then capable of handling the parameters provided in a subsequent elegant `call` method.
+shared library entries: with `Fiddle::Function.new` we simply pass the function templates: the object instance we are returned with is then capable of handling the parameters provided in a subsequent elegant `call` method.
 
 As we approach the **[_ILECALLX](https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_74/apis/pase__ilecall.htm)** documentation we understand the difference! The burden of invoking a service program entry with a prepared set of arguments is all on our shoulders!
 
