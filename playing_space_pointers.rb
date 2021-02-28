@@ -19,6 +19,9 @@ ilesymx    = Fiddle::Function.new( preload['_ILESYMX'],
 ilecallx   = Fiddle::Function.new( preload['_ILECALLX'],
                            [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_SHORT, Fiddle::TYPE_INT],
                            Fiddle::TYPE_INT )
+cvtspp     = Fiddle::Function.new( preload['_CVTSPP'],
+                           [Fiddle::TYPE_VOIDP],
+                           Fiddle::TYPE_LONG_LONG )
 ILEfunction  = ILEpointer.malloc
 rc = ilesymx.call(ILEfunction, ileloadx.call('QSYS/QP2USER', 1), 'Qp2malloc')
 if rc == 1 then
@@ -34,4 +37,5 @@ if rc == 1 then
   raise "ILE system failed with rc=#{rc}" if rc != 0
   puts "PASE pointer                 #{PASEreturn[0, 8].unpack("H*")}"
   puts "ILE SPP      #{ILEreturn[0, 16].unpack("H*")}"
+  puts "PASE pointer from _CVTSPP    [\"#{cvtspp.call(ILEreturn).to_s(16).rjust(16,'0')}\"]"
 end
