@@ -3,9 +3,8 @@ require 'fiddle'
 require 'fiddle/import'
 extend Fiddle::Importer
                                                                                                 
-raise "Usage: playing_space_pointers.rb <msg>" if ARGV.length != 1
-cmd  = "SNDPGMMSG MSG('#{ARGV[0]}') TOMSGQ(*SYSOPR)"
-size = cmd.length
+raise "Usage: playing_space_pointers.rb <size>" if ARGV.length != 1
+size = ARGV[0].to_i
 ILEpointer   = struct [ 'char b[16]' ]
 ILEarglist   = struct [ 'char c[64]' ]
 PASEpointer  = struct [ 'unsigned long p' ]
