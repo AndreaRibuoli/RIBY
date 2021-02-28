@@ -42,11 +42,11 @@ We will compare different ILE APIs that can be used to reserve storage blocks:
 3. `_C_TS_malloc64`     
 4. `Qp2malloc`
 
-When ILE **malloc** is used in a compiled program it can be implicitly re-mapped to \_C\_TS\_malloc
+When ILE **malloc** is used in a compiled program it can be implicitly re-mapped to **\_C\_TS\_malloc**
 as soon as `TERASPACE(*YES *TSIFC)` parameter is specified. If we invoke ILE malloc from Ruby this will *always* use **single-level store** storage. And will also have 16711568 bytes (0xFEFF90) as maximum size.
-The maximum amount of **teraspace storage** that can be allocated by each call to \_C\_TS\_malloc() is instead 2147483424 bytes (0x80000000 - 0xE0 = 0x7FFFFF20). When more bytes are needed on a single request the \_C\_TS\_malloc64 is available (it accepts an *unsigned long long int* to specify the size required).
+The maximum amount of **teraspace storage** that can be allocated by each call to \_C\_TS\_malloc() is instead 2147483424 bytes (0x80000000 - 0xE0 = 0x7FFFFF20). When more bytes are needed on a single request the **\_C\_TS\_malloc64** is available (it accepts an *unsigned long long int* to specify the size required).
 
-The template for Qp2malloc is: 
+The template for **Qp2malloc** is: 
 
 ```
 void* Qp2malloc(QP2_dword_t size, QP2_ptr64_t *mem_pase); 
@@ -54,14 +54,20 @@ void* Qp2malloc(QP2_dword_t size, QP2_ptr64_t *mem_pase);
 
 QP2_dword_t is an *unsigned long long int* so Qp2malloc is not limited in the size value and offers an extra service: sets the 8 bytes buffer (we are addressing with the second argument) as the PASE address to the newly allocated teraspace storage. 
 
-Let us start with this last API. We soon notice that while we were able to specify an ARG\_MEMPTR in the argument list there is no such thing as a **RESULT\_MEMPTR**. If we invoke \_ILECALLX specifying **-11** as the result\_type we receive an error **ILECALL\_INVALID\_RESULT (2)** (*The result_type value is invalid*). 
+Let us start with thE last API of the list. W
+e soon notice that while we were able to specify an *ARG\_MEMPTR* in the argument list there is no such thing as a **RESULT\_MEMPTR**. If we invoke \_ILECALLX specifying **-11** as the result\_type we receive an error **ILECALL\_INVALID\_RESULT (2)** (*The result\_type value is invalid*). 
 
-On the other hand the specifications for \_ILECALLX offer an extra option: any **positive value** for the result\_type can be used when the function result is an aggregate (structure or union). An aggregate function result is returned in a buffer allocated by the caller and passed to the target ILE procedure using a special field in the argument list (bytes 17-32 of the *base*). We will use this technique to receive the ILE pointer.   
-
+On the other hand the specifications for the result\_type in \_ILECALLX offer an extra option: any **positive value** for the result\_type can be used when the function result is an aggregate (structure or union). An aggregate function result is returned in a buffer allocated by the caller and passed to the target ILE procedure using a special field in the argument list (bytes 17-32 of the *base*). We will use this technique to receive the ILE pointer treating it as a generic aggregate of size 16.   
 We will prepare an ILEpointer variable and pass its address in the aggregate field.
 
-We will use this approach with `malloc`, `_C_TS_malloc` and `_C_TS_malloc64` respectively. In these three APIs there is no opportunity to directly read back a PASE pointer. The question that arises is how we can convert a buffer containing a generic ILE pointer (in its original format) while in PASE. 
+This is what we are doing in the [Ruby script that plays with Space Pointers](playing_space_pointers.rb).
 
+We use this same approach also with `malloc`, `_C_TS_malloc` and `_C_TS_malloc64` respectively. In these three extra APIs there is no opportunity to directly read back a PASE pointer. The question that arises is how we can convert a buffer containing a generic ILE pointer (in its original format) while in PASE. 
+
+As I previously mentioned, there are various extensions to the *AIX libc.a*. Some of these take care of converting pointers.  
+The **[_CVTSPP](https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_74/apis/pase__cvtspp.htm)** function converts *a teraspace address in a tagged space pointer* to an equivalent IBM PASE for i memory address. Only teraspace addresses have an equivalent in the private address space of the process. 
+
+Assuming ILE malloc returns a teraspace address (as with *Qp2malloc*) we will be able to handle the conversion in PASE by -dynamically- using the *_CVTSPP* () function.
 
 ----
 ### 8. to execute a service program entry call from PASE 
