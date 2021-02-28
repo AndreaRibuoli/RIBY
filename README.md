@@ -28,6 +28,39 @@ Let's go!
 6. [to gain confidence on Ruby language](#6-to-gain-confidence-on-ruby-language)
 7. [to get acquainted with QSYS/QC2xx service programs](#7-to-get-acquainted-with-qsysqc2xx-service-programs)
 8. [to execute a service program entry call from PASE](#8-to-execute-a-service-program-entry-call-from-pase)
+9. [o gather information on space pointers from PASE](#9-to-gather-information-on-space-pointers-from-pase)
+
+----
+### 9. to gather information on space pointers from PASE
+
+We introduced the idea that ILE mode has full access to memory allocated by PASE. The opposite is not granted: not all storage allocated by ILE can be visible in PASE. We will verify this aspect.
+
+We will compare different ILE APIs that can be used to reserve storage blocks:
+
+1. `malloc`
+2. `_C_TS_malloc`
+3. `_C_TS_malloc64`     
+4. `Qp2malloc`
+
+When ILE **malloc** is used in a compiled program it can be implicitly re-mapped to \_C\_TS\_malloc
+as soon as `TERASPACE(*YES *TSIFC)` parameter is specified. If we invoke ILE malloc from Ruby this will *always* use **single-level store** storage. And will also have 16711568 bytes (0xFEFF90) as maximum size.
+The maximum amount of **teraspace storage** that can be allocated by each call to \_C\_TS\_malloc() is instead 2147483424 bytes (0x80000000 - 0xE0 = 0x7FFFFF20). When more bytes are needed on a single request the \_C\_TS\_malloc64 is available (it accepts an *unsigned long long int* to specify the size required).
+
+The template for Qp2malloc is: 
+
+```
+void* Qp2malloc(QP2_dword_t size, QP2_ptr64_t *mem_pase); 
+```
+
+QP2_dword_t is an *unsigned long long int* so Qp2malloc is not limited in the size value and offers an extra service: sets the 8 bytes buffer (we are addressing with the second argument) as the PASE address to the newly allocated teraspace storage. 
+
+Let us start with this last API. We soon notice that while we were able to specify an ARG\_MEMPTR in the argument list there is no such thing as a **RESULT\_MEMPTR**. If we invoke \_ILECALLX specifying **-11** as the result\_type we receive an error **ILECALL\_INVALID\_RESULT (2)** (*The result_type value is invalid*). 
+
+On the other hand the specifications for \_ILECALLX offer an extra option: any **positive value** for the result\_type can be used when the function result is an aggregate (structure or union). An aggregate function result is returned in a buffer allocated by the caller and passed to the target ILE procedure using a special field in the argument list (bytes 17-32 of the *base*). We will use this technique to receive the ILE pointer.   
+
+We will prepare an ILEpointer variable and pass its address in the aggregate field.
+
+We will use this approach with `malloc`, `_C_TS_malloc` and `_C_TS_malloc64` respectively. In these three APIs there is no opportunity to directly read back a PASE pointer. The question that arises is how we can convert a buffer containing a generic ILE pointer (in its original format) while in PASE. 
 
 
 ----
