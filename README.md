@@ -84,6 +84,34 @@ ILE SPP      ["800000000000000000008000440040a0"]
 PASE pointer from _CVTSPP    -1
 ```
 
+It could be useful to refine maximum sizes. 
+We can actually appreciate the difference between *\_CVTSPP* returning 0 .vs. returning -1.
+
+* **0** means the pointer is NULL
+* **-1** means the pointer is not NULL but memory allocated can not be accessible from PASE
+
+When using `malloc` the actual limit (when invoked from PASE) seems to be **0xFFF000** (16773120 bytes) rather than the documented 16711568 bytes (0xFEFF90)
+
+```
+bash-4.4$ playing_space_pointers_malloc.rb 16773120
+ILE SPP      ["8000000000000000d9e67a6bfe001000"]
+PASE pointer from _CVTSPP    -1
+bash-4.4$ playing_space_pointers_malloc.rb 16773121
+ILE SPP      ["80000000000000000000000000000000"]
+PASE pointer from _CVTSPP    0
+```
+
+When using `_C_TS_malloc` the actual limit (when invoked from PASE) seems to be **0x7FFFFF30** (2147483440 bytes) rather than the documented 2147483424 bytes (0x7FFFFF20)
+
+```
+bash-4.4$ playing_space_pointers_C_TS_malloc.rb 2147483440
+ILE SPP      ["800000000000000000008036d00000a0"]
+PASE pointer from _CVTSPP    -1
+bash-4.4$ playing_space_pointers_C_TS_malloc.rb 2147483441
+ILE SPP      ["80000000000000000000000000000000"]
+PASE pointer from _CVTSPP    0
+```
+
 
 ----
 ### 8. to execute a service program entry call from PASE 
