@@ -29,6 +29,76 @@ Let's go!
 7. [to get acquainted with QSYS/QC2xx service programs](#7-to-get-acquainted-with-qsysqc2xx-service-programs)
 8. [to execute a service program entry call from PASE](#8-to-execute-a-service-program-entry-call-from-pase)
 9. [to gather information on space pointers from PASE](#9-to-gather-information-on-space-pointers-from-pase)
+10. [to move around tagged pointers](#10-to-move-around-tagged-pointers)
+
+----
+### 10. to move around tagged pointers
+
+To prepare for future investigation we introduce today another topic that can help understand some otherwise obscure situations we may face when handling PASE-ILE interaction.
+
+Right now the **\_CVTSPP** was successful only in one of our scripts.
+Let us copy here the crucial lines of code:
+
+```
+  ILEreturn    = ILEpointer.malloc
+  . . .
+  ILEarguments[16, 16] = [ILEreturn.to_i.to_s(16).rjust(32,'0')].pack("H*")
+  . . .
+  rc = ilecallx.call(ILEfunction, ILEarguments, ['FFF8FFF50000'].pack("H*"), 16, 0)
+  . . .
+  puts "PASE pointer from _CVTSPP    [\"#{cvtspp.call(ILEreturn).to_s(16).rjust(16,'0')}\"]"
+```
+
+When ILEreturn was passed to \_CVTSPP we had not moved the content we received from the \_ILECALLX API. We can imagine that a copy of the ILE pointer retains all properties of the original pointer, so that applying \_CVTSPP to the copy would behave in the same way.
+
+Let us introduce the following extra steps:
+
+```
+  ILEreturn2   = ILEpointer.malloc                                                            
+  ILEreturn2[0, 16] = ILEreturn[0, 16]                                                        
+  puts "ILE SPP copy #{ILEreturn2[0, 16].unpack("H*")}"                                        
+  puts "PASE pointer from _CVTSPP    [\"#{cvtspp.call(ILEreturn2).to_s(16).rjust(16,'0')}\"]"   
+```
+
+We get something like:
+
+```
+bash-4.4$ playing_space_pointers.rb 20
+PASE pointer                 ["0000000182687eb0"]
+ILE SPP      ["800000000000000000008016b2687eb0"]
+PASE pointer from _CVTSPP    ["0000000182687eb0"]
+ILE SPP copy ["800000000000000000008016b2687eb0"]
+PASE pointer from _CVTSPP    ["0000000000000000"]
+```
+
+Despite the memory content is the same, the second execution of *\_CVTSPP* does not consider valid the ILE pointer we are providing. This is a **fundamental charateristic of IBM i**, let us listen to *Frank Soltis*:
+
+  *"... any store to memory that's generated for an MI program uses the standard instructions and **always turns off the tag bits**. When a pointer is created as part of a resolve operation, SLIC builds the pointer in two 64-bit registers and uses the `stq` instruction to turn on the tag bits in memory."* (FORTRESS ROCHESTER, page 160)  
+
+In order to copy memory without destroying 16-byte tagged pointers we need to require the services of PASE **libc.a** again. It is offering two extra functions: [**\_MEMCPY\_WT** and **\_MEMCPY\_WT2**](https://www.ibm.com/support/knowledgecenter/en/ssw_ibm_i_74/apis/pase__memcpy_wt.htm).
+
+The new changes are:
+
+```
+memcpy_wt  = Fiddle::Function.new( preload['_MEMCPY_WT'],                              
+                           [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_INT], 
+                           Fiddle::TYPE_VOIDP )  
+. . .                           
+ILEreturn2   = ILEpointer.malloc                                                            
+memcpy_wt.call(ILEreturn2, ILEreturn, 16)                                                   
+puts "ILE SPP copy #{ILEreturn2[0, 16].unpack("H*")}"                                       
+puts "PASE pointer from _CVTSPP    [\"#{cvtspp.call(ILEreturn2).to_s(16).rjust(16,'0')}\"]"                                                                  
+```
+
+That solve our issue:
+
+```
+PASE pointer                 ["0000000182687490"]
+ILE SPP      ["800000000000000000008016b2687490"]
+PASE pointer from _CVTSPP    ["0000000182687490"]
+ILE SPP copy ["800000000000000000008016b2687490"]
+PASE pointer from _CVTSPP    ["0000000182687490"]
+```
 
 ----
 ### 9. to gather information on space pointers from PASE
