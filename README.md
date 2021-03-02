@@ -41,8 +41,8 @@ From ILE C/C++ documentation we can read a quite cryptic note:
 
  *To use operational descriptors, you specify a `#pragma descriptor` directive in your source to identify functions whose arguments have operational descriptors. Operational descriptors are then **built by the calling procedure and passed as hidden arguments** to the called procedure.*
 
-The kind of processing involved in preparing operational descriptors is **undocumented**. This reminds me of many books that in the past where titled **"Undocumented \<something\>"**  where the object had been *DOS*, *Windows*, etcetera. Our objective of this chapter is to investigate the first ILE pointer of *ILEarglist\_base* struct. 
-If we discover something we could rename the chapter as *"Undocumented Operational Descriptors"*.
+The kind of processing involved in preparing operational descriptors is **undocumented**. This reminds me of many books that in the past where titled **"Undocumented \<something\>"**  where the object had been *DOS*, *Windows*, etcetera. Our objective with this chapter is to investigate the first ILE pointer of *ILEarglist\_base* struct. 
+If we will discover something we could rename the chapter as *"Undocumented Operational Descriptors"*.
 
 First of all we will start from the achievements of previous chapters verifiying if we could pass in an ILE pointer already in ILE format. In the previous chapter we learned how to copy an ILE pointer properly.
 We also learned how to duplicate an ILE pointer without destroying its **tagged** nature.
