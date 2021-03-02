@@ -69,6 +69,50 @@ setspp     = Fiddle::Function.new( preload['_SETSPP'],
  
 Let us [revisit our script](invoke_system_FFF4.rb) to execute IBM i commands using the technique just introduced.
 
+It works as expected:
+
+```
+bash-4.4$ invoke_system_FFF4.rb 'CRTLIB LIB(ATTEMPT)'
+bash-4.4$ invoke_system_FFF4.rb 'DLTLIB LIB(ATTEMPT)'
+```
+
+We introduced a new technique also with Fiddle:
+
+```
+cmd  = ARGV[0].encode('IBM037')
+. . .
+setspp.call(ILEarguments.to_ptr + 32, Fiddle::Pointer[cmd])
+```
+ILEarguments is created with a `ILEarglist.malloc`: inside the ILEarglist instance there is a `@entity` that is
+an instance of `Fiddle::CStructEntity` with 3 attributes: `ptr`, `size`, `free`.
+
+These are the inspections on `ILEarguments.to_ptr` and `(ILEarguments.to_ptr + 32`)` respectively:
+```
+#<Fiddle::CStructEntity:0x0000000182680bd0 ptr=0x0000000182680b90 size=48 free=0x0000000000000000>
+#<Fiddle::Pointer:0x0000000182680a70       ptr=0x0000000182680bb0 size=16 free=0x0000000000000000>
+``` 
+
+The `+` method creates a new Fiddle::Pointer by advancing of 32 bytes over the CStructEntity (and properly setting the legitimate size remaining: 64 - 48 = 16).
+
+The second argument of our setspp.call is still a Fiddle::Pointer. This time it is obtained from a generic Ruby string (the `cmd` variable). 
+
+If we emit the following two `inspect`: 
+
+```
+puts cmd.inspect                   
+puts Fiddle::Pointer[cmd].inspect  
+```
+
+we get:
+
+```
+bash-4.4$ invoke_system_FFF4.rb 'DLTLIB LIB(ATTEMPT)'
+"\xC4\xD3\xE3\xD3\xC9\xC2\x40\xD3\xC9\xC2\x4D\xC1\xE3\xE3\xC5\xD4\xD7\xE3\x5D"
+#<Fiddle::Pointer:0x0000000182683390 ptr=0x00000001826147f0 size=19 free=0x0000000000000000>
+```
+
+Note that the size is determined from the attributes of the `cmd` String object.
+
 ----
 ### 10. to move around tagged pointers
 
