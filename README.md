@@ -30,6 +30,72 @@ Let's go!
 8. [to execute a service program entry call from PASE](#8-to-execute-a-service-program-entry-call-from-pase)
 9. [to gather information on space pointers from PASE](#9-to-gather-information-on-space-pointers-from-pase)
 10. [to move around tagged pointers](#10-to-move-around-tagged-pointers)
+11. [to investigate parameter passing](#11-to-investigate-parameter-passing)
+
+----
+### 11. to investigate parameter passing
+
+The documentation available for **\_ILECALLX** provides no details about the first 16 bytes of the *ILEarglist\_base*. The template mentions an ILE pointer field described as `/* Operational descriptor */`.
+
+From ILE C/C++ documentation we can read a quite cryptic note:
+
+ *To use operational descriptors, you specify a `#pragma descriptor` directive in your source to identify functions whose arguments have operational descriptors. Operational descriptors are then **built by the calling procedure and passed as hidden arguments** to the called procedure.*
+
+The kind of processing involved in preparing operational descriptors is **undocumented**. This reminds me of many books that in the past where titled **"Undocumented \<something\>"**  where the object had been *DOS*, *Windows*, etcetera. Our objective of this chapter is to investigate the first ILE pointer of *ILEarglist\_base* struct. 
+If we discover something we could rename the chapter as *"Undocumented Operational Descriptors"*.
+
+First of all we will start from the achievements of previous chapters verifiying if we could pass in an ILE pointer already in ILE format. In the previous chapter we learned how to copy an ILE pointer properly.
+We also learned how to duplicate an ILE pointer without destroying its **tagged** nature.
+
+In the previous examples of \_ILECALLX, if an argument of type ILE pointer was required we always used **ARG_MEMPTR** (*-11* = *0xFFF5*). We can also observe that after the call the ILEarglist content was modified.
+There are other parameter qualifiers that control this behaviour.
+If we have an ILE pointer already resolved as a full quad-word we can use **ARG_SPCPTR** (*-12* = *0xFFF4*).
+
+To transform a local PASE pointer into the equivalent tagged quad-word there is another API offered by **libc.a**:
+[**\_SETSPP**](https://www.ibm.com/support/knowledgecenter/en/ssw_ibm_i_74/apis/pase__setspp.htm).
+
+```
+void _SETSPP(ILEpointer  *target,
+             const void  *memory);
+```
+
+It is declared in Fiddle as:
+
+```
+setspp     = Fiddle::Function.new( preload['_SETSPP'],               
+                           [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP], 
+                           Fiddle::TYPE_VOID )                       
+```
+ 
+Let us implement of our script to execute IBM i commands using this technique:
+
+```
+#! /QOpenSys/pkgs/bin/ruby
+require 'fiddle'
+require 'fiddle/import'
+extend Fiddle::Importer
+                                                                                                
+raise "Usage: invoke_system.rb <cmd>" if ARGV.length != 1
+cmd  = ARGV[0].encode('IBM037')
+size = cmd.length
+ILEpointer  = struct [ 'char b[16]' ]
+ILEarglist  = struct [ 'char c[48]' ]
+preload    = Fiddle.dlopen(nil)
+ileloadx   = Fiddle::Function.new( preload['_ILELOADX'], [Fiddle::TYPE_VOIDP, Fiddle::TYPE_INT], Fiddle::TYPE_LONG_LONG )
+ilesymx    = Fiddle::Function.new( preload['_ILESYMX'], [Fiddle::TYPE_VOIDP, Fiddle::TYPE_LONG_LONG, Fiddle::TYPE_VOIDP], Fiddle::TYPE_INT )
+ilecallx   = Fiddle::Function.new( preload['_ILECALLX'], [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_SHORT, Fiddle::TYPE_INT], Fiddle::TYPE_INT )
+setspp     = Fiddle::Function.new( preload['_SETSPP'], [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP], Fiddle::TYPE_VOID )
+
+ILEfunction  = ILEpointer.malloc
+rc = ilesymx.call(ILEfunction, ileloadx.call('QSYS/QC2SYS', 1), 'system')
+if rc == 1 then
+  ILEarguments = ILEarglist.malloc
+  ILEarguments[0, 32] = ['0'.rjust(64,'0')].pack("H*")
+  setspp.call(ILEarguments.to_ptr + 32, Fiddle::Pointer[cmd])
+  rc = ilecallx.call(ILEfunction, ILEarguments, ['FFF40000'].pack("H*"), 0, 0)
+  raise "ILE system failed with rc=#{rc}" if rc != 0
+end
+```
 
 ----
 ### 10. to move around tagged pointers
