@@ -135,7 +135,7 @@ We will use such a tester to gather information on how operational descriptors a
 
 The files can be installed automatically if you have **PASERIE** utility installed (
 `PASERIE/INSTALL GIT_USER(AndreaRibuoli) PACKAGEN(RIBY)`). 
-	Transferring and compiling manually is not complex (search in [build CL](QCLSRC/BUILD.CLLE))
+	Transferring and compiling manually is not complex (have a look at [build CL](QCLSRC/BUILD.CLLE))
 
 ```
 bash-4.4$ study_parameter_passing.rb 'Test WDUMP performing a simple copy'
@@ -171,7 +171,7 @@ OUTSTRING             CHAR(64)             '                                    
            * * * * *   F I N E   D E L   D U M P   R P G  * * * * *                                                            
 ```
 
-This is a good start to experiment seaching for *Operator Descriptors* role. A new chapter will be needed.
+This is a good start to experiment seaching for *Operator Descriptors* role. A new chapter is needed.
 
 
 ----
