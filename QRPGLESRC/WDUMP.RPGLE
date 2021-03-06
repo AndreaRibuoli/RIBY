@@ -21,11 +21,11 @@
      D HexLen          S             10I 0
      D*
      C                   DUMP(A)
-     C                   CALLP     CEEDOD(1         : DescType : DataType :
-     C                                    DescInfo1 : DescInfo2: Inlen    :
-     C                                    *OMIT)
-     C                   CALLP     CEEDOD(2         : DescType : DataType :
-     C                                    DescInfo1 : DescInfo2: HexLen   :
-     C                                    *OMIT)
+     C*                  CALLP     CEEDOD(1         : DescType : DataType :
+     C*                                   DescInfo1 : DescInfo2: Inlen    :
+     C*                                   *OMIT)
+     C*                  CALLP     CEEDOD(2         : DescType : DataType :
+     C*                                   DescInfo1 : DescInfo2: HexLen   :
+     C*                                   *OMIT)
      C                   EVAL      OutString = InString
      C                   RETURN
