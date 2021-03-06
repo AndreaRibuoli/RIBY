@@ -2,3 +2,5 @@ QCLSRC    BUILD     CLLE      Installation ILE CL
 QSRVSRC   RIBY_SRV  BND       Bind Service Program file
 QRPGLESRC WDUMP_H   RPGLE     Test Utility header 
 QRPGLESRC WDUMP     RPGLE     Test Utility 
+QRPGLESRC WDUMP_OP_HRPGLE     Test Utility w/ Descriptor header 
+QRPGLESRC WDUMP_OP  RPGLE     Test Utility w/ Descriptor
