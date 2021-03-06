@@ -131,7 +131,7 @@ We will use such a tester to gather information on how operational descriptors a
 | --------------- |:------------------------------------:|
 | QRPGLESRC	     |   [WDUMP](QRPGLESRC/WDUMP.RPGLE)     |
 | QRPGLESRC	     |   [WDUMP_H](QRPGLESRC/WDUMP_H.RPGLE) |
-| QSRVSRC	        |   [RIBY_SRV](QSRVSRC/RIBY_SRV.RPGLE) |
+| QSRVSRC	        |   [RIBY_SRV](QSRVSRC/RIBY_SRV.BND) |
 
 ```
 PASERIE/INSTALL GIT_USER(AndreaRibuoli) PACKAGEN(RIBY)         
