@@ -1,0 +1,37 @@
+             PGM        PARM(&DEVOPT_P)
+             DCL        VAR(&DEVOPT_P) TYPE(*CHAR) LEN(1)
+             DCL        VAR(&DEVOPT) TYPE(*CHAR) LEN(1)
+             DCL        VAR(&SRCLIB) TYPE(*CHAR) LEN(10) VALUE(QTEMP)
+             DCL        VAR(&BLDLIB) TYPE(*CHAR) LEN(10) VALUE(QTEMP)
+             DCL        VAR(&TGTLIB) TYPE(*CHAR) LEN(10) VALUE(RIBY)
+             CHGVAR     VAR(&DEVOPT) VALUE(&DEVOPT_P)
+             MONMSG     MSGID(MCH3601) EXEC(CHGVAR VAR(&DEVOPT) VALUE(L))
+             CRTLIB     LIB(&TGTLIB)
+             MONMSG     MSGID(CPF0000)
+             IF         COND(&DEVOPT = 'Y') THEN(DO)
+             CRTSRCPF   FILE(&TGTLIB/QCLSRC) RCDLEN(132)
+             MONMSG     MSGID(CPF0000)
+             CRTSRCPF   FILE(&TGTLIB/QSRVSRC) RCDLEN(132)
+             MONMSG     MSGID(CPF0000)
+             CRTSRCPF   FILE(&TGTLIB/QRPGLESRC) RCDLEN(132)
+             MONMSG     MSGID(CPF0000)
+             CPYSRCF    FROMFILE(&SRCLIB/QCLSRC) TOFILE(&TGTLIB/QCLSRC) FROMMBR(*ALL)
+             CPYSRCF    FROMFILE(&SRCLIB/QSRVSRC) TOFILE(&TGTLIB/QSRVSRC) FROMMBR(*ALL)
+             CPYSRCF    FROMFILE(&SRCLIB/QRPGLESRC) TOFILE(&TGTLIB/QRPGLESRC) FROMMBR(*ALL)
+             CHGVAR     VAR(&SRCLIB) VALUE(&TGTLIB)
+             ENDDO
+             IF         COND(&DEVOPT = 'L') THEN(DO)   
+             CHGVAR     VAR(&SRCLIB) VALUE(&TGTLIB)
+             ENDDO
+             IF         COND(&DEVOPT = 'Y') THEN(DO)   
+             CRTBNDCL   PGM(&TGTLIB/BUILD) SRCFILE(&SRCLIB/QCLSRC) SRCMBR(BUILD) +
+                          OUTPUT(*NONE) ALWRTVSRC(*NO) 
+             MONMSG     MSGID(CPF0000)
+             ENDDO
+             CRTRPGMOD  MODULE(&BLDLIB/WDUMP) SRCFILE(&SRCLIB/QRPGLESRC)
+             MONMSG     MSGID(CPF0000)
+             CRTSRVPGM  SRVPGM(&TGTLIB/RIBY_SRV) MODULE((&BLDLIB/WDUMP)) +
+                        EXPORT(*SRCFILE) SRCFILE(&SRCLIB/QSRVSRC)
+             MONMSG     MSGID(CPF0000)
+RETURN:      ENDPGM
+
