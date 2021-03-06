@@ -41,14 +41,13 @@ From ILE C/C++ documentation we can read a quite cryptic note:
 
  *To use operational descriptors, you specify a `#pragma descriptor` directive in your source to identify functions whose arguments have operational descriptors. Operational descriptors are then **built by the calling procedure and passed as hidden arguments** to the called procedure.*
 
-The kind of processing involved in preparing operational descriptors is **undocumented**. This reminds me of many books that in the past where titled **"Undocumented \<something\>"**  where the object had been *DOS*, *Windows*, etcetera. Our objective with this chapter is to investigate the first ILE pointer of *ILEarglist\_base* struct. 
-If we will discover something we could rename the chapter as *"Undocumented Operational Descriptors"*.
+The kind of processing involved in preparing operational descriptors is **undocumented**. This reminds me of many books that in the past were titled **"Undocumented \<something\>"**  where the object had been *DOS*, *Windows*, etcetera. Our objective with this chapter is to investigate the first ILE pointer of *ILEarglist\_base* struct. 
+If we will discover something new we could rethink this chapter as *"Undocumented Operational Descriptors"*.
 
-First of all we will start from the achievements of previous chapters verifiying if we could pass in an ILE pointer already in ILE format. In the previous chapter we learned how to copy an ILE pointer properly.
-We also learned how to duplicate an ILE pointer without destroying its **tagged** nature.
+First of all we will start from the achievements of previous chapters verifiying if we could pass in an ILE pointer already in ILE format. In the previous chapter we learned how to copy an ILE pointer properly without destroying its **tagged** nature.
 
-In the previous examples of \_ILECALLX, if an argument of type ILE pointer was required we always used **ARG_MEMPTR** (*-11* = *0xFFF5*). We can also observe that after the call the ILEarglist content was modified.
-There are other parameter qualifiers that control this behaviour.
+In the previous examples of \_ILECALLX, if an argument of type ILE pointer was required we always used **ARG_MEMPTR** (*-11* = *0xFFF5*). We can observe that after the call is performed the ILEarglist content is modified: in the same space the ILE pointer is calculated as a quad-word.
+There are other type qualifiers that control the handling of pointers.
 If we have an ILE pointer already resolved as a full quad-word we can use **ARG_SPCPTR** (*-12* = *0xFFF4*).
 
 To transform a local PASE pointer into the equivalent tagged quad-word there is another API offered by **libc.a**:
@@ -76,27 +75,30 @@ bash-4.4$ invoke_system_FFF4.rb 'CRTLIB LIB(ATTEMPT)'
 bash-4.4$ invoke_system_FFF4.rb 'DLTLIB LIB(ATTEMPT)'
 ```
 
-We introduced a new technique also with Fiddle:
+We introduced a new usage technique of Fiddle:
 
 ```
 cmd  = ARGV[0].encode('IBM037')
 . . .
 setspp.call(ILEarguments.to_ptr + 32, Fiddle::Pointer[cmd])
 ```
+
 ILEarguments is created with a `ILEarglist.malloc`: inside the ILEarglist instance there is a `@entity` that is
 an instance of `Fiddle::CStructEntity` with 3 attributes: `ptr`, `size`, `free`.
 
 These are the inspections on `ILEarguments.to_ptr` and `(ILEarguments.to_ptr + 32`)` respectively:
+
 ```
 #<Fiddle::CStructEntity:0x0000000182680bd0 ptr=0x0000000182680b90 size=48 free=0x0000000000000000>
 #<Fiddle::Pointer:0x0000000182680a70       ptr=0x0000000182680bb0 size=16 free=0x0000000000000000>
 ``` 
 
-The `+` method creates a new Fiddle::Pointer by advancing of 32 bytes over the CStructEntity (and properly setting the legitimate size remaining: 64 - 48 = 16).
+The `+` method creates a new Fiddle::Pointer by advancing of 32 bytes over the CStructEntity (and properly setting the legitimate remaining size: 64 - 48 = 16).
 
-The second argument of our setspp.call is still a Fiddle::Pointer. This time it is obtained from a generic Ruby string (the `cmd` variable). 
+The second argument of our `setspp.call` is still a Fiddle::Pointer. This time it is obtained from a generic Ruby string (the `cmd` variable). 
 
-If we emit the following two `inspect`: 
+If we emit the following `inspect` methods: 
+
 
 ```
 puts cmd.inspect                   
@@ -111,7 +113,19 @@ bash-4.4$ invoke_system_FFF4.rb 'DLTLIB LIB(ATTEMPT)'
 #<Fiddle::Pointer:0x0000000182683390 ptr=0x00000001826147f0 size=19 free=0x0000000000000000>
 ```
 
-Note that the size is determined from the attributes of the `cmd` String object.
+Note that the size is determined from the attributes of the `cmd` String object: the actual string is not moved around.
+
+We are now back to the original focus (the opening *operational descriptor* ILE pointer): as soon as there is apparently no qualifier for this ILE pointer field, which of the alternative handling is to be expected? Similar to ARG\_MEMPTR? Similar to ARG\_SPCPTR? We will first approach the ARG\_SPCPTR hypothesis.
+
+Sometimes generating errors is a good strategy for learning. 
+ 
+We mentioned the `#pragma descriptor` directive as a method to have the ILE C/C++ compiler take care of generating operational descriptors, but what about reading descriptors when passed by the caller? 
+
+IBM i provides an API **CEEDOD** that is implemented as a builtin (so cannot have its address taken or be called through a procedure pointer). 
+The objective of *CEEDOD* is to **Retrieve Operational Descriptor Information**.
+Let us experiment with a simple service program that will be developed *ad-hoc* for this need.
+The CEEDOD API retrieves operational descriptor information about a parameter (referenced by means of its ordinal position). Let us build a service program with a function receiving a single argument and prepare  *CEEDOD* on it.
+We will use such a tester to gather information on how operational descriptors are to be provided from PASE if such an option is actually supported.
 
 ----
 ### 10. to move around tagged pointers
@@ -285,7 +299,7 @@ ILE C `system` returns an integer but receives an ILE native pointer (that is a 
 We need to allocate a 16-byte aligned 16-byte chunk of memory prepared with the PASE address in the last 8 bytes.
 During the *\_ILECALLX* processing the PASE address in converted into a proper IBM i space pointer and finally the system call gets executed.
 
-All storage in the `private address space` of the running PASE/AIX process is shared with the current IBM i job: ILE APIs have access to it. Passing parameters to **_ILECALLX** is far from simple in a PASE C program but it is definitely complex in a dynamic style. Let us shed some light on the deatails.
+All storage in the `private address space` of the running PASE/AIX process is shared with the current IBM i job: ILE APIs have access to it. Passing parameters to **_ILECALLX** is far from simple in a PASE C program but it is definitely complex in a dynamic style. Let us shed some light on the details.
 
 First of all we have to prepare the template for *_ILECALLX* that **fiddle** will use. The C notation is:
 
