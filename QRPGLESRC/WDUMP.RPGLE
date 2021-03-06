@@ -1,6 +1,6 @@
      H COPYRIGHT('(C) Copyright Andrea Ribuoli 2021')
      D/COPY QTEMP/QRPGLESRC,WDUMP_H
-     D WDUMP           PI                    OPDESC
+     D WDUMP           PI                    
      D   InString                   100      CONST OPTIONS(*VARSIZE)
      D   OutString                  200      OPTIONS(*VARSIZE)
      D*
