@@ -127,6 +127,12 @@ Let us experiment with a simple service program that will be developed *ad-hoc* 
 The CEEDOD API retrieves operational descriptor information about a parameter (referenced by means of its ordinal position). Let us build a service program with a function receiving a single argument and prepare  *CEEDOD* on it.
 We will use such a tester to gather information on how operational descriptors are to be provided from PASE if such an option is actually supported.
 
+| Source file     | Source member                        |
+| --------------- |:------------------------------------:|
+| QRPGLESRC	     |   [WDUMP](QRPGLESRC/WDUMP.RPGLE)     |
+| QRPGLESRC	     |   [WDUMP_H](QRPGLESRC/WDUMP_H.RPGLE) |
+| QSRVSRC	        |   [RIBY_SRV](QSRVSRC/RIBY_SRV.RPGLE) |
+
 ```
 PASERIE/INSTALL GIT_USER(AndreaRibuoli) PACKAGEN(RIBY)         
 ```
