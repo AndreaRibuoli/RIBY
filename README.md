@@ -133,9 +133,46 @@ We will use such a tester to gather information on how operational descriptors a
 | QRPGLESRC	     |   [WDUMP_H](QRPGLESRC/WDUMP_H.RPGLE) |
 | QSRVSRC	        |   [RIBY_SRV](QSRVSRC/RIBY_SRV.BND) |
 
+The files can be installed automatically if you have **PASERIE** utility installed (
+`PASERIE/INSTALL GIT_USER(AndreaRibuoli) PACKAGEN(RIBY)`). 
+	Transferring and compiling manually is not complex (search in [build CL](QCLSRC/BUILD.CLLE))
+
 ```
-PASERIE/INSTALL GIT_USER(AndreaRibuoli) PACKAGEN(RIBY)         
+bash-4.4$ study_parameter_passing.rb 'Test WDUMP performing a simple copy'
+Prepared ILEarguments struct
+00000000000000000000000000000000
+00000000000000000000000000000000
+800000000000000000008016b2687670
+800000000000000000008016b2687cb0
+Prepared inBuffer: ["e385a2a340e6c4e4d4d74097859986969994899587408140a2899497938540839697a84040404040404040404040404040404040404040404040404040404040"]
+Returned ILEarguments struct
+00000000000000000000000000000000
+00000000000000000000000000000000
+800000000000000000008016b2687670
+800000000000000000008016b2687cb0
+Returned outBuffer: ["e385a2a340e6c4e4d4d74097859986969994899587408140a2899497938540839697a84040404040404040404040404040404040404040404040404040404040"]
 ```
+
+We performed a `DUMP(A)` statement inside the `WDUMP` function so we will find a spool file ending with:
+
+```
+NOME                  ATTRIBUTI            VALORE                                                                              
+_QRNL_PRMCPY_INSTRING POINTER              SPP:00008016B2687670                                                                
+_QRNL_PRMCPY_OUTSTRING...                                                                                                      
+                      POINTER              SPP:00008016B2687CB0                                                                
+_QRNL_PSTR_INSTRING   POINTER              SPP:00008016B2687670                                                                
+_QRNL_PSTR_OUTSTRING  POINTER              SPP:00008016B2687CB0                                                                
+INSTRING              CHAR(64)             'Test WDUMP performing a simple copy                             '                  
+                      VALUE IN HEX         'E385A2A340E6C4E4D4D74097859986969994899587408140A2899497938540839697A84040404040'X 
+                        41                 '404040404040404040404040404040404040404040404040'X                                 
+OUTSTRING             CHAR(64)             '                                                                '                  
+                      VALUE IN HEX         '00000000000000000000000000000000000000000000000000000000000000000000000000000000'X 
+                        41                 '000000000000000000000000000000000000000000000000'X                                 
+           * * * * *   F I N E   D E L   D U M P   R P G  * * * * *                                                            
+```
+
+This is a good start to experiment seaching for *Operator Descriptors* role. A new chapter will be needed.
+
 
 ----
 ### 10. to move around tagged pointers
