@@ -38,13 +38,5 @@ if rc == 1 then
   puts ILEarguments[16, 16].unpack("H*")
   puts ILEarguments[32, 16].unpack("H*")
   puts ILEarguments[48, 16].unpack("H*")
-  puts "Prepared inBuffer: #{inBuffer[0,64].unpack("H*")}"
-  rc = ilecallx.call(ILEfunction, ILEarguments, ['FFF4FFF40000'].pack("H*"), 0, 0)
-  raise "ILE system failed with rc=#{rc}" if rc != 0
-  puts "Returned ILEarguments struct"
-  puts ILEarguments[0, 16].unpack("H*")
-  puts ILEarguments[16, 16].unpack("H*")
-  puts ILEarguments[32, 16].unpack("H*")
-  puts ILEarguments[48, 16].unpack("H*")
   puts "Returned outBuffer: #{outBuffer[0,64].unpack("H*")}"
 end
