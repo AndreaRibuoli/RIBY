@@ -4,7 +4,7 @@ require 'fiddle/import'
 extend Fiddle::Importer
                                                                                                 
 raise "Usage: invoke_system.rb <cmd>" if ARGV.length != 1
-cmd  = ARGV[0].encode('IBM037')
+cmd  = ARGV[0].ljust(64, ' ').encode('IBM037')
 ILEpointer  = struct [ 'char b[16]' ]
 ILEarglist  = struct [ 'char c[64]' ]
 OperDesc    = struct [ 'char d[32]' ]
@@ -30,6 +30,15 @@ if rc == 1 then
   puts ILEarguments[16, 16].unpack("H*")
   puts ILEarguments[32, 16].unpack("H*")
   puts ILEarguments[48, 16].unpack("H*")
+  puts "Prepared inBuffer: #{inBuffer[0,64].unpack("H*")}"
+  rc = ilecallx.call(ILEfunction, ILEarguments, ['FFF4FFF40000'].pack("H*"), 0, 0)
+  raise "ILE system failed with rc=#{rc}" if rc != 0
+  puts "Returned ILEarguments struct"
+  puts ILEarguments[0, 16].unpack("H*")
+  puts ILEarguments[16, 16].unpack("H*")
+  puts ILEarguments[32, 16].unpack("H*")
+  puts ILEarguments[48, 16].unpack("H*")
+  puts "Prepared inBuffer: #{inBuffer[0,64].unpack("H*")}"
   rc = ilecallx.call(ILEfunction, ILEarguments, ['FFF4FFF40000'].pack("H*"), 0, 0)
   raise "ILE system failed with rc=#{rc}" if rc != 0
   puts "Returned ILEarguments struct"
