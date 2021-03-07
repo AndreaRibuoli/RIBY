@@ -121,21 +121,23 @@ Sometimes generating errors is a good strategy for learning.
  
 We mentioned the `#pragma descriptor` directive as a method to have the ILE C/C++ compiler take care of generating operational descriptors, but what about reading descriptors when passed by the caller? 
 
-IBM i provides an API **CEEDOD** that is implemented as a builtin (so cannot have its address taken or be called through a procedure pointer). 
+IBM i provides an API (**CEEDOD**) that is implemented as a builtin (so cannot have its address taken or be called through a procedure pointer). 
 The objective of *CEEDOD* is to **Retrieve Operational Descriptor Information**.
 Let us experiment with a simple service program that will be developed *ad-hoc* for this need.
-The CEEDOD API retrieves operational descriptor information about a parameter (referenced by means of its ordinal position). Let us build a service program with a function receiving a single argument and prepare  *CEEDOD* on it.
-We will use such a tester to gather information on how operational descriptors are to be provided from PASE if such an option is actually supported.
+The CEEDOD API retrieves operational descriptor information about a parameter (referenced by means of its ordinal position). 
+Let us build a service program with a function receiving a two arguments (strings). 
+The function will copy the first onto the second.
+We will use such a tester making it evolve in order to gather information on how operational descriptors are to be provided from PASE (if such an option is actually viable).
 
-| Source file     | Source member                        |
-| --------------- |:------------------------------------:|
+| Source file        | Source member                        |
+| ------------------ |:------------------------------------:|
 | QRPGLESRC	     |   [WDUMP](QRPGLESRC/WDUMP.RPGLE)     |
 | QRPGLESRC	     |   [WDUMP_H](QRPGLESRC/WDUMP_H.RPGLE) |
-| QSRVSRC	        |   [RIBY_SRV](QSRVSRC/RIBY_SRV.BND) |
+| QSRVSRC	     |   [RIBY_SRV](QSRVSRC/RIBY_SRV.BND)   |
 
-The files can be installed automatically if you have **PASERIE** utility installed (
+These files can be installed automatically if you have **PASERIE** utility installed (by means of
 `PASERIE/INSTALL GIT_USER(AndreaRibuoli) PACKAGEN(RIBY)`). 
-	Transferring and compiling manually is not complex (have a look at [build CL](QCLSRC/BUILD.CLLE))
+Transferring and compiling manually is not complex at all (have a look at [build CL](QCLSRC/BUILD.CLLE) just in case).
 
 ```
 bash-4.4$ study_parameter_passing.rb 'Test WDUMP performing a simple copy'
@@ -172,7 +174,6 @@ OUTSTRING             CHAR(64)             '                                    
 ```
 
 This is a good start to experiment seaching for *Operator Descriptors* role. A new chapter is needed.
-
 
 ----
 ### 10. to move around tagged pointers
