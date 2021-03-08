@@ -13,14 +13,14 @@
      D                               10I 0
      D                               12A   OPTIONS(*OMIT)
      D*
-     D Desc_t          S             10I 0
-     D Data_t          S             10I 0
-     D DescI1          S             10I 0
-     D DescI2          S             10I 0
-     D InLen           S             10I 0
+     D DescT           S             10I 0
+     D DataT           S             10I 0
+     D DesI1           S             10I 0
+     D DesI2           S             10I 0
+     D ILn             S             10I 0
+     D ErrCd           S             12A
      D*
      C                   DUMP(A)
-     C                   CALLP     CEEDOD(1:Desc_t:Data_t:DescI1:DescI2:Inlen:
-     C                                    *OMIT)
+     C                   CALLP     CEEDOD(1:DescT:DataT:DesI1:DesI2:ILn:ErrCd)
      C                   EVAL      OutString = InString
      C                   RETURN
