@@ -36,7 +36,7 @@ Let's go!
 ----
 ### 12. to investigate parameter passing again
 
-We have our working service program. And we are able add an operational descriptor ILE pointer and test what happens if we pass it (allocating a zeroed 1024 buffer):
+We have our working service program. And we are able now ready to add an operational descriptor ILE pointer and test what happens if we pass it (allocating a zeroed 1024 buffer):
 
 ```
 OperDesc    = struct [ 'char d[1024]' ] 
@@ -86,14 +86,53 @@ What if we create an RPG ILE that is Operational Descriptors aware by using [`OP
 ```
 
 Regardless of what we pass as Operational Descriptor nothing changes. 
-But we are now authorized to query operationa descritpors with 
-```
+
+But we are authorized to query operational descriptors. So let us change our useless logic.
+
+Now our RPG ILE source will leverage: 
+
+* `CEEDOD` API to gain extra info on the first argument and 
+* `CEEMGET` API to report back the error (presumably) received.
 
 ```
-CEEDOD problem
-
-CEE0502 indicates that the descriptor was not passed. 
+     D CEEDOD          PR
+     D ParmNum                       10I 0   CONST
+     D                               10I 0
+     D                               10I 0
+     D                               10I 0
+     D                               10I 0
+     D                               10I 0
+     D                               12A   OPTIONS(*OMIT)
+     D*
+     D CEEMGET         PR                    OPDESC
+     D   CondToken                   12A     CONST
+     D   MessageArea                 64A     VARYING
+     D   MessagePtr                  10I 0
+     D                               12A   OPTIONS(*OMIT)
+     D*
+     D DescT           S             10I 0
+     D DataT           S             10I 0
+     D DesI1           S             10I 0
+     D DesI2           S             10I 0
+     D ILn             S             10I 0
+     D ErrCd           S             12A
+     D m_ptr           S             10I 0
+     D msg             S             64A     VARYING
+     D*
+     C*                  DUMP(A)
+     C                   CALLP     CEEDOD(1:DescT:DataT:DesI1:DesI2:ILn:ErrCd)
+     C                   CALLP     CEEMGET(ErrCd:msg:m_ptr:*OMIT)
+     C                   EVAL      OutString = msg
+     C                   RETURN
 ```
+
+``` ruby
+puts "Result: #{outBuffer[0,64].force_encoding('IBM037').encode('utf-8')}" 
+```
+
+We receive back the CEE0502 message: *'Result: Missing operational descriptor'*.
+
+We are still groping in the dark!
 
 ----
 ### 11. to investigate parameter passing
