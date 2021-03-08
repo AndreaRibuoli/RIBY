@@ -132,7 +132,7 @@ puts "Result: #{outBuffer[0,64].force_encoding('IBM037').encode('utf-8')}"
 
 We receive back the CEE0502 message: *'Result: Missing operational descriptor'*.
 
-We are still groping in the dark!
+We are still groping in the dark! But we now have a tool to test if we could ever pass information from Ruby (PASE) describing parameters the IBM i way. 
 
 ----
 ### 11. to investigate parameter passing
