@@ -22,5 +22,5 @@
      D*
      C                   DUMP(A)
      C                   CALLP     CEEDOD(1:DescT:DataT:DesI1:DesI2:ILn:ErrCd)
-     C                   EVAL      OutString = InString
+     C                   EVAL      OutString = ErrCd
      C                   RETURN
