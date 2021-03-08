@@ -134,6 +134,20 @@ We receive back the CEE0502 message: *'Result: Missing operational descriptor'*.
 
 We are still groping in the dark! But we now have a tool to test if we could ever pass information from Ruby (PASE) describing parameters the IBM i way. 
 
+Curiously the topic of *operational descriptors* although appearing fundamental for the IBM i architecture has not been treated by Frank Soltis in his books. Why? I think I have found an answer.
+
+It is possible that this **secret** is such because it is **shared**. Shared with the mainframe IBM platforms.
+In the z/OS *Language Environment Runtime Messages* we can read about a message that sounds familiar:
+
+**CEE0502S** The operational descriptor for the argument list was missing in routine *routine\-name*.
+
+The document provides an astonishing explanation:
+
+*The high order bit of register 1 was off or the constant **X'81C3C501'** was missing from the storage location immediately preceding the argument list.*
+
+In 1822 egyptologist Jean François Champollion was able to decipher the ancient Egyptian hieroglyphs.
+Next year will be **2022**: let us hope do understand how to make Operational Descriptors usable from PASE (and Ruby) before the end of next year!
+
 ----
 ### 11. to investigate parameter passing
 
