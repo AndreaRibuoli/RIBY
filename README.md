@@ -85,6 +85,16 @@ What if we create an RPG ILE that is Operational Descriptors aware by using [`OP
      C                   RETURN
 ```
 
+Regardless of what we pass as Operational Descriptor nothing changes. 
+But we are now authorized to query operationa descritpors with 
+```
+
+```
+CEEDOD problem
+
+CEE0502 indicates that the descriptor was not passed. 
+```
+
 ----
 ### 11. to investigate parameter passing
 
