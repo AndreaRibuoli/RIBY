@@ -1,4 +1,5 @@
 StrPgmExp Signature('RIBY_SRV')
    Export Symbol('WDUMP')
+   Export Symbol('WDUMP2')
    Export Symbol('WDUMP_OP')
 EndPgmExp

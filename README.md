@@ -31,6 +31,59 @@ Let's go!
 9. [to gather information on space pointers from PASE](#9-to-gather-information-on-space-pointers-from-pase)
 10. [to move around tagged pointers](#10-to-move-around-tagged-pointers)
 11. [to investigate parameter passing](#11-to-investigate-parameter-passing)
+12. [to investigate parameter passing again](#12-to-investigate-parameter-passing-again)
+
+----
+### 12. to investigate parameter passing again
+
+We have our working service program. And we are able add an operational descriptor ILE pointer and test what happens if we pass it (allocating a zeroed 1024 buffer):
+
+```
+OperDesc    = struct [ 'char d[1024]' ] 
+. . .
+od = OperDesc.malloc                
+. . .
+setspp.call(ILEarguments.to_ptr, od)
+```
+
+```
+bash-4.4$ study_parameter_passing.rb 'prova'
+Prepared ILEarguments struct
+800000000000000000008016b2688d90
+00000000000000000000000000000000
+800000000000000000008016b2688930
+800000000000000000008016b2689790
+Prepared inBuffer: ["979996a5814040404040404040404040404040404040404040404040404040404040404040404040404040404040404040404040404040404040404040404040"]
+Returned ILEarguments struct
+800000000000000000008016b2688d90
+00000000000000000000000000000000
+800000000000000000008016b2688930
+800000000000000000008016b2689790
+Returned outBuffer: ["979996a5814040404040404040404040404040404040404040404040404040404040404040404040404040404040404040404040404040404040404040404040"]
+bash-4.4$ 
+```
+
+The RPG `DUMP(A)` does not show any difference confirming us the hidden nature of Operational Descriptors.
+
+What if we create an RPG ILE that is Operational Descriptors aware by using [`OPDESC`](https://www.ibm.com/support/knowledgecenter/en/ssw_ibm_i_74/rzasd/dopdesc.htm) keyword?
+
+```
+     D WDUMP2_H        PR                    OPDESC
+     D   InString                    64      CONST OPTIONS(*VARSIZE)
+     D   OutString                   64      OPTIONS(*VARSIZE)
+```
+
+```
+     H COPYRIGHT('(C) Copyright Andrea Ribuoli 2021')
+     D/COPY QTEMP/QRPGLESRC,WDUMP2_H
+     D WDUMP2          PI                    OPDESC
+     D   InString                    64      CONST OPTIONS(*VARSIZE)
+     D   OutString                   64      OPTIONS(*VARSIZE)
+     D*
+     C                   DUMP(A)
+     C                   EVAL      OutString = InString
+     C                   RETURN
+```
 
 ----
 ### 11. to investigate parameter passing
