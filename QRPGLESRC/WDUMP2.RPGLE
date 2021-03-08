@@ -5,12 +5,18 @@
      D   OutString                   64      OPTIONS(*VARSIZE)
      D*
      D CEEDOD          PR
-     D ParmNum                       10I 0 CONST
+     D ParmNum                       10I 0   CONST
      D                               10I 0
      D                               10I 0
      D                               10I 0
      D                               10I 0
      D                               10I 0
+     D                               12A   OPTIONS(*OMIT)
+     D*
+     D CEEMGET         PR                    OPDESC
+     D   CondToken                   12A     CONST
+     D   MessageArea                 64A     VARYING
+     D   MessagePtr                  10I 0
      D                               12A   OPTIONS(*OMIT)
      D*
      D DescT           S             10I 0
@@ -19,8 +25,10 @@
      D DesI2           S             10I 0
      D ILn             S             10I 0
      D ErrCd           S             12A
+     D m_ptr           S             10I 0
      D*
-     C                   DUMP(A)
+     C*                  DUMP(A)
      C                   CALLP     CEEDOD(1:DescT:DataT:DesI1:DesI2:ILn:ErrCd)
-     C                   EVAL      OutString = ErrCd
+     C                   CALLP     CEEMGET(ErrCd:OutString:m_ptr:*OMIT)
+     C                   EVAL      OutString = OutString
      C                   RETURN
