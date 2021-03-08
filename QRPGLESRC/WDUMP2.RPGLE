@@ -20,7 +20,6 @@
      D InLen           S             10I 0
      D*
      C                   DUMP(A)
-     C                   CALLP     CEEDOD(1 : Desc_t : Data_t :
-                                          DescI1 : DescI2 : Inlen : *OMIT)
+     C    CALLP CEEDOD(1 : Desc_t : Data_t : DescI1 : DescI2 : Inlen : *OMIT)
      C                   EVAL      OutString = InString
      C                   RETURN
