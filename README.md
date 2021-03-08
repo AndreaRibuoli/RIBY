@@ -36,7 +36,7 @@ Let's go!
 ----
 ### 12. to investigate parameter passing again
 
-We have our working service program. And we are able now ready to add an operational descriptor ILE pointer and test what happens if we pass it (allocating a zeroed 1024 buffer):
+We have our working service program. And we are ready to add an operational descriptor ILE pointer and test what happens if we pass it (allocating a zeroed 1024 buffer):
 
 ```
 OperDesc    = struct [ 'char d[1024]' ] 
