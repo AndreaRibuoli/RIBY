@@ -4,6 +4,7 @@
      D   InString                   100      CONST OPTIONS(*VARSIZE)
      D   OutString                  200      OPTIONS(*VARSIZE)
      D*
+     D CEEDOD          PR
      D ParmNum                       10I 0 CONST
      D                               10I 0
      D                               10I 0
