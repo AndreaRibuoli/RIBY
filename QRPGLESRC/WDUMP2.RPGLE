@@ -26,7 +26,7 @@
      D ILn             S             10I 0
      D ErrCd           S             12A
      D m_ptr           S             10I 0
-     D msg             S             64A
+     D msg             S             64A     VARYING
      D*
      C*                  DUMP(A)
      C                   CALLP     CEEDOD(1:DescT:DataT:DesI1:DesI2:ILn:ErrCd)
