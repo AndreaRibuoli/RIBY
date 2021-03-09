@@ -5,7 +5,7 @@ extend Fiddle::Importer
                                                                                                 
 # raise "Usage: playing_with_user_spaces.rb <cmd>" if ARGV.length != 1
 # cmd  = ARGV[0]
-cmd = Fiddle::Pointer["CALL PGM(QUSCRTUS) PARM('MYSPACE   RIBY      ' 'USRSPC    ' 1525 ' ' '*ALL      ' 'My User Space')".encode('IBM037')
+cmd = "CALL PGM(QUSCRTUS) PARM('MYSPACE   RIBY      ' 'USRSPC    ' 1525 ' ' '*ALL      ' 'My User Space')".encode('IBM037')
 
 ILEpointer  = struct [ 'char b[16]' ]
 ILEarglist  = struct [ 'char c[48]' ]
