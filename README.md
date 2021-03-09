@@ -32,6 +32,34 @@ Let's go!
 10. [to move around tagged pointers](#10-to-move-around-tagged-pointers)
 11. [to investigate parameter passing](#11-to-investigate-parameter-passing)
 12. [to investigate parameter passing again](#12-to-investigate-parameter-passing-again)
+13. [to review the lesson on objects](#13-to-review-the-lesson-on-objects)
+
+----
+### 13. to review the lesson on objects
+
+ *The reason we put objects into the S/38 in the first place was to keep the system details contained so they could later be changed without affecting user application programs.* (FORTRESS ROCHESTER, page 114)
+ 
+The core part of [the Ruby script](resolve.rb) we introduce today is the following:
+
+``` ruby
+ILEpointer  = struct [ 'char a[16]' ]
+preload    = Fiddle.dlopen(nil)
+rslobj2    = Fiddle::Function.new( preload['_RSLOBJ2'],
+             [Fiddle::TYPE_VOIDP, Fiddle::TYPE_SHORT, Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP],
+             Fiddle::TYPE_INT )
+ILEobject = ILEpointer.malloc
+rc = rslobj2.call(ILEobject, type, obj, lib)
+```
+
+The [`_RSLOBJ2`](https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_74/apis/pase__rslobj.htm) resolve to an IBM i object from PASE returing a *system pointer*:
+
+```
+bash-4.4$ resolve.rb QSYS QLEAWI 515
+Object QSYS/QLEAWI of type 0x0203 resolved to ["000000000000000008cfb86754000200"]
+```
+
+ *A space pointer looks very much like a system pointer. It's 16 bytes long and contain an address. The difference is that the address in a space pointer points to a byte somewhere **in the space portion** of a system object*
+ 
 
 ----
 ### 12. to investigate parameter passing again
