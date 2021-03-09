@@ -7,12 +7,12 @@ extend Fiddle::Importer
 # cmd  = ARGV[0]
 name = 'MYSPACE'
 lib  = 'RIBY'
-Qualified_user_space_name = "#{name.rjust(10, ' ')}#{lib.rjust(10, ' ')}"
-Extended_attribute        = 'USRSPC'.rjust(10, ' ')
+Qualified_user_space_name = "#{name.ljust(10, ' ')}#{lib.ljust(10, ' ')}"
+Extended_attribute        = 'USRSPC'.ljust(10, ' ')
 Initial_size              = 2048
 Initial_value             = ' '
-Public_authority          = '*ALL'.rjust(10, ' ')
-Text_description          = 'My user space'.rjust(50, ' ')
+Public_authority          = '*ALL'.ljust(10, ' ')
+Text_description          = 'My user space'.ljust(50, ' ')
 
 cmd = "CALL PGM(QUSCRTUS) PARM('#{Qualified_user_space_name}' '#{Extended_attribute}' #{Initial_size} '#{Initial_value}' '#{Public_authority}' '#{Text_description}')".encode('IBM037')
 
