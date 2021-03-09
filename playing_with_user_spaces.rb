@@ -10,11 +10,11 @@ lib  = 'RIBY'
 Qualified_user_space_name = "#{name.rjust(10, ' ')}#{lib.rjust(10, ' ')}"
 Extended_attribute        = 'USRSPC'.rjust(10, ' ')
 Initial_size              = 2048
-Initial value             = ' '
+Initial_value             = ' '
 Public_authority          = '*ALL'.rjust(10, ' ')
 Text_description          = 'My user space'.rjust(50, ' ')
 
-cmd = "CALL PGM(QUSCRTUS) PARM('#{Qualified_user_space_name}' '#{Extended_attribute}' #{Initial_size} '#{Initial value}' '#{Public_authority}' '#{Text_description}')".encode('IBM037')
+cmd = "CALL PGM(QUSCRTUS) PARM('#{Qualified_user_space_name}' '#{Extended_attribute}' #{Initial_size} '#{Initial_value}' '#{Public_authority}' '#{Text_description}')".encode('IBM037')
 
 ILEpointer  = struct [ 'char b[16]' ]
 ILEarglist  = struct [ 'char c[48]' ]
