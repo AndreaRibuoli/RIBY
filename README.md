@@ -146,7 +146,7 @@ The document provides an astonishing explanation:
 *The high order bit of register 1 was off or the constant **X'81C3C501'** was missing from the storage location immediately preceding the argument list.*
 
 In 1822 egyptologist Jean François Champollion was able to decipher the ancient Egyptian hieroglyphs.
-Next year will be **2022**: let us hope do understand how to make Operational Descriptors usable from PASE (and Ruby) before the end of next year!
+Next year will be **2022**: let us hope to understand how to make Operational Descriptors usable from PASE (and Ruby) before the end of next year!
 
 ----
 ### 11. to investigate parameter passing
