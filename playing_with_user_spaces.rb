@@ -6,7 +6,7 @@ extend Fiddle::Importer
 # raise "Usage: playing_with_user_spaces.rb <cmd>" if ARGV.length != 1
 # cmd  = ARGV[0]
 name = 'MYSPACE'
-lib  = 'QTEMP'
+lib  = 'RIBY'
 Qualified_user_space_name = "#{name.ljust(10, ' ')}#{lib.ljust(10, ' ')}"
 Extended_attribute        = 'USRSPC'.ljust(10, ' ')
 Initial_size              = 2048
@@ -14,22 +14,12 @@ Initial_value             = ' '
 Public_authority          = '*ALL'.ljust(10, ' ')
 Text_description          = 'My user space'.ljust(50, ' ')
 
-cmd = "CALL PGM(QUSCRTUS) PARM('#{Qualified_user_space_name}' '#{Extended_attribute}' #{Initial_size} '#{Initial_value}' '#{Public_authority}' '#{Text_description}')".encode('IBM037')
 
 ILEpointer  = struct [ 'char b[16]' ]
-ILEarglist  = struct [ 'char c[48]' ]
 preload    = Fiddle.dlopen(nil)
-ileloadx   = Fiddle::Function.new( preload['_ILELOADX'], [Fiddle::TYPE_VOIDP, Fiddle::TYPE_INT], Fiddle::TYPE_LONG_LONG )
-ilesymx    = Fiddle::Function.new( preload['_ILESYMX'], [Fiddle::TYPE_VOIDP, Fiddle::TYPE_LONG_LONG, Fiddle::TYPE_VOIDP], Fiddle::TYPE_INT )
-ilecallx   = Fiddle::Function.new( preload['_ILECALLX'], [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_SHORT, Fiddle::TYPE_INT], Fiddle::TYPE_INT )
-setspp     = Fiddle::Function.new( preload['_SETSPP'], [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP], Fiddle::TYPE_VOID )
+rslobj2    = Fiddle::Function.new( preload['_RSLOBJ2'], [Fiddle::TYPE_VOIDP, Fiddle::TYPE_SHORT, Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP], Fiddle::TYPE_INT )
+pgmcall    = Fiddle::Function.new( preload['_SETSPP'], [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP], Fiddle::TYPE_VOID )
 
-ILEfunction  = ILEpointer.malloc
-rc = ilesymx.call(ILEfunction, ileloadx.call('QSYS/QC2SYS', 1), 'system')
-if rc == 1 then
-  ILEarguments = ILEarglist.malloc
-  ILEarguments[0, 32] = ['0'.rjust(64,'0')].pack("H*")
-  setspp.call(ILEarguments.to_ptr + 32, Fiddle::Pointer[cmd])
-  rc = ilecallx.call(ILEfunction, ILEarguments, ['FFF40000'].pack("H*"), 0, 0)
-  raise "ILE system failed with rc=#{rc}" if rc != 0
-end
+pQUSCRTUS  = ILEpointer.malloc
+rc = rslobj2.call(pQUSCRTUS, 513, "QUSCRTUS", "QSYS")
+puts rc
