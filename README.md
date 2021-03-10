@@ -65,8 +65,8 @@ As always, the ability to actually call the program is provided by an IBM i PASE
 Suited for the task is [`_PGMCALL`](https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_74/apis/pase__pgmcall.htm).
 
 In a previous chapter we executed native commands through ILE C `system` call but `_PGMCALL` offers us total control on arguments that are required to be ILE pointers.
-We will use this new approach to create a USER SPACE object (where `system` would have been suited too) and then to   
-receive a **space pointer** through a call to *Retrieve Pointer to User Space* [`QUSPTRUS`](https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_74/apis/qusptrus.htm) API: this would have been not possible with the simpler `system` call approach. 
+We will use this new approach to create a USER SPACE object (where `system` would have been suited too) and then 
+to receive a **space pointer** through a call to *Retrieve Pointer to User Space* [`QUSPTRUS`](https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_74/apis/qusptrus.htm) API: this would have not been possible with the simpler `system` call approach. 
  
 Frank Soltis on space pointers:
  
