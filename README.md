@@ -72,8 +72,14 @@ Frank Soltis on space pointers:
  
  *A space pointer looks very much like a system pointer. It's 16 bytes long and contain an address. The difference is that the address in a space pointer points to a byte somewhere **in the space portion** of a system object* 
    
-The [Ruby script](playing_with_user_spaces.rb) will be the base for many future scripts: right now we simply print the space pointer address we are returned. 
+The [Ruby script](playing_with_user_spaces.rb) will be the base for many future scripts: right now we simply print the space pointer address we are returned from `QUSPTRUS`. 
+Then we extract the system pointer address to the USER SPACE itself.
 
+```
+bash-4.4$ playing_with_user_spaces.rb
+80000000000000000494c11c6b001000
+00000000000000000494c11c6b001900
+```
 ----
 ### 12. to investigate parameter passing again
 
