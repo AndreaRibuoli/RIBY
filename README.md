@@ -56,11 +56,22 @@ The [`_RSLOBJ2`](https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_74/apis/p
 ```
 bash-4.4$ resolve.rb QSYS QLEAWI 515
 Object QSYS/QLEAWI of type 0x0203 resolved to ["000000000000000008cfb86754000200"]
+bash-4.4$ resolve.rb QSYS QUSCRTUS 513
+Object QSYS/QUSCRTUS of type 0x0201 resolved to ["000700000000000016ddf500bf000200"]
 ```
 
- *A space pointer looks very much like a system pointer. It's 16 bytes long and contain an address. The difference is that the address in a space pointer points to a byte somewhere **in the space portion** of a system object*
- 
+By resolving a system pointer for a PROGRAM OBJECT (type 0x0201) we gain the opportunity to execute it. 
+As always, the ability to actually call the program is provided by an IBM i PASE **libc.a** function. 
+Suited for the task is [`_PGMCALL`](https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_74/apis/pase__pgmcall.htm).
 
+In a previous chapter we executed native commands through ILE C `system` call but `_PGMCALL` offers us total control on arguments that are required to be ILE pointers.
+We will use this new approach to create a USER SPACE object (where `system` would have been suited too) and then to   
+receive a **space pointer** through a call to *Retrieve Pointer to User Space* [`QUSPTRUS`](https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_74/apis/qusptrus.htm) API: this would have been not possible with the simpler `system` call approach. 
+ 
+Frank Soltis on space pointers:
+ 
+ *A space pointer looks very much like a system pointer. It's 16 bytes long and contain an address. The difference is that the address in a space pointer points to a byte somewhere **in the space portion** of a system object* 
+   
 ----
 ### 12. to investigate parameter passing again
 

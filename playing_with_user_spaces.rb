@@ -6,7 +6,7 @@ extend Fiddle::Importer
 # raise "Usage: playing_with_user_spaces.rb <cmd>" if ARGV.length != 1
 # cmd  = ARGV[0]
 name = 'MYSPACE'
-lib  = 'RIBY'
+lib  = 'QTEMP'
 Qualified_user_space_name = "#{name.ljust(10, ' ')}#{lib.ljust(10, ' ')}"
 Extended_attribute        = 'USRSPC'.ljust(10, ' ')
 Initial_size              = 2048
