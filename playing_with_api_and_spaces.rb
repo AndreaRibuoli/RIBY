@@ -21,6 +21,7 @@ Qualified_service_program_name = "#{name.ljust(10, ' ')}#{lib.ljust(10, ' ')}".e
 
 ILEparms    = struct [ 'char a[56]' ]
 ILEpointer  = struct [ 'char b[16]' ]
+ILEerror    = struct [ 'char e[12]' ]
 ILEbuffer   = struct [ 'char b[256]' ]
 preload    = Fiddle.dlopen(nil)
 rslobj2    = Fiddle::Function.new( preload['_RSLOBJ2'], [Fiddle::TYPE_VOIDP, Fiddle::TYPE_SHORT, Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP], Fiddle::TYPE_INT )
@@ -34,6 +35,7 @@ pQUSRTVUS  = ILEpointer.malloc
 rc = rslobj2.call(pQUSRTVUS, 513, "QUSRTVUS", "QSYS")
 pQBNLSPGM  = ILEpointer.malloc
 rc = rslobj2.call(pQBNLSPGM, 513, "QBNLSPGM", "QSYS")
+puts pQBNLSPGM[0, 16].unpack("H*")
 
 argv = ILEparms.malloc
 argv[ 0, 8] = [Fiddle::Pointer[Qualified_user_space_name].to_i.to_s(16).rjust(16,'0')].pack("H*")
@@ -55,9 +57,12 @@ pSysPointer  = ILEpointer.malloc
 rc = rslobj2.call(pSysPointer, 6452, name, lib)
 puts pSysPointer[0,16].unpack("H*") if rc == 0
 #
+pError = ILEerror.malloc
+argv[ 0, 8] = [Fiddle::Pointer[Qualified_user_space_name].to_i.to_s(16).rjust(16,'0')].pack("H*")
 argv[ 8, 8] = [Fiddle::Pointer[Format_name].to_i.to_s(16).rjust(16,'0')].pack("H*")
 argv[16, 8] = [Fiddle::Pointer[Qualified_service_program_name].to_i.to_s(16).rjust(16,'0')].pack("H*")
-argv[24, 8] = ['0'.rjust(16,'0')].pack("H*")
+argv[24, 8] = [pError.to_i.to_s(16).rjust(16,'0')].pack("H*")
+argv[32, 8] = ['0'.rjust(16,'0')].pack("H*")
 rc = pgmcall.call(pQBNLSPGM, argv, 0)
 puts pMySpace[0,16].unpack("H*") if rc == 0
 
