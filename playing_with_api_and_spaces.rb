@@ -74,7 +74,10 @@ argv[24, 8] = [buffer.to_i.to_s(16).rjust(16,'0')].pack("H*")
 argv[32, 8] = ['0'.rjust(16,'0')].pack("H*")
 rc = pgmcall.call(pQUSRTVUS, argv, 0)
 off = buffer[124,4].unpack("H*")[0].to_i(16)
-puts buffer[off,56].unpack("H*")[0]
-puts buffer[off+56,56].unpack("H*")[0]
+len = buffer[off,4].unpack("H*")[0].to_i(16)
+puts buffer[off,len].unpack("H*")[0]
+off = off+len
+len = buffer[off,4].unpack("H*")[0].to_i(16)
+puts buffer[off,len].unpack("H*")[0]
 
 
