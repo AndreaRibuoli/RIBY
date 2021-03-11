@@ -22,7 +22,7 @@ Qualified_service_program_name = "#{name.ljust(10, ' ')}#{lib.ljust(10, ' ')}".e
 ILEparms    = struct [ 'char a[56]' ]
 ILEpointer  = struct [ 'char b[16]' ]
 ILEerror    = struct [ 'char e[12]' ]
-ILEbuffer   = struct [ 'char b[256]' ]
+ILEbuffer   = struct [ 'char b[1024]' ]
 preload    = Fiddle.dlopen(nil)
 rslobj2    = Fiddle::Function.new( preload['_RSLOBJ2'], [Fiddle::TYPE_VOIDP, Fiddle::TYPE_SHORT, Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP], Fiddle::TYPE_INT )
 pgmcall    = Fiddle::Function.new( preload['_PGMCALL'], [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_INT], Fiddle::TYPE_INT )
@@ -73,6 +73,6 @@ argv[16, 8] = [Fiddle::Pointer[Length_of_data].to_i.to_s(16).rjust(16,'0')].pack
 argv[24, 8] = [buffer.to_i.to_s(16).rjust(16,'0')].pack("H*")
 argv[32, 8] = ['0'.rjust(16,'0')].pack("H*")
 rc = pgmcall.call(pQUSRTVUS, argv, 0)
-puts buffer[64,256].force_encoding('IBM037').encode('utf-8') if rc == 0
+puts buffer[64,512].force_encoding('IBM037').encode('utf-8') if rc == 0
 
 
