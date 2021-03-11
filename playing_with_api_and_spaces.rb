@@ -15,7 +15,7 @@ Initial_value                  = '1'.encode('IBM037')
 Public_authority               = '*ALL'.ljust(10, ' ').encode('IBM037')
 Text_description               = 'My user space'.ljust(50, ' ').encode('IBM037')
 Starting_position              = ['00000001'].pack("H*")
-Length_of_data                 = ['00000100'].pack("H*")
+Length_of_data                 = ['00000400'].pack("H*")
 Format_name                    = 'SPGL0610'.encode('IBM037')
 Qualified_service_program_name = "#{name.ljust(10, ' ')}#{lib.ljust(10, ' ')}".encode('IBM037')
 
