@@ -11,9 +11,12 @@ Initial_size              = ['00001000'].pack("H*")
 Initial_value             = ' '.encode('IBM037')
 Public_authority          = '*ALL'.ljust(10, ' ').encode('IBM037')
 Text_description          = 'My user space'.ljust(50, ' ').encode('IBM037')
+Starting_position         = ['00000001'].pack("H*")
+Length_of_data            = ['00000100'].pack("H*")
 
 ILEparms    = struct [ 'char a[56]' ]
 ILEpointer  = struct [ 'char b[16]' ]
+ILEbuffer   = struct [ 'char b[256]' ]
 preload    = Fiddle.dlopen(nil)
 rslobj2    = Fiddle::Function.new( preload['_RSLOBJ2'], [Fiddle::TYPE_VOIDP, Fiddle::TYPE_SHORT, Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP], Fiddle::TYPE_INT )
 pgmcall    = Fiddle::Function.new( preload['_PGMCALL'], [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_INT], Fiddle::TYPE_INT )
@@ -22,6 +25,8 @@ pQUSCRTUS  = ILEpointer.malloc
 rc = rslobj2.call(pQUSCRTUS, 513, "QUSCRTUS", "QSYS")
 pQUSPTRUS  = ILEpointer.malloc
 rc = rslobj2.call(pQUSPTRUS, 513, "QUSPTRUS", "QSYS")
+pQUSRTVUS  = ILEpointer.malloc
+rc = rslobj2.call(pQUSRTVUS, 513, "QUSRTVUS", "QSYS")
 
 argv = ILEparms.malloc
 argv[ 0, 8] = [Fiddle::Pointer[Qualified_user_space_name].to_i.to_s(16).rjust(16,'0')].pack("H*")
@@ -42,3 +47,12 @@ puts pMySpace[0,16].unpack("H*") if rc == 0
 pSysPointer  = ILEpointer.malloc
 rc = rslobj2.call(pSysPointer, 6452, name, lib)
 puts pSysPointer[0,16].unpack("H*") if rc == 0
+#
+buffer = ILEbuffer.malloc
+argv[ 8, 8] = [Fiddle::Pointer[Starting_position].to_i.to_s(16).rjust(16,'0')].pack("H*")
+argv[16, 8] = [Fiddle::Pointer[Length_of_data].to_i.to_s(16).rjust(16,'0')].pack("H*")
+argv[24, 8] = [buffer.to_i.to_s(16).rjust(16,'0')].pack("H*")
+argv[32, 8] = ['0'.rjust(16,'0')].pack("H*")
+rc = pgmcall.call(pQUSRTVUS, argv, 0)
+puts buffer[0,256].unpack("H*") if rc == 0
+
