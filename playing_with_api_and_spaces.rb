@@ -75,9 +75,11 @@ argv[32, 8] = ['0'.rjust(16,'0')].pack("H*")
 rc = pgmcall.call(pQUSRTVUS, argv, 0)
 off = buffer[124,4].unpack("H*")[0].to_i(16)
 len = buffer[off,4].unpack("H*")[0].to_i(16)
+puts buffer[off+4,20].force_encoding('IBM037').encode('utf-8')
 puts buffer[off+4,len-4].unpack("H*")[0]
 off = off+len
 len = buffer[off,4].unpack("H*")[0].to_i(16)
+puts buffer[off+4,20].force_encoding('IBM037').encode('utf-8')
 puts buffer[off+4,len-4].unpack("H*")[0]
 
 
