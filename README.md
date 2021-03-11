@@ -72,14 +72,30 @@ Frank Soltis on space pointers:
  
  *A space pointer looks very much like a system pointer. It's 16 bytes long and contain an address. The difference is that the address in a space pointer points to a byte somewhere **in the space portion** of a system object* 
    
-The [Ruby script](playing_with_user_spaces.rb) will be the base for many future scripts: right now we simply print the space pointer address we are returned from `QUSPTRUS`. 
-Then we extract the system pointer address to the USER SPACE itself.
+The [Ruby script](playing_with_user_spaces.rb) will be the base for many future scripts.
+
+Right now we simply: 
+
+* extract the **space pointer** address (returned from `QUSPTRUS`),
+* extract the **system pointer** address (retrieved with \_RSLOBJ2) and then
+* extract the **first 256 bytes** of the user space content (returned from `QUSTRVUS`)
+
+As soon as we set the initial value to `1` in EBCDIC
+
+```
+Initial_value = '1'.encode('IBM037')
+
+```
+
+we get the buffer filled with `0xF1` values:
 
 ```
 bash-4.4$ playing_with_user_spaces.rb
-80000000000000000494c11c6b001000
-00000000000000000494c11c6b001900
+8000000000000000160f9652ca001000
+0000000000000000160f9652ca001900
+f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1
 ```
+
 ----
 ### 12. to investigate parameter passing again
 
