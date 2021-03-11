@@ -60,7 +60,6 @@ argv[16, 8] = [Fiddle::Pointer[Qualified_service_program_name].to_i.to_s(16).rju
 argv[24, 8] = [pError.to_i.to_s(16).rjust(16,'0')].pack("H*")
 argv[32, 8] = ['0'.rjust(16,'0')].pack("H*")
 rc = pgmcall.call(pQBNLSPGM, argv, 0)
-puts pMySpace[0,16].unpack("H*") if rc == 0
 #
 buffer = ILEbuffer.malloc
 argv[ 8, 8] = [Fiddle::Pointer[Starting_position].to_i.to_s(16).rjust(16,'0')].pack("H*")

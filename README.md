@@ -33,6 +33,101 @@ Let's go!
 11. [to investigate parameter passing](#11-to-investigate-parameter-passing)
 12. [to investigate parameter passing again](#12-to-investigate-parameter-passing-again)
 13. [to review the lesson on objects](#13-to-review-the-lesson-on-objects)
+14. [to put previous lessons into practice](#14-to-put-previous-lessons-into-practice)
+
+----
+### 14. to put previous lessons into practice
+
+In previous chapter we handled user spaces. They are a fundamental building block in using IBM i native APIs.
+We are using previous knowledge to build a script that is gathering the list of APIs a SERVICE PROGRAM is offering.
+For the job there is a native API (actually a program) named `QBNLSPGM`. 
+
+The final behavior is the following:
+
+```
+bash-4.4$ playing_with_api_and_spaces.rb 
+./playing_with_api_and_spaces.rb:6:in `<main>': Usage: playing_with_api_and_spaces.rb <srvpgm> (RuntimeError)
+bash-4.4$ playing_with_api_and_spaces.rb QLEAWI
+QLEAWI    QSYS      *NO       Q LE leDefaultEh
+QLEAWI    QSYS      *NO       CEEMRCR
+QLEAWI    QSYS      *NO       CEEMGET
+QLEAWI    QSYS      *NO       CEEMOUT
+QLEAWI    QSYS      *NO       CEEMSG
+QLEAWI    QSYS      *NO       CEENCOD
+QLEAWI    QSYS      *NO       CEEDCOD
+QLEAWI    QSYS      *NO       Q LE leBdyCh
+QLEAWI    QSYS      *NO       Q LE leBdyEpilog
+QLEAWI    QSYS      *NO       CEE4FCB
+QLEAWI    QSYS      *NO       CEE4RAGE
+QLEAWI    QSYS      *NO       __CEERTX
+QLEAWI    QSYS      *NO       __CEEUTX
+QLEAWI    QSYS      *NO       Q LE RtxRouterCh
+QLEAWI    QSYS      *NO       Q LE HdlrRouterEh
+QLEAWI    QSYS      *NO       CEESGL
+QLEAWI    QSYS      *NO       CEETREC
+QLEAWI    QSYS      *NO       CEE4ABN
+QLEAWI    QSYS      *NO       __CEEHDLR
+QLEAWI    QSYS      *NO       __CEEHDLU
+QLEAWI    QSYS      *NO       CEEGPID
+QLEAWI    QSYS      *NO       CEE4RIN
+QLEAWI    QSYS      *NO       CEE4HC
+QLEAWI    QSYS      *NO       CEE4CpyOfb
+QLEAWI    QSYS      *NO       CEE4CpyIofb
+QLEAWI    QSYS      *NO       CEE4CpyDvfb
+QLEAWI    QSYS      *NO       _C_session_cleanup
+QLEAWI    QSYS      *NO       _C_session_open
+QLEAWI    QSYS      *NO       CEEGTST
+QLEAWI    QSYS      *NO       CEEFRST
+QLEAWI    QSYS      *NO       CEECZST
+QLEAWI    QSYS      *NO       CEECRHP
+QLEAWI    QSYS      *NO       CEEDSHP
+QLEAWI    QSYS      *NO       CEEMKHP
+QLEAWI    QSYS      *NO       CEERLHP
+QLEAWI    QSYS      *NO       CEE4DAS
+QLEAWI    QSYS      *NO       __CEETSTA
+QLEAWI    QSYS      *NO       __CEEDOD
+QLEAWI    QSYS      *NO       __CEEGSI
+QLEAWI    QSYS      *NO       CEEDAYS
+QLEAWI    QSYS      *NO       CEEDATE
+QLEAWI    QSYS      *NO       CEESECS
+QLEAWI    QSYS      *NO       CEESCEN
+QLEAWI    QSYS      *NO       CEEQCEN
+QLEAWI    QSYS      *NO       CEEFMDA
+QLEAWI    QSYS      *NO       CEEFMTM
+QLEAWI    QSYS      *NO       CEEFMDT
+QLEAWI    QSYS      *NO       CEEISEC
+QLEAWI    QSYS      *NO       CEEDATM
+QLEAWI    QSYS      *NO       CEESECI
+QLEAWI    QSYS      *NO       CEEDYWK
+QLEAWI    QSYS      *NO       CEELOCT
+QLEAWI    QSYS      *NO       CEEUTC
+QLEAWI    QSYS      *NO       CEEGMT
+QLEAWI    QSYS      *NO       CEEUTCO
+QLEAWI    QSYS      *NO       Q LE leActivationInit
+QLEAWI    QSYS      *NO       Q LE leActivationInitRouter
+QLEAWI    QSYS      *NO       QleActBndPgm
+QLEAWI    QSYS      *NO       QleGetExp
+QLEAWI    QSYS      *NO       Q LE leCheck
+QLEAWI    QSYS      *NO       CEE4RAGE2
+QLEAWI    QSYS      *NO       QleActBndPgmLong
+QLEAWI    QSYS      *NO       QleGetExpLong
+QLEAWI    QSYS      *NO       QleGetTLSEntry
+QLEAWI    QSYS      *NO       QleSetTLSEntry
+QLEAWI    QSYS      *NO       QleActBndPgmLongTS
+QLEAWI    QSYS      *NO       Q LE leDefaultEh2
+QLEAWI    QSYS      *NO       Q LE leBdyEpilog2
+QLEAWI    QSYS      *NO       Q LE leBdyCh2
+QLEAWI    QSYS      *NO       Q LE setActGrpUserRC
+QLEAWI    QSYS      *NO       Q LE setActGrpProdRC
+QLEAWI    QSYS      *NO       CEE4GETRC
+QLEAWI    QSYS      *NO       CEE4SETRC
+QLEAWI    QSYS      *NO       Q LE comp_mode
+QLEAWI    QSYS      *NO       Q LE init_wcb_static_data
+QLEAWI    QSYS      *NO       Q LE get_ag_static_entry
+QLEAWI    QSYS      *NO       Q LE delete_ag_static_entry
+QLEAWI    QSYS      *NO       CEE4RAGE
+```
+
 
 ----
 ### 13. to review the lesson on objects
