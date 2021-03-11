@@ -78,7 +78,7 @@ QLEAWI    QSYS      *NO       CEE4RAGE
 We could adapt it at will (for example filtering out `Q LE `\* entries).
 
 Reading [this Ruby source code](playing_with_api_and_spaces.rb) could be inspiring but it is still too basic.
-I am still collecting working examples that will allow the design a more rich integration from PASE Ruby to IBM i ILE, possibly through a **gem**.
+I am still collecting working examples that will allow the design of a more rich integration from PASE Ruby to IBM i ILE, possibly through a **gem**: for a platform concept (*S/38*) that survived more that 40 years there is no need to hurry up! 
 
 ----
 ### 13. to review the lesson on objects
