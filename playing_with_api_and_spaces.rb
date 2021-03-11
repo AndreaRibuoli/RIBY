@@ -3,7 +3,9 @@ require 'fiddle'
 require 'fiddle/import'
 extend Fiddle::Importer
 
-name = 'QLEAWI'
+raise "Usage: playing_with_api_and_spaces.rb <srvpgm>" if ARGV.length != 1
+
+name = ARGV[0].upcase
 lib  = 'QSYS'
 
 us_name = 'MYSPACE'
