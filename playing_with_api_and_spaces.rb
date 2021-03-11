@@ -4,10 +4,10 @@ require 'fiddle/import'
 extend Fiddle::Importer
 
 raise "Usage: playing_with_api_and_spaces.rb <srvpgm>" if ARGV.length != 1
-
+#
 name = ARGV[0].upcase
 lib  = 'QSYS'
-
+#
 us_name = 'MYSPACE'
 us_lib  = 'QTEMP'
 Qualified_user_space_name      = "#{us_name.ljust(10, ' ')}#{us_lib.ljust(10, ' ')}".encode('IBM037')
@@ -20,7 +20,7 @@ Starting_position              = ['00000001'].pack("H*")
 Length_of_data                 = ['00004000'].pack("H*")
 Format_name                    = 'SPGL0610'.encode('IBM037')
 Qualified_service_program_name = "#{name.ljust(10, ' ')}#{lib.ljust(10, ' ')}".encode('IBM037')
-
+#
 ILEparms    = struct [ 'char a[56]' ]
 ILEpointer  = struct [ 'char b[16]' ]
 ILEerror    = struct [ 'char e[12]' ]
@@ -28,7 +28,7 @@ ILEbuffer   = struct [ 'char b[16384]' ]
 preload    = Fiddle.dlopen(nil)
 rslobj2    = Fiddle::Function.new( preload['_RSLOBJ2'], [Fiddle::TYPE_VOIDP, Fiddle::TYPE_SHORT, Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP], Fiddle::TYPE_INT )
 pgmcall    = Fiddle::Function.new( preload['_PGMCALL'], [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_INT], Fiddle::TYPE_INT )
-
+#
 pQUSCRTUS  = ILEpointer.malloc
 rc = rslobj2.call(pQUSCRTUS, 513, "QUSCRTUS", "QSYS")
 pQUSPTRUS  = ILEpointer.malloc
@@ -37,8 +37,7 @@ pQUSRTVUS  = ILEpointer.malloc
 rc = rslobj2.call(pQUSRTVUS, 513, "QUSRTVUS", "QSYS")
 pQBNLSPGM  = ILEpointer.malloc
 rc = rslobj2.call(pQBNLSPGM, 513, "QBNLSPGM", "QSYS")
-puts pQBNLSPGM[0, 16].unpack("H*")
-
+#
 argv = ILEparms.malloc
 argv[ 0, 8] = [Fiddle::Pointer[Qualified_user_space_name].to_i.to_s(16).rjust(16,'0')].pack("H*")
 argv[ 8, 8] = [Fiddle::Pointer[Extended_attribute].to_i.to_s(16).rjust(16,'0')].pack("H*")
@@ -53,11 +52,6 @@ pMySpace   = ILEpointer.malloc
 argv[ 8, 8] = [pMySpace.to_i.to_s(16).rjust(16,'0')].pack("H*")
 argv[16, 8] = ['0'.rjust(16,'0')].pack("H*")
 rc = pgmcall.call(pQUSPTRUS, argv, 0)
-puts pMySpace[0,16].unpack("H*") if rc == 0
-#
-pSysPointer  = ILEpointer.malloc
-rc = rslobj2.call(pSysPointer, 6452, name, lib)
-puts pSysPointer[0,16].unpack("H*") if rc == 0
 #
 pError = ILEerror.malloc
 argv[ 0, 8] = [Fiddle::Pointer[Qualified_user_space_name].to_i.to_s(16).rjust(16,'0')].pack("H*")
@@ -67,7 +61,6 @@ argv[24, 8] = [pError.to_i.to_s(16).rjust(16,'0')].pack("H*")
 argv[32, 8] = ['0'.rjust(16,'0')].pack("H*")
 rc = pgmcall.call(pQBNLSPGM, argv, 0)
 puts pMySpace[0,16].unpack("H*") if rc == 0
-
 #
 buffer = ILEbuffer.malloc
 argv[ 8, 8] = [Fiddle::Pointer[Starting_position].to_i.to_s(16).rjust(16,'0')].pack("H*")
@@ -82,4 +75,3 @@ num.times {
   puts buffer[off+4,20].force_encoding('IBM037').encode('utf-8') + buffer[off+36,len-36].force_encoding('IBM037').encode('utf-8')
   off = off+len
 }
-
