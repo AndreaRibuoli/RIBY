@@ -15,14 +15,14 @@ Initial_value                  = '1'.encode('IBM037')
 Public_authority               = '*ALL'.ljust(10, ' ').encode('IBM037')
 Text_description               = 'My user space'.ljust(50, ' ').encode('IBM037')
 Starting_position              = ['00000001'].pack("H*")
-Length_of_data                 = ['00000400'].pack("H*")
+Length_of_data                 = ['00004000'].pack("H*")
 Format_name                    = 'SPGL0610'.encode('IBM037')
 Qualified_service_program_name = "#{name.ljust(10, ' ')}#{lib.ljust(10, ' ')}".encode('IBM037')
 
 ILEparms    = struct [ 'char a[56]' ]
 ILEpointer  = struct [ 'char b[16]' ]
 ILEerror    = struct [ 'char e[12]' ]
-ILEbuffer   = struct [ 'char b[1024]' ]
+ILEbuffer   = struct [ 'char b[16384]' ]
 preload    = Fiddle.dlopen(nil)
 rslobj2    = Fiddle::Function.new( preload['_RSLOBJ2'], [Fiddle::TYPE_VOIDP, Fiddle::TYPE_SHORT, Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP], Fiddle::TYPE_INT )
 pgmcall    = Fiddle::Function.new( preload['_PGMCALL'], [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_INT], Fiddle::TYPE_INT )
