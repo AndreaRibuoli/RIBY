@@ -35,7 +35,7 @@ Option_template                                    = ( opt01.ljust(11, ' ') + op
                                                        opt10.ljust(11, ' ') + opt11.ljust(11, ' ') + opt12.ljust(11, ' ') +
                                                        opt13.ljust(11, ' ') + opt14.ljust(11, ' ') + opt15.ljust(11, ' ') +
                                                        opt16.ljust(11, ' ') + opt17.ljust(11, ' ') ).encode('IBM037')
-Number_of_option_template_entries                  = numopt.to_s(16).rjust(8,'0')].pack("H*")
+Number_of_option_template_entries                  = [numopt.to_s(16).rjust(8,'0')].pack("H*")
 pError      = ILEerror.malloc
 #
 preload    = Fiddle.dlopen(nil)
