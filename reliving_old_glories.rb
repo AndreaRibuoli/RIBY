@@ -5,8 +5,7 @@ extend Fiddle::Importer
 
 raise "Usage: reliving_old_glories.rb" if ARGV.length != 0
 #
-pgm   = "DCL DD POINTERS CHAR(32) BDRY(16);\nDCL SYSPTR .SYSPTR DEF(POINTERS) POS(1);\nDCL SPCPTR .SPCPTR DEF(POINTERS) POS(17);\nSETSPPFP .SPCPTR, .SYSPTR;\n".encode('IBM037')
-opt01 = '*LIST'
+pgm   = "DCL DD POINTERS CHAR(32) BDRY(16);\nDCL SYSPTR .SYSPTR DEF(POINTERS) POS(1);\nDCL SPCPTR .SPCPTR DEF(POINTERS) POS(17);\nSETSPPFP .SPCPTR, .SYSPTR;\n"
 ILEerror    = struct [ 'char e[12]' ]
 ILEparms    = struct [ 'char a[112]' ]
 ILEpointer  = struct [ 'char b[16]' ]
@@ -20,9 +19,9 @@ srcmbr      = ''
 srcdatetime = ''
 prtname     = 'QPRINT'
 prtlib      = 'QGPL'
-opt01       = '';          opt02   = ''; opt03   = ''; opt04   = ''; opt05   = ''; opt06   = ''; opt07   = ''; opt08   = ''
+opt01       = '*LIST';          opt02   = ''; opt03   = ''; opt04   = ''; opt05   = ''; opt06   = ''; opt07   = ''; opt08   = ''
     opt09   = ''; opt10   = ''; opt11   = ''; opt12   = ''; opt13   = ''; opt14   = ''; opt15   = ''; opt16   = ''; opt17   = ''
-numopt      = 0
+numopt      = 1
 Intermediate_representation_of_the_program         = pgm.encode('IBM037')
 Length_of_intermediate_representation_of_program   = [Intermediate_representation_of_the_program.length.to_s(16).rjust(8,'0')].pack("H*")
 Qualified_program_name                             = "#{pgmname.ljust(10, ' ')}#{pgmlib.ljust(10, ' ')}".encode('IBM037')
