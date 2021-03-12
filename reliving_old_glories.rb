@@ -13,7 +13,7 @@ ILEpointer  = struct [ 'char b[16]' ]
 
 pgmname     = 'MISTPTR1'
 pgmlib      = "RIBY"
-pgmtext     = ''
+pgmtext     = 'My first MI program'
 srcname     = '*NONE'
 srclib      = ''
 srcmbr      = ''
