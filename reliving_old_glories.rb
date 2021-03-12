@@ -16,7 +16,7 @@ pgmlib      = "RIBY"
 srcname     = '*NONE'
 srclib      = ''
 srcmbr      = ''
-serdatetime = ''
+srcdatetime = ''
 opt01       = '*LIST';          opt02   = ''; opt03   = ''; opt04   = ''; opt05   = ''; opt06   = ''; opt07   = ''; opt08   = ''
     opt09   = ''; opt10   = ''; opt11   = ''; opt12   = ''; opt13   = ''; opt14   = ''; opt15   = ''; opt16   = ''; opt17   = ''
 numopt      = 1
