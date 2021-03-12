@@ -25,6 +25,7 @@ opt01       = '*LIST';          opt02   = ''; opt03   = ''; opt04   = ''; opt05 
 numopt      = 1
 Intermediate_representation_of_the_program         = pgm.encode('IBM037')
 Length_of_intermediate_representation_of_program   = [len.to_s(16).rjust(8,'0')].pack("H*")
+puts Length_of_intermediate_representation_of_program.unpack("H*")
 Qualified_program_name                             = "#{pgmname.ljust(10, ' ')}#{pgmlib.ljust(10, ' ')}".encode('IBM037')
 Program_text                                       = pgmtext.ljust(50, ' ').encode('IBM037')
 Qualified_source_file_name                         = "#{srcname.ljust(10, ' ')}#{srclib.ljust(10, ' ')}".encode('IBM037')
