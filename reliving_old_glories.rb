@@ -5,14 +5,22 @@ extend Fiddle::Importer
 
 raise "Usage: reliving_old_glories.rb" if ARGV.length != 0
 #
-pgm   = "DCL DD POINTERS CHAR(32) BDRY(16);\nDCL SYSPTR .SYSPTR DEF(POINTERS) POS(1);\nDCL SPCPTR .SPCPTR DEF(POINTERS) POS(17);\nSETSPPFP .SPCPTR, .SYSPTR;\n"
+pgm   = "DCL DD POINTERS CHAR(32) BDRY(16);\nDCL SYSPTR .SYSPTR DEF(POINTERS) POS(1);\nDCL SPCPTR .SPCPTR DEF(POINTERS) POS(17);\nSETSPPFP .SPCPTR, .SYSPTR;\n".encode('IBM037')
 opt01 = '*LIST'
 ILEerror    = struct [ 'char e[12]' ]
 ILEparms    = struct [ 'char a[112]' ]
 ILEpointer  = struct [ 'char b[16]' ]
 
+pgmname = 'MISTPTR1'
+pgmlib  = "RIBY"
+srcname = '*NONE'
+srclib  = ''
+srcmbr  = ''
+opt01   = '*LIST';          opt02   = ''; opt03   = ''; opt04   = ''; opt05   = ''; opt06   = ''; opt07   = ''; opt08   = ''
+opt09   = ''; opt10   = ''; opt11   = ''; opt12   = ''; opt13   = ''; opt14   = ''; opt15   = ''; opt16   = ''; opt17   = ''
+numopt  = 1
 Intermediate_representation_of_the_program         = pgm.encode('IBM037')
-Length_of_intermediate_representation_of_program   = Intermediate_representation_of_the_program.length
+Length_of_intermediate_representation_of_program   = Intermediate_representation_of_the_program.length.to_s(16).rjust(8,'0')].pack("H*")
 Qualified_program_name                             = "#{pgmname.ljust(10, ' ')}#{pgmlib.ljust(10, ' ')}".encode('IBM037')
 Program_text                                       = 'My first MI program'.ljust(50, ' ').encode('IBM037')
 Qualified_source_file_name                         = "#{srcname.ljust(10, ' ')}#{srclib.ljust(10, ' ')}".encode('IBM037')
@@ -27,7 +35,7 @@ Option_template                                    = ( opt01.ljust(11, ' ') + op
                                                        opt10.ljust(11, ' ') + opt11.ljust(11, ' ') + opt12.ljust(11, ' ') +
                                                        opt13.ljust(11, ' ') + opt14.ljust(11, ' ') + opt15.ljust(11, ' ') +
                                                        opt16.ljust(11, ' ') + opt17.ljust(11, ' ') ).encode('IBM037')
-Number_of_option_template_entries                  = ['00000001'].pack("H*")
+Number_of_option_template_entries                  = numopt.to_s(16).rjust(8,'0')].pack("H*")
 pError      = ILEerror.malloc
 #
 preload    = Fiddle.dlopen(nil)
