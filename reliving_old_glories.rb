@@ -66,3 +66,4 @@ argv[  96, 8] = [pError.to_i.to_s(16).rjust(16,'0')].pack("H*")
 argv[ 104, 8] = ['0'.rjust(16,'0')].pack("H*")
 rc = pgmcall.call(pQPRCRTPG, argv, 0)
 #
+puts rc 
