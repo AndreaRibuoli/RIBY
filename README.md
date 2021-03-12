@@ -68,6 +68,42 @@ rc = pgmcall.call(pQPRCRTPG, argv, 0)
 
 Once arguments are prepared (in EBCDIC) their addresses (64bits) are orderly copied in the array of pointers that will be the second parameter passed to **\_PGMCALL**.
 
+```
+                         Gestione degli oggetti con il PDM            Sxxxxxxx
+                                                                              
+Libreria. . . . .   RIBY             Inizio elenco da. . . . . .              
+                                     Inizio elenco da tipo . . .              
+                                                                              
+Immettere le opzioni e premere Invio.                                         
+  2=Modifica     3=Copia       4=Cancellaz.  5=Visualiz.     7=Ridenominaz.   
+  8=Visual. descrizione      9=Salvatag.  10=Ripristino   11=Trasferimento... 
+                                                                              
+Opz  Oggetto     Tipo        Attributo    Testo                               
+     MISTPTR1    *PGM                    My first MI program                  
+     RIBY_SRV    *SRVPGM     RPGLE                                            
+```
+The spool file we requested is available in our output queue:
+
+```
+                                                    Visualizzazione file di spool                                                  
+File  . . . . . :   QPRINT                                                                               Pagina/Riga 1/1           
+Controllo . . . .                                                                                        Colonne     1 - 130       
+Ricerca . . . . .                                                                                                                  
+*...+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+....0....+....1....+....2....+....3 
+ 5770SS1 V7R4M0 190621N                               Emissione generata                               12/03/21 13:54:43  Pag.     
+  SEQ   ISTR Scost.    Codice generato    *... ... 1 ... ... 2 ... ... 3 ... ... 4 ... ... 5 ... ... 6 ... ... 7 ... ... 8   Inter 
+ 00001                                             DCL DD POINTERS CHAR(32) BDRY(16)                                     ;         
+ 00002                                             DCL SYSPTR .SYSPTR DEF(POINTERS) POS(1)                               ;         
+ 00003                                             DCL SPCPTR .SPCPTR DEF(POINTERS) POS(17)                              ;         
+ 00004  0001 000004  0022 0003 0002                SETSPPFP .SPCPTR, .SYSPTR                                             ;         
+ 00005  0002 00000A  0260                          PEND                                                                  ;         
+ 5770SS1 V7R4M0 190621N                               Emissione generata                               12/03/21 13:54:43  Pag.     
+  IDMSG    ODT   Nome ODT                                          Semantici e diagnostici di sintassi ODT                         
+ 5770SS1 V7R4M0 190621N                               Emissione generata                               12/03/21 13:54:43  Pag.     
+   IDMSG   Diagnostici semantici flusso istruzioni MI                                                                              
+                                                                                                                                                                                                                                                                      
+```
+
 ----
 ### 14. to put previous lessons into practice
 
