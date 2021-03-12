@@ -34,6 +34,16 @@ Let's go!
 12. [to investigate parameter passing again](#12-to-investigate-parameter-passing-again)
 13. [to review the lesson on objects](#13-to-review-the-lesson-on-objects)
 14. [to put previous lessons into practice](#14-to-put-previous-lessons-into-practice)
+15. [to have fun by reliving old glories](#15-to-have-fun-by-reliving-old-glories)
+
+
+----
+### 15. to have fun by reliving old glories
+
+Today I will play with a fashinating tool hidden among the thousands of resources IBM i still provides and that have roots in its past. I am referring to the [Create Program **QPRCRTPG** API](https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_74/apis/qprcrtpg.htm). Now that we know how to use user spaces and APIs from Ruby we can also figure out how to build our own utility for offering an easier interface to this old glory.
+
+This time we will also leverage the Ruby standard library for web integration.  
+
 
 ----
 ### 14. to put previous lessons into practice
