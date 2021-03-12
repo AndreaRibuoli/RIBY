@@ -20,9 +20,9 @@ srcmbr      = ''
 srcdatetime = ''
 prtname     = 'QPRINT'
 prtlib      = 'QGPL'
-opt01       = '*LIST';          opt02   = ''; opt03   = ''; opt04   = ''; opt05   = ''; opt06   = ''; opt07   = ''; opt08   = ''
+opt01       = '*LIST'; opt02 = '*REPLACE';    opt03   = ''; opt04   = ''; opt05   = ''; opt06   = ''; opt07   = ''; opt08   = ''
     opt09   = ''; opt10   = ''; opt11   = ''; opt12   = ''; opt13   = ''; opt14   = ''; opt15   = ''; opt16   = ''; opt17   = ''
-numopt      = 1
+numopt      = 2
 Intermediate_representation_of_the_program         = pgm.encode('IBM037')
 Length_of_intermediate_representation_of_program   = [len.to_s(16).rjust(8,'0')].pack("H*")
 Qualified_program_name                             = "#{pgmname.ljust(10, ' ')}#{pgmlib.ljust(10, ' ')}".encode('IBM037')
@@ -66,4 +66,4 @@ argv[  96, 8] = [pError.to_i.to_s(16).rjust(16,'0')].pack("H*")
 argv[ 104, 8] = ['0'.rjust(16,'0')].pack("H*")
 rc = pgmcall.call(pQPRCRTPG, argv, 0)
 #
-puts rc 
+puts pError[0, 12].unpack("H*")
