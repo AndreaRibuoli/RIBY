@@ -47,6 +47,7 @@ pgmcall    = Fiddle::Function.new( preload['_PGMCALL'], [Fiddle::TYPE_VOIDP, Fid
 #
 pQPRCRTPG  = ILEpointer.malloc
 rc = rslobj2.call(pQPRCRTPG, 513, "QPRCRTPG", "QSYS")
+puts rc
 #
 argv = ILEparms.malloc
 argv[   0, 8] = [Fiddle::Pointer[Intermediate_representation_of_the_program].to_i.to_s(16).rjust(16,'0')].pack("H*")
