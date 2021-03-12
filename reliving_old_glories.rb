@@ -25,7 +25,6 @@ opt01       = '*LIST';          opt02   = ''; opt03   = ''; opt04   = ''; opt05 
 numopt      = 1
 Intermediate_representation_of_the_program         = pgm.encode('IBM037')
 Length_of_intermediate_representation_of_program   = [len.to_s(16).rjust(8,'0')].pack("H*")
-puts Length_of_intermediate_representation_of_program.unpack("H*")
 Qualified_program_name                             = "#{pgmname.ljust(10, ' ')}#{pgmlib.ljust(10, ' ')}".encode('IBM037')
 Program_text                                       = pgmtext.ljust(50, ' ').encode('IBM037')
 Qualified_source_file_name                         = "#{srcname.ljust(10, ' ')}#{srclib.ljust(10, ' ')}".encode('IBM037')
@@ -49,8 +48,7 @@ pgmcall    = Fiddle::Function.new( preload['_PGMCALL'], [Fiddle::TYPE_VOIDP, Fid
 #
 pQPRCRTPG  = ILEpointer.malloc
 rc = rslobj2.call(pQPRCRTPG, 513, "QPRCRTPG", "QSYS")
-puts rc
-#
+
 argv = ILEparms.malloc
 argv[   0, 8] = [Fiddle::Pointer[Intermediate_representation_of_the_program].to_i.to_s(16).rjust(16,'0')].pack("H*")
 argv[   8, 8] = [Fiddle::Pointer[Length_of_intermediate_representation_of_program].to_i.to_s(16).rjust(16,'0')].pack("H*")
@@ -68,5 +66,3 @@ argv[  96, 8] = [pError.to_i.to_s(16).rjust(16,'0')].pack("H*")
 argv[ 104, 8] = ['0'.rjust(16,'0')].pack("H*")
 rc = pgmcall.call(pQPRCRTPG, argv, 0)
 #
-puts rc
-puts pError[0, 12].unpack("H*")
