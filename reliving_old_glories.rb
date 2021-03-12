@@ -64,7 +64,7 @@ argv[  80, 8] = [Fiddle::Pointer[Option_template].to_i.to_s(16).rjust(16,'0')].p
 argv[  88, 8] = [Fiddle::Pointer[Number_of_option_template_entries].to_i.to_s(16).rjust(16,'0')].pack("H*")
 argv[  96, 8] = [pError.to_i.to_s(16).rjust(16,'0')].pack("H*")
 argv[ 104, 8] = ['0'.rjust(16,'0')].pack("H*")
-rc = pgmcall.call(pQPRCRTPG, argv, 32)
+rc = pgmcall.call(pQPRCRTPG, argv, 0)
 #
 puts rc
 puts pError[0, 12].unpack("H*")
