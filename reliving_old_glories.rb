@@ -5,7 +5,7 @@ extend Fiddle::Importer
 
 raise "Usage: reliving_old_glories.rb" if ARGV.length != 0
 #
-pgm   = "DCL DD POINTERS CHAR(32) BDRY(16);DCL SYSPTR .SYSPTR DEF(POINTERS) POS(1);DCL SPCPTR .SPCPTR DEF(POINTERS) POS(17);SETSPPFP .SPCPTR, .SYSPTR;".ljust(2000, ' ')
+pgm   = "DCL DD POINTERS CHAR(32) BDRY(16);DCL SYSPTR .SYSPTR DEF(POINTERS) POS(1);DCL SPCPTR .SPCPTR DEF(POINTERS) POS(17);SETSPPFP .SPCPTR, .SYSPTR;PEND;"
 len   = pgm.length
 ILEerror    = struct [ 'char e[12]' ]
 ILEparms    = struct [ 'char a[112]' ]
