@@ -44,7 +44,7 @@ Today I will play with a fashinating tool hidden among the thousands of resource
 
 The heart of [the new Ruby script](reliving_old_glories.rb) is copied here:
 
-```
+``` ruby
 pQPRCRTPG  = ILEpointer.malloc
 rc = rslobj2.call(pQPRCRTPG, 513, "QPRCRTPG", "QSYS")
 
