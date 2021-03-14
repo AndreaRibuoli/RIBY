@@ -149,6 +149,8 @@ We could adapt it at will (for example filtering out `Q LE `\* entries).
 Reading [this Ruby source code](playing_with_api_and_spaces.rb) could be inspiring but it is still too basic.
 I am still collecting working examples that will allow the design of a more rich integration from PASE Ruby to IBM i ILE, possibly through a **gem**: for a platform concept (*S/38*) that survived more that 40 years there is no need to hurry up! 
 
+[NEXT-15](#15-to-have-fun-by-reliving-old-glories)
+
 ----
 ### 13. to review the lesson on objects
 
@@ -210,6 +212,8 @@ bash-4.4$ playing_with_user_spaces.rb
 0000000000000000160f9652ca001900
 f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1
 ```
+
+[NEXT-14](#14-to-put-previous-lessons-into-practice)
 
 ----
 ### 12. to investigate parameter passing again
@@ -325,6 +329,8 @@ The document provides an astonishing explanation:
 
 In 1822 egyptologist Jean François Champollion was able to decipher the ancient Egyptian hieroglyphs.
 Next year will be **2022**: let us hope to understand how to make Operational Descriptors usable from PASE (and Ruby) before the end of next year!
+
+[NEXT-13](#13-to-review-the-lesson-on-objects)
 
 ----
 ### 11. to investigate parameter passing
@@ -469,6 +475,8 @@ OUTSTRING             CHAR(64)             '                                    
 
 This is a good start to experiment seaching for *Operator Descriptors* role. A new chapter is needed.
 
+[NEXT-12](#12-to-investigate-parameter-passing-again)
+
 ----
 ### 10. to move around tagged pointers
 
@@ -537,6 +545,8 @@ PASE pointer from _CVTSPP    ["0000000182687490"]
 ILE SPP copy ["800000000000000000008016b2687490"]
 PASE pointer from _CVTSPP    ["0000000182687490"]
 ```
+
+[NEXT-11](#11-to-investigate-parameter-passing)
 
 ----
 ### 9. to gather information on space pointers from PASE
@@ -620,6 +630,7 @@ ILE SPP      ["80000000000000000000000000000000"]
 PASE pointer from _CVTSPP    0
 ```
 
+[NEXT-10](#10-to-move-around-tagged-pointers)
 
 ----
 ### 8. to execute a service program entry call from PASE 
@@ -717,6 +728,8 @@ We need to provide enough contiguos storage following *ILEarglist\_base* for a 1
 
 The [Ruby script I am presenting](invoke_system.rb) summarizes the steps described. Ruby can encode an **EBCDIC** content (through the support of **IBM037** encoding). That content is passed on as command argument in the `int system(const char *command)` ILE C standard library function.
 
+[NEXT-9](#9-to-gather-information-on-space-pointers-from-pase)
+
 ----
 ### 7. to get acquainted with QSYS/QC2xx service programs 
 
@@ -765,6 +778,9 @@ If successful nothing occurs; in case of error we get:
 bash-4.4$ ./check_srvpgm_entry.rb QSYS/QC2UTIL1 mallocz
 ./check_srvpgm_entry.rb:22:in `<main>': Searching for function entry 'mallocz' in service program QSYS/QC2UTIL1 failed (RuntimeError)
 ```
+
+[NEXT-8](#8-to-execute-a-service-program-entry-call-from-pase)
+
 ----
 ### 6. to gain confidence on Ruby language
 
@@ -831,6 +847,8 @@ bash-4.4$ RIBY/nonLoadables
 ```
 
 It is not clear -to me- why some SRVPGM are loadable from PASE while others are not (as a general rule).
+
+[NEXT-7](#7-to-get-acquainted-with-qsysqc2xx-service-programs)
 
 ### 5. to study IBM i through PASE with Ruby
 
@@ -930,6 +948,8 @@ $ chroot /QOpenSys/chRootRiby ${HOME}/check_srvpgm.rb QSYS/QC2UTIL8
 
 Note that accessing native (ILE) service programs is not limited by chroot: only the authorities of current user profile matter!
 
+[NEXT-6](#6-to-gain-confidence-on-ruby-language)
+
 ### 4. to do everything once again
 
 **Repeatability** is a measure of the likelihood that, having produced one result from an experiment, you can try the same experiment, with the same setup, and produce that exact same result.
@@ -956,6 +976,8 @@ The script will allow us to create chroots at different level of *version-releas
 $ cd $HOME
 $ RIBY/onceAgain chRootRibyPrv ruby-devel
 ```
+
+[NEXT-5](#5-to-study-ibm-i-through-pase-with-ruby)
 
 ----
 ### 3. to install Ruby 3.0
@@ -995,6 +1017,8 @@ gem list
 
 Here we are: you have **Ruby 3.0 interpreter installed in an IBM i PASE chroot!**
 
+[NEXT-4](#4-to-do-everything-once-again)
+
 ----
 ### 2. to refurbish the flat
 
@@ -1028,6 +1052,8 @@ ibm                                  ibm                               enabled: 
 repolist: 661
 ```
 
+[NEXT-3](#3-to-install-ruby-30)
+
 ----
 ### 1. to pave the way
 
@@ -1059,3 +1085,5 @@ Yum handles all dependencies and we will end up installing almost fifty packages
 ```
 chroot /QOpenSys/chRootRiby /QOpenSys/pkgs/bin/bash
 ```
+
+[NEXT-2](#2-to-refurbish-the-flat)
