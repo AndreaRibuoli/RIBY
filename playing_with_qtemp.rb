@@ -53,38 +53,38 @@ prtlib      = 'QGPL'
 opt01       = '*REPLACE'   ; opt02 = '*LIST'; opt03   = ''; opt04   = ''; opt05   = ''; opt06   = ''; opt07   = ''; opt08   = ''
     opt09   = ''; opt10   = ''; opt11   = ''; opt12   = ''; opt13   = ''; opt14   = ''; opt15   = ''; opt16   = ''; opt17   = ''
 numopt      = 2
-Intermediate_representation_of_the_program         = pgm.encode('IBM037')
-Length_of_intermediate_representation_of_program   = [len.to_s(16).rjust(8,'0')].pack("H*")
-Qualified_program_name                             = "#{pgmname.ljust(10, ' ')}#{pgmlib.ljust(10, ' ')}".encode('IBM037')
-Program_text                                       = pgmtext.ljust(50, ' ').encode('IBM037')
-Qualified_source_file_name                         = "#{srcname.ljust(10, ' ')}#{srclib.ljust(10, ' ')}".encode('IBM037')
-Source_file_member_information                     = srcmbr.ljust(10, ' ').encode('IBM037')
-Source_file_last_changed_date_and_time_information = srcdatetime.ljust(13, ' ').encode('IBM037')
-Qualified_printer_file_name                        = "#{prtname.ljust(10, ' ')}#{prtlib.ljust(10, ' ')}".encode('IBM037')
-Starting_page_number                               = ['00000001'].pack("H*")
-Public_authority                                   = '*ALL'.ljust(10, ' ').encode('IBM037')
-Option_template                                    = ( opt01.ljust(11, ' ') + opt02.ljust(11, ' ') + opt03.ljust(11, ' ') +
+intermediate_representation_of_the_program         = pgm.encode('IBM037')
+length_of_intermediate_representation_of_program   = [len.to_s(16).rjust(8,'0')].pack("H*")
+qualified_program_name                             = "#{pgmname.ljust(10, ' ')}#{pgmlib.ljust(10, ' ')}".encode('IBM037')
+program_text                                       = pgmtext.ljust(50, ' ').encode('IBM037')
+qualified_source_file_name                         = "#{srcname.ljust(10, ' ')}#{srclib.ljust(10, ' ')}".encode('IBM037')
+source_file_member_information                     = srcmbr.ljust(10, ' ').encode('IBM037')
+source_file_last_changed_date_and_time_information = srcdatetime.ljust(13, ' ').encode('IBM037')
+qualified_printer_file_name                        = "#{prtname.ljust(10, ' ')}#{prtlib.ljust(10, ' ')}".encode('IBM037')
+starting_page_number                               = ['00000001'].pack("H*")
+public_authority                                   = '*ALL'.ljust(10, ' ').encode('IBM037')
+option_template                                    = ( opt01.ljust(11, ' ') + opt02.ljust(11, ' ') + opt03.ljust(11, ' ') +
                                                        opt04.ljust(11, ' ') + opt05.ljust(11, ' ') + opt06.ljust(11, ' ') +
                                                        opt07.ljust(11, ' ') + opt08.ljust(11, ' ') + opt09.ljust(11, ' ') +
                                                        opt10.ljust(11, ' ') + opt11.ljust(11, ' ') + opt12.ljust(11, ' ') +
                                                        opt13.ljust(11, ' ') + opt14.ljust(11, ' ') + opt15.ljust(11, ' ') +
                                                        opt16.ljust(11, ' ') + opt17.ljust(11, ' ') ).encode('IBM037')
-Number_of_option_template_entries                  = [numopt.to_s(16).rjust(8,'0')].pack("H*")
+number_of_option_template_entries                  = [numopt.to_s(16).rjust(8,'0')].pack("H*")
 pError      = ILEerror.malloc
 #
 
-argv[   0, 8] = [Fiddle::Pointer[Intermediate_representation_of_the_program].to_i.to_s(16).rjust(16,'0')].pack("H*")
-argv[   8, 8] = [Fiddle::Pointer[Length_of_intermediate_representation_of_program].to_i.to_s(16).rjust(16,'0')].pack("H*")
-argv[  16, 8] = [Fiddle::Pointer[Qualified_program_name].to_i.to_s(16).rjust(16,'0')].pack("H*")
-argv[  24, 8] = [Fiddle::Pointer[Program_text].to_i.to_s(16).rjust(16,'0')].pack("H*")
-argv[  32, 8] = [Fiddle::Pointer[Qualified_source_file_name].to_i.to_s(16).rjust(16,'0')].pack("H*")
-argv[  40, 8] = [Fiddle::Pointer[Source_file_member_information].to_i.to_s(16).rjust(16,'0')].pack("H*")
-argv[  48, 8] = [Fiddle::Pointer[Source_file_last_changed_date_and_time_information].to_i.to_s(16).rjust(16,'0')].pack("H*")
-argv[  56, 8] = [Fiddle::Pointer[Qualified_printer_file_name].to_i.to_s(16).rjust(16,'0')].pack("H*")
-argv[  64, 8] = [Fiddle::Pointer[Starting_page_number].to_i.to_s(16).rjust(16,'0')].pack("H*")
-argv[  72, 8] = [Fiddle::Pointer[Public_authority].to_i.to_s(16).rjust(16,'0')].pack("H*")
-argv[  80, 8] = [Fiddle::Pointer[Option_template].to_i.to_s(16).rjust(16,'0')].pack("H*")
-argv[  88, 8] = [Fiddle::Pointer[Number_of_option_template_entries].to_i.to_s(16).rjust(16,'0')].pack("H*")
+argv[   0, 8] = [Fiddle::Pointer[intermediate_representation_of_the_program].to_i.to_s(16).rjust(16,'0')].pack("H*")
+argv[   8, 8] = [Fiddle::Pointer[length_of_intermediate_representation_of_program].to_i.to_s(16).rjust(16,'0')].pack("H*")
+argv[  16, 8] = [Fiddle::Pointer[qualified_program_name].to_i.to_s(16).rjust(16,'0')].pack("H*")
+argv[  24, 8] = [Fiddle::Pointer[program_text].to_i.to_s(16).rjust(16,'0')].pack("H*")
+argv[  32, 8] = [Fiddle::Pointer[qualified_source_file_name].to_i.to_s(16).rjust(16,'0')].pack("H*")
+argv[  40, 8] = [Fiddle::Pointer[source_file_member_information].to_i.to_s(16).rjust(16,'0')].pack("H*")
+argv[  48, 8] = [Fiddle::Pointer[source_file_last_changed_date_and_time_information].to_i.to_s(16).rjust(16,'0')].pack("H*")
+argv[  56, 8] = [Fiddle::Pointer[qualified_printer_file_name].to_i.to_s(16).rjust(16,'0')].pack("H*")
+argv[  64, 8] = [Fiddle::Pointer[starting_page_number].to_i.to_s(16).rjust(16,'0')].pack("H*")
+argv[  72, 8] = [Fiddle::Pointer[public_authority].to_i.to_s(16).rjust(16,'0')].pack("H*")
+argv[  80, 8] = [Fiddle::Pointer[option_template].to_i.to_s(16).rjust(16,'0')].pack("H*")
+argv[  88, 8] = [Fiddle::Pointer[number_of_option_template_entries].to_i.to_s(16).rjust(16,'0')].pack("H*")
 argv[  96, 8] = [pError.to_i.to_s(16).rjust(16,'0')].pack("H*")
 argv[ 104, 8] = ['0'.rjust(16,'0')].pack("H*")
 rc = pgmcall.call(pQPRCRTPG, argv, 0)
