@@ -19,7 +19,7 @@ pQPRCRTPG  = ILEpointer.malloc
 rc = rslobj2.call(pQPRCRTPG, 513, "QPRCRTPG", "QSYS")
 ILEparms2 = []
 #
-6.times {|n|
+9.times {|n|
 #
 pgm =<<ENDPGM
   DCL DD NBR-PARMS BIN(2);
