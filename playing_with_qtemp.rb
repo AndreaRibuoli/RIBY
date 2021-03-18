@@ -17,7 +17,7 @@ argv = ILEparms.malloc
 #
 pQPRCRTPG  = ILEpointer.malloc
 rc = rslobj2.call(pQPRCRTPG, 513, "QPRCRTPG", "QSYS")
-ILEparms = []
+ILEparms2 = []
 #
 6.times {|n|
 #
@@ -39,7 +39,7 @@ ENDPGM
 pgm.gsub!("\n", ' ')
 
 len   = pgm.length
-ILEparms[n] = struct [ "char d[#{n*8}]" ]
+ILEparms2[n] = struct [ "char d[#{n*8}]" ]
 
 pgmname     = 'SUM4ME'
 pgmlib      = "QTEMP"
@@ -93,7 +93,7 @@ rc = pgmcall.call(pQPRCRTPG, argv, 0)
 pSUM4ME  = ILEpointer.malloc
 rc = rslobj2.call(pSUM4ME, 513, pgmname, pgmlib)
 
-argv2 = ILEparms[n].malloc
+argv2 = ILEparms2[n].malloc
 summa  = ['00000000'].pack("H*")
 argv2[  0, 8] = [Fiddle::Pointer[summa].to_i.to_s(16).rjust(16,'0')].pack("H*")
 arg = []
