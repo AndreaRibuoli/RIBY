@@ -3,7 +3,9 @@ require 'fiddle'
 require 'fiddle/import'
 extend Fiddle::Importer
 
-raise "Usage: playing_with_qtemp.rb" if ARGV.length != 0
+raise "Usage: playing_with_qtemp.rb <num>" if ARGV.length != 1
+
+tot = ARGV[0].to_i
 
 preload    = Fiddle.dlopen(nil)
 rslobj2    = Fiddle::Function.new( preload['_RSLOBJ2'], [Fiddle::TYPE_VOIDP, Fiddle::TYPE_SHORT, Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP], Fiddle::TYPE_INT )
@@ -19,7 +21,7 @@ pQPRCRTPG  = ILEpointer.malloc
 rc = rslobj2.call(pQPRCRTPG, 513, "QPRCRTPG", "QSYS")
 ILEparms2 = []
 #
-9.times {|n|
+tot.times {|n|
 #
 pgm =<<ENDPGM
   DCL DD NBR-PARMS BIN(2);
