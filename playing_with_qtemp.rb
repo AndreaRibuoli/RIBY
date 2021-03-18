@@ -7,19 +7,22 @@ raise "Usage: playing_with_qtemp.rb" if ARGV.length != 0
 #
 pgm =<<ENDPGM
   DCL SPCPTR .ARG001 PARM;
-  DCL SPCPTR .ARG002 PARM;
-  DCL SPCPTR .ARG003 PARM;
-  DCL SPCPTR .SUM    PARM;
-  DCL OL *ENTRY (.ARG001, .ARG002, .ARG003, .SUM) PARM EXT MIN(4);
   DCL DD ARG001 BIN(4) BAS(.ARG001);
+  DCL SPCPTR .ARG002 PARM;
   DCL DD ARG002 BIN(4) BAS(.ARG002);
+  DCL SPCPTR .ARG003 PARM;
   DCL DD ARG003 BIN(4) BAS(.ARG003);
-  DCL DD SUMPASE BIN(4) BAS(.SUM);
-  DCL DD SUM    BIN(4);
+  DCL SPCPTR .SUM    PARM;
+  DCL DD SUM BIN(4) BAS(.SUM);
+  DCL OL SUM4ME (.ARG001, .ARG002, .ARG003, .SUM) PARM EXT MIN(4);
+  DCL DD NBR-PARMS BIN(2)
+  ENTRY * (SUM4ME) EXT;
+  STPLLEN NBR-PARMS;
   CPYNV   SUM, 0;
   ADDN(S) SUM, ARG001;
   ADDN(S) SUM, ARG002;
   ADDN(S) SUM, ARG003;
+RETURN:
   RTX *;
   PEND;
 ENDPGM
@@ -41,9 +44,9 @@ srcmbr      = ''
 srcdatetime = ''
 prtname     = 'QPRINT'
 prtlib      = 'QGPL'
-opt01       = '*REPLACE'      ; opt02   = ''; opt03   = ''; opt04   = ''; opt05   = ''; opt06   = ''; opt07   = ''; opt08   = ''
+opt01       = '*REPLACE'   ; opt02 = '*LIST'; opt03   = ''; opt04   = ''; opt05   = ''; opt06   = ''; opt07   = ''; opt08   = ''
     opt09   = ''; opt10   = ''; opt11   = ''; opt12   = ''; opt13   = ''; opt14   = ''; opt15   = ''; opt16   = ''; opt17   = ''
-numopt      = 1
+numopt      = 2
 Intermediate_representation_of_the_program         = pgm.encode('IBM037')
 Length_of_intermediate_representation_of_program   = [len.to_s(16).rjust(8,'0')].pack("H*")
 Qualified_program_name                             = "#{pgmname.ljust(10, ' ')}#{pgmlib.ljust(10, ' ')}".encode('IBM037')
