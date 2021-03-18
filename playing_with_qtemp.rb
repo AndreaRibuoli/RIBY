@@ -96,14 +96,14 @@ pSUM4ME  = ILEpointer.malloc
 rc = rslobj2.call(pSUM4ME, 513, pgmname, pgmlib)
 
 argv2 = ILEparms2.malloc
+summa  = ['00000000'].pack("H*")
 arg001 = ['00000001'].pack("H*")
 arg002 = ['00000002'].pack("H*")
 arg003 = ['00000003'].pack("H*")
-summa  = ['00000000'].pack("H*")
-argv2[  0, 8] = [Fiddle::Pointer[arg001].to_i.to_s(16).rjust(16,'0')].pack("H*")
-argv2[  8, 8] = [Fiddle::Pointer[arg002].to_i.to_s(16).rjust(16,'0')].pack("H*")
-argv2[ 16, 8] = [Fiddle::Pointer[arg003].to_i.to_s(16).rjust(16,'0')].pack("H*")
-argv2[ 24, 8] = [Fiddle::Pointer[summa].to_i.to_s(16).rjust(16,'0')].pack("H*")
+argv2[  0, 8] = [Fiddle::Pointer[summa].to_i.to_s(16).rjust(16,'0')].pack("H*")
+argv2[  8, 8] = [Fiddle::Pointer[arg001].to_i.to_s(16).rjust(16,'0')].pack("H*")
+argv2[ 16, 8] = [Fiddle::Pointer[arg002].to_i.to_s(16).rjust(16,'0')].pack("H*")
+argv2[ 24, 8] = [Fiddle::Pointer[arg003].to_i.to_s(16).rjust(16,'0')].pack("H*")
 argv2[ 32, 8] = ['0'.rjust(16,'0')].pack("H*")
 
 rc = pgmcall.call(pSUM4ME, argv2, 0)
