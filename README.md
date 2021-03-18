@@ -35,6 +35,30 @@ Let's go!
 13. [to review the lesson on objects](#13-to-review-the-lesson-on-objects)
 14. [to put previous lessons into practice](#14-to-put-previous-lessons-into-practice)
 15. [to have fun by reliving old glories](#15-to-have-fun-by-reliving-old-glories)
+16. [to have fun with QTEMP](#16-to-have-fun-with-qtemp)
+
+
+----
+### 16. to have fun with QTEMP
+
+Today we will experiment a tricky situation. 
+
+**Machine interface** (*MI*) is the interface between the Operating System (IBM i) and the Licensed Internal Code (LIC). 
+As soon as we know: 
+
+* how to compile a program from Ruby using the instructive **Machine Interface** language (by means of native **QPRCRTPG** API)
+* how to resolve a system pointer to a native object (the program being generated) and
+* how to invoke such a program (by means of PASE **\_PGMCALL** API applied to the system pointer)
+
+we could imagine to create a Ruby script that iterates over these steps.
+
+We would like to verify if the context (library) of such an exploratory object can be **QTEMP** (this aspect should speed up our cycles and will guarantee a safer execution).
+
+Let us test our concept with a MI program that receives a fixed number of integers, adds them all and returns the sum.
+Imagine to iterate this cycle incrementing by one the numbers of arguments.
+The meta program should fail when we reach the maximum number of arguments a program can accept when compiled (or the maximum that \_PGMCALL API can handle passing them through).
+
+These apparently useless tests help us confirm that the handling of pointers via Ruby is sufficiently safe to support our growing requirements.
 
 
 ----
