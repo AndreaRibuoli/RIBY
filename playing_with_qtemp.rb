@@ -89,6 +89,7 @@ puts pError[0, 12].unpack("H*")
 #
 pSUM4ME  = ILEpointer.malloc
 rc = rslobj2.call(pSUM4ME, 513, pgmname, pgmlib)
+puts pSUM4ME[0, 16].unpack("H*")
 
 arg001 = ['00000001'].pack("H*")
 arg002 = ['00000002'].pack("H*")
@@ -100,7 +101,8 @@ argv[  16, 8] = [Fiddle::Pointer[arg003].to_i.to_s(16).rjust(16,'0')].pack("H*")
 argv[  24, 8] = [Fiddle::Pointer[summa ].to_i.to_s(16).rjust(16,'0')].pack("H*")
 argv[  32, 8] = ['0'.rjust(16,'0')].pack("H*")
 
-rc = pgmcall.call(pSUM4ME, argv, 0)
+# rc = pgmcall.call(pSUM4ME, argv, 0)
+
 #
-puts summa[0, 4].unpack("H*")
+# puts summa[0, 4].unpack("H*")
 
