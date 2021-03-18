@@ -111,5 +111,5 @@ argv2[ 32, 8] = ['0'.rjust(16,'0')].pack("H*")
 rc = pgmcall.call(pSUM4ME, argv2, 0)
 puts rc
 
-puts summa[0, 4].to_i(16)
+puts summa[0, 4].unpack("H*")[0].to_i(16)
 
