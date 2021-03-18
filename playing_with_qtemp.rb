@@ -22,6 +22,8 @@ pgm =<<ENDPGM
   PEND;
 ENDPGM
 
+pgm.gsub!("\n", ' ')
+
 len   = pgm.length
 ILEerror    = struct [ 'char e[12]' ]
 ILEparms    = struct [ 'char a[112]' ]
