@@ -10,12 +10,14 @@ rslobj2    = Fiddle::Function.new( preload['_RSLOBJ2'], [Fiddle::TYPE_VOIDP, Fid
 pgmcall    = Fiddle::Function.new( preload['_PGMCALL'], [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_INT], Fiddle::TYPE_INT )
 setspp     = Fiddle::Function.new( preload['_SETSPP'], [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP], Fiddle::TYPE_VOID )
 #
+ILEpointer  = struct [ 'char b[16]' ]
 ILEerror    = struct [ 'char e[12]' ]
 ILEparms    = struct [ 'char a[112]' ]
-ILEpointer  = struct [ 'char b[16]' ]
+argv = ILEparms.malloc
 #
 pQPRCRTPG  = ILEpointer.malloc
 rc = rslobj2.call(pQPRCRTPG, 513, "QPRCRTPG", "QSYS")
+ILEparms = []
 #
 6.times {|n|
 #
@@ -37,7 +39,7 @@ ENDPGM
 pgm.gsub!("\n", ' ')
 
 len   = pgm.length
-ILEparms2   = struct [ "char d[#{n*8}]" ]
+ILEparms[n] = struct [ "char d[#{n*8}]" ]
 
 pgmname     = 'SUM4ME'
 pgmlib      = "QTEMP"
@@ -71,7 +73,6 @@ Number_of_option_template_entries                  = [numopt.to_s(16).rjust(8,'0
 pError      = ILEerror.malloc
 #
 
-argv = ILEparms.malloc
 argv[   0, 8] = [Fiddle::Pointer[Intermediate_representation_of_the_program].to_i.to_s(16).rjust(16,'0')].pack("H*")
 argv[   8, 8] = [Fiddle::Pointer[Length_of_intermediate_representation_of_program].to_i.to_s(16).rjust(16,'0')].pack("H*")
 argv[  16, 8] = [Fiddle::Pointer[Qualified_program_name].to_i.to_s(16).rjust(16,'0')].pack("H*")
@@ -92,7 +93,7 @@ rc = pgmcall.call(pQPRCRTPG, argv, 0)
 pSUM4ME  = ILEpointer.malloc
 rc = rslobj2.call(pSUM4ME, 513, pgmname, pgmlib)
 
-argv2 = ILEparms2.malloc
+argv2 = ILEparms[n].malloc
 summa  = ['00000000'].pack("H*")
 argv2[  0, 8] = [Fiddle::Pointer[summa].to_i.to_s(16).rjust(16,'0')].pack("H*")
 arg = []
