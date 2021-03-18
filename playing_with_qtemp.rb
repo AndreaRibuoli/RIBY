@@ -30,11 +30,10 @@ len   = pgm.length
 ILEerror    = struct [ 'char e[12]' ]
 ILEparms    = struct [ 'char a[112]' ]
 ILEpointer  = struct [ 'char b[16]' ]
-ILEparms2   = struct [ 'char d[80]' ]
-PASEparms2  = struct [ 'char d[16]' ]
+ILEparms2   = struct [ 'char d[40]' ]
 
 pgmname     = 'SUM4ME'
-pgmlib      = "QTEMP"
+pgmlib      = "RIBY"
 pgmtext     = 'Three addenda'
 srcname     = '*NONE'
 srclib      = ''
@@ -93,21 +92,20 @@ puts pError[0, 12].unpack("H*")
 #
 pSUM4ME  = ILEpointer.malloc
 rc = rslobj2.call(pSUM4ME, 513, pgmname, pgmlib)
-# puts pSUM4ME[0, 16].unpack("H*")
+puts pSUM4ME[0, 16].unpack("H*")
 
 argv2 = ILEparms2.malloc
-args2 = PASEparms2.malloc
-args2[  0, 4] = ['00000001'].pack("H*")
-args2[  4, 4] = ['00000002'].pack("H*")
-args2[  8, 4] = ['00000003'].pack("H*")
-args2[ 12, 4] = ['00000000'].pack("H*")
-setspp.call(argv2.to_ptr     , args2.to_i)
-setspp.call(argv2.to_ptr + 16, args2.to_i + 4)
-setspp.call(argv2.to_ptr + 32, args2.to_i + 8)
-setspp.call(argv2.to_ptr + 48, args2.to_i + 12)
-setspp.call(argv2.to_ptr + 64, 0)
+arg001 = ['00000001'].pack("H*")
+arg002 = ['00000002'].pack("H*")
+arg003 = ['00000003'].pack("H*")
+summa  = ['00000000'].pack("H*")
+argv2[  0, 8] = [Fiddle::Pointer[arg001].to_i.to_s(16).rjust(16,'0')].pack("H*")
+argv2[  8, 8] = [Fiddle::Pointer[arg002].to_i.to_s(16).rjust(16,'0')].pack("H*")
+argv2[ 16, 8] = [Fiddle::Pointer[arg003].to_i.to_s(16).rjust(16,'0')].pack("H*")
+argv2[ 24, 8] = [Fiddle::Pointer[summa].to_i.to_s(16).rjust(16,'0')].pack("H*")
+argv2[ 32, 8] = ['0'.rjust(16,'0')].pack("H*")
 
-rc = pgmcall.call(pSUM4ME, argv2, 1)
+rc = pgmcall.call(pSUM4ME, argv2, 0)
 puts rc
 
 puts summa[0, 4].unpack("H*")
