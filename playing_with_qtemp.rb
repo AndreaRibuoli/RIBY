@@ -4,7 +4,20 @@ require 'fiddle/import'
 extend Fiddle::Importer
 
 raise "Usage: playing_with_qtemp.rb" if ARGV.length != 0
-n = 3
+
+preload    = Fiddle.dlopen(nil)
+rslobj2    = Fiddle::Function.new( preload['_RSLOBJ2'], [Fiddle::TYPE_VOIDP, Fiddle::TYPE_SHORT, Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP], Fiddle::TYPE_INT )
+pgmcall    = Fiddle::Function.new( preload['_PGMCALL'], [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_INT], Fiddle::TYPE_INT )
+setspp     = Fiddle::Function.new( preload['_SETSPP'], [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP], Fiddle::TYPE_VOID )
+#
+ILEerror    = struct [ 'char e[12]' ]
+ILEparms    = struct [ 'char a[112]' ]
+ILEpointer  = struct [ 'char b[16]' ]
+#
+pQPRCRTPG  = ILEpointer.malloc
+rc = rslobj2.call(pQPRCRTPG, 513, "QPRCRTPG", "QSYS")
+#
+6.times {|n|
 #
 pgm =<<ENDPGM
   DCL DD NBR-PARMS BIN(2);
@@ -24,10 +37,7 @@ ENDPGM
 pgm.gsub!("\n", ' ')
 
 len   = pgm.length
-ILEerror    = struct [ 'char e[12]' ]
-ILEparms    = struct [ 'char a[112]' ]
-ILEpointer  = struct [ 'char b[16]' ]
-ILEparms2   = struct [ 'char d[40]' ]
+ILEparms2   = struct [ "char d[#{n*8}]" ]
 
 pgmname     = 'SUM4ME'
 pgmlib      = "QTEMP"
@@ -60,13 +70,6 @@ Option_template                                    = ( opt01.ljust(11, ' ') + op
 Number_of_option_template_entries                  = [numopt.to_s(16).rjust(8,'0')].pack("H*")
 pError      = ILEerror.malloc
 #
-preload    = Fiddle.dlopen(nil)
-rslobj2    = Fiddle::Function.new( preload['_RSLOBJ2'], [Fiddle::TYPE_VOIDP, Fiddle::TYPE_SHORT, Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP], Fiddle::TYPE_INT )
-pgmcall    = Fiddle::Function.new( preload['_PGMCALL'], [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_INT], Fiddle::TYPE_INT )
-setspp     = Fiddle::Function.new( preload['_SETSPP'], [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP], Fiddle::TYPE_VOID )
-#
-pQPRCRTPG  = ILEpointer.malloc
-rc = rslobj2.call(pQPRCRTPG, 513, "QPRCRTPG", "QSYS")
 
 argv = ILEparms.malloc
 argv[   0, 8] = [Fiddle::Pointer[Intermediate_representation_of_the_program].to_i.to_s(16).rjust(16,'0')].pack("H*")
@@ -108,3 +111,4 @@ def get_i(a)
 end
 
 puts "somma = #{get_i(summa)}"
+}
