@@ -107,4 +107,4 @@ def get_i(a)
   a[0, 4].unpack("H*")[0].to_i(16)
 end
 
-puts "#{get_i(arg[1])} + #{get_i(arg[2])} + #{get_i(arg[3])} = #{get_i(summa)}"
+puts "somma = #{get_i(summa)}"
