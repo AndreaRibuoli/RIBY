@@ -60,6 +60,8 @@ The meta program should fail when we reach the maximum number of arguments a pro
 
 These apparently useless tests help us confirm that the handling of pointers via Ruby is sufficiently safe to support our growing requirements.
 
+The [Ruby script](playing_with_qtemp.rb) required to rename those variables that were capitalized (in Ruby this tags a **constant**).
+
 
 ----
 ### 15. to have fun by reliving old glories
