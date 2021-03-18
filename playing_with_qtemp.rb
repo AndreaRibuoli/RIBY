@@ -4,24 +4,18 @@ require 'fiddle/import'
 extend Fiddle::Importer
 
 raise "Usage: playing_with_qtemp.rb" if ARGV.length != 0
+n = 3
 #
 pgm =<<ENDPGM
   DCL DD NBR-PARMS BIN(2);
-  DCL SPCPTR .SUM    PARM;
+  DCL SPCPTR .SUM PARM;
   DCL DD SUM BIN(4) BAS(.SUM);
-  DCL SPCPTR .ARG001 PARM;
-  DCL DD ARG001 BIN(4) BAS(.ARG001);
-  DCL SPCPTR .ARG002 PARM;
-  DCL DD ARG002 BIN(4) BAS(.ARG002);
-  DCL SPCPTR .ARG003 PARM;
-  DCL DD ARG003 BIN(4) BAS(.ARG003);
+  #{s = ''; n.times{|t| s = s + ' DCL SPCPTR .ARG' + t.to_s + ' PARM; DCL DD ARG' + t.to_s + ' BIN(4) BAS(.ARG' + t.to_s + ');'}; s}
   DCL OL SUM4ME (.SUM, .ARG001, .ARG002, .ARG003) PARM EXT MIN(1);
   ENTRY * (SUM4ME) EXT;
   STPLLEN NBR-PARMS;
-  CPYNV   SUM, 0;
-  ADDN(S) SUM, ARG001;
-  ADDN(S) SUM, ARG002;
-  ADDN(S) SUM, ARG003;
+  CPYNV SUM, 0;
+  #{s = ''; n.times{|t| s = s + ' ADDN(S) SUM, ARG' + t.to_s + ';'}; s}
 RETURN:
   RTX *;
   PEND;
