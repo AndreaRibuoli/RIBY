@@ -91,11 +91,9 @@ argv[  96, 8] = [pError.to_i.to_s(16).rjust(16,'0')].pack("H*")
 argv[ 104, 8] = ['0'.rjust(16,'0')].pack("H*")
 rc = pgmcall.call(pQPRCRTPG, argv, 0)
 #
-puts pError[0, 12].unpack("H*")
 #
 pSUM4ME  = ILEpointer.malloc
 rc = rslobj2.call(pSUM4ME, 513, pgmname, pgmlib)
-puts pSUM4ME[0, 16].unpack("H*")
 
 argv2 = ILEparms2.malloc
 arg001 = ['00000001'].pack("H*")
@@ -109,7 +107,10 @@ argv2[ 24, 8] = [Fiddle::Pointer[summa].to_i.to_s(16).rjust(16,'0')].pack("H*")
 argv2[ 32, 8] = ['0'.rjust(16,'0')].pack("H*")
 
 rc = pgmcall.call(pSUM4ME, argv2, 0)
-puts rc
 
-puts summa[0, 4].unpack("H*")[0].to_i(16)
+def get_i(a)
+  a[0, 4].unpack("H*")[0].to_i(16)
+end
+
+puts "#{get_i(arg001)} + #{get_i(arg002)} + #{get_i(arg003)} = #{get_i(summa)}"
 
