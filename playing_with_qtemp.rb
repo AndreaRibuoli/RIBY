@@ -14,7 +14,8 @@ pgm =<<ENDPGM
   DCL DD ARG001 BIN(4) BAS(.ARG001);
   DCL DD ARG002 BIN(4) BAS(.ARG002);
   DCL DD ARG003 BIN(4) BAS(.ARG003);
-  DCL DD SUM    BIN(4) BAS(.SUM);
+  DCL DD SUMPASE BIN(4) BAS(.SUM);
+  DCL DD SUM    BIN(4);
   CPYNV   SUM, 0;
   ADDN(S) SUM, ARG001;
   ADDN(S) SUM, ARG002;
@@ -90,7 +91,7 @@ puts pError[0, 12].unpack("H*")
 #
 pSUM4ME  = ILEpointer.malloc
 rc = rslobj2.call(pSUM4ME, 513, pgmname, pgmlib)
-puts pSUM4ME[0, 16].unpack("H*")
+# puts pSUM4ME[0, 16].unpack("H*")
 
 argv2 = ILEparms2.malloc
 arg001 = ['00000001'].pack("H*")
