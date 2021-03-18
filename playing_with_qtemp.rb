@@ -29,6 +29,7 @@ len   = pgm.length
 ILEerror    = struct [ 'char e[12]' ]
 ILEparms    = struct [ 'char a[112]' ]
 ILEpointer  = struct [ 'char b[16]' ]
+ILEparms2   = struct [ 'char a[40]' ]
 
 pgmname     = 'SUM4ME'
 pgmlib      = "QTEMP"
@@ -39,9 +40,9 @@ srcmbr      = ''
 srcdatetime = ''
 prtname     = 'QPRINT'
 prtlib      = 'QGPL'
-opt01       = '*LIST'; opt02 = '*REPLACE';    opt03   = ''; opt04   = ''; opt05   = ''; opt06   = ''; opt07   = ''; opt08   = ''
+opt01       = '*REPLACE'      ; opt02   = ''; opt03   = ''; opt04   = ''; opt05   = ''; opt06   = ''; opt07   = ''; opt08   = ''
     opt09   = ''; opt10   = ''; opt11   = ''; opt12   = ''; opt13   = ''; opt14   = ''; opt15   = ''; opt16   = ''; opt17   = ''
-numopt      = 2
+numopt      = 1
 Intermediate_representation_of_the_program         = pgm.encode('IBM037')
 Length_of_intermediate_representation_of_program   = [len.to_s(16).rjust(8,'0')].pack("H*")
 Qualified_program_name                             = "#{pgmname.ljust(10, ' ')}#{pgmlib.ljust(10, ' ')}".encode('IBM037')
@@ -91,17 +92,19 @@ pSUM4ME  = ILEpointer.malloc
 rc = rslobj2.call(pSUM4ME, 513, pgmname, pgmlib)
 puts pSUM4ME[0, 16].unpack("H*")
 
+argv2 = ILEparms2.malloc
 arg001 = ['00000001'].pack("H*")
 arg002 = ['00000002'].pack("H*")
 arg003 = ['00000003'].pack("H*")
 summa  = ['00000000'].pack("H*")
-argv[   0, 8] = [Fiddle::Pointer[arg001].to_i.to_s(16).rjust(16,'0')].pack("H*")
-argv[   8, 8] = [Fiddle::Pointer[arg002].to_i.to_s(16).rjust(16,'0')].pack("H*")
-argv[  16, 8] = [Fiddle::Pointer[arg003].to_i.to_s(16).rjust(16,'0')].pack("H*")
-argv[  24, 8] = [Fiddle::Pointer[summa ].to_i.to_s(16).rjust(16,'0')].pack("H*")
-argv[  32, 8] = ['0'.rjust(16,'0')].pack("H*")
+argv2[   0, 8] = [Fiddle::Pointer[arg001].to_i.to_s(16).rjust(16,'0')].pack("H*")
+argv2[   8, 8] = [Fiddle::Pointer[arg002].to_i.to_s(16).rjust(16,'0')].pack("H*")
+argv2[  16, 8] = [Fiddle::Pointer[arg003].to_i.to_s(16).rjust(16,'0')].pack("H*")
+argv2[  24, 8] = [Fiddle::Pointer[summa ].to_i.to_s(16).rjust(16,'0')].pack("H*")
+argv2[  32, 8] = ['0'.rjust(16,'0')].pack("H*")
 
-# rc = pgmcall.call(pSUM4ME, argv, 0)
+rc = pgmcall.call(pSUM4ME, argv2, 0)
+puts rc
 
 #
 # puts summa[0, 4].unpack("H*")
