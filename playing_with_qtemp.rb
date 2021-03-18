@@ -36,7 +36,7 @@ ILEpointer  = struct [ 'char b[16]' ]
 ILEparms2   = struct [ 'char d[40]' ]
 
 pgmname     = 'SUM4ME'
-pgmlib      = "RIBY"
+pgmlib      = "QTEMP"
 pgmtext     = 'Three addenda'
 srcname     = '*NONE'
 srclib      = ''
@@ -111,5 +111,5 @@ argv2[ 32, 8] = ['0'.rjust(16,'0')].pack("H*")
 rc = pgmcall.call(pSUM4ME, argv2, 0)
 puts rc
 
-puts summa[0, 4].unpack("H*")
+puts summa[0, 4].to_i(16)
 
