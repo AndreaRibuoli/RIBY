@@ -31,6 +31,7 @@ ILEerror    = struct [ 'char e[12]' ]
 ILEparms    = struct [ 'char a[112]' ]
 ILEpointer  = struct [ 'char b[16]' ]
 ILEparms2   = struct [ 'char d[80]' ]
+PASEparms2  = struct [ 'char d[16]' ]
 
 pgmname     = 'SUM4ME'
 pgmlib      = "QTEMP"
@@ -95,15 +96,16 @@ rc = rslobj2.call(pSUM4ME, 513, pgmname, pgmlib)
 # puts pSUM4ME[0, 16].unpack("H*")
 
 argv2 = ILEparms2.malloc
-arg001 = ['00000001'].pack("H*")
-arg002 = ['00000002'].pack("H*")
-arg003 = ['00000003'].pack("H*")
-summa  = ['00000000'].pack("H*")
-setspp.call(argv2.to_ptr     , Fiddle::Pointer[arg001])
-setspp.call(argv2.to_ptr + 16, Fiddle::Pointer[arg002])
-setspp.call(argv2.to_ptr + 32, Fiddle::Pointer[arg003])
-setspp.call(argv2.to_ptr + 48, Fiddle::Pointer[summa])
-argv2[ 64, 16] = ['0'.rjust(32,'0')].pack("H*")
+args2 = PASEparms2.malloc
+args2[  0, 4] = ['00000001'].pack("H*")
+args2[  4, 4] = ['00000002'].pack("H*")
+args2[  8, 4] = ['00000003'].pack("H*")
+args2[ 12, 4] = ['00000000'].pack("H*")
+setspp.call(argv2.to_ptr     , args2.to_i)
+setspp.call(argv2.to_ptr + 16, args2.to_i + 4)
+setspp.call(argv2.to_ptr + 32, args2.to_i + 8)
+setspp.call(argv2.to_ptr + 48, args2.to_i + 12)
+setspp.call(argv2.to_ptr + 64, 0)
 
 rc = pgmcall.call(pSUM4ME, argv2, 1)
 puts rc
