@@ -31,7 +31,7 @@ ILEparms    = struct [ 'char a[112]' ]
 ILEpointer  = struct [ 'char b[16]' ]
 
 pgmname     = 'SUM4ME'
-pgmlib      = "RIBY"
+pgmlib      = "QTEMP"
 pgmtext     = 'Three addenda'
 srcname     = '*NONE'
 srclib      = ''
