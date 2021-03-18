@@ -11,7 +11,7 @@ pgm =<<ENDPGM
   DCL SPCPTR .SUM PARM;
   DCL DD SUM BIN(4) BAS(.SUM);
   #{s = ''; n.times{|t| s = s + ' DCL SPCPTR .ARG' + t.to_s + ' PARM; DCL DD ARG' + t.to_s + ' BIN(4) BAS(.ARG' + t.to_s + ');'}; s}
-  DCL OL SUM4ME (.SUM, .ARG001, .ARG002, .ARG003) PARM EXT MIN(1);
+DCL OL SUM4ME (.SUM#{s = ''; n.times{|t| s = s + ', .ARG' + t.to_s}; s}) PARM EXT MIN(1);
   ENTRY * (SUM4ME) EXT;
   STPLLEN NBR-PARMS;
   CPYNV SUM, 0;
