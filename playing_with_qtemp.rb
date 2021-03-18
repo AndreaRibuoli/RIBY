@@ -30,7 +30,7 @@ len   = pgm.length
 ILEerror    = struct [ 'char e[12]' ]
 ILEparms    = struct [ 'char a[112]' ]
 ILEpointer  = struct [ 'char b[16]' ]
-ILEparms2   = struct [ 'char a[40]' ]
+ILEparms2   = struct [ 'char d[80]' ]
 
 pgmname     = 'SUM4ME'
 pgmlib      = "QTEMP"
@@ -98,15 +98,14 @@ arg001 = ['00000001'].pack("H*")
 arg002 = ['00000002'].pack("H*")
 arg003 = ['00000003'].pack("H*")
 summa  = ['00000000'].pack("H*")
-argv2[   0, 8] = [Fiddle::Pointer[arg001].to_i.to_s(16).rjust(16,'0')].pack("H*")
-argv2[   8, 8] = [Fiddle::Pointer[arg002].to_i.to_s(16).rjust(16,'0')].pack("H*")
-argv2[  16, 8] = [Fiddle::Pointer[arg003].to_i.to_s(16).rjust(16,'0')].pack("H*")
-argv2[  24, 8] = [Fiddle::Pointer[summa ].to_i.to_s(16).rjust(16,'0')].pack("H*")
-argv2[  32, 8] = ['0'.rjust(16,'0')].pack("H*")
+setspp.call(ILEparms2.to_ptr     , Fiddle::Pointer[arg001])
+setspp.call(ILEparms2.to_ptr + 16, Fiddle::Pointer[arg002])
+setspp.call(ILEparms2.to_ptr + 32, Fiddle::Pointer[arg003])
+setspp.call(ILEparms2.to_ptr + 48, Fiddle::Pointer[summa])
+argv2[ 64, 16] = ['0'.rjust(32,'0')].pack("H*")
 
-rc = pgmcall.call(pSUM4ME, argv2, 0)
+rc = pgmcall.call(pSUM4ME, argv2, 1)
 puts rc
 
-#
-# puts summa[0, 4].unpack("H*")
+puts summa[0, 4].unpack("H*")
 
