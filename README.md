@@ -58,6 +58,15 @@ Let us test our concept with a MI program that receives a fixed number of intege
 Imagine to iterate this cycle incrementing by one the numbers of arguments.
 The meta program should fail when we reach the maximum number of arguments a program can accept when compiled (or the maximum that \_PGMCALL API can handle passing them through).
 
+```
+ 5770SS1 V7R3M0 160422T                               Emissione generata                               19/03/21 18:55:52  Pag.     
+   IDMSG   SEQ   Diagnostici                                                                                                       
+* CPD6360 000514 Sono stati specificati più di 255 elementi nell'elenco degli operandi. Non devono superare 225. Probabile errore de 
+l compilatore.                                                                                                    
+```
+
+The first limit to occur is the number of operands MI supports (**CPD6360**: *More than 255 elements specified in operand list. Must be 255 or less. Probable compiler error.*) 
+
 These apparently useless tests help us confirm that the handling of pointers via Ruby is sufficiently safe to support our growing requirements.
 
 The [Ruby script](playing_with_qtemp.rb) required to rename those variables that were capitalized (in Ruby this tags a **constant**).
