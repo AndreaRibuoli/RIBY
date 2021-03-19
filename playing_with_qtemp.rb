@@ -95,6 +95,7 @@ rc = pgmcall.call(pQPRCRTPG, argv, 0)
 pSUM4ME  = ILEpointer.malloc
 rc = rslobj2.call(pSUM4ME, 513, pgmname, pgmlib)
 
+puts pSUM4ME[0, 16].unpack("H*")
 argv2 = ILEparms2[n].malloc
 summa  = ['00000000'].pack("H*")
 argv2[  0, 8] = [Fiddle::Pointer[summa].to_i.to_s(16).rjust(16,'0')].pack("H*")
