@@ -62,6 +62,29 @@ These apparently useless tests help us confirm that the handling of pointers via
 
 The [Ruby script](playing_with_qtemp.rb) required to rename those variables that were capitalized (in Ruby this tags a **constant**).
 
+```
+bash-4.4$ playing_with_qtemp.rb 12
+somma = 0
+somma = 1
+somma = 3
+somma = 6
+somma = 10
+somma = 15
+somma = 21
+somma = 28
+somma = 36
+somma = 45
+somma = 55
+somma = 66
+```
+
+So we are calling an always-changing native program created from MI assembly. 
+This is an example of code generation from Ruby targeting a specific syntax in IBM i.
+This same approach could be adopted for CL, C, RPG, and many other more unusual languages.
+
+As soon as many compilers adopts native source file members as input (QPRCRTPG is the exception) let us investigate 
+the opportunities we have to read and write source files (there has been a gradual evolution to IFS as an alternative source, 
+particularly suited for tools like **make** or **git**). 
 
 ----
 ### 15. to have fun by reliving old glories
