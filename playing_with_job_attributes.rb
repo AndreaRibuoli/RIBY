@@ -37,4 +37,4 @@ argv[ 40, 8] = ['0'.rjust(16,'0')].pack("H*")
 
 rc = pgmcall.call(pQUSRJOBI, argv, 0)
 
-puts receiver_variable[0, 512].unpack["H*"]
+puts receiver_variable[0, 512].unpack("H*")
