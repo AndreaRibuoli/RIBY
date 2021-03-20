@@ -17,10 +17,9 @@ ILEerror    = struct [ 'char e[12]' ]
 ILEparms    = struct [ 'char a[112]' ]
 PASEbuffer  = struct [ "char d[#{size}]" ]
 
-receiver_variable = PASEbuffer.malloc
 argv   = ILEparms.malloc
 #
-              =
+receiver_variable              = PASEbuffer.malloc
 length_of_receiver_variable    = [size.to_s(16).rjust(8,'0')].pack("H*")
 format_name                    = 'JOBI0100'.encode('IBM037')
 qualified_job_name             = '*'.ljust(26, ' ').encode('IBM037')
