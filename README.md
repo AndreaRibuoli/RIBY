@@ -42,8 +42,8 @@ Let's go!
 ----
 ### 17. to retrieve job attributes
 
-Another example of API is **QUSRJOBI** we can use to retrieve information anout the job we are in.
-Obviously each time we call a Ruby script execution from **bash** (or any other shell) we are creating a new process (job).
+Another example of API is **QUSRJOBI** we can use to retrieve information about the job we are in.
+Obviously each time we call [a Ruby script](playing_with_job_attributes.rb) execution from **bash** (or any other shell) we are creating a new process (job).
 We will see the job number growing.
 
 ```
