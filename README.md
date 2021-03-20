@@ -42,9 +42,26 @@ Let's go!
 ----
 ### 17. to retrieve job attributes
 
+Another example of API is **QUSRJOBI** we can use to retrieve information anout the job we are in.
+Obviously each time we call a Ruby script execution from **bash** (or any other shell) we are creating a new process (job).
+We will see the job number growing.
+
 ```
-bash-5.0$ resolve.rb qsys qclrtvja 513
-Object QSYS/QCLRTVJA of type 0x0201 resolved to ["00080000000000003b214cc1b7000200"]
+bash-5.0$ playing_with_job_attributes.rb
+Number of bytes returned  = 86
+Number of bytes available = 86
+Job name                  = JUPYTERLAB
+User name                 = JUPYTER   
+Job number                = 293333
+Internal job identifier   = 0x02e40001001a8300a60f4cf029a65001
+Job status                = *ACTIVE   
+Job type                  = B
+Job subtype               = D
+Reserved                  = 
+Run priority (job)        = 50
+Time slice                = 2000
+Default wait              = 30
+Purge                     = *YES      
 ```
 
 
@@ -105,6 +122,8 @@ This same approach could be adopted for CL, C, RPG, and many other more unusual 
 As soon as many compilers are still using native source file members as input (*QPRCRTPG* is the exception) let us investigate 
 the opportunities we have to read and/or write source files by means of API we could access from Ruby in PASE.
 There has been a gradual evolution to IFS as an alternative source, particularly suited for tools like **make** and **git**). 
+
+[NEXT-17](#17-to-retrieve-job-attributes)
 
 ----
 ### 15. to have fun by reliving old glories
