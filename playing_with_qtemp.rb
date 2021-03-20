@@ -111,7 +111,7 @@ argv2[  8*(n+1), 8] = ['0'.rjust(16,'0')].pack("H*")
 rc = pgmcall.call(pSUM4ME, argv2, 0)
 
 def get_i(a)
-  a[0, 4].unpack("H*")[0].to_i(16)
+    a[0, 4].unpack("H*")[0].to_i(16)
 end
 
 puts "somma = #{get_i(summa)}"

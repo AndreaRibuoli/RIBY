@@ -36,10 +36,21 @@ Let's go!
 14. [to put previous lessons into practice](#14-to-put-previous-lessons-into-practice)
 15. [to have fun by reliving old glories](#15-to-have-fun-by-reliving-old-glories)
 16. [to have fun with QTEMP](#16-to-have-fun-with-qtemp)
+17. [to retrieve job attributes](#17-to-retrieve-job-attributes)
+
+
+----
+### 17. to retrieve job attributes
+
+```
+bash-5.0$ resolve.rb qsys qclrtvja 513
+Object QSYS/QCLRTVJA of type 0x0201 resolved to ["00080000000000003b214cc1b7000200"]
+```
 
 
 ----
 ### 16. to have fun with QTEMP
+
 
 Today we will experiment a tricky situation. 
 
@@ -161,6 +172,8 @@ Ricerca . . . . .
    IDMSG   Diagnostici semantici flusso istruzioni MI                                                                              
                                                                                                                                                                                                                                                                       
 ```
+
+[NEXT-16](#16-to-have-fun-with-qtemp)
 
 ----
 ### 14. to put previous lessons into practice
