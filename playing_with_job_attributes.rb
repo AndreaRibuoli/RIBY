@@ -37,5 +37,9 @@ argv[ 40, 8] = ['0'.rjust(16,'0')].pack("H*")
 
 rc = pgmcall.call(pQUSRJOBI, argv, 0)
 
-puts receiver_variable[0, size].unpack("H*")
-puts receiver_variable[8, 56].force_encoding('IBM037'). encode('utf-8')
+puts receiver_variable[  0,  8].unpack("H*")
+puts receiver_variable[  8, 26].force_encoding('IBM037'). encode('utf-8')
+puts receiver_variable[ 34, 16].unpack("H*")
+puts receiver_variable[ 50, 14].force_encoding('IBM037'). encode('utf-8')
+puts receiver_variable[ 64, 12].unpack("H*")
+puts receiver_variable[ 76, 10].force_encoding('IBM037'). encode('utf-8')
