@@ -42,9 +42,8 @@ Let's go!
 ----
 ### 17. to retrieve job attributes
 
-Another example of API is **QUSRJOBI** we can use to retrieve information about the job we are in.
-Obviously each time we call [a Ruby script](playing_with_job_attributes.rb) execution from **bash** (or any other shell) we are creating a new process (job).
-We will see the job number growing.
+Another example of API is **QUSRJOBI**: we can use it to retrieve information about the job running.
+Obviously each time we call [a Ruby script](playing_with_job_attributes.rb) for execution from **bash** (or any other shell) we are actually creating a new process (job): that is why we will see the job number incremented repeating the execution.
 
 ```
 bash-5.0$ playing_with_job_attributes.rb
@@ -52,8 +51,8 @@ Number of bytes returned  = 86
 Number of bytes available = 86
 Job name                  = JUPYTERLAB
 User name                 = JUPYTER   
-Job number                = 293333
-Internal job identifier   = 0x02e40001001a8300a60f4cf029a65001
+Job number                = 293334
+Internal job identifier   = 0x02e4000100190f00a60f4f1b0d4d0001
 Job status                = *ACTIVE   
 Job type                  = B
 Job subtype               = D
@@ -62,6 +61,22 @@ Run priority (job)        = 50
 Time slice                = 2000
 Default wait              = 30
 Purge                     = *YES      
+
+bash-5.0$ playing_with_job_attributes.rb
+Number of bytes returned  = 86
+Number of bytes available = 86
+Job name                  = JUPYTERLAB
+User name                 = JUPYTER   
+Job number                = 293335
+Internal job identifier   = 0x02e4000100190f00a60f4f1c9186f001
+Job status                = *ACTIVE   
+Job type                  = B
+Job subtype               = D
+Reserved                  = 
+Run priority (job)        = 50
+Time slice                = 2000
+Default wait              = 30
+Purge                     = *YES   
 ```
 
 
