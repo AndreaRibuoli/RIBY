@@ -38,8 +38,8 @@ argv[ 40, 8] = ['0'.rjust(16,'0')].pack("H*")
 rc = pgmcall.call(pQUSRJOBI, argv, 0)
 
 puts <<ENDOUT
-Number of bytes returned  = 0x#{receiver_variable[  0,  4].unpack("H*").to_i(16)}
-Number of bytes available = 0x#{receiver_variable[  4,  4].unpack("H*").to_i(16)}
+Number of bytes returned  = #{receiver_variable[  0,  4].unpack("H*")[0].to_i(16)}
+Number of bytes available = #{receiver_variable[  4,  4].unpack("H*")[0].to_i(16)}
 Job name                  = #{receiver_variable[  8, 10].force_encoding('IBM037'). encode('utf-8')}
 User name                 = #{receiver_variable[ 18, 10].force_encoding('IBM037'). encode('utf-8')}
 Job number                = #{receiver_variable[ 28,  6].force_encoding('IBM037'). encode('utf-8')}
