@@ -11,7 +11,7 @@ rslobj2    = Fiddle::Function.new( preload['_RSLOBJ2'], [Fiddle::TYPE_VOIDP, Fid
 pgmcall    = Fiddle::Function.new( preload['_PGMCALL'], [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_INT], Fiddle::TYPE_INT )
 setspp     = Fiddle::Function.new( preload['_SETSPP'], [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP], Fiddle::TYPE_VOID )
 #
-size = 64
+size = 86
 ILEpointer  = struct [ 'char b[16]' ]
 ILEerror    = struct [ 'char e[12]' ]
 ILEparms    = struct [ 'char a[112]' ]
@@ -38,3 +38,4 @@ argv[ 40, 8] = ['0'.rjust(16,'0')].pack("H*")
 rc = pgmcall.call(pQUSRJOBI, argv, 0)
 
 puts receiver_variable[0, size].unpack("H*")
+puts receiver_variable[8, 56].force_encoding('IBM037'). encode('utf-8')
