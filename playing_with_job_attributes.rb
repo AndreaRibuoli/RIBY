@@ -43,13 +43,13 @@ Number of bytes available = #{receiver_variable[  4,  4].unpack("H*")[0].to_i(16
 Job name                  = #{receiver_variable[  8, 10].force_encoding('IBM037'). encode('utf-8')}
 User name                 = #{receiver_variable[ 18, 10].force_encoding('IBM037'). encode('utf-8')}
 Job number                = #{receiver_variable[ 28,  6].force_encoding('IBM037'). encode('utf-8')}
-Internal job identifier   = 0x#{receiver_variable[ 34, 16].unpack("H*")}
+Internal job identifier   = 0x#{receiver_variable[ 34, 16].unpack("H*")[0]}
 Job status                = #{receiver_variable[ 50, 10].force_encoding('IBM037'). encode('utf-8')}
 Job type                  = #{receiver_variable[ 60,  1].force_encoding('IBM037'). encode('utf-8')}
 Job subtype               = #{receiver_variable[ 61,  1].force_encoding('IBM037'). encode('utf-8')}
 Reserved                  = #{receiver_variable[ 62,  2].force_encoding('IBM037'). encode('utf-8')}
-Run priority (job)        = 0x#{receiver_variable[ 64,  4].unpack("H*")}
-Time slice                = 0x#{receiver_variable[ 68,  4].unpack("H*")}
-Default wait              = 0x#{receiver_variable[ 72,  4].unpack("H*")}
+Run priority (job)        = #{receiver_variable[ 64,  4].unpack("H*")[0].to_i(16)}
+Time slice                = #{receiver_variable[ 68,  4].unpack("H*")[0].to_i(16)}
+Default wait              = #{receiver_variable[ 72,  4].unpack("H*")[0].to_i(16)}
 Purge                     = #{receiver_variable[ 76, 10].force_encoding('IBM037'). encode('utf-8')}
 ENDOUT
