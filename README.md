@@ -79,6 +79,26 @@ Default wait              = 30
 Purge                     = *YES   
 ```
 
+From the following table we can deduce that our script executes as a **Batch Immediate**.
+
+ **WRKACTJOB and QUSRJOBI API Comparison** 
+
+| Job Type Field                                      | Job Type   | Job Subtype |
+| --------------------------------------------------- | ---------- | ----------- |
+| ASJ (Autostart)                                     | A          | blank       | 
+| BCH (Batch)                                         | B          | blank       | 
+| BCI (Batch immediate)                               | B          | D           | 
+| EVK (Started by a program start request)            | B          | E           |
+| INT (Interactive)                                   | I          | blank       |
+| M36 (System i™ Advanced 36® machine server)         | B          | F           |
+| MRT (Multiple requester terminal)                   | B          | T           |
+| PJ (Prestart job)                                   | B          | J           |
+| PDJ (Print driver job)                              | W          | P           |
+| RDR (Reader)                                        | R          | blank       |
+| SYS (System)                                        | S or X     | blank       |
+| SBS (Subsystem monitor)                             | M          | blank       |
+| WTR (Writer)                                        | W          | blank       |
+| blank (Alternative user subtype--not an active job) | B          | U           |
 
 ----
 ### 16. to have fun with QTEMP
