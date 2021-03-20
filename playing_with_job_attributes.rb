@@ -20,5 +20,5 @@ pQCLRTVJA  = ILEpointer.malloc
 rc = rslobj2.call(pCLRTVJA, 513, "QCLRTVJA", "QSYS")
 puts 'rslobj2.call(pCLRTVJA, 513, "QCLRTVJA", "QSYS") = ' + rc.to_s
 
-rc = pgmcall.call(pCLRTVJA, argv, 0)
-puts 'pgmcall.call(pCLRTVJA, argv, 0) = ' + rc.to_s
+rc = pgmcall.call(pQCLRTVJA, argv, 0)
+puts 'pgmcall.call(pQCLRTVJA, argv, 0) = ' + rc.to_s
