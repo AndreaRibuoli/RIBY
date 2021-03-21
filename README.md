@@ -152,7 +152,7 @@ somma = 66
 
 So we are calling an always-changing native program created from MI assembly. 
 This is an example of code generation from Ruby targeting a specific syntax in IBM i.
-This same approach could be adopted for CL, C, RPG, and many other more unusual languages.
+This same approach could be adopted for CL, C, RPG, and many other languages.
 
 As soon as many compilers are still using native source file members as input (*QPRCRTPG* is the exception) let us investigate 
 the opportunities we have to read and/or write source files by means of API we could access from Ruby in PASE.
