@@ -41,6 +41,5 @@ include REXML
 # puts Error_code[0, 12].unpack("H*")
 size = Receiver_variable[0, 4].unpack("H*")[0].to_i(16)
 xmldoc = Document.new( Receiver_variable[8, size] )
-xmldoc.elements.each("Parm") do |e|
- puts "Parm : " + e.attributes["Kwd"]
-end
+root =xmldoc.root
+puts "DTDVersion : " + e.attributes["DTDVersion"]
