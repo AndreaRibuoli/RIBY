@@ -37,4 +37,5 @@ argv[ 48, 8] = ['0'.rjust(16,'0')].pack("H*")
 rc = pgmcall.call(pQCDRCMDD, argv, 0)
 #
 puts Error_code[0, 12].unpack("H*")
-puts Receiver_variable[0, 64].unpack("H*")
+puts size = Receiver_variable[0, 4].unpack("H*").to_i(16)
+puts Receiver_variable[8, size]
