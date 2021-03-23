@@ -37,7 +37,134 @@ Let's go!
 15. [to have fun by reliving old glories](#15-to-have-fun-by-reliving-old-glories)
 16. [to have fun with QTEMP](#16-to-have-fun-with-qtemp)
 17. [to retrieve job attributes](#17-to-retrieve-job-attributes)
+18. [to retrieve command definition](#18-to-retrieve-command-definition)
 
+
+----
+### 18. to retrieve command definition
+
+Another interesting API is **QCDRCMDD**. It renders CMD definitions in **XML** and **UTF-8** encoding: we are at home with Ruby that offers a pre-included support for XML in its standard library. 
+
+Have a look at the [Ruby source code](inspecting_command.rb): this is the output of the `inspecting_command.rb power_ruby railsnew` request.
+
+``` xml
+<QcdCLCmd DTDVersion='1.0'>
+  <Cmd CmdName='RAILSNEW' CmdLib='POWER_RUBY' CCSID='37' MaxPos='99' Prompt='Simplify usage of Rails new' MsgF='QCPFMSG' MsgFLib='__LIBL' ExecBatch='YES' ChgCmdExit='NO' RtvCmdExit='NO'>
+    <Parm Kwd='RAILSAPP' PosNbr='1' KeyParm='NO' Type='CHAR' Min='1' Max='1' Prompt='New Rails Application Name' Len='24' Rstd='NO' AlwUnprt='YES' AlwVar='YES' Expr='NO' Full='NO' DspInput='YES' Choice='Character value'/>
+    <Parm Kwd='HTTPSRV' PosNbr='2' KeyParm='NO' Type='CHAR' Min='1' Max='1' Prompt='Apache HTTP Instance' Len='10' Rstd='NO' AlwUnprt='YES' AlwVar='YES' Expr='NO' Full='NO' DspInput='YES' Choice='Character value'/>
+    <Parm Kwd='EXTPORT' PosNbr='3' KeyParm='NO' Type='DEC' Min='1' Max='1' Prompt='Apache Instance Port' Len='5.0' Rstd='NO' AlwUnprt='YES' AlwVar='YES' Expr='NO' Full='NO' DspInput='YES' Choice='Number'/>
+    <Parm Kwd='INTPORT' PosNbr='4' KeyParm='NO' Type='DEC' Min='1' Max='1' Prompt='Ruby Web Server Port' Len='5.0' Rstd='NO' AlwUnprt='YES' AlwVar='YES' Expr='NO' Full='NO' DspInput='YES' Choice='Number'/>
+    <Parm Kwd='CRT' PosNbr='5' KeyParm='NO' Type='CHAR' Min='0' Max='1' Prompt='Creation mode' Len='1' Rstd='YES' Dft='*NEW' AlwUnprt='YES' AlwVar='YES' Expr='NO' Full='NO' DspInput='YES' Choice='*NEW, *NONE, *GITHUB'>
+      <SpcVal>
+        <Value Val='*NEW' MapTo='Y'/>
+        <Value Val='*NONE' MapTo='N'/>
+        <Value Val='*GITHUB' MapTo='G'/>
+      </SpcVal>
+    </Parm>
+    <Parm Kwd='ENV' PosNbr='6' KeyParm='NO' PmtCtl='PMTCTL' Type='CHAR' Min='0' Max='1' Prompt='Rails Execution Environment' Len='1' Rstd='YES' Dft='*DEVELOPMENT' AlwUnprt='YES' AlwVar='YES' Expr='NO' Full='NO' DspInput='YES' Choice='*DEVELOPMENT'>
+      <SpcVal>
+        <Value Val='*DEVELOPMENT' MapTo='D'/>
+      </SpcVal>
+      <PmtCtl CtlKwd='CRT' NbrTrueRel='EQ' NbrTrue='1'>
+        <PmtCtlCond Rel='EQ' CmpVal='Y'/>
+      </PmtCtl>
+    </Parm>
+    <Parm Kwd='VRM' PosNbr='7' KeyParm='NO' PmtCtl='PMTCTL' Type='CHAR' Min='0' Max='1' Prompt='Ruby Version' Len='7' Rstd='YES' Dft='*V24' AlwUnprt='YES' AlwVar='YES' Expr='NO' Full='NO' DspInput='YES' Choice='*V24, *V23, *V22, *V21'>
+      <SpcVal>
+        <Value Val='*V24' MapTo='V2R4   '/>
+        <Value Val='*V23' MapTo='V2R3   '/>
+        <Value Val='*V22' MapTo='V2R2   '/>
+        <Value Val='*V21' MapTo='V2R1   '/>
+      </SpcVal>
+      <PmtCtl CtlKwd='CRT' NbrTrueRel='EQ' NbrTrue='1'>
+        <PmtCtlCond Rel='EQ' CmpVal='Y'/>
+      </PmtCtl>
+    </Parm>
+    <Parm Kwd='DRIVER' PosNbr='8' KeyParm='NO' PmtCtl='PMTCTL' Type='CHAR' Min='0' Max='1' Prompt='Rails Database Adapter' Len='1' Rstd='YES' Dft='*SQLITE3' AlwUnprt='YES' AlwVar='YES' Expr='NO' Full='NO' DspInput='YES' Choice='*IRUBYDB, *IBM_DB, *SQLITE3'>
+      <SpcVal>
+        <Value Val='*IRUBYDB' MapTo='R'/>
+        <Value Val='&apos;*IBM_DB&apos;' MapTo='I'/>
+        <Value Val='*SQLITE3' MapTo='L'/>
+      </SpcVal>
+      <PmtCtl CtlKwd='CRT' NbrTrueRel='EQ' NbrTrue='1'>
+        <PmtCtlCond Rel='EQ' CmpVal='Y'/>
+      </PmtCtl>
+    </Parm>
+    <Parm Kwd='GTUSR' PosNbr='9' KeyParm='NO' PmtCtl='PMTCTL' Type='CHAR' Min='0' Max='1' Prompt='GitHub: username' Len='20' Rstd='NO' Dft='X&apos;&apos;' AlwUnprt='YES' AlwVar='YES' Expr='NO' Full='NO' DspInput='YES' Choice='Character value'>
+      <PmtCtl CtlKwd='CRT' NbrTrueRel='EQ' NbrTrue='1'>
+        <PmtCtlCond Rel='EQ' CmpVal='G'/>
+      </PmtCtl>
+    </Parm>
+    <Parm Kwd='GTPASS' PosNbr='10' KeyParm='NO' PmtCtl='PMTCTL' Type='CHAR' Min='0' Max='1' Prompt='GitHub: password' Len='20' Rstd='NO' Dft='X&apos;&apos;' AlwUnprt='YES' AlwVar='YES' Expr='NO' Full='NO' DspInput='NO' Choice='Character value'>
+      <PmtCtl CtlKwd='CRT' NbrTrueRel='EQ' NbrTrue='1'>
+        <PmtCtlCond Rel='EQ' CmpVal='G'/>
+      </PmtCtl>
+    </Parm>
+    <Parm Kwd='GTSRC' PosNbr='11' KeyParm='NO' PmtCtl='PMTCTL' Type='CHAR' Min='0' Max='1' Prompt='GitHub: PowerRuby: project' Len='20' Rstd='NO' Dft='&apos;DE_train_01&apos;' AlwUnprt='YES' AlwVar='YES' Expr='NO' Full='NO' DspInput='YES' Choice='Character value'>
+      <PmtCtl CtlKwd='CRT' NbrTrueRel='EQ' NbrTrue='1'>
+        <PmtCtlCond Rel='EQ' CmpVal='G'/>
+      </PmtCtl>
+    </Parm>
+    <Parm Kwd='DBUSR' PosNbr='12' KeyParm='NO' PmtCtl='PMTCTL' Type='CHAR' Min='0' Max='1' Prompt='ibm_db: username' Len='10' Rstd='NO' Dft='X&apos;&apos;' AlwUnprt='YES' AlwVar='YES' Expr='NO' Full='NO' DspInput='YES' Choice='Character value'>
+      <PmtCtl CtlKwd='DRIVER' NbrTrueRel='EQ' NbrTrue='1'>
+        <PmtCtlCond Rel='EQ' CmpVal='I'/>
+      </PmtCtl>
+    </Parm>
+    <Parm Kwd='DBPASS' PosNbr='13' KeyParm='NO' PmtCtl='PMTCTL' Type='CHAR' Min='0' Max='1' Prompt='ibm_db: password' Len='10' Rstd='NO' Dft='X&apos;&apos;' AlwUnprt='YES' AlwVar='YES' Expr='NO' Full='NO' DspInput='NO' Choice='Character value'>
+      <PmtCtl CtlKwd='DRIVER' NbrTrueRel='EQ' NbrTrue='1'>
+        <PmtCtlCond Rel='EQ' CmpVal='I'/>
+      </PmtCtl>
+    </Parm>
+    <Parm Kwd='DBROOT' PosNbr='14' KeyParm='NO' PmtCtl='PMTCTL' Type='CHAR' Min='0' Max='1' Prompt='ibm_db: schema root' Len='8' Rstd='NO' Dft='X&apos;&apos;' AlwUnprt='YES' AlwVar='YES' Expr='NO' Full='NO' DspInput='YES' Choice='Character value'>
+      <PmtCtl CtlKwd='DRIVER' NbrTrueRel='EQ' NbrTrue='1'>
+        <PmtCtlCond Rel='EQ' CmpVal='I'/>
+      </PmtCtl>
+    </Parm>
+    <Parm Kwd='EXTPATH' PosNbr='15' KeyParm='NO' PmtCtl='PMTCTL' Type='CHAR' Min='0' Max='1' Prompt='HTTP Proxy External Path' Len='20' Rstd='NO' Dft='X&apos;&apos;' AlwUnprt='YES' AlwVar='YES' Expr='NO' Full='NO' DspInput='YES' Choice='Character value'>
+      <PmtCtl CtlKwd='DRIVER' NbrTrueRel='EQ' NbrTrue='1'>
+        <PmtCtlCond Rel='EQ' CmpVal='Z'/>
+      </PmtCtl>
+    </Parm>
+    <Parm Kwd='INTPATH' PosNbr='16' KeyParm='NO' PmtCtl='PMTCTL' Type='CHAR' Min='0' Max='1' Prompt='HTTP Proxy Internal Path' Len='20' Rstd='NO' Dft='X&apos;&apos;' AlwUnprt='YES' AlwVar='YES' Expr='NO' Full='NO' DspInput='YES' Choice='Character value'>
+      <PmtCtl CtlKwd='DRIVER' NbrTrueRel='EQ' NbrTrue='1'>
+        <PmtCtlCond Rel='EQ' CmpVal='Z'/>
+      </PmtCtl>
+    </Parm>
+    <Parm Kwd='PLACE' PosNbr='17' KeyParm='NO' PmtCtl='PMTCTL' Type='CHAR' Min='0' Max='1' Prompt='Application Folder Location' Len='1' Rstd='YES' Dft='*WWW' AlwUnprt='YES' AlwVar='YES' Expr='NO' Full='NO' DspInput='YES' Choice='*HOME, *WWW'>
+      <SpcVal>
+        <Value Val='*HOME' MapTo='H'/>
+        <Value Val='*WWW' MapTo='W'/>
+      </SpcVal>
+      <PmtCtl CtlKwd='DRIVER' NbrTrueRel='EQ' NbrTrue='1'>
+        <PmtCtlCond Rel='EQ' CmpVal='Z'/>
+      </PmtCtl>
+    </Parm>
+    <Parm Kwd='WEBCON' PosNbr='18' KeyParm='NO' PmtCtl='PMTCTL' Type='CHAR' Min='0' Max='1' Prompt='With WebConsole' Len='1' Rstd='YES' Dft='*NO' AlwUnprt='YES' AlwVar='YES' Expr='NO' Full='NO' DspInput='YES' Choice='*YES, *NO'>
+      <SpcVal>
+        <Value Val='*YES' MapTo='Y'/>
+        <Value Val='*NO' MapTo='N'/>
+      </SpcVal>
+      <PmtCtl CtlKwd='DRIVER' NbrTrueRel='EQ' NbrTrue='1'>
+        <PmtCtlCond Rel='EQ' CmpVal='Z'/>
+      </PmtCtl>
+    </Parm>
+    <Parm Kwd='PID' PosNbr='19' KeyParm='NO' PmtCtl='PMTCTL' Type='CHAR' Min='0' Max='1' Prompt='Named instance' Len='12' Rstd='NO' Dft='&apos;server&apos;' AlwUnprt='YES' AlwVar='YES' Expr='NO' Full='NO' DspInput='YES' Choice='Character value'>
+      <PmtCtl CtlKwd='DRIVER' NbrTrueRel='EQ' NbrTrue='1'>
+        <PmtCtlCond Rel='EQ' CmpVal='Z'/>
+      </PmtCtl>
+    </Parm>
+    <Parm Kwd='LIB' PosNbr='20' KeyParm='NO' PmtCtl='PMTCTL' Type='CHAR' Min='0' Max='1' Prompt='Library' Len='10' Rstd='NO' Dft='&apos;POWER_RUBY&apos;' AlwUnprt='YES' AlwVar='YES' Expr='NO' Full='NO' DspInput='YES' Choice='Character value'>
+      <PmtCtl CtlKwd='DRIVER' NbrTrueRel='EQ' NbrTrue='1'>
+        <PmtCtlCond Rel='EQ' CmpVal='Z'/>
+      </PmtCtl>
+    </Parm>
+    <Parm Kwd='MSGQ' PosNbr='21' KeyParm='NO' PmtCtl='PMTCTL' Type='CHAR' Min='0' Max='1' Prompt='Message Queue' Len='10' Rstd='NO' Dft='&apos;PRUBY_MSGQ&apos;' AlwUnprt='YES' AlwVar='YES' Expr='NO' Full='NO' DspInput='YES' Choice='Character value'>
+      <PmtCtl CtlKwd='DRIVER' NbrTrueRel='EQ' NbrTrue='1'>
+        <PmtCtlCond Rel='EQ' CmpVal='Z'/>
+      </PmtCtl>
+    </Parm>
+  </Cmd>
+```
 
 ----
 ### 17. to retrieve job attributes
@@ -99,6 +226,8 @@ From the following table we can deduce that our script executes as a **Batch Imm
 | SYS (System)                                        | S or X     | blank       |
 | WTR (Writer)                                        | W          | blank       |
 | PDJ (Print driver job)                              | W          | P           |
+
+[NEXT-18](#18-to-retrieve-command-definition)
 
 ----
 ### 16. to have fun with QTEMP
