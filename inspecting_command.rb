@@ -41,5 +41,6 @@ include REXML
 # puts Error_code[0, 12].unpack("H*")
 size = Receiver_variable[0, 4].unpack("H*")[0].to_i(16)
 xmldoc = Document.new( Receiver_variable[8, size] )
-root =xmldoc.root
-puts "DTDVersion : " + root.attributes["DTDVersion"]
+formatter = REXML::Formatters::Pretty.new(2)
+formatter.compact = true
+formatter.write(xmldoc, $stdout)
