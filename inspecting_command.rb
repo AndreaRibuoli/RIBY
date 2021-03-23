@@ -36,6 +36,9 @@ argv[ 40, 8] = [Error_code.to_i.to_s(16).rjust(16,'0')].pack("H*")
 argv[ 48, 8] = ['0'.rjust(16,'0')].pack("H*")
 rc = pgmcall.call(pQCDRCMDD, argv, 0)
 #
+require 'rexml/document'
+include REXML
 puts Error_code[0, 12].unpack("H*")
 puts size = Receiver_variable[0, 4].unpack("H*")[0].to_i(16)
-puts Receiver_variable[8, size]
+xmldoc = Document.new( Receiver_variable[8, size] )
+puts xmldoc.to_s
