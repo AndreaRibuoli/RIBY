@@ -8,12 +8,12 @@ raise "Usage: inspecting_command.rb <lib> <cmd>" if ARGV.length != 2
 ILEerror    = struct [ 'char e[12]' ]
 ILEparms    = struct [ 'char a[56]' ]
 ILEpointer  = struct [ 'char b[16]' ]
-CmdContent  = struct [ 'char d[4096]' ]
+CmdContent  = struct [ 'char d[800]' ]
 
 cmdlib      = ARGV[0].upcase
 cmdname     = ARGV[1].upcase
 Qualified_command_name  = "#{cmdname.ljust(10, ' ')}#{cmdlib.ljust(10, ' ')}".encode('IBM037')
-Destination_information = [4094.to_s(16).rjust(8,'0')].pack("H*")
+Destination_information = [8000.to_s(16).rjust(8,'0')].pack("H*")
 Destination_format_name = "DEST0100".encode('IBM037')
 Receiver_variable       = CmdContent.malloc
 Receiver_format_name    = "CMDD0100".encode('IBM037')
