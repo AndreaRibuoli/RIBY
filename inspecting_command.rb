@@ -42,4 +42,4 @@ include REXML
 size = Receiver_variable[0, 4].unpack("H*")[0].to_i(16)
 xmldoc = Document.new( Receiver_variable[8, size] )
 root =xmldoc.root
-puts "DTDVersion : " + e.attributes["DTDVersion"]
+puts "DTDVersion : " + root.attributes["DTDVersion"]
