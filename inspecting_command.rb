@@ -38,7 +38,9 @@ rc = pgmcall.call(pQCDRCMDD, argv, 0)
 #
 require 'rexml/document'
 include REXML
-puts Error_code[0, 12].unpack("H*")
-puts size = Receiver_variable[0, 4].unpack("H*")[0].to_i(16)
+# puts Error_code[0, 12].unpack("H*")
+size = Receiver_variable[0, 4].unpack("H*")[0].to_i(16)
 xmldoc = Document.new( Receiver_variable[8, size] )
-puts xmldoc.to_s
+xmldoc.elements.each("Parm") do |e|
+ puts "Parm : " + e.attributes["Kwd"]
+end
