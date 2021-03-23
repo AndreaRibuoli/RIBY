@@ -8,7 +8,7 @@ raise "Usage: inspecting_command.rb <lib> <cmd>" if ARGV.length != 2
 ILEerror    = struct [ 'char e[12]' ]
 ILEparms    = struct [ 'char a[56]' ]
 ILEpointer  = struct [ 'char b[16]' ]
-CmdContent  = struct [ 'char d[800]' ]
+CmdContent  = struct [ 'char d[8000]' ]
 
 cmdlib      = ARGV[0].upcase
 cmdname     = ARGV[1].upcase
