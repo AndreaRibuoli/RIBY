@@ -38,7 +38,246 @@ Let's go!
 16. [to have fun with QTEMP](#16-to-have-fun-with-qtemp)
 17. [to retrieve job attributes](#17-to-retrieve-job-attributes)
 18. [to retrieve command definition](#18-to-retrieve-command-definition)
+19. [to pretend we do not care](#19-to-pretend-we-do-not-care)
 
+
+----
+### 19. to pretend we do not care
+
+Sooner or later we come to a central question: how do we access the **integrated database management system** (*DBMS*) provided by IBM i?
+ 
+Ruby is an interpreted language and we start -again- wondering which can be the most basic but powerful way to dynamically interact with DB2 services. 
+
+The **SQL Call Level Interface** imposes itself:
+
+* it is based on an ISO (International Organization for Standardization) and IEC (International Electrotechnical Commission) joint standard (In 1994 control over the standard was transferred to the X/Open company)
+
+In a future chapter we will investigate other options.
+
+Years ago (2013) *Tom Liotta* published -for Code400.com's *Tips for the IBMi* forum- an ILE CL example to highlight the use of SQL CLI APIs. If you compile it, you will soon discover that the program object being generated references **QSYS/QSQCLI** service program. Despite the fact that a shared library is provided within PASE (`libdb400.a`) 
+we will stick to a direct dynamic approach given the fluency we gained with previous Ruby scripts.
+
+This chapter will again show case how useful is Ruby in understanding the internals of PASE-to-ILE integration.      
+
+In a previous chapter we developed a tool that is useful again:
+
+```
+bash-4.4$ playing_with_api_and_spaces.rb QSQCLI
+QSQCLI    QSYS      *NO       SQLAllocConnect
+QSQCLI    QSYS      *NO       SQLAllocEnv
+QSQCLI    QSYS      *NO       SQLAllocHandle
+QSQCLI    QSYS      *NO       SQLAllocStmt
+QSQCLI    QSYS      *NO       SQLBindCol
+QSQCLI    QSYS      *NO       SQLBindParam
+QSQCLI    QSYS      *NO       SQLCancel
+QSQCLI    QSYS      *NO       SQLCloseCursor
+QSQCLI    QSYS      *NO       SQLColAttributes
+QSQCLI    QSYS      *NO       SQLColumns
+QSQCLI    QSYS      *NO       SQLConnect
+QSQCLI    QSYS      *NO       SQLCopyDesc
+QSQCLI    QSYS      *NO       SQLDescribeCol
+QSQCLI    QSYS      *NO       SQLDisconnect
+QSQCLI    QSYS      *NO       SQLEndTran
+QSQCLI    QSYS      *NO       SQLError
+QSQCLI    QSYS      *NO       SQLExecDirect
+QSQCLI    QSYS      *NO       SQLExecute
+QSQCLI    QSYS      *NO       SQLFetch
+QSQCLI    QSYS      *NO       SQLFetchScroll
+QSQCLI    QSYS      *NO       SQLFreeConnect
+QSQCLI    QSYS      *NO       SQLFreeEnv
+QSQCLI    QSYS      *NO       SQLFreeHandle
+QSQCLI    QSYS      *NO       SQLFreeStmt
+QSQCLI    QSYS      *NO       SQLGetCol
+QSQCLI    QSYS      *NO       SQLGetConnectOption
+QSQCLI    QSYS      *NO       SQLGetCursorName
+QSQCLI    QSYS      *NO       SQLGetConnectAttr
+QSQCLI    QSYS      *NO       SQLGetData
+QSQCLI    QSYS      *NO       SQLGetDescField
+QSQCLI    QSYS      *NO       SQLGetDescRec
+QSQCLI    QSYS      *NO       SQLGetDiagField
+QSQCLI    QSYS      *NO       SQLGetDiagRec
+QSQCLI    QSYS      *NO       SQLGetEnvAttr
+QSQCLI    QSYS      *NO       SQLGetFunctions
+QSQCLI    QSYS      *NO       SQLGetInfo
+QSQCLI    QSYS      *NO       SQLGetStmtAttr
+QSQCLI    QSYS      *NO       SQLGetStmtOption
+QSQCLI    QSYS      *NO       SQLLanguages
+QSQCLI    QSYS      *NO       SQLNumResultCols
+QSQCLI    QSYS      *NO       SQLParamData
+QSQCLI    QSYS      *NO       SQLPrepare
+QSQCLI    QSYS      *NO       SQLPutData
+QSQCLI    QSYS      *NO       SQLReleaseEnv
+QSQCLI    QSYS      *NO       SQLRowCount
+QSQCLI    QSYS      *NO       SQLSetConnectAttr
+QSQCLI    QSYS      *NO       SQLSetConnectOption
+QSQCLI    QSYS      *NO       SQLSetCursorName
+QSQCLI    QSYS      *NO       SQLSetDescField
+QSQCLI    QSYS      *NO       SQLSetDescRec
+QSQCLI    QSYS      *NO       SQLSetEnvAttr
+QSQCLI    QSYS      *NO       SQLSetParam
+QSQCLI    QSYS      *NO       SQLSetStmtAttr
+QSQCLI    QSYS      *NO       SQLSetStmtOption
+QSQCLI    QSYS      *NO       SQLSpecialColumns
+QSQCLI    QSYS      *NO       SQLStatistics
+QSQCLI    QSYS      *NO       SQLTables
+QSQCLI    QSYS      *NO       SQLTransact
+QSQCLI    QSYS      *NO       SQLExtendedFetch
+QSQCLI    QSYS      *NO       SQLBindParameter
+QSQCLI    QSYS      *NO       SQLDataSources
+QSQCLI    QSYS      *NO       SQLDescribeParam
+QSQCLI    QSYS      *NO       SQLForeignKeys
+QSQCLI    QSYS      *NO       SQLGetTypeInfo
+QSQCLI    QSYS      *NO       SQLMoreResults
+QSQCLI    QSYS      *NO       SQLNativeSql
+QSQCLI    QSYS      *NO       SQLNumParams
+QSQCLI    QSYS      *NO       SQLPrimaryKeys
+QSQCLI    QSYS      *NO       SQLProcedureColumns
+QSQCLI    QSYS      *NO       SQLProcedures
+QSQCLI    QSYS      *NO       SQLDriverConnect
+QSQCLI    QSYS      *NO       SQLGetLength
+QSQCLI    QSYS      *NO       SQLGetPosition
+QSQCLI    QSYS      *NO       SQLGetSubString
+QSQCLI    QSYS      *NO       SQLBindFileToCol
+QSQCLI    QSYS      *NO       SQLBindFileToParam
+QSQCLI    QSYS      *NO       SQLParamOptions
+QSQCLI    QSYS      *NO       SQLNextResult
+QSQCLI    QSYS      *NO       SQLStartTran
+QSQCLI    QSYS      *NO       SQLColumnPrivileges
+QSQCLI    QSYS      *NO       SQLTablePrivileges
+QSQCLI    QSYS      *NO       SQLColAttribute
+QSQCLI    QSYS      *NO       SQLColAttributeW
+QSQCLI    QSYS      *NO       SQLColAttributesW
+QSQCLI    QSYS      *NO       SQLColumnsW
+QSQCLI    QSYS      *NO       SQLConnectW
+QSQCLI    QSYS      *NO       SQLDescribeColW
+QSQCLI    QSYS      *NO       SQLErrorW
+QSQCLI    QSYS      *NO       SQLExecDirectW
+QSQCLI    QSYS      *NO       SQLGetConnectOptionW
+QSQCLI    QSYS      *NO       SQLGetCursorNameW
+QSQCLI    QSYS      *NO       SQLGetConnectAttrW
+QSQCLI    QSYS      *NO       SQLGetDescFieldW
+QSQCLI    QSYS      *NO       SQLGetDescRecW
+QSQCLI    QSYS      *NO       SQLGetDiagFieldW
+QSQCLI    QSYS      *NO       SQLGetDiagRecW
+QSQCLI    QSYS      *NO       SQLGetInfoW
+QSQCLI    QSYS      *NO       SQLGetStmtAttrW
+QSQCLI    QSYS      *NO       SQLGetStmtOptionW
+QSQCLI    QSYS      *NO       SQLPrepareW
+QSQCLI    QSYS      *NO       SQLSetConnectAttrW
+QSQCLI    QSYS      *NO       SQLSetConnectOptionW
+QSQCLI    QSYS      *NO       SQLSetCursorNameW
+QSQCLI    QSYS      *NO       SQLSetDescFieldW
+QSQCLI    QSYS      *NO       SQLSetStmtAttrW
+QSQCLI    QSYS      *NO       SQLSetStmtOptionW
+QSQCLI    QSYS      *NO       SQLStatisticsW
+QSQCLI    QSYS      *NO       SQLDataSourcesW
+QSQCLI    QSYS      *NO       SQLTablesW
+QSQCLI    QSYS      *NO       SQLForeignKeysW
+QSQCLI    QSYS      *NO       SQLGetTypeInfoW
+QSQCLI    QSYS      *NO       SQLNativeSqlW
+QSQCLI    QSYS      *NO       SQLPrimaryKeysW
+QSQCLI    QSYS      *NO       SQLProcedureColumnsW
+QSQCLI    QSYS      *NO       SQLProceduresW
+QSQCLI    QSYS      *NO       SQLDriverConnectW
+QSQCLI    QSYS      *NO       SQLGetPositionW
+QSQCLI    QSYS      *NO       SQLGetSubStringW
+QSQCLI    QSYS      *NO       SQLColumnPrivilegesW
+QSQCLI    QSYS      *NO       SQLTablePrivilegesW
+QSQCLI    QSYS      *NO       SQLSpecialColumnsW
+$
+```
+
+If we execute, and filter, the following dump:
+
+```
+$ dump -X64 -Tv /QOpenSys/usr/lib/libdb400.a | grep SQL
+[34]    0x000020a8    .data      EXP     DS SECdef        [noIMid] SQLTransact
+[35]    0x00002108    .data      EXP     DS SECdef        [noIMid] SQLTables
+[36]    0x00002120    .data      EXP     DS SECdef        [noIMid] SQLTablePrivileges
+[37]    0x00002138    .data      EXP     DS SECdef        [noIMid] SQLStatistics
+[38]    0x00002150    .data      EXP     DS SECdef        [noIMid] SQLStartTran
+[39]    0x00002168    .data      EXP     DS SECdef        [noIMid] SQLSpecialColumns
+[40]    0x00002180    .data      EXP     DS SECdef        [noIMid] SQLSetStmtOption
+[41]    0x00002198    .data      EXP     DS SECdef        [noIMid] SQLSetStmtAttr
+[42]    0x000021b0    .data      EXP     DS SECdef        [noIMid] SQLSetParam
+[43]    0x000021c8    .data      EXP     DS SECdef        [noIMid] SQLSetEnvAttr
+[44]    0x000021e0    .data      EXP     DS SECdef        [noIMid] SQLSetDescRec
+[45]    0x000021f8    .data      EXP     DS SECdef        [noIMid] SQLSetDescField
+[46]    0x00002210    .data      EXP     DS SECdef        [noIMid] SQLSetCursorName
+[47]    0x00002228    .data      EXP     DS SECdef        [noIMid] SQLSetConnectOption
+[48]    0x00002240    .data      EXP     DS SECdef        [noIMid] SQLSetConnectAttr
+[49]    0x00002258    .data      EXP     DS SECdef        [noIMid] SQLRowCount
+[50]    0x00002270    .data      EXP     DS SECdef        [noIMid] SQLReleaseEnv
+[51]    0x00002288    .data      EXP     DS SECdef        [noIMid] SQLPutData
+[52]    0x000022a0    .data      EXP     DS SECdef        [noIMid] SQLProcedures
+[53]    0x000022b8    .data      EXP     DS SECdef        [noIMid] SQLProcedureColumns
+[54]    0x000022d0    .data      EXP     DS SECdef        [noIMid] SQLPrimaryKeys
+[55]    0x000022e8    .data      EXP     DS SECdef        [noIMid] SQLPrepare
+[56]    0x00002300    .data      EXP     DS SECdef        [noIMid] SQLParamOptions
+[57]    0x00002318    .data      EXP     DS SECdef        [noIMid] SQLParamData
+[58]    0x00002330    .data      EXP     DS SECdef        [noIMid] SQLNumResultCols
+[59]    0x00002348    .data      EXP     DS SECdef        [noIMid] SQLNumParams
+[60]    0x00002360    .data      EXP     DS SECdef        [noIMid] SQLNextResult
+[61]    0x00002378    .data      EXP     DS SECdef        [noIMid] SQLNativeSql
+[62]    0x00002390    .data      EXP     DS SECdef        [noIMid] SQLMoreResults
+[63]    0x000023a8    .data      EXP     DS SECdef        [noIMid] SQLLanguages
+[64]    0x000023c0    .data      EXP     DS SECdef        [noIMid] SQLGetTypeInfo
+[65]    0x000023d8    .data      EXP     DS SECdef        [noIMid] SQLGetSubString
+[66]    0x000023f0    .data      EXP     DS SECdef        [noIMid] SQLGetStmtOption
+[67]    0x00002408    .data      EXP     DS SECdef        [noIMid] SQLGetStmtAttr
+[68]    0x00002420    .data      EXP     DS SECdef        [noIMid] SQLGetPosition
+[69]    0x00002438    .data      EXP     DS SECdef        [noIMid] SQLGetLength
+[70]    0x00002450    .data      EXP     DS SECdef        [noIMid] SQLGetInfo
+[71]    0x00002468    .data      EXP     DS SECdef        [noIMid] SQLGetFunctions
+[72]    0x00002480    .data      EXP     DS SECdef        [noIMid] SQLGetEnvAttr
+[73]    0x00002498    .data      EXP     DS SECdef        [noIMid] SQLGetDiagRec
+[74]    0x000024b0    .data      EXP     DS SECdef        [noIMid] SQLGetDiagField
+[75]    0x000024c8    .data      EXP     DS SECdef        [noIMid] SQLGetDescRec
+[76]    0x000024e0    .data      EXP     DS SECdef        [noIMid] SQLGetDescField
+[77]    0x000024f8    .data      EXP     DS SECdef        [noIMid] SQLGetData
+[78]    0x00002510    .data      EXP     DS SECdef        [noIMid] SQLGetCursorName
+[79]    0x00002528    .data      EXP     DS SECdef        [noIMid] SQLGetConnectOption
+[80]    0x00002540    .data      EXP     DS SECdef        [noIMid] SQLGetConnectAttr
+[81]    0x00002558    .data      EXP     DS SECdef        [noIMid] SQLGetCol
+[82]    0x00002570    .data      EXP     DS SECdef        [noIMid] SQLFreeHandle
+[83]    0x00002588    .data      EXP     DS SECdef        [noIMid] SQLFreeStmt
+[84]    0x000025a0    .data      EXP     DS SECdef        [noIMid] SQLFreeEnv
+[85]    0x000025b8    .data      EXP     DS SECdef        [noIMid] SQLFreeConnect
+[86]    0x000025d0    .data      EXP     DS SECdef        [noIMid] SQLForeignKeys
+[87]    0x000025e8    .data      EXP     DS SECdef        [noIMid] SQLFetchScroll
+[88]    0x00002600    .data      EXP     DS SECdef        [noIMid] SQLFetch
+[89]    0x00002618    .data      EXP     DS SECdef        [noIMid] SQLExtendedFetch
+[90]    0x00002630    .data      EXP     DS SECdef        [noIMid] SQLExecute
+[91]    0x00002648    .data      EXP     DS SECdef        [noIMid] SQLExecDirect
+[92]    0x00002660    .data      EXP     DS SECdef        [noIMid] SQLError
+[93]    0x00002678    .data      EXP     DS SECdef        [noIMid] SQLEndTran
+[94]    0x00002690    .data      EXP     DS SECdef        [noIMid] SQLDriverConnect
+[95]    0x000026a8    .data      EXP     DS SECdef        [noIMid] SQLDisconnect
+[96]    0x000026c0    .data      EXP     DS SECdef        [noIMid] SQLDescribeParam
+[97]    0x000026d8    .data      EXP     DS SECdef        [noIMid] SQLDescribeCol
+[98]    0x000026f0    .data      EXP     DS SECdef        [noIMid] SQLDataSources
+[99]    0x00002708    .data      EXP     DS SECdef        [noIMid] SQLCopyDesc
+[100]   0x00002720    .data      EXP     DS SECdef        [noIMid] SQLConnect
+[101]   0x00002738    .data      EXP     DS SECdef        [noIMid] SQLColumns
+[102]   0x00002750    .data      EXP     DS SECdef        [noIMid] SQLColumnPrivileges
+[103]   0x00002768    .data      EXP     DS SECdef        [noIMid] SQLColAttributes
+[104]   0x00002780    .data      EXP     DS SECdef        [noIMid] SQLCloseCursor
+[105]   0x00002798    .data      EXP     DS SECdef        [noIMid] SQLCancel
+[106]   0x000027b0    .data      EXP     DS SECdef        [noIMid] SQLBindParameter
+[107]   0x000027c8    .data      EXP     DS SECdef        [noIMid] SQLBindParam
+[108]   0x000027e0    .data      EXP     DS SECdef        [noIMid] SQLBindFileToParam
+[109]   0x000027f8    .data      EXP     DS SECdef        [noIMid] SQLBindFileToCol
+[110]   0x00002810    .data      EXP     DS SECdef        [noIMid] SQLBindCol
+[111]   0x00002828    .data      EXP     DS SECdef        [noIMid] SQLAllocStmt
+[112]   0x00002840    .data      EXP     DS SECdef        [noIMid] SQLAllocHandle
+[113]   0x00002858    .data      EXP     DS SECdef        [noIMid] SQLAllocEnv
+[114]   0x00002870    .data      EXP     DS SECdef        [noIMid] SQLAllocConnect
+[115]   0x00002888    .data      EXP     DS SECdef        [noIMid] SQLOverrideCCSID400
+$
+```
+
+We discover that *libdb400.a* -although providing other useful features- has never been updated to support **SQL Wide APIs**.
+These considerations will be the starting point for a series of chapters. Stay tuned! 
 
 ----
 ### 18. to retrieve command definition
@@ -165,6 +404,8 @@ Have a look at the [Ruby source code](inspecting_command.rb): this is the output
     </Parm>
   </Cmd>
 ```
+
+[NEXT-19](#19-to-pretend-we-do-not-care)
 
 ----
 ### 17. to retrieve job attributes
