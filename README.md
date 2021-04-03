@@ -59,7 +59,7 @@ SQLRETURN SQLConnectW (SQLHDBC          hdbc,
                        SQLSMALLINT      cbAuthStr);
 ```
 
-Note that passing **SQL_NTS** (-3 = 0xFFFD) stands for *Null Terminated String* and could be passed as the SQLSMALLINTs required.
+Note that passing **SQL_NTS** (-3 = 0xFFFD) stands for *Null Terminated String* and could be passed for the SQLSMALLINTs required.
 
 One of the aspects that I prefers of Ruby is the support for different encodings.
 The **UTF\-16BE** one will directly support our needs with SQL Wide APIs.
