@@ -110,6 +110,6 @@ puts ILEarguments[  48, 16].unpack("H*")
 puts ILEarguments[  64, 16].unpack("H*")
 puts ILEarguments[  80, 16].unpack("H*")
 puts ILEarguments[  96, 16].unpack("H*")
-puts size[ 0, 2].unpack("H*")[0].to_i(16)
+puts ('0000' + size[ 0, 2].unpack("H*")[0]).to_i(16)
 puts 'Returned buffer ' + buffer[ 0, ].unpack("H*")[0]
 
