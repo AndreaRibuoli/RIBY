@@ -39,11 +39,6 @@ ILEarguments[ 40,  8] = ['0000000000000000'].pack("H*") # padding
 ILEarguments[ 48, 16] = [env_handle.to_i.to_s(16).rjust(32,'0')].pack("H*")
 rc = ilecallx.call(pSQLAllocHandle, ILEarguments, ['FFFDFFFBFFF50000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
-puts ' 0 1 2 3 4 5 6 7 8 9 A B C D E F'
-puts ILEarguments[   0, 16].unpack("H*")
-puts ILEarguments[  16, 16].unpack("H*")
-puts ILEarguments[  32, 16].unpack("H*")
-puts ILEarguments[  48, 16].unpack("H*")
 puts 'Environment handle 0x' + env_handle[ 0, 4].unpack("H*")[0]
 dbc_handle = SQLhandle.malloc
 ILEarguments[  0, 32] = ['0'.rjust(64,'0')].pack("H*")
@@ -54,11 +49,6 @@ ILEarguments[ 40,  8] = ['0000000000000000'].pack("H*") # padding
 ILEarguments[ 48, 16] = [dbc_handle.to_i.to_s(16).rjust(32,'0')].pack("H*")
 rc = ilecallx.call(pSQLAllocHandle, ILEarguments, ['FFFDFFFBFFF50000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
-puts ' 0 1 2 3 4 5 6 7 8 9 A B C D E F'
-puts ILEarguments[   0, 16].unpack("H*")
-puts ILEarguments[  16, 16].unpack("H*")
-puts ILEarguments[  32, 16].unpack("H*")
-puts ILEarguments[  48, 16].unpack("H*")
 puts 'DB Connection handle 0x' + dbc_handle[ 0, 4].unpack("H*")[0]
 dsn = '*LOCAL'.encode('UTF-16BE')
 user = ARGV[0].encode('UTF-16BE')
@@ -79,16 +69,6 @@ ILEarguments[ 128,  2] = ['FFFD'].pack("H*")             # SQL_NTS
 ILEarguments[ 130, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
 rc = ilecallx.call(pSQLConnectW, ILEarguments, ['FFFBFFF5FFFDFFF5FFFDFFF5FFFD0000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
-puts ' 0 1 2 3 4 5 6 7 8 9 A B C D E F'
-puts ILEarguments[   0, 16].unpack("H*")
-puts ILEarguments[  16, 16].unpack("H*")
-puts ILEarguments[  32, 16].unpack("H*")
-puts ILEarguments[  48, 16].unpack("H*")
-puts ILEarguments[  64, 16].unpack("H*")
-puts ILEarguments[  80, 16].unpack("H*")
-puts ILEarguments[  96, 16].unpack("H*")
-puts ILEarguments[ 112, 16].unpack("H*")
-puts ILEarguments[ 128, 16].unpack("H*")
 size   = SQLretsize.malloc
 buffer = INFObuffer.malloc
 ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
@@ -102,29 +82,13 @@ ILEarguments[  80, 16] = [size.to_i.to_s(16).rjust(32,'0')].pack("H*")
 ILEarguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")
 rc = ilecallx.call(pSQLGetInfoW, ILEarguments, ['FFFBFFFDFFF5FFFDFFF50000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
-puts ' 0 1 2 3 4 5 6 7 8 9 A B C D E F'
-puts ILEarguments[   0, 16].unpack("H*")
-puts ILEarguments[  16, 16].unpack("H*")
-puts ILEarguments[  32, 16].unpack("H*")
-puts ILEarguments[  48, 16].unpack("H*")
-puts ILEarguments[  64, 16].unpack("H*")
-puts ILEarguments[  80, 16].unpack("H*")
-puts ILEarguments[  96, 16].unpack("H*")
 len = ('0000' + size[ 0, 2].unpack("H*")[0]).to_i(16)
-puts buffer[ 0, len].force_encoding('UTF-16BE').encode('utf-8')
+puts 'SQL_DBMS_NAME: ' + buffer[ 0, len].force_encoding('UTF-16BE').encode('utf-8')
 ILEarguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
 ILEarguments[  80, 16] = [size.to_i.to_s(16).rjust(32,'0')].pack("H*")
-ILEarguments[  36,  2] = ['0012'].pack("H*")             # SQL_DBMS_NAME  (18)
+ILEarguments[  36,  2] = ['0012'].pack("H*")             # SQL_DBMS_VER  (18)
 rc = ilecallx.call(pSQLGetInfoW, ILEarguments, ['FFFBFFFDFFF5FFFDFFF50000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
-puts ' 0 1 2 3 4 5 6 7 8 9 A B C D E F'
-puts ILEarguments[   0, 16].unpack("H*")
-puts ILEarguments[  16, 16].unpack("H*")
-puts ILEarguments[  32, 16].unpack("H*")
-puts ILEarguments[  48, 16].unpack("H*")
-puts ILEarguments[  64, 16].unpack("H*")
-puts ILEarguments[  80, 16].unpack("H*")
-puts ILEarguments[  96, 16].unpack("H*")
 len = ('0000' + size[ 0, 2].unpack("H*")[0]).to_i(16)
-puts buffer[ 0, len].force_encoding('UTF-16BE').encode('utf-8')
+puts 'SQL_DBMS_VER: ' + buffer[ 0, len].force_encoding('UTF-16BE').encode('utf-8')
 
