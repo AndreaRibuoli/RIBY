@@ -84,6 +84,9 @@ puts ILEarguments[  32, 16].unpack("H*")
 puts ILEarguments[  48, 16].unpack("H*")
 puts ILEarguments[  64, 16].unpack("H*")
 puts ILEarguments[  80, 16].unpack("H*")
+puts ILEarguments[  96, 16].unpack("H*")
+puts ILEarguments[ 112, 16].unpack("H*")
+puts ILEarguments[ 128, 16].unpack("H*")
 size   = SQLretsize.malloc
 buffer = INFObuffer.malloc
 ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
