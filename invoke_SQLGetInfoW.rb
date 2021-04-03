@@ -112,9 +112,17 @@ puts ILEarguments[  80, 16].unpack("H*")
 puts ILEarguments[  96, 16].unpack("H*")
 len = ('0000' + size[ 0, 2].unpack("H*")[0]).to_i(16)
 puts buffer[ 0, len].force_encoding('UTF-16BE').encode('utf-8')
-ILEarguments[  36,  2] = ['0012'].pack("H*")             # SQL_DBMS_NAME  (17)
+ILEarguments[  36,  2] = ['0012'].pack("H*")             # SQL_DBMS_NAME  (18)
 rc = ilecallx.call(pSQLGetInfoW, ILEarguments, ['FFFBFFFDFFF5FFFDFFF50000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
+puts ' 0 1 2 3 4 5 6 7 8 9 A B C D E F'
+puts ILEarguments[   0, 16].unpack("H*")
+puts ILEarguments[  16, 16].unpack("H*")
+puts ILEarguments[  32, 16].unpack("H*")
+puts ILEarguments[  48, 16].unpack("H*")
+puts ILEarguments[  64, 16].unpack("H*")
+puts ILEarguments[  80, 16].unpack("H*")
+puts ILEarguments[  96, 16].unpack("H*")
 len = ('0000' + size[ 0, 2].unpack("H*")[0]).to_i(16)
 puts buffer[ 0, len].force_encoding('UTF-16BE').encode('utf-8')
 
