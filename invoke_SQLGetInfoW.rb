@@ -112,6 +112,8 @@ puts ILEarguments[  80, 16].unpack("H*")
 puts ILEarguments[  96, 16].unpack("H*")
 len = ('0000' + size[ 0, 2].unpack("H*")[0]).to_i(16)
 puts buffer[ 0, len].force_encoding('UTF-16BE').encode('utf-8')
+ILEarguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
+ILEarguments[  80, 16] = [size.to_i.to_s(16).rjust(32,'0')].pack("H*")
 ILEarguments[  36,  2] = ['0012'].pack("H*")             # SQL_DBMS_NAME  (18)
 rc = ilecallx.call(pSQLGetInfoW, ILEarguments, ['FFFBFFFDFFF5FFFDFFF50000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
