@@ -94,7 +94,7 @@ SQL_DBMS_VER: 07040
 CLI API functions have suffixes to indicate the format of their string arguments: those that accept Unicode end in W, and those that accept EBCDIC have no suffix.
 This is how we have to interpret the `SQLConnectW`:
 
-```
+``` C
 SQLRETURN SQLConnectW (SQLHDBC          hdbc,
                        SQLWCHAR         *szDSN,
                        SQLSMALLINT      cbDSN,
@@ -186,7 +186,7 @@ We will also focus -pretty soon- on a solid error message handling because it wi
 
 Given these initial objectives let us start by studying the [SQLAllocHandle API](https://www.ibm.com/docs/en/i/7.4?topic=functions-sqlallochandle-allocate-handle). 
 
-```
+``` C
 SQLRETURN SQLAllocHandle (SQLSMALLINT htype,
                           SQLINTEGER ihandle,
                           SQLINTEGER *handle);
@@ -923,9 +923,8 @@ Right now we simply:
 
 As soon as we set the initial value to `1` in EBCDIC
 
-```
+``` ruby
 Initial_value = '1'.encode('IBM037')
-
 ```
 
 we get the buffer filled with `0xF1` values:
@@ -944,7 +943,7 @@ f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1
 
 We have our working service program. And we are ready to add an operational descriptor ILE pointer and test what happens if we pass it (allocating a zeroed 1024 buffer):
 
-```
+``` ruby
 OperDesc    = struct [ 'char d[1024]' ] 
 . . .
 od = OperDesc.malloc                
@@ -1077,14 +1076,14 @@ If we have an ILE pointer already resolved as a full quad-word we can use **ARG_
 To transform a local PASE pointer into the equivalent tagged quad-word there is another API offered by **libc.a**:
 [**\_SETSPP**](https://www.ibm.com/support/knowledgecenter/en/ssw_ibm_i_74/apis/pase__setspp.htm).
 
-```
+``` C
 void _SETSPP(ILEpointer  *target,
              const void  *memory);
 ```
 
 It is declared in Fiddle as:
 
-```
+``` ruby
 setspp     = Fiddle::Function.new( preload['_SETSPP'],               
                            [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP], 
                            Fiddle::TYPE_VOID )                       
@@ -1101,7 +1100,7 @@ bash-4.4$ invoke_system_FFF4.rb 'DLTLIB LIB(ATTEMPT)'
 
 We introduced a new usage technique of Fiddle:
 
-```
+``` ruby
 cmd  = ARGV[0].encode('IBM037')
 . . .
 setspp.call(ILEarguments.to_ptr + 32, Fiddle::Pointer[cmd])
@@ -1124,7 +1123,7 @@ The second argument of our `setspp.call` is still a Fiddle::Pointer. This time i
 If we emit the following `inspect` methods: 
 
 
-```
+``` ruby
 puts cmd.inspect                   
 puts Fiddle::Pointer[cmd].inspect  
 ```
@@ -1209,7 +1208,7 @@ To prepare for future investigation we introduce today another topic that can he
 Right now the **\_CVTSPP** was successful only in one of our scripts.
 Let us copy here the crucial lines of code:
 
-```
+``` ruby
   ILEreturn    = ILEpointer.malloc
   . . .
   ILEarguments[16, 16] = [ILEreturn.to_i.to_s(16).rjust(32,'0')].pack("H*")
@@ -1223,7 +1222,7 @@ When ILEreturn was passed to \_CVTSPP we had not moved the content we received f
 
 Let us introduce the following extra steps:
 
-```
+``` ruby
   ILEreturn2   = ILEpointer.malloc                                                            
   ILEreturn2[0, 16] = ILEreturn[0, 16]                                                        
   puts "ILE SPP copy #{ILEreturn2[0, 16].unpack("H*")}"                                        
@@ -1249,7 +1248,7 @@ In order to copy memory without destroying 16-byte tagged pointers we need to re
 
 The new changes are:
 
-```
+``` ruby
 memcpy_wt  = Fiddle::Function.new( preload['_MEMCPY_WT'],                              
                            [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_INT], 
                            Fiddle::TYPE_VOIDP )  
@@ -1290,7 +1289,7 @@ The maximum amount of **teraspace storage** that can be allocated by each call t
 
 The template for **Qp2malloc** is: 
 
-```
+``` C
 void* Qp2malloc(QP2_dword_t size, QP2_ptr64_t *mem_pase); 
 ```
 
@@ -1380,7 +1379,7 @@ All storage in the `private address space` of the running PASE/AIX process is sh
 
 First of all we have to prepare the template for *_ILECALLX* that **fiddle** will use. The C notation is:
 
-```
+``` C
  int _ILECALLX(const ILEpointer  *target,
                ILEarglist_base   *ILEarglist,
                const arg_type_t  *signature,
@@ -1390,19 +1389,19 @@ First of all we have to prepare the template for *_ILECALLX* that **fiddle** wil
 
 In */usr/include/as400_types.h* we find the definition of *result\_type\_t*:
 
-```
+``` C
 typedef int16        result_type_t;
 ```
 
 In */usr/include/as400_types.h* we find the definition of *int16*:
 
-```
+``` C
 typedef signed short         int16;
 ```
 
 So far we know that we can prepare a Fiddle Function for **\_ILECALLX** this way:
 
-```
+``` ruby
 ilecallx = Fiddle::Function.new( preload['_ILECALLX'],                                                                        
             [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_SHORT, Fiddle::TYPE_INT],
             Fiddle::TYPE_INT )                                                                                 
@@ -1433,7 +1432,7 @@ As soon as the *ILEarglist\_base* is 32 bytes long, the first argument will be i
 
 We will try with: 
 
-```
+``` ruby
 ILEarglist = struct [ 'char b1[16]', 'char b2[16]', 'char b3[16]' ]
 ```
 
@@ -1465,13 +1464,13 @@ The QSYS/QC2SYS service program can be loaded from PASE so we can imagine to ext
 
 The C template for `system` is inside include file member `QSYSINC/H(STDLIB)`:
 
-```
+``` C
 int      system   ( const char *command ); 
 ``` 
 
 After obtaining accessability to a service program with *[_ILELOADX](https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_74/apis/pase__ileload.htm)* we can look for a specific entry with **[_ILESYMX](https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_74/apis/pase__ilesym.htm)**
 
- ```
+ ``` C
  int _ILESYMX(ILEpointer          *export,
               unsigned long long  actmark,
               const char          *symbol);  
@@ -1480,7 +1479,6 @@ After obtaining accessability to a service program with *[_ILELOADX](https://www
 In order for *fiddle* to be able to handle \_ILESYMX we need to prepare memory for an **ILEpointer**.
 
 ``` ruby
-
  . . . 
 ILEpointer = struct [ 'char b[16]' ]
  . . .
