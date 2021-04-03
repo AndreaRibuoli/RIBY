@@ -6,7 +6,7 @@ extend Fiddle::Importer
 raise "Usage: invoke_SQLAllocHandle.rb" if ARGV.length != 0
 ILEpointer  = struct [ 'char b[16]' ]
 ILEarglist  = struct [ 'char c[144]' ]
-SQLhandle   = struct [ 'char a[4]' ]
+SQLhandle   = struct [ 'char a[8]' ]
 INFObuffer  = struct [ 'char i[256]' ]
 SQLretsize  = struct [ 'char s[2]' ]
 preload    = Fiddle.dlopen(nil)
@@ -33,26 +33,24 @@ env_handle = SQLhandle.malloc
 ILEarguments = ILEarglist.malloc
 ILEarguments[  0, 32] = ['0'.rjust(64,'0')].pack("H*")
 ILEarguments[ 32,  2] = ['0001'].pack("H*")             # htype (SQL_HANDLE_ENV)
-ILEarguments[ 34,  2] = ['0000'].pack("H*")             # padding
-ILEarguments[ 36,  4] = ['00000000'].pack("H*")         # ihandle (SQL_NULL_HANDLE)
+ILEarguments[ 34,  6] = ['000000000000'].pack("H*")     # padding
 ILEarguments[ 40,  8] = ['0000000000000000'].pack("H*") # padding
 ILEarguments[ 48, 16] = [env_handle.to_i.to_s(16).rjust(32,'0')].pack("H*")
-rc = ilecallx.call(pSQLAllocHandle, ILEarguments, ['FFFDFFFBFFF50000'].pack("H*"), -5, 0)
+rc = ilecallx.call(pSQLAllocHandle, ILEarguments, ['FFFDFFF9FFF50000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
-puts 'Environment handle 0x' + env_handle[ 0, 4].unpack("H*")[0]
+puts 'Environment handle 0x' + env_handle[ 0, 8].unpack("H*")[0]
 dbc_handle = SQLhandle.malloc
 ILEarguments[  0, 32] = ['0'.rjust(64,'0')].pack("H*")
 ILEarguments[ 32,  2] = ['0002'].pack("H*")             # htype (SQL_HANDLE_DBC)
-ILEarguments[ 34,  2] = ['0000'].pack("H*")             # padding
-ILEarguments[ 36,  4] = env_handle[ 0, 4]               # ihandle
-ILEarguments[ 40,  8] = ['0000000000000000'].pack("H*") # padding
+ILEarguments[ 34,  6] = ['000000000000'].pack("H*")     # padding
+ILEarguments[ 40,  8] = env_handle[ 0, 8]               # ihandle
 ILEarguments[ 48, 16] = [dbc_handle.to_i.to_s(16).rjust(32,'0')].pack("H*")
-rc = ilecallx.call(pSQLAllocHandle, ILEarguments, ['FFFDFFFBFFF50000'].pack("H*"), -5, 0)
+rc = ilecallx.call(pSQLAllocHandle, ILEarguments, ['FFFDFFF9FFF50000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
-puts 'DB Connection handle 0x' + dbc_handle[ 0, 4].unpack("H*")[0]
+puts 'DB Connection handle 0x' + dbc_handle[ 0, 8].unpack("H*")[0]
 dsn = '*LOCAL'.encode('UTF-16BE')
 ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
-ILEarguments[  32,  4] = dbc_handle[ 0, 4]               # hdbc
+ILEarguments[  32,  4] = dbc_handle[ 0, 8]               # hdbc
 ILEarguments[  36, 12] = ['0'.rjust(24,'0')].pack("H*")  # padding
 ILEarguments[  48, 16] = [Fiddle::Pointer[dsn].to_i.to_s(16).rjust(32,'0')].pack("H*")
 ILEarguments[  64,  2] = ['FFFD'].pack("H*")             # SQL_NTS
@@ -70,9 +68,9 @@ raise "ILE system failed with rc=#{rc}" if rc != 0
 size   = SQLretsize.malloc
 buffer = INFObuffer.malloc
 ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
-ILEarguments[  32,  4] = dbc_handle[ 0, 4]               # hdbc
-ILEarguments[  36,  2] = ['0011'].pack("H*")             # SQL_DBMS_NAME  (17)
-ILEarguments[  38, 10] = ['0'.rjust(20,'0')].pack("H*")  # padding
+ILEarguments[  32,  8] = dbc_handle[ 0, 8]               # hdbc
+ILEarguments[  40,  2] = ['0011'].pack("H*")             # SQL_DBMS_NAME  (17)
+ILEarguments[  42,  6] = ['0'.rjust(12,'0')].pack("H*")  # padding
 ILEarguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
 ILEarguments[  64,  2] = ['0100'].pack("H*")             # 256
 ILEarguments[  66, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
