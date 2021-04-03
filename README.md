@@ -92,6 +92,35 @@ The use of memory for argument list with alignments follows:
 
 ```
 
+The [new script](invoke_SQLConnectW.rb) builds on top of the previous one adding the first usage of a Wide API. 
+
+A crucial role has the setting of the DNS that is symply a matter of proper encoding: 
+
+``` ruby
+dsn = '*LOCAL'.encode('UTF-16BE')
+ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
+ILEarguments[  32,  4] = dbc_handle[ 0, 4]               # hdbc
+ILEarguments[  36, 12] = ['0'.rjust(24,'0')].pack("H*")  # padding
+ILEarguments[  48, 16] = [Fiddle::Pointer[dsn].to_i.to_s(16).rjust(32,'0')].pack("H*")
+ILEarguments[  64,  2] = ['FFFD'].pack("H*")             # SQL_NTS
+```
+
+```
+bash-4.4$ invoke_SQLConnectW.rb
+Environment handle 0x00000001
+DB Connection handle 0x00000002
+ 0 1 2 3 4 5 6 7 8 9 A B C D E F
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000002000000000000000000000000
+800000000000000000008016b26766f0
+fffd0000000000000000000000000000
+80000000000000000000000000000000
+fffd0000000000000000000000000000
+80000000000000000000000000000000
+fffd0000000000000000000000000000
+```
+
 ----
 ### 20. to increase our confidence
 
