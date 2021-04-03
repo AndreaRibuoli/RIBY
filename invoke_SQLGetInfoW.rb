@@ -3,7 +3,7 @@ require 'fiddle'
 require 'fiddle/import'
 extend Fiddle::Importer
                                                                                                 
-raise "Usage: invoke_SQLAllocHandle.rb" if ARGV.length != 0
+raise "Usage: invoke_SQLAllocHandle.rb <user> <password>" if ARGV.length != 2
 ILEpointer  = struct [ 'char b[16]' ]
 ILEarglist  = struct [ 'char c[144]' ]
 SQLhandle   = struct [ 'char a[4]' ]
@@ -61,17 +61,19 @@ puts ILEarguments[  32, 16].unpack("H*")
 puts ILEarguments[  48, 16].unpack("H*")
 puts 'DB Connection handle 0x' + dbc_handle[ 0, 8].unpack("H*")[0]
 dsn = '*LOCAL'.encode('UTF-16BE')
+user = ARGV[0].encode('UTF-16BE')
+pass = ARGV[1].encode('UTF-16BE')
 ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
 ILEarguments[  32,  4] = dbc_handle[ 0, 8]               # hdbc
 ILEarguments[  36, 12] = ['0'.rjust(24,'0')].pack("H*")  # padding
 ILEarguments[  48, 16] = [Fiddle::Pointer[dsn].to_i.to_s(16).rjust(32,'0')].pack("H*")
 ILEarguments[  64,  2] = ['FFFD'].pack("H*")             # SQL_NTS
 ILEarguments[  66, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
-# ILEarguments[  80, 16] = [dsn.to_i.to_s(16).rjust(32,'0')].pack("H*")
+ILEarguments[  80, 16] = [user.to_i.to_s(16).rjust(32,'0')].pack("H*")
 ILEarguments[  80, 16] = ['0'.rjust(32,'0')].pack("H*")
 ILEarguments[  96,  2] = ['FFFD'].pack("H*")             # SQL_NTS
 ILEarguments[  98, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
-# ILEarguments[ 112, 16] = [dsn.to_i.to_s(16).rjust(32,'0')].pack("H*")
+ILEarguments[ 112, 16] = [pass.to_i.to_s(16).rjust(32,'0')].pack("H*")
 ILEarguments[ 112, 16] = ['0'.rjust(32,'0')].pack("H*")
 ILEarguments[ 128,  2] = ['FFFD'].pack("H*")             # SQL_NTS
 ILEarguments[ 130, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
