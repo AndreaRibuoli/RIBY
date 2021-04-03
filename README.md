@@ -39,6 +39,58 @@ Let's go!
 17. [to retrieve job attributes](#17-to-retrieve-job-attributes)
 18. [to retrieve command definition](#18-to-retrieve-command-definition)
 19. [to pretend we do not care](#19-to-pretend-we-do-not-care)
+20. [to increase our confidence](#20-to-increase-our-confidence)
+
+
+----
+### 20. to increase our confidence
+
+Our plan is to access DB2 by means of ILE SQL CLI APIs as provided by QSYS/QSQCLI service program preferring Wide APIs when available.
+This means -for example- that as soon as in the previous chapter sorted listing we got:
+
+```
+QSQCLI    QSYS      *NO       SQLColAttribute
+QSQCLI    QSYS      *NO       SQLColAttributeW
+```
+
+we will prefer adopting `SQLColAttributeW` rather than `SQLColAttribute`. 
+It is obvious that for those APIs that are not handling strings of chars there will only be one template (e.g.: `SQLAllocHandle`).
+
+We will also focus -pretty soon- on a solid error message handling because it will be very useful in inspecting our DB2 integration attempts.
+
+Given these initial objectives let us start by studying the [SQLAllocHandle API](https://www.ibm.com/docs/en/i/7.4?topic=functions-sqlallochandle-allocate-handle). It will offer a valid alternative to SQLAllocEnv(), SQLAllocConnect(), and SQLAllocStmt() functions.
+
+The *handle type* is an **SQLSMALLINT**. To identify the actual values associated to the constants in IBM documents we can browse the **QSYSINC/H(SQLCLI)** member source file:
+
+```
+ Columns . . . :    1  71           Browse                            QSYSINC/H
+ SEU==>                                                                  SQLCLI
+ FMT **  ...+... 1 ...+... 2 ...+... 3 ...+... 4 ...+... 5 ...+... 6 ...+... 7 
+        *************** Beginning of data *************************************
+  . . .      
+0008.14 #define SQL_HANDLE_ENV                         1   
+0008.15 #define SQL_HANDLE_DBC                         2   
+0008.16 #define SQL_HANDLE_STMT                        3   
+0008.17 #define SQL_HANDLE_DESC                        4   
+0008.18 #define SQL_NULL_HANDLE                        0           
+```
+
+We can derive this useful table:
+
+| handle type       | value | alternative        |
+| ----------------- |:-----:| ------------------ |
+| SQL\_HANDLE\_ENV  |   1   | SQLAllocEnv()      |
+| SQL\_HANDLE\_DBC  |   2   | SQLAllocConnect()  |
+| SQL\_HANDLE\_STMT |   3   | SQLAllocStmt()     |
+| SQL\_HANDLE\_DESC |   4   |                    |
+
+We collect information also on possible return codes:
+
+| return code          | value | 
+| -------------------- |:-----:| 
+| SQL\_SUCCESS         |   0   | 
+| SQL\_ERROR           |  -1   |
+| SQL\_INVALID\_HANDLE |  -2   |
 
 
 ----
@@ -62,129 +114,128 @@ This chapter will again show case how useful is Ruby in understanding the intern
 In a previous chapter we developed a tool that is useful again:
 
 ```
-bash-4.4$ playing_with_api_and_spaces.rb QSQCLI
+bash-4.4$ playing_with_api_and_spaces.rb QSQCLI | sort
 QSQCLI    QSYS      *NO       SQLAllocConnect
 QSQCLI    QSYS      *NO       SQLAllocEnv
 QSQCLI    QSYS      *NO       SQLAllocHandle
 QSQCLI    QSYS      *NO       SQLAllocStmt
 QSQCLI    QSYS      *NO       SQLBindCol
+QSQCLI    QSYS      *NO       SQLBindFileToCol
+QSQCLI    QSYS      *NO       SQLBindFileToParam
 QSQCLI    QSYS      *NO       SQLBindParam
+QSQCLI    QSYS      *NO       SQLBindParameter
 QSQCLI    QSYS      *NO       SQLCancel
 QSQCLI    QSYS      *NO       SQLCloseCursor
+QSQCLI    QSYS      *NO       SQLColAttribute
+QSQCLI    QSYS      *NO       SQLColAttributeW
 QSQCLI    QSYS      *NO       SQLColAttributes
+QSQCLI    QSYS      *NO       SQLColAttributesW
+QSQCLI    QSYS      *NO       SQLColumnPrivileges
+QSQCLI    QSYS      *NO       SQLColumnPrivilegesW
 QSQCLI    QSYS      *NO       SQLColumns
+QSQCLI    QSYS      *NO       SQLColumnsW
 QSQCLI    QSYS      *NO       SQLConnect
+QSQCLI    QSYS      *NO       SQLConnectW
 QSQCLI    QSYS      *NO       SQLCopyDesc
+QSQCLI    QSYS      *NO       SQLDataSources
+QSQCLI    QSYS      *NO       SQLDataSourcesW
 QSQCLI    QSYS      *NO       SQLDescribeCol
+QSQCLI    QSYS      *NO       SQLDescribeColW
+QSQCLI    QSYS      *NO       SQLDescribeParam
 QSQCLI    QSYS      *NO       SQLDisconnect
+QSQCLI    QSYS      *NO       SQLDriverConnect
+QSQCLI    QSYS      *NO       SQLDriverConnectW
 QSQCLI    QSYS      *NO       SQLEndTran
 QSQCLI    QSYS      *NO       SQLError
+QSQCLI    QSYS      *NO       SQLErrorW
 QSQCLI    QSYS      *NO       SQLExecDirect
+QSQCLI    QSYS      *NO       SQLExecDirectW
 QSQCLI    QSYS      *NO       SQLExecute
+QSQCLI    QSYS      *NO       SQLExtendedFetch
 QSQCLI    QSYS      *NO       SQLFetch
 QSQCLI    QSYS      *NO       SQLFetchScroll
+QSQCLI    QSYS      *NO       SQLForeignKeys
+QSQCLI    QSYS      *NO       SQLForeignKeysW
 QSQCLI    QSYS      *NO       SQLFreeConnect
 QSQCLI    QSYS      *NO       SQLFreeEnv
 QSQCLI    QSYS      *NO       SQLFreeHandle
 QSQCLI    QSYS      *NO       SQLFreeStmt
 QSQCLI    QSYS      *NO       SQLGetCol
-QSQCLI    QSYS      *NO       SQLGetConnectOption
-QSQCLI    QSYS      *NO       SQLGetCursorName
 QSQCLI    QSYS      *NO       SQLGetConnectAttr
+QSQCLI    QSYS      *NO       SQLGetConnectAttrW
+QSQCLI    QSYS      *NO       SQLGetConnectOption
+QSQCLI    QSYS      *NO       SQLGetConnectOptionW
+QSQCLI    QSYS      *NO       SQLGetCursorName
+QSQCLI    QSYS      *NO       SQLGetCursorNameW
 QSQCLI    QSYS      *NO       SQLGetData
 QSQCLI    QSYS      *NO       SQLGetDescField
+QSQCLI    QSYS      *NO       SQLGetDescFieldW
 QSQCLI    QSYS      *NO       SQLGetDescRec
+QSQCLI    QSYS      *NO       SQLGetDescRecW
 QSQCLI    QSYS      *NO       SQLGetDiagField
+QSQCLI    QSYS      *NO       SQLGetDiagFieldW
 QSQCLI    QSYS      *NO       SQLGetDiagRec
+QSQCLI    QSYS      *NO       SQLGetDiagRecW
 QSQCLI    QSYS      *NO       SQLGetEnvAttr
 QSQCLI    QSYS      *NO       SQLGetFunctions
 QSQCLI    QSYS      *NO       SQLGetInfo
+QSQCLI    QSYS      *NO       SQLGetInfoW
+QSQCLI    QSYS      *NO       SQLGetLength
+QSQCLI    QSYS      *NO       SQLGetPosition
+QSQCLI    QSYS      *NO       SQLGetPositionW
 QSQCLI    QSYS      *NO       SQLGetStmtAttr
+QSQCLI    QSYS      *NO       SQLGetStmtAttrW
 QSQCLI    QSYS      *NO       SQLGetStmtOption
+QSQCLI    QSYS      *NO       SQLGetStmtOptionW
+QSQCLI    QSYS      *NO       SQLGetSubString
+QSQCLI    QSYS      *NO       SQLGetSubStringW
+QSQCLI    QSYS      *NO       SQLGetTypeInfo
+QSQCLI    QSYS      *NO       SQLGetTypeInfoW
 QSQCLI    QSYS      *NO       SQLLanguages
+QSQCLI    QSYS      *NO       SQLMoreResults
+QSQCLI    QSYS      *NO       SQLNativeSql
+QSQCLI    QSYS      *NO       SQLNativeSqlW
+QSQCLI    QSYS      *NO       SQLNextResult
+QSQCLI    QSYS      *NO       SQLNumParams
 QSQCLI    QSYS      *NO       SQLNumResultCols
 QSQCLI    QSYS      *NO       SQLParamData
+QSQCLI    QSYS      *NO       SQLParamOptions
 QSQCLI    QSYS      *NO       SQLPrepare
+QSQCLI    QSYS      *NO       SQLPrepareW
+QSQCLI    QSYS      *NO       SQLPrimaryKeys
+QSQCLI    QSYS      *NO       SQLPrimaryKeysW
+QSQCLI    QSYS      *NO       SQLProcedureColumns
+QSQCLI    QSYS      *NO       SQLProcedureColumnsW
+QSQCLI    QSYS      *NO       SQLProcedures
+QSQCLI    QSYS      *NO       SQLProceduresW
 QSQCLI    QSYS      *NO       SQLPutData
 QSQCLI    QSYS      *NO       SQLReleaseEnv
 QSQCLI    QSYS      *NO       SQLRowCount
 QSQCLI    QSYS      *NO       SQLSetConnectAttr
+QSQCLI    QSYS      *NO       SQLSetConnectAttrW
 QSQCLI    QSYS      *NO       SQLSetConnectOption
+QSQCLI    QSYS      *NO       SQLSetConnectOptionW
 QSQCLI    QSYS      *NO       SQLSetCursorName
+QSQCLI    QSYS      *NO       SQLSetCursorNameW
 QSQCLI    QSYS      *NO       SQLSetDescField
+QSQCLI    QSYS      *NO       SQLSetDescFieldW
 QSQCLI    QSYS      *NO       SQLSetDescRec
 QSQCLI    QSYS      *NO       SQLSetEnvAttr
 QSQCLI    QSYS      *NO       SQLSetParam
 QSQCLI    QSYS      *NO       SQLSetStmtAttr
-QSQCLI    QSYS      *NO       SQLSetStmtOption
-QSQCLI    QSYS      *NO       SQLSpecialColumns
-QSQCLI    QSYS      *NO       SQLStatistics
-QSQCLI    QSYS      *NO       SQLTables
-QSQCLI    QSYS      *NO       SQLTransact
-QSQCLI    QSYS      *NO       SQLExtendedFetch
-QSQCLI    QSYS      *NO       SQLBindParameter
-QSQCLI    QSYS      *NO       SQLDataSources
-QSQCLI    QSYS      *NO       SQLDescribeParam
-QSQCLI    QSYS      *NO       SQLForeignKeys
-QSQCLI    QSYS      *NO       SQLGetTypeInfo
-QSQCLI    QSYS      *NO       SQLMoreResults
-QSQCLI    QSYS      *NO       SQLNativeSql
-QSQCLI    QSYS      *NO       SQLNumParams
-QSQCLI    QSYS      *NO       SQLPrimaryKeys
-QSQCLI    QSYS      *NO       SQLProcedureColumns
-QSQCLI    QSYS      *NO       SQLProcedures
-QSQCLI    QSYS      *NO       SQLDriverConnect
-QSQCLI    QSYS      *NO       SQLGetLength
-QSQCLI    QSYS      *NO       SQLGetPosition
-QSQCLI    QSYS      *NO       SQLGetSubString
-QSQCLI    QSYS      *NO       SQLBindFileToCol
-QSQCLI    QSYS      *NO       SQLBindFileToParam
-QSQCLI    QSYS      *NO       SQLParamOptions
-QSQCLI    QSYS      *NO       SQLNextResult
-QSQCLI    QSYS      *NO       SQLStartTran
-QSQCLI    QSYS      *NO       SQLColumnPrivileges
-QSQCLI    QSYS      *NO       SQLTablePrivileges
-QSQCLI    QSYS      *NO       SQLColAttribute
-QSQCLI    QSYS      *NO       SQLColAttributeW
-QSQCLI    QSYS      *NO       SQLColAttributesW
-QSQCLI    QSYS      *NO       SQLColumnsW
-QSQCLI    QSYS      *NO       SQLConnectW
-QSQCLI    QSYS      *NO       SQLDescribeColW
-QSQCLI    QSYS      *NO       SQLErrorW
-QSQCLI    QSYS      *NO       SQLExecDirectW
-QSQCLI    QSYS      *NO       SQLGetConnectOptionW
-QSQCLI    QSYS      *NO       SQLGetCursorNameW
-QSQCLI    QSYS      *NO       SQLGetConnectAttrW
-QSQCLI    QSYS      *NO       SQLGetDescFieldW
-QSQCLI    QSYS      *NO       SQLGetDescRecW
-QSQCLI    QSYS      *NO       SQLGetDiagFieldW
-QSQCLI    QSYS      *NO       SQLGetDiagRecW
-QSQCLI    QSYS      *NO       SQLGetInfoW
-QSQCLI    QSYS      *NO       SQLGetStmtAttrW
-QSQCLI    QSYS      *NO       SQLGetStmtOptionW
-QSQCLI    QSYS      *NO       SQLPrepareW
-QSQCLI    QSYS      *NO       SQLSetConnectAttrW
-QSQCLI    QSYS      *NO       SQLSetConnectOptionW
-QSQCLI    QSYS      *NO       SQLSetCursorNameW
-QSQCLI    QSYS      *NO       SQLSetDescFieldW
 QSQCLI    QSYS      *NO       SQLSetStmtAttrW
+QSQCLI    QSYS      *NO       SQLSetStmtOption
 QSQCLI    QSYS      *NO       SQLSetStmtOptionW
-QSQCLI    QSYS      *NO       SQLStatisticsW
-QSQCLI    QSYS      *NO       SQLDataSourcesW
-QSQCLI    QSYS      *NO       SQLTablesW
-QSQCLI    QSYS      *NO       SQLForeignKeysW
-QSQCLI    QSYS      *NO       SQLGetTypeInfoW
-QSQCLI    QSYS      *NO       SQLNativeSqlW
-QSQCLI    QSYS      *NO       SQLPrimaryKeysW
-QSQCLI    QSYS      *NO       SQLProcedureColumnsW
-QSQCLI    QSYS      *NO       SQLProceduresW
-QSQCLI    QSYS      *NO       SQLDriverConnectW
-QSQCLI    QSYS      *NO       SQLGetPositionW
-QSQCLI    QSYS      *NO       SQLGetSubStringW
-QSQCLI    QSYS      *NO       SQLColumnPrivilegesW
-QSQCLI    QSYS      *NO       SQLTablePrivilegesW
+QSQCLI    QSYS      *NO       SQLSpecialColumns
 QSQCLI    QSYS      *NO       SQLSpecialColumnsW
-$
+QSQCLI    QSYS      *NO       SQLStartTran
+QSQCLI    QSYS      *NO       SQLStatistics
+QSQCLI    QSYS      *NO       SQLStatisticsW
+QSQCLI    QSYS      *NO       SQLTablePrivileges
+QSQCLI    QSYS      *NO       SQLTablePrivilegesW
+QSQCLI    QSYS      *NO       SQLTables
+QSQCLI    QSYS      *NO       SQLTablesW
+QSQCLI    QSYS      *NO       SQLTransact$
 ```
 
 If we execute, and filter, the following dump:
@@ -278,6 +329,8 @@ $
 
 We discover that *libdb400.a* -although providing other useful features- has never been updated to support **SQL Wide APIs**.
 These considerations will be the starting point for a series of chapters. Stay tuned! 
+
+[NEXT-20](#20-to-increase-our-confidence)
 
 ----
 ### 18. to retrieve command definition
