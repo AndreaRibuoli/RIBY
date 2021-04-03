@@ -31,4 +31,10 @@ if rc == 1 then
   rc = ilecallx.call(ILEfunction, ILEarguments, ['FFFDFFFBFFF50000'].pack("H*"), -5, 0)
   raise "ILE system failed with rc=#{rc}" if rc != 0
 end
-puts ILEarguments[0, 64].unpack("H*")
+puts ' 0 1 2 3 4 5 6 7 8 9 A B C D E F'
+puts ILEarguments[  0, 16].unpack("H*")
+puts ILEarguments[ 16, 16].unpack("H*")
+puts ILEarguments[ 32, 16].unpack("H*")
+puts ILEarguments[ 48, 16].unpack("H*")
+puts ' 0 1 2 3'
+puts handle[ 0, 4].unpack("H*")
