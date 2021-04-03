@@ -41,7 +41,43 @@ Let's go!
 19. [to pretend we do not care](#19-to-pretend-we-do-not-care)
 20. [to increase our confidence](#20-to-increase-our-confidence)
 21. [to connect](#21-to-connect)
+22. [to get info about the DBMS](#22-to-get-info-about-the-dbms)
 
+
+----
+### 22. to get info about the DBMS
+
+The `SQLGetInfoW` API is another useful Wide API.
+It allows collecting various elements about the *DataBase Management System* we are connected to.
+
+``` C
+SQLRETURN SQLGetInfoW (SQLHDBC        hdbc,
+                       SQLSMALLINT    fInfoType,
+                       SQLPOINTER     rgbInfoValue,
+                       SQLSMALLINT    cbInfoValueMax,
+                       SQLSMALLINT    *pcbInfoValue);
+```
+
+We will focus on two information types that are returning null-terminated character strings:
+
+``` C
+#define SQL_DBMS_NAME             17
+#define SQL_DBMS_VER              18
+```
+
+In the previous example we converted the DNS into *UTF\-16BE* to pass it as an input parameter. This time we will receive content as output. We know it will be encoded in *UTF\-16BE* and we will use Ruby `String#force_encoding('UTF-16BE')` to consistently tag the String object. Then we will apply `String#encode('utf-8')`.
+
+| type         | value | hex     |
+| ------------ |:-----:| ------- |
+|  ARG_INT32   | -5    |  0xFFFB |  
+|  ARG_INT16   | -3    |  0xFFFD |  
+|  ARG_MEMPTR  | -11   |  0xFFF5 | 
+|  ARG_INT16   | -3    |  0xFFFD |  
+|  ARG_MEMPTR  | -11   |  0xFFF5 | 
+|  ARG_END     | 0     |  0x0000 | 
+
+
+The [latest script](invoke_SQLGetInfoW.rb) builds (again) on top of the previous one adding the second example of a Wide API. 
 
 ----
 ### 21. to connect
@@ -120,6 +156,8 @@ fffd0000000000000000000000000000
 80000000000000000000000000000000
 fffd0000000000000000000000000000
 ```
+
+[NEXT-22](#22-to-get-info-about-the-dbms)
 
 ----
 ### 20. to increase our confidence
