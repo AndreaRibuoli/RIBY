@@ -107,6 +107,7 @@ puts ILEarguments[  32, 16].unpack("H*")
 puts ILEarguments[  48, 16].unpack("H*")
 puts ILEarguments[  64, 16].unpack("H*")
 puts ILEarguments[  80, 16].unpack("H*")
+puts ILEarguments[  96, 16].unpack("H*")
 puts 'Returned size 0x' + size[ 0, 2].unpack("H*")[0]
 puts 'Returned buffer ' + buffer[ 0, 64].unpack("H*")[0]
 
