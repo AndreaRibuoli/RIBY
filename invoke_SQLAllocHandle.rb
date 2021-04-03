@@ -35,8 +35,7 @@ puts ILEarguments[  0, 16].unpack("H*")
 puts ILEarguments[ 16, 16].unpack("H*")
 puts ILEarguments[ 32, 16].unpack("H*")
 puts ILEarguments[ 48, 16].unpack("H*")
-puts ' 0 1 2 3'
-puts env_handle[ 0, 4].unpack("H*")
+puts 'Environment handle 0x' + env_handle[ 0, 4].unpack("H*")
 dbc_handle = SQLhandle.malloc
 ILEarguments[  0, 32] = ['0'.rjust(64,'0')].pack("H*")
 ILEarguments[ 32,  2] = ['0002'].pack("H*")             # htype (SQL_HANDLE_DBC)
@@ -51,6 +50,5 @@ puts ILEarguments[  0, 16].unpack("H*")
 puts ILEarguments[ 16, 16].unpack("H*")
 puts ILEarguments[ 32, 16].unpack("H*")
 puts ILEarguments[ 48, 16].unpack("H*")
-puts ' 0 1 2 3'
-puts dbc_handle[ 0, 4].unpack("H*")
+puts 'DB Connection handle 0x' + dbc_handle[ 0, 4].unpack("H*")
 
