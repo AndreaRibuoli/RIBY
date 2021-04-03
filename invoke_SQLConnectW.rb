@@ -56,11 +56,11 @@ puts ILEarguments[ 32, 16].unpack("H*")
 puts ILEarguments[ 48, 16].unpack("H*")
 puts 'DB Connection handle 0x' + dbc_handle[ 0, 4].unpack("H*")[0]
 # dsn = '*LOCAL'.encode('UTF-16BE')
-dsn = '*FAILING'.encode('UTF-16BE')
 ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
 ILEarguments[  32,  4] = dbc_handle[ 0, 4]               # hdbc
 ILEarguments[  36, 12] = ['0'.rjust(24,'0')].pack("H*")  # padding
-ILEarguments[  48, 16] = [Fiddle::Pointer[dsn].to_i.to_s(16).rjust(32,'0')].pack("H*")
+# ILEarguments[  48, 16] = [Fiddle::Pointer[dsn].to_i.to_s(16).rjust(32,'0')].pack("H*")
+ILEarguments[  48, 16] = ['0'.rjust(32,'0')].pack("H*")
 ILEarguments[  64,  2] = ['FFFD'].pack("H*")             # SQL_NTS
 ILEarguments[  66, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
 # ILEarguments[  80, 16] = [dsn.to_i.to_s(16).rjust(32,'0')].pack("H*")
