@@ -122,6 +122,25 @@ We also collect information on return codes (type SQLINTEGER, RESULT_INT32 (-5))
 | SQL\_ERROR           |  -1   |
 | SQL\_INVALID\_HANDLE |  -2   |
 
+The [resulting script](invoke_SQLAllocHandle.rb) will test the sequence of successful allocation for an Environment handle and a DB Connection one. 
+
+A simple -but relevant- step forward in DB2 integration from Ruby!
+
+```
+bash-4.4$ invoke_SQLAllocHandle.rb
+ 0 1 2 3 4 5 6 7 8 9 A B C D E F
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000001000000000000000000000000
+800000000000000000008016b2662390
+Environment handle 0x00000001
+ 0 1 2 3 4 5 6 7 8 9 A B C D E F
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000002000000010000000000000000
+800000000000000000008016b2673d10
+DB Connection handle 0x00000002
+```
 
 ----
 ### 19. to pretend we do not care
