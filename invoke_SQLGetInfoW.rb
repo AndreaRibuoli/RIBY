@@ -111,5 +111,5 @@ puts ILEarguments[  64, 16].unpack("H*")
 puts ILEarguments[  80, 16].unpack("H*")
 puts ILEarguments[  96, 16].unpack("H*")
 len = ('0000' + size[ 0, 2].unpack("H*")[0]).to_i(16)
-puts 'Returned buffer ' + buffer[ 0, len].unpack("H*")[0]
+puts buffer[ 0, len].force_encoding('UTF-16BE').encode('utf-8')
 
