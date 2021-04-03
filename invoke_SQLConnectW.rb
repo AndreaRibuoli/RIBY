@@ -70,7 +70,7 @@ ILEarguments[  98, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
 ILEarguments[ 112, 16] = ['0'.rjust(32,'0')].pack("H*")
 ILEarguments[ 128,  2] = ['FFFD'].pack("H*")             # SQL_NTS
 ILEarguments[ 130, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
-rc = ilecallx.call(pSQLCollectW, ILEarguments, ['FFFBFFF5FFFDFFF5FFFDFFF5FFFD0000'].pack("H*"), -5, 0)
+rc = ilecallx.call(pSQLConnectW, ILEarguments, ['FFFBFFF5FFFDFFF5FFFDFFF5FFFD0000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
 puts ' 0 1 2 3 4 5 6 7 8 9 A B C D E F'
 puts ILEarguments[   0, 16].unpack("H*")
