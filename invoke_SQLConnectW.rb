@@ -55,7 +55,8 @@ puts ILEarguments[ 16, 16].unpack("H*")
 puts ILEarguments[ 32, 16].unpack("H*")
 puts ILEarguments[ 48, 16].unpack("H*")
 puts 'DB Connection handle 0x' + dbc_handle[ 0, 4].unpack("H*")[0]
-dsn = '*LOCAL'.encode('UTF-16BE')
+# dsn = '*LOCAL'.encode('UTF-16BE')
+dsn = '*FAILING'.encode('UTF-16BE')
 ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
 ILEarguments[  32,  4] = dbc_handle[ 0, 4]               # hdbc
 ILEarguments[  36, 12] = ['0'.rjust(24,'0')].pack("H*")  # padding
