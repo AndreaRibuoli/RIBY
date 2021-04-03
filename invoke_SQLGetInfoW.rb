@@ -30,6 +30,7 @@ pSQLGetInfoW = ILEpointer.malloc
 rc = ilesymx.call(pSQLGetInfoW, qsqcli, 'SQLGetInfoW')
 raise "Loading SQLGetInfoW failed" if rc != 1
 env_handle = SQLhandle.malloc
+ILEarguments = ILEarglist.malloc
 ILEarguments[  0, 32] = ['0'.rjust(64,'0')].pack("H*")
 ILEarguments[ 32,  2] = ['0001'].pack("H*")             # htype (SQL_HANDLE_ENV)
 ILEarguments[ 34,  2] = ['0000'].pack("H*")             # padding
