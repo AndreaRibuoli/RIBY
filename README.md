@@ -40,7 +40,57 @@ Let's go!
 18. [to retrieve command definition](#18-to-retrieve-command-definition)
 19. [to pretend we do not care](#19-to-pretend-we-do-not-care)
 20. [to increase our confidence](#20-to-increase-our-confidence)
+21. [to connect](#21-to-connect)
 
+
+----
+### 21. to connect
+
+CLI API functions have suffixes to indicate the format of their string arguments: those that accept Unicode end in W, and those that accept EBCDIC have no suffix.
+This is how we have to interpret the `SQLConnectW`:
+
+```
+SQLRETURN SQLConnectW (SQLHDBC          hdbc,
+                       SQLWCHAR         *szDSN,
+                       SQLSMALLINT      cbDSN,
+                       SQLWCHAR         *szUID,
+                       SQLSMALLINT      cbUID,
+                       SQLWCHAR         *szAuthStr,
+                       SQLSMALLINT      cbAuthStr);
+```
+
+Note that passing **SQL_NTS** (-3 = 0xFFFD) stands for *Null Terminated String* and could be passed as the SQLSMALLINTs required.
+
+One of the aspects that I prefers of Ruby is the support for different encodings.
+The **UTF\-16BE** one will directly support our needs with SQL Wide APIs.
+
+Let us prepare the argument list types:
+ 
+| type         | value | hex     |
+| ------------ |:-----:| ------- |
+|  ARG_INT32   | -5    |  0xFFFB |  
+|  ARG_MEMPTR  | -11   |  0xFFF5 | 
+|  ARG_INT16   | -3    |  0xFFFD |  
+|  ARG_MEMPTR  | -11   |  0xFFF5 | 
+|  ARG_INT16   | -3    |  0xFFFD |  
+|  ARG_MEMPTR  | -11   |  0xFFF5 | 
+|  ARG_INT16   | -3    |  0xFFFD |  
+|  ARG_END     | 0     |  0x0000 | 
+
+ 
+The use of memory for argument list with alignments follows:
+
+```
+     | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | A | B | C | D | E | F |
+| 2x |    h d b c    |-----------------------------------------------|
+| 3x |                   *   s   z   D   S   N                       |
+| 4x | cbDSN |-------------------------------------------------------|
+| 5x |                   *   s   z   U   I   D                       |
+| 6x | cbUID |-------------------------------------------------------|
+| 7x |                   * s z A u t h S t r                         |
+| 8x | cbAut |-------------------------------------------------------|
+
+```
 
 ----
 ### 20. to increase our confidence
