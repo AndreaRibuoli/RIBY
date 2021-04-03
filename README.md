@@ -58,9 +58,17 @@ It is obvious that for those APIs that are not handling strings of chars there w
 
 We will also focus -pretty soon- on a solid error message handling because it will be very useful in inspecting our DB2 integration attempts.
 
-Given these initial objectives let us start by studying the [SQLAllocHandle API](https://www.ibm.com/docs/en/i/7.4?topic=functions-sqlallochandle-allocate-handle). It will offer a valid alternative to SQLAllocEnv(), SQLAllocConnect(), and SQLAllocStmt() functions.
+Given these initial objectives let us start by studying the [SQLAllocHandle API](https://www.ibm.com/docs/en/i/7.4?topic=functions-sqlallochandle-allocate-handle). 
 
-The *handle type* is an **SQLSMALLINT**. To identify the actual values associated to the constants in IBM documents we can browse the **QSYSINC/H(SQLCLI)** member source file:
+```
+SQLRETURN SQLAllocHandle (SQLSMALLINT htype,
+                          SQLINTEGER ihandle,
+                          SQLINTEGER *handle);
+```
+
+It will offer a valid alternative to SQLAllocEnv(), SQLAllocConnect(), and SQLAllocStmt() functions.
+
+The *htype* is a **SQLSMALLINT**. To identify the actual values associated to the constants in IBM documents we can browse the **QSYSINC/H(SQLCLI)** member source file:
 
 ```
  Columns . . . :    1  71           Browse                            QSYSINC/H
@@ -84,7 +92,29 @@ We can derive this useful table:
 | SQL\_HANDLE\_STMT |   3   | SQLAllocStmt()     |
 | SQL\_HANDLE\_DESC |   4   |                    |
 
-We collect information also on possible return codes:
+
+We can also verify that **SQLINTEGER** is a 64-bit integer and we need to arrange for proper alignments (refer to [Chapter 8](#8-to-execute-a-service-program-entry-call-from-pase) for details).
+
+These are the types involved in defining the argument list:
+
+| type         | value | hex     |
+| ------------ |:-----:| ------- |
+|  ARG_INT16   | -3    |  0xFFFD |  
+|  ARG_INT32   | -5    |  0xFFFB |  
+|  ARG_MEMPTR  | -11   |  0xFFF5 | 
+|  ARG_END     | 0     |  0x0000 | 
+
+
+Use of memory for argument list with alignments:
+
+```
+     | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | A | B | C | D | E | F |
+| 2x | htype |-------|   ihandle     |-------------------------------|
+| 3x |                   *   h   a   n   d   l   e                   |
+
+```
+
+We also collect information on return codes (type SQLINTEGER, RESULT_INT32 (-5)):
 
 | return code          | value | 
 | -------------------- |:-----:| 
