@@ -6,7 +6,7 @@ extend Fiddle::Importer
 raise "Usage: invoke_SQLAllocHandle.rb" if ARGV.length != 0
 ILEpointer  = struct [ 'char b[16]' ]
 ILEarglist  = struct [ 'char c[144]' ]
-SQLhandle   = struct [ 'char a[8]' ]
+SQLhandle   = struct [ 'char a[4]' ]
 INFObuffer  = struct [ 'char i[256]' ]
 SQLretsize  = struct [ 'char s[2]' ]
 preload    = Fiddle.dlopen(nil)
@@ -36,7 +36,7 @@ ILEarguments[ 32,  2] = ['0001'].pack("H*")             # htype (SQL_HANDLE_ENV)
 ILEarguments[ 34,  6] = ['000000000000'].pack("H*")     # padding
 ILEarguments[ 40,  8] = ['0000000000000000'].pack("H*") # padding
 ILEarguments[ 48, 16] = [env_handle.to_i.to_s(16).rjust(32,'0')].pack("H*")
-rc = ilecallx.call(pSQLAllocHandle, ILEarguments, ['FFFDFFF9FFF50000'].pack("H*"), -5, 0)
+rc = ilecallx.call(pSQLAllocHandle, ILEarguments, ['FFFDFFFBFFF50000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
 puts ' 0 1 2 3 4 5 6 7 8 9 A B C D E F'
 puts ILEarguments[   0, 16].unpack("H*")
@@ -50,7 +50,7 @@ ILEarguments[ 32,  2] = ['0002'].pack("H*")             # htype (SQL_HANDLE_DBC)
 ILEarguments[ 34,  6] = ['000000000000'].pack("H*")     # padding
 ILEarguments[ 40,  8] = env_handle[ 0, 8]               # ihandle
 ILEarguments[ 48, 16] = [dbc_handle.to_i.to_s(16).rjust(32,'0')].pack("H*")
-rc = ilecallx.call(pSQLAllocHandle, ILEarguments, ['FFFDFFF9FFF50000'].pack("H*"), -5, 0)
+rc = ilecallx.call(pSQLAllocHandle, ILEarguments, ['FFFDFFFBFFF50000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
 puts ' 0 1 2 3 4 5 6 7 8 9 A B C D E F'
 puts ILEarguments[   0, 16].unpack("H*")
