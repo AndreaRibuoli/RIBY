@@ -44,7 +44,7 @@ puts ILEarguments[   0, 16].unpack("H*")
 puts ILEarguments[  16, 16].unpack("H*")
 puts ILEarguments[  32, 16].unpack("H*")
 puts ILEarguments[  48, 16].unpack("H*")
-puts 'Environment handle 0x' + env_handle[ 0, 8].unpack("H*")[0]
+puts 'Environment handle 0x' + env_handle[ 0, 4].unpack("H*")[0]
 dbc_handle = SQLhandle.malloc
 ILEarguments[  0, 32] = ['0'.rjust(64,'0')].pack("H*")
 ILEarguments[ 32,  2] = ['0002'].pack("H*")             # htype (SQL_HANDLE_DBC)
@@ -59,12 +59,12 @@ puts ILEarguments[   0, 16].unpack("H*")
 puts ILEarguments[  16, 16].unpack("H*")
 puts ILEarguments[  32, 16].unpack("H*")
 puts ILEarguments[  48, 16].unpack("H*")
-puts 'DB Connection handle 0x' + dbc_handle[ 0, 8].unpack("H*")[0]
+puts 'DB Connection handle 0x' + dbc_handle[ 0, 4].unpack("H*")[0]
 dsn = '*LOCAL'.encode('UTF-16BE')
 user = ARGV[0].encode('UTF-16BE')
 pass = ARGV[1].encode('UTF-16BE')
 ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
-ILEarguments[  32,  4] = dbc_handle[ 0, 8]               # hdbc
+ILEarguments[  32,  4] = dbc_handle[ 0, 4]               # hdbc
 ILEarguments[  36, 12] = ['0'.rjust(24,'0')].pack("H*")  # padding
 ILEarguments[  48, 16] = [Fiddle::Pointer[dsn].to_i.to_s(16).rjust(32,'0')].pack("H*")
 ILEarguments[  64,  2] = ['FFFD'].pack("H*")             # SQL_NTS
@@ -92,9 +92,9 @@ puts ILEarguments[ 128, 16].unpack("H*")
 size   = SQLretsize.malloc
 buffer = INFObuffer.malloc
 ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
-ILEarguments[  32,  8] = dbc_handle[ 0, 8]               # hdbc
-ILEarguments[  40,  2] = ['0011'].pack("H*")             # SQL_DBMS_NAME  (17)
-ILEarguments[  42,  6] = ['0'.rjust(12,'0')].pack("H*")  # padding
+ILEarguments[  32,  4] = dbc_handle[ 0, 4]               # hdbc
+ILEarguments[  36,  2] = ['0011'].pack("H*")             # SQL_DBMS_NAME  (17)
+ILEarguments[  38, 10] = ['0'.rjust(20,'0')].pack("H*")  # padding
 ILEarguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
 ILEarguments[  64,  2] = ['0100'].pack("H*")             # 256
 ILEarguments[  66, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
