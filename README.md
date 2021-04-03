@@ -94,7 +94,7 @@ The use of memory for argument list with alignments follows:
 
 The [new script](invoke_SQLConnectW.rb) builds on top of the previous one adding the first usage of a Wide API. 
 
-A crucial role has the setting of the DNS that is symply a matter of proper encoding: 
+A crucial role has the setting of the DNS that is simply a matter of proper encoding: 
 
 ``` ruby
 dsn = '*LOCAL'.encode('UTF-16BE')
