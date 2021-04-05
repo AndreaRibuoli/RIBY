@@ -7,7 +7,7 @@ raise "Usage: invoke_SQLAllocHandle.rb <user> <password>" if ARGV.length != 2
 ILEpointer  = struct [ 'char b[16]' ]
 ILEarglist  = struct [ 'char c[144]' ]
 SQLhandle   = struct [ 'char a[4]' ]
-INFObuffer  = struct [ 'char i[256]' ]
+INFObuffer  = struct [ 'char i[2560]' ]
 SQLretsize  = struct [ 'char s[2]' ]
 preload    = Fiddle.dlopen(nil)
 ileloadx   = Fiddle::Function.new( preload['_ILELOADX'],
@@ -76,7 +76,7 @@ ILEarguments[  32,  4] = dbc_handle[ 0, 4]               # hdbc
 ILEarguments[  36,  2] = ['0011'].pack("H*")             # SQL_DBMS_NAME  (17)
 ILEarguments[  38, 10] = ['0'.rjust(20,'0')].pack("H*")  # padding
 ILEarguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
-ILEarguments[  64,  2] = ['0100'].pack("H*")             # 256
+ILEarguments[  64,  2] = ['0A00'].pack("H*")             # 256
 ILEarguments[  66, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
 ILEarguments[  80, 16] = [size.to_i.to_s(16).rjust(32,'0')].pack("H*")
 ILEarguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")
@@ -105,4 +105,4 @@ ILEarguments[  36,  2] = ['00C9'].pack("H*")             # SQL_KEYWORDS  (201)
 rc = ilecallx.call(pSQLGetInfoW, ILEarguments, ['FFFBFFFDFFF5FFFDFFF50000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
 len = ('0000' + size[ 0, 2].unpack("H*")[0]).to_i(16)
-puts buffer[ 0, 160].force_encoding('UTF-16BE').encode('utf-8')
+puts buffer[ 0, len].force_encoding('UTF-16BE').encode('utf-8')
