@@ -91,4 +91,18 @@ rc = ilecallx.call(pSQLGetInfoW, ILEarguments, ['FFFBFFFDFFF5FFFDFFF50000'].pack
 raise "ILE system failed with rc=#{rc}" if rc != 0
 len = ('0000' + size[ 0, 2].unpack("H*")[0]).to_i(16)
 puts 'SQL_DBMS_VER: ' + buffer[ 0, len].force_encoding('UTF-16BE').encode('utf-8')
+ILEarguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
+ILEarguments[  80, 16] = [size.to_i.to_s(16).rjust(32,'0')].pack("H*")
+ILEarguments[  36,  2] = ['0006'].pack("H*")             # SQL_DRIVER_NAME  (6)
+rc = ilecallx.call(pSQLGetInfoW, ILEarguments, ['FFFBFFFDFFF5FFFDFFF50000'].pack("H*"), -5, 0)
+raise "ILE system failed with rc=#{rc}" if rc != 0
+len = ('0000' + size[ 0, 2].unpack("H*")[0]).to_i(16)
+puts 'SQL_DRIVER_NAME: ' + buffer[ 0, len].force_encoding('UTF-16BE').encode('utf-8')
 
+ILEarguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
+ILEarguments[  80, 16] = [size.to_i.to_s(16).rjust(32,'0')].pack("H*")
+ILEarguments[  36,  2] = ['00C9'].pack("H*")             # SQL_KEYWORDS  (201)
+rc = ilecallx.call(pSQLGetInfoW, ILEarguments, ['FFFBFFFDFFF5FFFDFFF50000'].pack("H*"), -5, 0)
+raise "ILE system failed with rc=#{rc}" if rc != 0
+len = ('0000' + size[ 0, 2].unpack("H*")[0]).to_i(16)
+puts 'SQL_KEYWORDS: ' + buffer[ 0, len].force_encoding('UTF-16BE').encode('utf-8')
