@@ -105,4 +105,4 @@ ILEarguments[  36,  2] = ['00C9'].pack("H*")             # SQL_KEYWORDS  (201)
 rc = ilecallx.call(pSQLGetInfoW, ILEarguments, ['FFFBFFFDFFF5FFFDFFF50000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
 len = ('0000' + size[ 0, 2].unpack("H*")[0]).to_i(16)
-puts buffer[ 0, 80].force_encoding('UTF-16BE').encode('utf-8')
+puts buffer[ 0, 160].force_encoding('UTF-16BE').encode('utf-8')
