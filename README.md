@@ -47,7 +47,7 @@ Let's go!
 ----
 ### 22. to get info about the DBMS
 
-The `SQLGetInfoW` API is another useful Wide API.
+The [`SQLGetInfoW` API](https://www.ibm.com/docs/en/i/7.4?topic=functions-sqlgetinfo-get-general-information) is another useful Wide API.
 It allows collecting various elements about the *DataBase Management System* we are connected to.
 
 ``` C
@@ -92,7 +92,7 @@ SQL_DBMS_VER: 07040
 ### 21. to connect
 
 CLI API functions have suffixes to indicate the format of their string arguments: those that accept Unicode end in W, and those that accept EBCDIC have no suffix.
-This is how we have to interpret the `SQLConnectW`:
+This is how we have to interpret the [`SQLConnectW` API](https://www.ibm.com/docs/en/i/7.4?topic=functions-sqlconnect-connect-data-source):
 
 ``` C
 SQLRETURN SQLConnectW (SQLHDBC          hdbc,
