@@ -56,5 +56,5 @@ ILEarguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
   ILEarguments[  48, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
   rc = ilecallx.call(pSQLGetEnvAttr, ILEarguments, ['FFFBFFFBFFF5FFFBFFF50000].pack("H*"), -5, 0)
   raise "ILE system failed with rc=#{rc}" if rc != 0
-  puts "#{key}: #{ILEarguments[16, 8].unpack('H*')[0]}"
+  puts "#{key}: #{ILEarguments[16, 8].unpack('H*')}"
 }
