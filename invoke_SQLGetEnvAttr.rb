@@ -61,3 +61,9 @@ ILEarguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
   raise "ILE system failed with rc=#{rc}" if rc != 0
   puts "#{key} = #{buffer[0, 4].unpack("H*")[0]}" if ILEarguments[16, 8].unpack("H*")[0] != 'ffffffffffffffff'
 }
+
+{ SQL_ATTR_OUTPUT_NTS: 1,
+  SQL_ATTR_SYS_NAMING: 2
+}.each { |k,v|
+  puts "#{k.to_s}: #{v}"
+}
