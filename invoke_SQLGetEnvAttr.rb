@@ -83,6 +83,16 @@ ILEarguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
 rc = ilecallx.call(pSQLGetEnvAttr, ILEarguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
 puts 'SQL_ATTR_DEFAULT_LIB: ' + buffer[ 0, 20].unpack("H*")[0]
+puts ' 0 1 2 3 4 5 6 7 8 9 A B C D E F'
+puts ILEarguments[   0, 16].unpack("H*")
+puts ILEarguments[  16, 16].unpack("H*")
+puts ILEarguments[  32, 16].unpack("H*")
+puts ILEarguments[  48, 16].unpack("H*")
+puts ILEarguments[  64, 16].unpack("H*")
+puts ILEarguments[  80, 16].unpack("H*")
+puts ILEarguments[  96, 16].unpack("H*")
+puts ILEarguments[ 112, 16].unpack("H*")
+puts ILEarguments[ 128, 16].unpack("H*")
 size   = SQLretsize.malloc
 ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
 ILEarguments[  32,  4] = dbc_handle[ 0, 4]               # hdbc
