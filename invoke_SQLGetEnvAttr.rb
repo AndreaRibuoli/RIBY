@@ -62,7 +62,6 @@ working = []
   raise "ILE system failed with rc=#{rc}" if rc != 0
   working.push(k) if ILEarguments[16, 8].unpack("H*")[0] != 'ffffffffffffffff'
 }
-puts working
 { SQL_ATTR_OUTPUT_NTS: 1,
   SQL_ATTR_SYS_NAMING: 2,
   SQL_ATTR_DEFAULT_LIB: 3,
@@ -77,7 +76,6 @@ puts working
   SQL_ATTR_DECIMAL_SEP: 24,
   SQL_ATTR_INCLUDE_NULL_IN_LEN: 31,
   SQL_ATTR_UTF8: 32,
-  SQL_attr_not_identified: 120
 }.each { |k,v|
   key = 10000 + v
   ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
@@ -86,5 +84,10 @@ puts working
   ILEarguments[  80, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
   buffer[0, 4] = ['00000000'].pack("H*")
   rc = ilecallx.call(pSQLGetEnvAttr, ILEarguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
+  working.delete(k) if ILEarguments[16, 8].unpack("H*")[0] != 'ffffffffffffffff'
   puts "#{k.to_s} (#{v}): 0x#{buffer[0, 4].unpack("H*")[0]}"
+}
+working.each {|k|
+  key = 10000 + v
+  puts "Attribute #{key} unknown"
 }
