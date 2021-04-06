@@ -88,7 +88,11 @@ working = []
   raise "ILE system failed with rc=#{rc}" if rc != 0
   working.push(key) if ILEarguments[16, 8].unpack("H*")[0] != 'ffffffffffffffff'
 }
-{ SQL_ATTR_AUTO_IPD: 10001,
+{
+  SQL_ATTR_XML_DECLARATION: 2552,
+  SQL_ATTR_CURRENT_IMPLICIT_XMLPARSE_OPTION: 2553,
+  SQL_ATTR_CONCURRENT_ACCESS_RESOLUTION: 2595,
+  SQL_ATTR_AUTO_IPD: 10001,
   SQL_ATTR_ACCESS_MODE: 10002,
   SQL_ATTR_AUTOCOMMIT: 10003,
   SQL_ATTR_DBC_SYS_NAMING: 10004,
