@@ -75,7 +75,7 @@ working = []
   SQL_ATTR_TIME_SEP: 23,
   SQL_ATTR_DECIMAL_SEP: 24,
   SQL_ATTR_INCLUDE_NULL_IN_LEN: 31,
-  SQL_ATTR_UTF8: 32,
+  SQL_ATTR_UTF8: 32
 }.each { |k,v|
   key = 10000 + v
   ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")

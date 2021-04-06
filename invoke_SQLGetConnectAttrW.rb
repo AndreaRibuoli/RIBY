@@ -77,6 +77,7 @@ ILEarguments[  32,  4] = dbc_handle[ 0, 4]               # hdbc
 ILEarguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")  # padding
 ILEarguments[  64,  4] = ['00001000'].pack("H*")         # 4
 ILEarguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
+working = []
 4000.times { |k|
   key = 10000 + k
   ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
@@ -86,5 +87,22 @@ ILEarguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
   buffer[0, 4] = ['00000000'].pack("H*")
   rc = ilecallx.call(pSQLGetConnectAttrW, ILEarguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
   raise "ILE system failed with rc=#{rc}" if rc != 0
-  puts "#{key} = #{buffer[0, 4].unpack("H*")[0]}" if ILEarguments[16, 8].unpack("H*")[0] != 'ffffffffffffffff'
+  working.push(k) if ILEarguments[16, 8].unpack("H*")[0] != 'ffffffffffffffff'
+}
+{ SQL_ATTR_AUTO_IPD: 1,
+  SQL_ATTR_ACCESS_MODE: 2
+}.each { |k,v|
+  key = 10000 + v
+  ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
+  ILEarguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
+  ILEarguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
+  ILEarguments[  80, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
+  buffer[0, 4] = ['00000000'].pack("H*")
+  rc = ilecallx.call(pSQLGetConnectAttrW, ILEarguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
+  working.delete(v) if ILEarguments[16, 8].unpack("H*")[0] != 'ffffffffffffffff'
+  puts "#{k.to_s} (#{key}): 0x#{buffer[0, 4].unpack("H*")[0]}"
+}
+working.each {|k|
+  key = 10000 + k
+  puts "Attribute #{key} unknown"
 }
