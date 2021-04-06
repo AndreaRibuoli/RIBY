@@ -55,6 +55,17 @@ Two of which include an *SQL\-Wide* variant:
 * [`SQLGetConnectAttrW` API](https://www.ibm.com/docs/en/i/7.4?topic=functions-sqlgetconnectattr-get-value-connection-attribute)
 * [`SQLGetStmtAttrW` API](https://www.ibm.com/docs/en/i/7.4?topic=functions-sqlgetstmtattr-get-value-statement-attribute)
 
+They share a similar parameter list:
+
+| type         | value | hex     |
+| ------------ |:-----:| ------- |
+|  ARG_INT32   | -5    |  0xFFFB |  
+|  ARG_INT32   | -5    |  0xFFFB |  
+|  ARG_MEMPTR  | -11   |  0xFFF5 | 
+|  ARG_INT32   | -5    |  0xFFFB |  
+|  ARG_MEMPTR  | -11   |  0xFFF5 | 
+|  ARG_END     | 0     |  0x0000 | 
+
 
 ##### SQLGetEnvAttr
 
@@ -67,17 +78,6 @@ SQLRETURN SQLGetEnvAttr (SQLHENV      henv,
 ```
 
 Surprisingly *SQLGetEnvAttr* offers two attributes that are character strings (*SQL\_ATTR\_DEFAULT\_LIB*) but there is no evidence they are still working. 
-
-
-| type         | value | hex     |
-| ------------ |:-----:| ------- |
-|  ARG_INT32   | -5    |  0xFFFB |  
-|  ARG_INT32   | -5    |  0xFFFB |  
-|  ARG_MEMPTR  | -11   |  0xFFF5 | 
-|  ARG_INT32   | -5    |  0xFFFB |  
-|  ARG_MEMPTR  | -11   |  0xFFF5 | 
-|  ARG_END     | 0     |  0x0000 | 
-
 
 These are the attributes that appear to be working with IBM DB2 for i 7.4:
 
@@ -99,16 +99,109 @@ These are the attributes that appear to be working with IBM DB2 for i 7.4:
 #define SQL_attr_not_identified      10120
 ```
 
+This is the output of [invoke_SQLGetEnvAttr.rb script](invoke_SQLGetEnvAttr.rb):
+
+```
+bash-4.4$ invoke_SQLGetEnvAttr.rb              
+Environment handle 0x00000001
+10001 = 00000001
+10002 = 00000000
+10003 = 00000000
+10004 = 00000000
+10005 = 00000000
+10009 = 00000000
+10010 = 00004040
+10020 = 00000001
+10021 = 00000001
+10022 = 00000001
+10023 = 00000006
+10024 = 00000003
+10031 = 00000001
+10032 = 00000000
+10120 = 00000001
+```
+
 ##### SQLGetConnectAttr
 
 ```
-SQLRETURN SQLGetConnectAttr (SQLHENV      henv,
-                         SQLINTEGER   Attribute,
-                         SQLPOINTER   Value,
-                         SQLINTEGER   BufferLength,
-                         SQLINTEGER   *StringLength);
+SQLRETURN SQLGetConnectAttr(   SQLHDBC      hdbc,
+                               SQLINTEGER   fAttr,
+                               SQLPOINTER   pvParam),;
+                               SQLINTEGER   bLen,
+                               SQLINTEGER   *sLen);
 ```
 
+Without SERVER MODE we get the following list of active attributes: 
+
+
+```
+#define SQL_ATTR_AUTO_IPD               10001
+#define SQL_ATTR_ACCESS_MODE            10002
+#define SQL_ATTR_AUTOCOMMIT             10003    
+#define SQL_ATTR_DBC_SYS_NAMING         10004    
+#define SQL_ATTR_DBC_DEFAULT_LIB        10005   
+#define SQL_ATTR_ADOPT_OWNER_AUTH       10006  
+#define SQL_ATTR_SYSBAS_CMT             10007    
+#define SQL_ATTR_DATE_FMT               10020
+#define SQL_ATTR_DATE_SEP               10021
+#define SQL_ATTR_TIME_FMT               10022
+#define SQL_ATTR_TIME_SEP               10023
+#define SQL_ATTR_DECIMAL_SEP            10024
+#define SQL_ATTR_TXN_EXTERNAL           10026
+#define SQL_ATTR_SAVEPOINT_NAME         10028
+#define SQL_ATTR_INCLUDE_NULL_IN_LEN    10031
+#define SQL_ATTR_UTF8                   10032
+#define SQL_ATTR_UCS2                   10035
+#define SQL_ATTR_MAX_PRECISION          10040
+#define SQL_ATTR_MAX_SCALE              10041
+#define SQL_ATTR_MIN_DIVIDE_SCALE       10042
+#define SQL_ATTR_HEX_LITERALS           10043
+#define SQL_ATTR_CORRELATOR             10044
+#define SQL_ATTR_CONN_SORT_SEQUENCE     10046
+#define SQL_ATTR_INFO_USERID            10103
+#define SQL_ATTR_INFO_WRKSTNNAME        10104
+#define SQL_ATTR_INFO_APPLNAME          10105
+#define SQL_ATTR_INFO_ACCTSTR           10106
+#define SQL_ATTR_INFO_PROGRAMID         10107
+#define SQL_ATTR_DECFLOAT_ROUNDING_MODE 10112
+```
+
+This is the output of [invoke_SQLGetConnectAttrW.rb script](invoke_SQLGetEnvAttr.rb):
+
+```
+bash-4.4$  invoke_SQLGetConnectAttrW.rb '*CURRENT' ''
+Environment handle 0x00000001
+DB Connection handle 0x00000002
+10001 = 00000000
+10002 = 00000001
+10003 = 00000000
+10004 = 00000000
+10005 = 00000000
+10006 = 00000000
+10007 = 00000000
+10020 = 00000001
+10021 = 00000001
+10022 = 00000001
+10023 = 00000006
+10024 = 00000003
+10026 = 00000000
+10028 = 00000000
+10031 = 00000001
+10032 = 00000000
+10035 = 00000000
+10040 = 0000001f
+10041 = 00000000
+10042 = 00000000
+10043 = 00000001
+10044 = 00000000
+10046 = 00000000
+10103 = 00000000
+10104 = 00000000
+10105 = 00000000
+10106 = 00000000
+10107 = 00000000
+10112 = 00000000
+```
 
 ----
 ### 22. to get info about the DBMS
