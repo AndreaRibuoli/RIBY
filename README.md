@@ -166,7 +166,7 @@ Without SERVER MODE we get the following list of active attributes:
 #define SQL_ATTR_DECFLOAT_ROUNDING_MODE 10112
 ```
 
-This is the output of [invoke_SQLGetConnectAttrW.rb script](invoke_SQLGetEnvAttr.rb):
+This is the output of [invoke_SQLGetConnectAttrW.rb script](invoke_SQLGetConnectAttrW.rb):
 
 ```
 bash-4.4$  invoke_SQLGetConnectAttrW.rb '*CURRENT' ''
