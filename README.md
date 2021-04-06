@@ -79,30 +79,10 @@ SQLRETURN SQLGetEnvAttr (SQLHENV      henv,
 
 Surprisingly *SQLGetEnvAttr* offers two attributes that are character strings (*SQL\_ATTR\_DEFAULT\_LIB*) but there is no evidence they are still working. 
 
-These are the attributes that appear to be working with IBM DB2 for i 7.4:
+
+This is the output of [invoke_SQLGetEnvAttr.rb script](invoke_SQLGetEnvAttr.rb) with the attributes that appear to be working with IBM DB2 for i 7.4:
 
 ```
-#define SQL_ATTR_OUTPUT_NTS          10001
-#define SQL_ATTR_SYS_NAMING          10002
-#define SQL_ATTR_DEFAULT_LIB         10003
-#define SQL_ATTR_SERVER_MODE         10004
-#define SQL_ATTR_JOB_SORT_SEQUENCE   10005
-#define SQL_ATTR_ENVHNDL_COUNTER     10009
-#define SQL_ATTR_ESCAPE_CHAR         10010
-#define SQL_ATTR_DATE_FMT            10020
-#define SQL_ATTR_DATE_SEP            10021
-#define SQL_ATTR_TIME_FMT            10022
-#define SQL_ATTR_TIME_SEP            10023
-#define SQL_ATTR_DECIMAL_SEP         10024
-#define SQL_ATTR_INCLUDE_NULL_IN_LEN 10031
-#define SQL_ATTR_UTF8                10032
-#define SQL_attr_not_identified      10120
-```
-
-This is the output of [invoke_SQLGetEnvAttr.rb script](invoke_SQLGetEnvAttr.rb):
-
-```
-bash-4.4$ invoke_SQLGetEnvAttr.rb              
 Environment handle 0x00000001
 10001 = 00000001
 10002 = 00000000
@@ -119,6 +99,21 @@ Environment handle 0x00000001
 10031 = 00000001
 10032 = 00000000
 10120 = 00000001
+SQL_ATTR_OUTPUT_NTS (1): 0x00000001
+SQL_ATTR_SYS_NAMING (2): 0x00000000
+SQL_ATTR_DEFAULT_LIB (3): 0x00000000
+SQL_ATTR_SERVER_MODE (4): 0x00000000
+SQL_ATTR_JOB_SORT_SEQUENCE (5): 0x00000000
+SQL_ATTR_ENVHNDL_COUNTER (9): 0x00000000
+SQL_ATTR_ESCAPE_CHAR (10): 0x00004040
+SQL_ATTR_DATE_FMT (20): 0x00000001
+SQL_ATTR_DATE_SEP (21): 0x00000001
+SQL_ATTR_TIME_FMT (22): 0x00000001
+SQL_ATTR_TIME_SEP (23): 0x00000006
+SQL_ATTR_DECIMAL_SEP (24): 0x00000003
+SQL_ATTR_INCLUDE_NULL_IN_LEN (31): 0x00000001
+SQL_ATTR_UTF8 (32): 0x00000000
+SQL_attr_not_identified (120): 0x00000001
 ```
 
 ##### SQLGetConnectAttr

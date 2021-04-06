@@ -50,6 +50,7 @@ ILEarguments[  32,  4] = env_handle[ 0, 4]               # henv
 ILEarguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")  # padding
 ILEarguments[  64,  4] = ['00001000'].pack("H*")         # 4
 ILEarguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
+working = []
 4000.times { |k|
   key = 10000 + k
   ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
@@ -59,9 +60,9 @@ ILEarguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
   buffer[0, 4] = ['00000000'].pack("H*") 
   rc = ilecallx.call(pSQLGetEnvAttr, ILEarguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
   raise "ILE system failed with rc=#{rc}" if rc != 0
-  puts "#{key} = #{buffer[0, 4].unpack("H*")[0]}" if ILEarguments[16, 8].unpack("H*")[0] != 'ffffffffffffffff'
+  working < k if ILEarguments[16, 8].unpack("H*")[0] != 'ffffffffffffffff'
 }
-
+puts working
 { SQL_ATTR_OUTPUT_NTS: 1,
   SQL_ATTR_SYS_NAMING: 2,
   SQL_ATTR_DEFAULT_LIB: 3,
