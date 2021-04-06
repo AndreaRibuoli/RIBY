@@ -48,8 +48,8 @@ Let's go!
 ----
 ### 23. to get the current setting of an attribute
 
-There are three sets of attributes (not perfectly disjointed) that are queried with three different APIs. 
-Two of which include an *SQL\-Wide* variant:
+There are three sets of attributes (with some overlaps) that are queried with three different APIs. 
+Two of which present an *SQL\-Wide* variant:
 
 * [`SQLGetEnvAttr` API](https://www.ibm.com/docs/en/i/7.4?topic=functions-sqlgetenvattr-return-current-setting-environment-attribute)
 * [`SQLGetConnectAttrW` API](https://www.ibm.com/docs/en/i/7.4?topic=functions-sqlgetconnectattr-get-value-connection-attribute)
