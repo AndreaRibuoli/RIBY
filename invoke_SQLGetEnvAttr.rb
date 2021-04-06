@@ -60,7 +60,7 @@ working = []
   buffer[0, 4] = ['00000000'].pack("H*") 
   rc = ilecallx.call(pSQLGetEnvAttr, ILEarguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
   raise "ILE system failed with rc=#{rc}" if rc != 0
-  working < k if ILEarguments[16, 8].unpack("H*")[0] != 'ffffffffffffffff'
+  working.push(k) if ILEarguments[16, 8].unpack("H*")[0] != 'ffffffffffffffff'
 }
 puts working
 { SQL_ATTR_OUTPUT_NTS: 1,
