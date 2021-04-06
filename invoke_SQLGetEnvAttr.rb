@@ -49,8 +49,7 @@ ILEarguments[  36,  4] = ['00002713'].pack("H*")         # SQL_ATTR_DEFAULT_LIB 
 ILEarguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")  # padding
 ILEarguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
 ILEarguments[  64,  4] = ['00001000'].pack("H*")         # 4096
-ILEarguments[  68, 12] = ['0'.rjust(28,'0')].pack("H*")  # padding
-ILEarguments[  80, 64] = [size.to_i.to_s(16).rjust(128,'0')].pack("H*")
+ILEarguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
 rc = ilecallx.call(pSQLGetEnvAttr, ILEarguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
 puts 'SQL_ATTR_DEFAULT_LIB: ' + buffer[ 0, 20].unpack("H*")
