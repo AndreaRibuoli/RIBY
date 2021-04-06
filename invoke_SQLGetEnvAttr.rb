@@ -9,6 +9,7 @@ ILEarglist  = struct [ 'char c[144]' ]
 SQLhandle   = struct [ 'char a[4]' ]
 INFObuffer  = struct [ 'char i[4096]' ]
 SQLretsize  = struct [ 'char s[2]' ]
+SQLintsize  = struct [ 'char s[4]' ]
 preload    = Fiddle.dlopen(nil)
 ileloadx   = Fiddle::Function.new( preload['_ILELOADX'],
                            [Fiddle::TYPE_VOIDP, Fiddle::TYPE_INT],
@@ -43,6 +44,32 @@ ILEarguments[ 48, 16] = [env_handle.to_i.to_s(16).rjust(32,'0')].pack("H*")
 rc = ilecallx.call(pSQLAllocHandle, ILEarguments, ['FFFDFFFBFFF50000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
 puts 'Environment handle 0x' + env_handle[ 0, 4].unpack("H*")[0]
+buffer  = INFObuffer.malloc
+sizeint = SQLintsize.malloc
+
+ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
+ILEarguments[  32,  4] = env_handle[ 0, 4]               # henv
+ILEarguments[  36,  4] = ['00002713'].pack("H*")         # SQL_ATTR_DEFAULT_LIB (10003)
+ILEarguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")  # padding
+ILEarguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
+ILEarguments[  64,  4] = ['00001000'].pack("H*")         # 4096
+ILEarguments[  68, 12] = ['0'.rjust(24,'0')].pack("H*")  # padding
+ILEarguments[  80, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
+ILEarguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
+rc = ilecallx.call(pSQLGetEnvAttr, ILEarguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
+raise "ILE system failed with rc=#{rc}" if rc != 0
+puts 'SQL_ATTR_DEFAULT_LIB: ' + buffer[ 0, 20].unpack("H*")[0]
+puts ' 0 1 2 3 4 5 6 7 8 9 A B C D E F'
+puts ILEarguments[   0, 16].unpack("H*")
+puts ILEarguments[  16, 16].unpack("H*")
+puts ILEarguments[  32, 16].unpack("H*")
+puts ILEarguments[  48, 16].unpack("H*")
+puts ILEarguments[  64, 16].unpack("H*")
+puts ILEarguments[  80, 16].unpack("H*")
+puts ILEarguments[  96, 16].unpack("H*")
+puts ILEarguments[ 112, 16].unpack("H*")
+puts ILEarguments[ 128, 16].unpack("H*")
+
 dbc_handle = SQLhandle.malloc
 ILEarguments[  0, 32] = ['0'.rjust(64,'0')].pack("H*")
 ILEarguments[ 32,  2] = ['0002'].pack("H*")             # htype (SQL_HANDLE_DBC)
@@ -72,27 +99,6 @@ ILEarguments[ 128,  2] = ['FFFD'].pack("H*")             # SQL_NTS
 ILEarguments[ 130, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
 rc = ilecallx.call(pSQLConnectW, ILEarguments, ['FFFBFFF5FFFDFFF5FFFDFFF5FFFD0000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
-buffer = INFObuffer.malloc
-ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
-ILEarguments[  32,  4] = env_handle[ 0, 4]               # henv
-ILEarguments[  36,  4] = ['00002713'].pack("H*")         # SQL_ATTR_DEFAULT_LIB (10003)
-ILEarguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")  # padding
-ILEarguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
-ILEarguments[  64,  4] = ['00001000'].pack("H*")         # 4096
-ILEarguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
-rc = ilecallx.call(pSQLGetEnvAttr, ILEarguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
-raise "ILE system failed with rc=#{rc}" if rc != 0
-puts 'SQL_ATTR_DEFAULT_LIB: ' + buffer[ 0, 20].unpack("H*")[0]
-puts ' 0 1 2 3 4 5 6 7 8 9 A B C D E F'
-puts ILEarguments[   0, 16].unpack("H*")
-puts ILEarguments[  16, 16].unpack("H*")
-puts ILEarguments[  32, 16].unpack("H*")
-puts ILEarguments[  48, 16].unpack("H*")
-puts ILEarguments[  64, 16].unpack("H*")
-puts ILEarguments[  80, 16].unpack("H*")
-puts ILEarguments[  96, 16].unpack("H*")
-puts ILEarguments[ 112, 16].unpack("H*")
-puts ILEarguments[ 128, 16].unpack("H*")
 size   = SQLretsize.malloc
 ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
 ILEarguments[  32,  4] = dbc_handle[ 0, 4]               # hdbc

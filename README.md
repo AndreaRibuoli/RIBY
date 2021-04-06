@@ -58,11 +58,13 @@ Two of which include an *SQL\-Wide* variant:
 Surprisingly *SQLGetEnvAttr* offers an attribute that is a character string (*SQL\_ATTR\_DEFAULT\_LIB*) but there is no Wide variant. Let us first check if and how *SQL\_ATTR\_DEFAULT\_LIB* is returned back.
 
 ```
-SQLRETURN SQLSetEnvAttr  (SQLHENV      henv,
-                          SQLINTEGER   Attribute,
-                          SQLPOINTER   Value,
-                          SQLINTEGER   StringLength);
+SQLRETURN SQLGetEnvAttr (SQLHENV      henv,
+                         SQLINTEGER   Attribute,
+                         SQLPOINTER   Value,
+                         SQLINTEGER   BufferLength,
+                         SQLINTEGER   *StringLength);
 ```
+
 
 | type         | value | hex     |
 | ------------ |:-----:| ------- |
@@ -70,6 +72,7 @@ SQLRETURN SQLSetEnvAttr  (SQLHENV      henv,
 |  ARG_INT32   | -5    |  0xFFFB |  
 |  ARG_MEMPTR  | -11   |  0xFFF5 | 
 |  ARG_INT32   | -5    |  0xFFFB |  
+|  ARG_MEMPTR  | -11   |  0xFFF5 | 
 |  ARG_END     | 0     |  0x0000 | 
 
 ```
