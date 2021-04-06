@@ -51,8 +51,8 @@ ILEarguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")  # padding
 ILEarguments[  64,  4] = ['00001000'].pack("H*")         # 4
 ILEarguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
 working = []
-4000.times { |k|
-  key = 10000 + k
+11000.times { |key|
+  key
   ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
   ILEarguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
   ILEarguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
@@ -60,24 +60,23 @@ working = []
   buffer[0, 4] = ['00000000'].pack("H*") 
   rc = ilecallx.call(pSQLGetEnvAttr, ILEarguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
   raise "ILE system failed with rc=#{rc}" if rc != 0
-  working.push(k) if ILEarguments[16, 8].unpack("H*")[0] != 'ffffffffffffffff'
+  working.push(key) if ILEarguments[16, 8].unpack("H*")[0] != 'ffffffffffffffff'
 }
-{ SQL_ATTR_OUTPUT_NTS: 1,
-  SQL_ATTR_SYS_NAMING: 2,
-  SQL_ATTR_DEFAULT_LIB: 3,
-  SQL_ATTR_SERVER_MODE: 4,
-  SQL_ATTR_JOB_SORT_SEQUENCE: 5,
-  SQL_ATTR_ENVHNDL_COUNTER: 9,
-  SQL_ATTR_ESCAPE_CHAR: 10,
-  SQL_ATTR_DATE_FMT: 20,
-  SQL_ATTR_DATE_SEP: 21,
-  SQL_ATTR_TIME_FMT: 22,
-  SQL_ATTR_TIME_SEP: 23,
-  SQL_ATTR_DECIMAL_SEP: 24,
-  SQL_ATTR_INCLUDE_NULL_IN_LEN: 31,
-  SQL_ATTR_UTF8: 32
-}.each { |k,v|
-  key = 10000 + v
+{ SQL_ATTR_OUTPUT_NTS: 10001,
+  SQL_ATTR_SYS_NAMING: 10002,
+  SQL_ATTR_DEFAULT_LIB: 10003,
+  SQL_ATTR_SERVER_MODE: 10004,
+  SQL_ATTR_JOB_SORT_SEQUENCE: 10005,
+  SQL_ATTR_ENVHNDL_COUNTER: 10009,
+  SQL_ATTR_ESCAPE_CHAR: 10010,
+  SQL_ATTR_DATE_FMT: 10020,
+  SQL_ATTR_DATE_SEP: 10021,
+  SQL_ATTR_TIME_FMT: 10022,
+  SQL_ATTR_TIME_SEP: 10023,
+  SQL_ATTR_DECIMAL_SEP: 10024,
+  SQL_ATTR_INCLUDE_NULL_IN_LEN: 10031,
+  SQL_ATTR_UTF8: 10032
+}.each { |k,key|
   ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
   ILEarguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
   ILEarguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
@@ -87,7 +86,6 @@ working = []
   working.delete(v) if ILEarguments[16, 8].unpack("H*")[0] != 'ffffffffffffffff'
   puts "#{k.to_s} (#{key}): 0x#{buffer[0, 4].unpack("H*")[0]}"
 }
-working.each {|k|
-  key = 10000 + k
+working.each {|key|
   puts "Attribute #{key} unknown"
 }
