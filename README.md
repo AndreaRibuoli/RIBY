@@ -82,7 +82,7 @@ In the previous example we converted the DNS into *UTF\-16BE* to pass it as an i
 The [latest script](invoke_SQLGetInfoW.rb) builds (again) on top of the previous one adding the second example of a Wide API. 
 
 ```
-bash-4.4$ invoke_SQLGetInfoW.rb andrea ibmchampion
+bash-4.4$ invoke_SQLGetInfoW.rb '*CURRENT' ''
 Environment handle 0x00000001
 DB Connection handle 0x00000002
 SQL_DRIVER_NAME: QSQCLI.SRVPGM
