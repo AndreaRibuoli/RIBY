@@ -63,7 +63,20 @@ ILEarguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
 }
 
 { SQL_ATTR_OUTPUT_NTS: 1,
-  SQL_ATTR_SYS_NAMING: 2
+  SQL_ATTR_SYS_NAMING: 2,
+  SQL_ATTR_DEFAULT_LIB: 3,
+  SQL_ATTR_SERVER_MODE: 4,
+  SQL_ATTR_JOB_SORT_SEQUENCE: 5,
+  SQL_ATTR_ENVHNDL_COUNTER: 9,
+  SQL_ATTR_ESCAPE_CHAR: 10,
+  SQL_ATTR_DATE_FMT: 20,
+  SQL_ATTR_DATE_SEP: 21,
+  SQL_ATTR_TIME_FMT: 22,
+  SQL_ATTR_TIME_SEP: 23,
+  SQL_ATTR_DECIMAL_SEP: 24,
+  SQL_ATTR_INCLUDE_NULL_IN_LEN: 31,
+  SQL_ATTR_UTF8: 32,
+  SQL_attr_not_identified: 120
 }.each { |k,v|
   key = 10000 + v
   ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
