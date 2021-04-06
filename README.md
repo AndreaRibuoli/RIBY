@@ -55,7 +55,8 @@ Two of which include an *SQL\-Wide* variant:
 * [`SQLGetConnectAttrW` API](https://www.ibm.com/docs/en/i/7.4?topic=functions-sqlgetconnectattr-get-value-connection-attribute)
 * [`SQLGetStmtAttrW` API](https://www.ibm.com/docs/en/i/7.4?topic=functions-sqlgetstmtattr-get-value-statement-attribute)
 
-Surprisingly *SQLGetEnvAttr* offers two attributes that are character strings (*SQL\_ATTR\_DEFAULT\_LIB*) but there is no evidence they are still active (possibly in relationship with *SQL\_ATTR\_OLD\_MTADTA\_BEHAVIOUR*). 
+
+##### SQLGetEnvAttr
 
 ```
 SQLRETURN SQLGetEnvAttr (SQLHENV      henv,
@@ -64,6 +65,8 @@ SQLRETURN SQLGetEnvAttr (SQLHENV      henv,
                          SQLINTEGER   BufferLength,
                          SQLINTEGER   *StringLength);
 ```
+
+Surprisingly *SQLGetEnvAttr* offers two attributes that are character strings (*SQL\_ATTR\_DEFAULT\_LIB*) but there is no evidence they are still working. 
 
 
 | type         | value | hex     |
@@ -76,7 +79,8 @@ SQLRETURN SQLGetEnvAttr (SQLHENV      henv,
 |  ARG_END     | 0     |  0x0000 | 
 
 
-These are the 
+These are the attributes that appear to be working with IBM DB2 for i 7.4:
+
 ```
 #define SQL_ATTR_OUTPUT_NTS          10001
 #define SQL_ATTR_SYS_NAMING          10002
@@ -85,14 +89,25 @@ These are the
 #define SQL_ATTR_JOB_SORT_SEQUENCE   10005
 #define SQL_ATTR_ENVHNDL_COUNTER     10009
 #define SQL_ATTR_ESCAPE_CHAR         10010
+#define SQL_ATTR_DATE_FMT            10020
+#define SQL_ATTR_DATE_SEP            10021
+#define SQL_ATTR_TIME_FMT            10022
+#define SQL_ATTR_TIME_SEP            10023
+#define SQL_ATTR_DECIMAL_SEP         10024
 #define SQL_ATTR_INCLUDE_NULL_IN_LEN 10031
 #define SQL_ATTR_UTF8                10032
-#define SQL_ATTR_SYSCAP              10033
-#define SQL_ATTR_REQUIRE_PROFILE     10034
-#define SQL_ATTR_UCS2                10035
-#define SQL_ATTR_TRUNCATION_RTNC     10036
+#define SQL_attr_not_identified      10120
 ```
 
+##### SQLGetConnectAttr
+
+```
+SQLRETURN SQLGetConnectAttr (SQLHENV      henv,
+                         SQLINTEGER   Attribute,
+                         SQLPOINTER   Value,
+                         SQLINTEGER   BufferLength,
+                         SQLINTEGER   *StringLength);
+```
 
 
 ----
