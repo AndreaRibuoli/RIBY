@@ -50,7 +50,7 @@ ILEarguments[  32,  4] = env_handle[ 0, 4]               # henv
 ILEarguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")  # padding
 ILEarguments[  64,  4] = ['00001000'].pack("H*")         # 4
 ILEarguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
-80.times { |k|
+400.times { |k|
   key = 10000 + k
   ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
   ILEarguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
