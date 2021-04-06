@@ -72,6 +72,7 @@ ILEarguments[ 130, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
 rc = ilecallx.call(pSQLConnectW, ILEarguments, ['FFFBFFF5FFFDFFF5FFFDFFF5FFFD0000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
 sizeint = SQLintsize.malloc
+sizeint[0, 4] = ['ffffffff')].pack("H*")
 buffer  = INFObuffer.malloc
 ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
 ILEarguments[  32,  4] = dbc_handle[ 0, 4]               # hdbc
