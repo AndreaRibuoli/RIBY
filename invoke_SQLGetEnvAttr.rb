@@ -42,17 +42,6 @@ ILEarguments[ 40,  8] = ['0000000000000000'].pack("H*") # padding
 ILEarguments[ 48, 16] = [env_handle.to_i.to_s(16).rjust(32,'0')].pack("H*")
 rc = ilecallx.call(pSQLAllocHandle, ILEarguments, ['FFFDFFFBFFF50000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
-buffer = INFObuffer.malloc
-ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
-ILEarguments[  32,  4] = env_handle[ 0, 4]               # henv
-ILEarguments[  36,  4] = ['00002713'].pack("H*")         # SQL_ATTR_DEFAULT_LIB (10003)
-ILEarguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")  # padding
-ILEarguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
-ILEarguments[  64,  4] = ['00001000'].pack("H*")         # 4096
-ILEarguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
-rc = ilecallx.call(pSQLGetEnvAttr, ILEarguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
-raise "ILE system failed with rc=#{rc}" if rc != 0
-puts 'SQL_ATTR_DEFAULT_LIB: ' + buffer[ 0, 20].unpack("H*")[0]
 puts 'Environment handle 0x' + env_handle[ 0, 4].unpack("H*")[0]
 dbc_handle = SQLhandle.malloc
 ILEarguments[  0, 32] = ['0'.rjust(64,'0')].pack("H*")
@@ -83,6 +72,17 @@ ILEarguments[ 128,  2] = ['FFFD'].pack("H*")             # SQL_NTS
 ILEarguments[ 130, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
 rc = ilecallx.call(pSQLConnectW, ILEarguments, ['FFFBFFF5FFFDFFF5FFFDFFF5FFFD0000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
+buffer = INFObuffer.malloc
+ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
+ILEarguments[  32,  4] = env_handle[ 0, 4]               # henv
+ILEarguments[  36,  4] = ['00002713'].pack("H*")         # SQL_ATTR_DEFAULT_LIB (10003)
+ILEarguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")  # padding
+ILEarguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
+ILEarguments[  64,  4] = ['00001000'].pack("H*")         # 4096
+ILEarguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
+rc = ilecallx.call(pSQLGetEnvAttr, ILEarguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
+raise "ILE system failed with rc=#{rc}" if rc != 0
+puts 'SQL_ATTR_DEFAULT_LIB: ' + buffer[ 0, 20].unpack("H*")[0]
 size   = SQLretsize.malloc
 ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
 ILEarguments[  32,  4] = dbc_handle[ 0, 4]               # hdbc
