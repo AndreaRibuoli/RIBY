@@ -88,6 +88,6 @@ working = []
   puts "#{k.to_s} (#{v}): 0x#{buffer[0, 4].unpack("H*")[0]}"
 }
 working.each {|k|
-  key = 10000 + v
+  key = 10000 + k
   puts "Attribute #{key} unknown"
 }
