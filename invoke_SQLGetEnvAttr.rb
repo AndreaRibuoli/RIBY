@@ -45,15 +45,17 @@ rc = ilecallx.call(pSQLAllocHandle, ILEarguments, ['FFFDFFFBFFF50000'].pack("H*"
 raise "ILE system failed with rc=#{rc}" if rc != 0
 puts 'Environment handle 0x' + env_handle[ 0, 4].unpack("H*")[0]
 sizeint = SQLintsize.malloc
+buffer  = INFObuffer.malloc
 ILEarguments[  32,  4] = env_handle[ 0, 4]               # henv
 ILEarguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")  # padding
-ILEarguments[  64,  4] = ['00000004'].pack("H*")         # 4
+ILEarguments[  64,  4] = ['00001000'].pack("H*")         # 4
 ILEarguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
 80.times { |k|
   key = 10000 + k
   ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
   ILEarguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
-  ILEarguments[  48, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
+  ILEarguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
+  ILEarguments[  80, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
   rc = ilecallx.call(pSQLGetEnvAttr, ILEarguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
   raise "ILE system failed with rc=#{rc}" if rc != 0
   puts "#{key}" if ILEarguments[16, 8].unpack("H*")[0] != 'ffffffffffffffff'
