@@ -83,22 +83,8 @@ Surprisingly *SQLGetEnvAttr* offers two attributes that are character strings (*
 This is the output of [invoke_SQLGetEnvAttr.rb script](invoke_SQLGetEnvAttr.rb) with the attributes that appear to be working with IBM DB2 for i 7.4:
 
 ```
+$ invoke_SQLGetEnvAttr.rb
 Environment handle 0x00000001
-10001 = 00000001
-10002 = 00000000
-10003 = 00000000
-10004 = 00000000
-10005 = 00000000
-10009 = 00000000
-10010 = 00004040
-10020 = 00000001
-10021 = 00000001
-10022 = 00000001
-10023 = 00000006
-10024 = 00000003
-10031 = 00000001
-10032 = 00000000
-10120 = 00000001
 SQL_ATTR_OUTPUT_NTS (1): 0x00000001
 SQL_ATTR_SYS_NAMING (2): 0x00000000
 SQL_ATTR_DEFAULT_LIB (3): 0x00000000
@@ -113,7 +99,7 @@ SQL_ATTR_TIME_SEP (23): 0x00000006
 SQL_ATTR_DECIMAL_SEP (24): 0x00000003
 SQL_ATTR_INCLUDE_NULL_IN_LEN (31): 0x00000001
 SQL_ATTR_UTF8 (32): 0x00000000
-SQL_attr_not_identified (120): 0x00000001
+Attribute 10120 unknown
 ```
 
 ##### SQLGetConnectAttr
