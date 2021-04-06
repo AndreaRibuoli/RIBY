@@ -55,7 +55,7 @@ Two of which include an *SQL\-Wide* variant:
 * [`SQLGetConnectAttrW` API](https://www.ibm.com/docs/en/i/7.4?topic=functions-sqlgetconnectattr-get-value-connection-attribute)
 * [`SQLGetStmtAttrW` API](https://www.ibm.com/docs/en/i/7.4?topic=functions-sqlgetstmtattr-get-value-statement-attribute)
 
-Surprisingly *SQLGetEnvAttr* offers an attribute that is a character string (*SQL\_ATTR\_DEFAULT\_LIB*) but there is no Wide variant. Let us first check if and how *SQL\_ATTR\_DEFAULT\_LIB* is returned back.
+Surprisingly *SQLGetEnvAttr* offers two attributes that are character strings (*SQL\_ATTR\_DEFAULT\_LIB*) but there is no evidence they are still active (possibly in relationship with *SQL\_ATTR\_OLD\_MTADTA\_BEHAVIOUR*). 
 
 ```
 SQLRETURN SQLGetEnvAttr (SQLHENV      henv,
@@ -75,8 +75,22 @@ SQLRETURN SQLGetEnvAttr (SQLHENV      henv,
 |  ARG_MEMPTR  | -11   |  0xFFF5 | 
 |  ARG_END     | 0     |  0x0000 | 
 
+
+These are the 
 ```
+#define SQL_ATTR_OUTPUT_NTS          10001
+#define SQL_ATTR_SYS_NAMING          10002
 #define SQL_ATTR_DEFAULT_LIB         10003
+#define SQL_ATTR_SERVER_MODE         10004
+#define SQL_ATTR_JOB_SORT_SEQUENCE   10005
+#define SQL_ATTR_ENVHNDL_COUNTER     10009
+#define SQL_ATTR_ESCAPE_CHAR         10010
+#define SQL_ATTR_INCLUDE_NULL_IN_LEN 10031
+#define SQL_ATTR_UTF8                10032
+#define SQL_ATTR_SYSCAP              10033
+#define SQL_ATTR_REQUIRE_PROFILE     10034
+#define SQL_ATTR_UCS2                10035
+#define SQL_ATTR_TRUNCATION_RTNC     10036
 ```
 
 
