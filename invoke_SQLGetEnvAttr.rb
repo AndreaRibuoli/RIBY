@@ -65,7 +65,7 @@ ILEarguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
 { SQL_ATTR_OUTPUT_NTS: 1,
   SQL_ATTR_SYS_NAMING: 2
 }.each { |k,v|
-  key = 10000 + k
+  key = 10000 + v
   ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
   ILEarguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
   ILEarguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
