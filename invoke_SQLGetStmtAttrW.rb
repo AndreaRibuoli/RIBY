@@ -107,7 +107,10 @@ working = []
   SQL_ATTR_EXTENDED_COL_INFO:  10019,
   SQL_ATTR_BIND_TYPE:          10049,
   SQL_ATTR_CURSOR_TYPE:        10050,
-  SQL_ATTR_CURSOR_SENSITIVITY: 10051
+  SQL_ATTR_CURSOR_SENSITIVITY: 10051,
+  SQL_ATTR_ROW_BIND_TYPE:      10056,
+  SQL_ATTR_PARAM_BIND_TYPE:    10057,
+  SQL_ATTR_PARAMSET_SIZE:      10058
 }.each { |k,key|
   ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
   ILEarguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
