@@ -50,7 +50,7 @@ Let's go!
 ### 24. to manage statements
 
 Actual interaction with the DBMS occurs within *statements*. 
-Inside an active connection we can open multiple statemnts.
+Inside an active connection we can open multiple statements.
 
 This is the output of [invoke_SQLGetStmtAttrW.rb script](invoke_SQLGetStmtAttrW.rb) with the statement attributes that appear to be working with IBM DB2 for i 7.4:
 
