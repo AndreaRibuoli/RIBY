@@ -43,7 +43,14 @@ Let's go!
 21. [to connect](#21-to-connect)
 22. [to get info about the DBMS](#22-to-get-info-about-the-dbms)
 23. [to get the current setting of an attribute](#23-to-get-the-current-setting-of-an-attribute)
+24. [to manage statements](#24-to-manage-statements)
 
+
+----
+### 24. to manage statements
+
+Actual interaction with the DBMS occurs within *statements*. 
+Inside an active connection we can open multiple statemnts
 
 ----
 ### 23. to get the current setting of an attribute
@@ -153,6 +160,7 @@ SQL_ATTR_INFO_PROGRAMID (10107): 0x00000000
 SQL_ATTR_DECFLOAT_ROUNDING_MODE (10112): 0x00000000
 Attribute 0 unknown
 ```
+[NEXT-24](#24-to-manage-statements)
 
 ----
 ### 22. to get info about the DBMS
