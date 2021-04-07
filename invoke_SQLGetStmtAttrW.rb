@@ -95,7 +95,19 @@ working = []
   working.push(key) if ILEarguments[16, 8].unpack("H*")[0] != 'ffffffffffffffff'
 }
 {
-  SQL_ATTR_DECFLOAT_ROUNDING_MODE: 10112
+  SQL_ATTR_APP_ROW_DESC:       10010,
+  SQL_ATTR_APP_PARAM_DESC:     10011,
+  SQL_ATTR_IMP_ROW_DESC:       10012,
+  SQL_ATTR_IMP_PARAM_DESC:     10013,
+  SQL_ATTR_FOR_FETCH_ONLY:     10014,
+  SQL_ATTR_CURSOR_SCROLLABLE:  10015,
+  SQL_ATTR_ROWSET_SIZE:        10016,
+  SQL_ATTR_CURSOR_HOLD:        10017,
+  SQL_ATTR_FULL_OPEN:          10018,
+  SQL_ATTR_EXTENDED_COL_INFO:  10019,
+  SQL_ATTR_BIND_TYPE:          10049,
+  SQL_ATTR_CURSOR_TYPE:        10050,
+  SQL_ATTR_CURSOR_SENSITIVITY: 10051
 }.each { |k,key|
   ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
   ILEarguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
