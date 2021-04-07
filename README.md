@@ -50,7 +50,37 @@ Let's go!
 ### 24. to manage statements
 
 Actual interaction with the DBMS occurs within *statements*. 
-Inside an active connection we can open multiple statemnts
+Inside an active connection we can open multiple statemnts.
+
+This is the output of [invoke_SQLGetStmtAttrW.rb script](invoke_SQLGetStmtAttrW.rb) with the statement attributes that appear to be working with IBM DB2 for i 7.4:
+
+```
+$ invoke_SQLGetStmtAttrW.rb 
+Environment handle 0x00000001
+DB Connection handle 0x00000002
+Statement handle 0x00000003
+SQL_ATTR_APP_ROW_DESC (10010): 0x00000000
+SQL_ATTR_APP_PARAM_DESC (10011): 0x00000000
+SQL_ATTR_IMP_ROW_DESC (10012): 0x00000000
+SQL_ATTR_IMP_PARAM_DESC (10013): 0x00000000
+SQL_ATTR_FOR_FETCH_ONLY (10014): 0x00000000
+SQL_ATTR_CURSOR_SCROLLABLE (10015): 0x00000000
+SQL_ATTR_ROWSET_SIZE (10016): 0x00000001
+SQL_ATTR_CURSOR_HOLD (10017): 0x00000000
+SQL_ATTR_FULL_OPEN (10018): 0x00000000
+SQL_ATTR_EXTENDED_COL_INFO (10019): 0x00000000
+SQL_ATTR_BIND_TYPE (10049): 0x00000000
+SQL_ATTR_CURSOR_TYPE (10050): 0x00000000
+SQL_ATTR_CURSOR_SENSITIVITY (10051): 0x00000000
+SQL_ATTR_ROW_BIND_TYPE (10056): 0x00000000
+SQL_ATTR_PARAM_BIND_TYPE (10057): 0x00000000
+SQL_ATTR_PARAMSET_SIZE (10058): 0x00000001
+Attribute 10062 unknown
+Attribute 10063 unknown
+Attribute 10064 unknown
+Attribute 10065 unknown
+Attribute 10066 unknown
+```
 
 ----
 ### 23. to get the current setting of an attribute
@@ -87,7 +117,7 @@ SQLRETURN SQLGetEnvAttr (SQLHENV      henv,
 Surprisingly *SQLGetEnvAttr* offers two attributes that are character strings (*SQL\_ATTR\_DEFAULT\_LIB*) but there is no evidence they are still working. 
 
 
-This is the output of [invoke_SQLGetEnvAttr.rb script](invoke_SQLGetEnvAttr.rb) with the attributes that appear to be working with IBM DB2 for i 7.4:
+This is the output of [invoke_SQLGetEnvAttr.rb script](invoke_SQLGetEnvAttr.rb) with the environment attributes that appear to be working with IBM DB2 for i 7.4:
 
 ```
 $ invoke_SQLGetEnvAttr.rb
