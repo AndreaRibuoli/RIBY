@@ -76,7 +76,7 @@ SQLRETURN SQLErrorW (SQLHENV       henv,
 |  ARG_MEMPTR  | -11   |  0xFFF5 | 
 |  ARG_END     | 0     |  0x0000 | 
 
-We will excercize the API on possible errors received when accepting as arguments the 3 parameters of the `SQLConnectW` function.
+We will excercize the API on possible errors received when directly passing the 3 parameters of the `SQLConnectW` API as received from the script argument list.
 
 We are building on the knowledge acquired in previous scripts.
 
