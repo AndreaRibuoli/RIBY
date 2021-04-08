@@ -29,7 +29,9 @@ raise "Loading SQLSetEnvAttr failed" if rc != 1
 pSQLGetEnvAttr = ILEpointer.malloc
 rc = ilesymx.call(pSQLGetEnvAttr, qsqcli, 'SQLGetEnvAttr')
 raise "Loading SQLGetEnvAttr failed" if rc != 1
-
+pSQLSetConnectAttrW = ILEpointer.malloc
+rc = ilesymx.call(pSQLSetConnectAttrW, qsqcli, 'SQLSetConnectAttrW')
+raise "Loading SQLSetConnectAttrW failed" if rc != 1
 pSQLConnectW = ILEpointer.malloc
 rc = ilesymx.call(pSQLConnectW, qsqcli, 'SQLConnectW')
 raise "Loading SQLConnectW failed" if rc != 1
