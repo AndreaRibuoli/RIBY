@@ -69,16 +69,6 @@ ILEarguments[ 128,  2] = ['FFFD'].pack("H*")             # SQL_NTS
 ILEarguments[ 130, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
 rc = ilecallx.call(pSQLConnectW, ILEarguments, ['FFFBFFF5FFFDFFF5FFFDFFF5FFFD0000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
-puts ' 0 1 2 3 4 5 6 7 8 9 A B C D E F'
-puts ILEarguments[   0, 16].unpack("H*")
-puts ILEarguments[  16, 16].unpack("H*")
-puts ILEarguments[  32, 16].unpack("H*")
-puts ILEarguments[  48, 16].unpack("H*")
-puts ILEarguments[  64, 16].unpack("H*")
-puts ILEarguments[  80, 16].unpack("H*")
-puts ILEarguments[  96, 16].unpack("H*")
-puts ILEarguments[ 112, 16].unpack("H*")
-puts ILEarguments[ 128, 16].unpack("H*")
 state  = SQLstate.malloc
 error  = SQLerror.malloc
 msg    = SQLmsg.malloc
@@ -95,16 +85,7 @@ ILEarguments[  98, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
 ILEarguments[ 112, 16] = [msglen.to_i.to_s(16).rjust(32,'0')].pack("H*")
 rc = ilecallx.call(pSQLErrorW, ILEarguments, ['FFFBFFFBFFFBFFF5FFF5FFF5FFFDFFF50000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
-puts ' 0 1 2 3 4 5 6 7 8 9 A B C D E F'
-puts ILEarguments[   0, 16].unpack("H*")
-puts ILEarguments[  16, 16].unpack("H*")
-puts ILEarguments[  32, 16].unpack("H*")
-puts ILEarguments[  48, 16].unpack("H*")
-puts ILEarguments[  64, 16].unpack("H*")
-puts ILEarguments[  80, 16].unpack("H*")
-puts ILEarguments[  96, 16].unpack("H*")
-puts ILEarguments[ 112, 16].unpack("H*")
-puts ILEarguments[ 128, 16].unpack("H*")
+rc = ILEarguments[ 16, 8].unpack("H*")[0].to_i(16)
 l = msglen[0, 2].unpack("H*")[0].to_i(16) * 2
-puts msg[0, l].force_encoding('UTF-16BE').encode('utf-8')
+puts msg[0, l].force_encoding('UTF-16BE').encode('utf-8') if rc != 0
 
