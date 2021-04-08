@@ -371,7 +371,7 @@ We can derive this useful table:
 | SQL\_HANDLE\_DESC |   4   |                    |
 
 
-We can also verify that **SQLINTEGER** is a 64-bit integer and we need to arrange for proper alignments (refer to [Chapter 8](#8-to-execute-a-service-program-entry-call-from-pase) for details).
+We can also verify that **SQLINTEGER** is a 32-bit integer and we need to arrange for proper alignments (refer to [Chapter 8](#8-to-execute-a-service-program-entry-call-from-pase) for details).
 
 These are the types involved in defining the argument list:
 
