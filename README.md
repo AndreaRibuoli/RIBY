@@ -45,7 +45,29 @@ Let's go!
 23. [to get the current setting of an attribute](#23-to-get-the-current-setting-of-an-attribute)
 24. [to manage statements](#24-to-manage-statements)
 25. [to diagnose on errors](#25-to-diagnose-on-errors)
+26. [to finally execute statements](#26-to-finally-execute-statements)
 
+
+----
+### 26. to finally execute statements
+
+We collected enough information to start using our statement handles. 
+Let's begin with the simplest API: `SQLExecDirectW`
+
+```
+SQLRETURN SQLExecDirectW (SQLHSTMT      hstmt,
+                          SQLWCHAR      *szSqlStr,
+                          SQLINTEGER    cbSqlStr);
+```
+
+| type         | value | hex     |
+| ------------ |:-----:| ------- |
+|  ARG_INT32   | -5    |  0xFFFB |  
+|  ARG_MEMPTR  | -11   |  0xFFF5 | 
+|  ARG_INT32   | -5    |  0xFFFB |  
+|  ARG_END     | 0     |  0x0000 | 
+
+We will test for returned errors by means of `SQLErrorW` (specifying the `hstmt` parameter).
 
 ----
 ### 25. to diagnose on errors
@@ -269,6 +291,7 @@ Attribute 10064 unknown
 Attribute 10065 unknown
 Attribute 10066 unknown
 ```
+[NEXT-25](#25-to-diagnose-on-errors)
 
 ----
 ### 23. to get the current setting of an attribute
