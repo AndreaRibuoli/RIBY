@@ -83,7 +83,8 @@ ILEarguments[  98, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
 ILEarguments[ 112, 16] = [msglen.to_i.to_s(16).rjust(32,'0')].pack("H*")
 rc = ilecallx.call(pSQLErrorW, ILEarguments, ['FFFBFFFBFFFBFFF5FFF5FFF5FFFDFFF50000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
-rc = ILEarguments[ 16, 8].unpack("H*")[0].to_i(16)
+rc = ILEarguments[16, 8].unpack("H*")[0].to_i(16)
+puts rc
 l = msglen[0, 2].unpack("H*")[0].to_i(16) * 2
-puts msg[0, l].force_encoding('UTF-16BE').encode('utf-8') if rc != 0
+puts msg[0, l].force_encoding('UTF-16BE').encode('utf-8')
 
