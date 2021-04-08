@@ -85,5 +85,10 @@ ILEarguments[ 112, 16] = [msglen.to_i.to_s(16).rjust(32,'0')].pack("H*")
 rc = ilecallx.call(pSQLErrorW, ILEarguments, ['FFFBFFFBFFFBFFF5FFF5FFF5FFFDFFF50000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
 l = msglen[0, 2].unpack("H*")[0].to_i(16) * 2
-puts "RC=#{connect_rc}; MSG=#{msg[0, l].force_encoding('UTF-16BE').encode('utf-8')}" if (connect_rc != 0) || (l>0)
+final =<<END_HERE
+RC=#{connect_rc};
+SQLSTATE=#{state[0, 12].force_encoding('UTF-16BE').encode('utf-8')}
+MSG=#{msg[0, l].force_encoding('UTF-16BE').encode('utf-8')}
+END_HERE
+puts final if (connect_rc != 0) || (l>0)
 
