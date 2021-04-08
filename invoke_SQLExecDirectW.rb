@@ -82,7 +82,7 @@ ILEarguments[  0, 32] = ['0'.rjust(64,'0')].pack("H*")
 ILEarguments[ 32,  4] = stm_handle[ 0, 4]               # hstmt
 ILEarguments[ 36, 12] = ['0'.rjust(24,'0')].pack("H*")  # padding
 ILEarguments[ 48, 16] = [Fiddle::Pointer[stm].to_i.to_s(16).rjust(32,'0')].pack("H*")
-ILEarguments[ 64,  4] = len.pack("l")
+ILEarguments[ 64,  4] = [len.to_s(16).rjust(8,'0')].pack("H*")
 ILEarguments[ 68, 84] = ['0'.rjust(168,'0')].pack("H*")  # padding
 rc = ilecallx.call(pSQLExecDirect, ILEarguments, ['FFFBFFF5FFFB0000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
