@@ -85,5 +85,5 @@ rc = ilecallx.call(pSQLErrorW, ILEarguments, ['FFFBFFFBFFFBFFF5FFF5FFF5FFFDFFF50
 raise "ILE system failed with rc=#{rc}" if rc != 0
 rc = ILEarguments[16, 8].unpack("H*")[0].to_i(16)
 l = msglen[0, 2].unpack("H*")[0].to_i(16) * 2
-puts msg[0, l].force_encoding('UTF-16BE').encode('utf-8') if (rc != 0) && (l>0)
+puts msg[0, l].force_encoding('UTF-16BE').encode('utf-8') if (rc != 0) || (l>0)
 
