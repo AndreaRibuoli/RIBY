@@ -161,9 +161,10 @@ working = []
   ILEarguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
   ILEarguments[  80, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
   buffer[0, 4] = ['00000000'].pack("H*")
+  sizeint[0, 4] = ['00000000'].pack("H*")
   rc = ilecallx.call(pSQLGetStmtAttrW, ILEarguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
   working.delete(key) if ILEarguments[16, 8].unpack("H*")[0] != 'ffffffffffffffff'
-  puts "#{k.to_s} (#{key}): 0x#{buffer[0, 4].unpack("H*")[0]}"
+  puts "#{k.to_s} (#{key}): 0x#{buffer[0, 4].unpack("H*")[0]} 0x#{sizeint[0, 4].unpack("H*")[0]}"
 }
 working.each {|key|
   puts "Attribute #{key} unknown"
