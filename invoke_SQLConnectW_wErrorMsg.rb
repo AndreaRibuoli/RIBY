@@ -67,7 +67,7 @@ ILEarguments[ 128,  2] = ['FFFD'].pack("H*")             # SQL_NTS
 ILEarguments[ 130, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
 rc = ilecallx.call(pSQLConnectW, ILEarguments, ['FFFBFFF5FFFDFFF5FFFDFFF5FFFD0000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
-connect_rc = ILEarguments[16, 8].unpack("l")
+connect_rc = ILEarguments[16, 8].unpack("l")[0]
 state  = SQLstate.malloc
 error  = SQLerror.malloc
 msg    = SQLmsg.malloc
