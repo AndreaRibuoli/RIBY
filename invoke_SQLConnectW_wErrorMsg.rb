@@ -88,8 +88,8 @@ l = msglen[0, 2].unpack("H*")[0].to_i(16) * 2
 final =<<END_HERE
 RC=#{connect_rc};
 SQLSTATE=#{state[0, 12].force_encoding('UTF-16BE').encode('utf-8')}
-MSG=#{msg[0, l].force_encoding('UTF-16BE').encode('utf-8')}
 ERROR=#{error[0, 4].unpack("l")[0]}
+MSG=#{msg[0, l].force_encoding('UTF-16BE').encode('utf-8')}
 END_HERE
 puts final if (connect_rc != 0) || (l>0)
 
