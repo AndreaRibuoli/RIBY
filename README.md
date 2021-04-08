@@ -94,6 +94,23 @@ The limitations encountered **without** adopting SQL server mode are:
 * Only **one connection** to a relational database (RDB) per single job.
 * All SQL statements run under **one user profile only**: the job user (regardless of the user ID passed on connect!). 
 
+In one of the previous chapters we received:
+
+```
+SQL_ATTR_SERVER_MODE (10004): 0x00000000
+```
+
+So the default for *SQL\_ATTR\_SERVER\_MODE* is **SQL_FALSE (0)**. 
+In order to adopt SERVER MODE we need to use another SQL CLI API: [`SQLSetEnvAttr`](https://www.ibm.com/docs/en/i/7.4?topic=functions-sqlsetenvattr-set-environment-attribute).
+
+We will revisit previous Ruby scripts for collecting *Connect* and *Stmt* attributes so that SERVER MODE is set before DB connections are established.
+
+##### SQLGetConnectAttrW (SERVER MODE)
+
+
+##### SQLGetStmtAttrW (SERVER MODE)
+
+
 ----
 ### 23. to get the current setting of an attribute
 
@@ -151,14 +168,14 @@ SQL_ATTR_UTF8 (10032): 0x00000000
 Attribute 10120 unknown
 ```
 
-##### SQLGetConnectAttr
+##### SQLGetConnectAttrW
 
 ```
-SQLRETURN SQLGetConnectAttr(   SQLHDBC      hdbc,
-                               SQLINTEGER   fAttr,
-                               SQLPOINTER   pvParam),;
-                               SQLINTEGER   bLen,
-                               SQLINTEGER   *sLen);
+SQLRETURN SQLGetConnectAttrW(   SQLHDBC      hdbc,
+                                SQLINTEGER   fAttr,
+                                SQLPOINTER   pvParam),;
+                                SQLINTEGER   bLen,
+                                SQLINTEGER   *sLen);
 ```
 
 Without SERVER MODE we get the following list of active attribute, output of [invoke_SQLGetConnectAttrW.rb script](invoke_SQLGetConnectAttrW.rb):
