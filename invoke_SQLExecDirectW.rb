@@ -89,16 +89,6 @@ ILEarguments[ 64,  4] = [len.to_s(16).rjust(8,'0')].pack("H*")
 ILEarguments[ 68, 84] = ['0'.rjust(168,'0')].pack("H*")  # padding
 rc = ilecallx.call(pSQLExecDirectW, ILEarguments, ['FFFBFFF5FFFB0000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
-puts ' 0 1 2 3 4 5 6 7 8 9 A B C D E F'
-puts ILEarguments[   0, 16].unpack("H*")
-puts ILEarguments[  16, 16].unpack("H*")
-puts ILEarguments[  32, 16].unpack("H*")
-puts ILEarguments[  48, 16].unpack("H*")
-puts ILEarguments[  64, 16].unpack("H*")
-puts ILEarguments[  80, 16].unpack("H*")
-puts ILEarguments[  96, 16].unpack("H*")
-puts ILEarguments[ 112, 16].unpack("H*")
-puts ILEarguments[ 128, 16].unpack("H*")
 exec_rc = ILEarguments[16, 8].unpack("l")[0]
 state  = SQLstate.malloc
 error  = SQLerror.malloc
