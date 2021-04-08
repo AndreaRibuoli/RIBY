@@ -58,6 +58,26 @@ ILEarguments[  48, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
 ILEarguments[  64, 80] = ['0'.rjust(160,'0')].pack("H*")  # padding
 rc = ilecallx.call(pSQLSetEnvAttr, ILEarguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
+## SQL_ATTR_OLD_MTADTA_BEHAVIOR 10113
+ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
+ILEarguments[  32,  4] = env_handle[ 0, 4]               # henv
+ILEarguments[  36,  4] = [ 10113.to_s(16).rjust(8,'0')].pack("H*")
+ILEarguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")
+ILEarguments[  48, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
+ILEarguments[  64, 80] = ['0'.rjust(160,'0')].pack("H*")  # padding
+rc = ilecallx.call(pSQLSetEnvAttr, ILEarguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
+raise "ILE system failed with rc=#{rc}" if rc != 0
+puts ' 0 1 2 3 4 5 6 7 8 9 A B C D E F'
+puts ILEarguments[   0, 16].unpack("H*")
+puts ILEarguments[  16, 16].unpack("H*")
+puts ILEarguments[  32, 16].unpack("H*")
+puts ILEarguments[  48, 16].unpack("H*")
+puts ILEarguments[  64, 16].unpack("H*")
+puts ILEarguments[  80, 16].unpack("H*")
+puts ILEarguments[  96, 16].unpack("H*")
+puts ILEarguments[ 112, 16].unpack("H*")
+puts ILEarguments[ 128, 16].unpack("H*")
+
 sizeint = SQLintsize.malloc
 buffer  = INFObuffer.malloc
 { SQL_ATTR_OUTPUT_NTS: 10001,
