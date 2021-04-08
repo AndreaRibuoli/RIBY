@@ -68,6 +68,8 @@ puts ILEarguments[  80, 16].unpack("H*")
 puts ILEarguments[  96, 16].unpack("H*")
 puts ILEarguments[ 112, 16].unpack("H*")
 puts ILEarguments[ 128, 16].unpack("H*")
+sizeint = SQLintsize.malloc
+buffer  = INFObuffer.malloc
 { SQL_ATTR_OUTPUT_NTS: 10001,
   SQL_ATTR_SYS_NAMING: 10002,
   SQL_ATTR_DEFAULT_LIB: 10003,
@@ -132,8 +134,6 @@ puts ILEarguments[  80, 16].unpack("H*")
 puts ILEarguments[  96, 16].unpack("H*")
 puts ILEarguments[ 112, 16].unpack("H*")
 puts ILEarguments[ 128, 16].unpack("H*")
-sizeint = SQLintsize.malloc
-buffer  = INFObuffer.malloc
 working = []
 12000.times { |key|
   ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
