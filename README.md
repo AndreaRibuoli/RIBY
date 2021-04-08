@@ -69,6 +69,66 @@ SQLRETURN SQLExecDirectW (SQLHSTMT      hstmt,
 
 We will test for returned errors by means of `SQLErrorW` (specifying the `hstmt` parameter).
 
+```
+bash-4.4$ invoke_SQLExecDirectW.rb 'ADD SOMETHING'
+RC=-1;
+SQLSTATE=42601
+ERROR=-199
+MSG=Parola chiave ADD non prevista. Token validi: ( CL END GET SET TAG CALL DROP FREE HOLD LOCK OPEN WITH ALTER.
+
+bash-4.4$ invoke_SQLExecDirectW.rb 'SELECT'
+RC=-1;
+SQLSTATE=42601
+ERROR=-104
+MSG=Token <FINE-ISTRUZIONI> non valido. Token validi: ( + * - ? : DAY INF LAG NAN RID ROW.
+
+bash-4.4$ invoke_SQLExecDirectW.rb 'SELECT * FROM PIPPO'
+RC=-1;
+SQLSTATE=42704
+ERROR=-204
+MSG=PIPPO in ANDREA di tipo *FILE non trovato.
+
+bash-4.4$ invoke_SQLExecDirectW.rb 'SELECT * FROM PIPPO/PIPPO'
+RC=-1;
+SQLSTATE=42833
+ERROR=-5016
+MSG=Nome oggetto qualificato PIPPO non valido.
+
+bash-4.4$ invoke_SQLExecDirectW.rb 'SELECT * FROM QGPL.NONEXIST'
+RC=-1;
+SQLSTATE=42704
+ERROR=-204
+MSG=NONEXIST in QGPL di tipo *FILE non trovato.
+
+bash-4.4$ invoke_SQLExecDirectW.rb 'SELECT * FROM QGPL.QCLSRC'
+RC=-1;
+SQLSTATE=42704
+ERROR=-204
+MSG=*FIRST in *N di tipo *MEM non trovato.
+
+bash-4.4$ invoke_SQLExecDirectW.rb 'SELECT * FROM QGPL.PASERIE'
+RC=-1;
+SQLSTATE=42851
+ERROR=-7011
+MSG=PASERIE in QGPL non file tabella, vista o fisico.
+
+bash-4.4$ invoke_SQLExecDirectW.rb 'CREATE TABLE QGPL.RIBY_TBL (NOME CHAR(20))'
+RC=0;
+SQLSTATE=01567
+ERROR=7905
+MSG=La tabella RIBY_TBL in QGPL è stata creata ma non registrata su giornale.
+
+bash-4.4$ invoke_SQLExecDirectW.rb 'DROP TABLE QGPL.RIBY_TBL'
+RC=-1;
+SQLSTATE=42704
+ERROR=-204
+MSG=RIBY_TBL in QGPL di tipo *FILE non trovato.
+```
+
+The last 2 statements require an explanation. 
+We will explain commit logic in the next chapter!
+
+
 ----
 ### 25. to diagnose on errors
 
