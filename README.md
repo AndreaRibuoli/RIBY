@@ -82,9 +82,11 @@ Attribute 10065 unknown
 Attribute 10066 unknown
 ```
 
-Different modes of CLI execution may activate/deactivate different attributes.
 
-The most fundamental difference is the adoption of **SERVER MODE**. The IBM documentation introduces the concept this way:
+##### SERVER MODE
+
+The most fundamental setting is the adoption of **SERVER MODE**. 
+The IBM documentation introduces the concept this way:
 
  *The reason for running in SQL server mode is that many applications need to act as database servers. This means that a single job performs SQL requests on behalf of multiple users.*
  
@@ -103,7 +105,7 @@ SQL_ATTR_SERVER_MODE (10004): 0x00000000
 So the default for *SQL\_ATTR\_SERVER\_MODE* is **SQL_FALSE (0)**. 
 In order to adopt SERVER MODE we need to use another SQL CLI API: [`SQLSetEnvAttr`](https://www.ibm.com/docs/en/i/7.4?topic=functions-sqlsetenvattr-set-environment-attribute).
 
-We will revisit previous Ruby scripts for collecting *Connect* and *Stmt* attributes so that SERVER MODE is set before DB connections are established.
+We will revisit previous Ruby scripts for collecting *Connect* and *Stmt* attributes when SERVER MODE is set (before DB connections are established).
 
 ##### SQLGetConnectAttrW (SERVER MODE)
 
