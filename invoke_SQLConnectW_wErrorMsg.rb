@@ -105,6 +105,6 @@ puts ILEarguments[  80, 16].unpack("H*")
 puts ILEarguments[  96, 16].unpack("H*")
 puts ILEarguments[ 112, 16].unpack("H*")
 puts ILEarguments[ 128, 16].unpack("H*")
-l = msglen[0, 2].unpack("H*")[0].to_i(16)
+l = msglen[0, 2].unpack("H*")[0].to_i(16) * 2
 puts msg[0, l].force_encoding('UTF-16BE').encode('utf-8')
 
