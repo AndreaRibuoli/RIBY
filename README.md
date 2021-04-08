@@ -82,6 +82,18 @@ Attribute 10065 unknown
 Attribute 10066 unknown
 ```
 
+Different modes of CLI execution may activate/deactivate different attributes.
+
+The most fundamental difference is the adoption of **SERVER MODE**. The IBM documentation introduces the concept this way:
+
+ *The reason for running in SQL server mode is that many applications need to act as database servers. This means that a single job performs SQL requests on behalf of multiple users.*
+ 
+The limitations encountered **without** adopting SQL server mode are:
+
+* Only **one commit transaction** per activation group per single job.
+* Only **one connection** to a relational database (RDB) per single job.
+* All SQL statements run under **one user profile only**: the job user (regardless of the user ID passed on connect!). 
+
 ----
 ### 23. to get the current setting of an attribute
 
