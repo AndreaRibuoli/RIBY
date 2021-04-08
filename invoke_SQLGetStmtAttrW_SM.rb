@@ -26,6 +26,10 @@ raise "Loading SQLAllocHandle failed" if rc != 1
 pSQLSetEnvAttr = ILEpointer.malloc
 rc = ilesymx.call(pSQLSetEnvAttr, qsqcli, 'SQLSetEnvAttr')
 raise "Loading SQLSetEnvAttr failed" if rc != 1
+pSQLGetEnvAttr = ILEpointer.malloc
+rc = ilesymx.call(pSQLGetEnvAttr, qsqcli, 'SQLGetEnvAttr')
+raise "Loading SQLGetEnvAttr failed" if rc != 1
+
 pSQLConnectW = ILEpointer.malloc
 rc = ilesymx.call(pSQLConnectW, qsqcli, 'SQLConnectW')
 raise "Loading SQLConnectW failed" if rc != 1
@@ -63,6 +67,35 @@ puts ILEarguments[  80, 16].unpack("H*")
 puts ILEarguments[  96, 16].unpack("H*")
 puts ILEarguments[ 112, 16].unpack("H*")
 puts ILEarguments[ 128, 16].unpack("H*")
+sizeint = SQLintsize.malloc
+buffer  = INFObuffer.malloc
+{ SQL_ATTR_OUTPUT_NTS: 10001,
+  SQL_ATTR_SYS_NAMING: 10002,
+  SQL_ATTR_DEFAULT_LIB: 10003,
+  SQL_ATTR_SERVER_MODE: 10004,
+  SQL_ATTR_JOB_SORT_SEQUENCE: 10005,
+  SQL_ATTR_ENVHNDL_COUNTER: 10009,
+  SQL_ATTR_ESCAPE_CHAR: 10010,
+  SQL_ATTR_DATE_FMT: 10020,
+  SQL_ATTR_DATE_SEP: 10021,
+  SQL_ATTR_TIME_FMT: 10022,
+  SQL_ATTR_TIME_SEP: 10023,
+  SQL_ATTR_DECIMAL_SEP: 10024,
+  SQL_ATTR_INCLUDE_NULL_IN_LEN: 10031,
+  SQL_ATTR_UTF8: 10032
+}.each { |k,key|
+  ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
+  ILEarguments[  32,  4] = env_handle[ 0, 4]               # henv
+  ILEarguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
+  ILEarguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")  # padding
+  ILEarguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
+  ILEarguments[  64,  4] = ['00001000'].pack("H*")         # 4
+  ILEarguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
+  ILEarguments[  80, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
+  buffer[0, 4] = ['00000000'].pack("H*")
+  rc = ilecallx.call(pSQLGetEnvAttr, ILEarguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
+  puts "#{k.to_s} (#{key}): 0x#{buffer[0, 4].unpack("H*")[0]}" if ILEarguments[16, 8].unpack("H*")[0] != 'ffffffffffffffff'
+}
 dbc_handle = SQLhandle.malloc
 ILEarguments[  0, 32] = ['0'.rjust(64,'0')].pack("H*")
 ILEarguments[ 32,  2] = ['0002'].pack("H*")             # htype (SQL_HANDLE_DBC)
@@ -110,8 +143,6 @@ ILEarguments[ 48, 16] = [stm_handle.to_i.to_s(16).rjust(32,'0')].pack("H*")
 rc = ilecallx.call(pSQLAllocHandle, ILEarguments, ['FFFDFFFBFFF50000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
 puts 'Statement handle 0x' + stm_handle[ 0, 4].unpack("H*")[0]
-sizeint = SQLintsize.malloc
-buffer  = INFObuffer.malloc
 ILEarguments[  32,  4] = stm_handle[ 0, 4]               # stmt
 ILEarguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")  # padding
 ILEarguments[  64,  4] = ['00001000'].pack("H*")         # 4
