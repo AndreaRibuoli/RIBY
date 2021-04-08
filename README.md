@@ -92,13 +92,21 @@ We are building on the knowledge acquired in previous scripts.
 ```
 
 ```
-bash-4.4$ invoke_SQLConnectW_wErrorMsg.rb '*LOCAL' '*CURRENT' '' 
+bash-4.4$ invoke_SQLConnectW_wErrorMsg.rb 'PROVA' '' ''
+RC=-1;
+SQLSTATE=42705
+ERROR=-950
+MSG=Il database relazionale PROVA non si trova nell'indirizzario del database relazionale.
 
 bash-4.4$ invoke_SQLConnectW_wErrorMsg.rb '*LOCAL' '' '' 
-RC=-1; MSG=Utente *N diverso dall'utente corrente ANDREA.
+RC=-1;
+SQLSTATE=42977
+ERROR=-7022
+MSG=Utente *N diverso dall'utente corrente ANDREA.
 
-bash-4.4$ invoke_SQLConnectW_wErrorMsg.rb 'PROVA' '' ''
-RC=-1; MSG=Il database relazionale PROVA non si trova nell'indirizzario del database relazionale.
+bash-4.4$ invoke_SQLConnectW_wErrorMsg.rb '*LOCAL' '*CURRENT' '' 
+
+bash-4.4$ 
 ```
 
 ----
