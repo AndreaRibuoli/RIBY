@@ -44,10 +44,57 @@ Let's go!
 22. [to get info about the DBMS](#22-to-get-info-about-the-dbms)
 23. [to get the current setting of an attribute](#23-to-get-the-current-setting-of-an-attribute)
 24. [to manage statements](#24-to-manage-statements)
+25. [to diagnose on errors](#25-to-diagnose-on-errors)
+
+
+----
+### 25. to diagnose on errors
+
+Some chapters ago we planned for support when SQL errors occur.
+Now we will introduce [another Wide-API](https://www.ibm.com/docs/en/i/7.4?topic=functions-sqlerror-retrieve-error-information) that will help in the retrieval of error information.
+ 
+``` C
+SQLRETURN SQLErrorW (SQLHENV       henv,
+                     SQLHDBC       hdbc,
+                     SQLHSTMT      hstmt,
+                     SQLWCHAR      *szSqlState,
+                     SQLINTEGER    *pfNativeError,
+                     SQLWCHAR      *szErrorMsg,
+                     SQLSMALLINT   cbErrorMsgMax,
+                     SQLSMALLINT   *pcbErrorMsg);
+```
+
+| type         | value | hex     |
+| ------------ |:-----:| ------- |
+|  ARG_INT32   | -5    |  0xFFFB |  
+|  ARG_INT32   | -5    |  0xFFFB |  
+|  ARG_INT32   | -5    |  0xFFFB |  
+|  ARG_MEMPTR  | -11   |  0xFFF5 | 
+|  ARG_MEMPTR  | -11   |  0xFFF5 | 
+|  ARG_MEMPTR  | -11   |  0xFFF5 | 
+|  ARG_INT16   | -3    |  0xFFFD |  
+|  ARG_MEMPTR  | -11   |  0xFFF5 | 
+|  ARG_END     | 0     |  0x0000 | 
+
+We will excercize the API on possible errors received when accepting as arguments the 3 parameters of the `SQLConnectW` function.
+
+We are building on the knowledge acquired in previous scripts.
+
+```
+     | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | A | B | C | D | E | F |
+| 2x |    h e n v    |    h d b c    |   h s t m t   |---------------|
+| 3x |                   * s z S q l S t a t e                       |
+| 4x |                * p f N a t i v e E r r o r                    |
+| 5x |                   * s z E r r o r M s g                       |
+| 6x | cbEMx |-------------------------------------------------------|
+| 7x |                  * p c b E r r o r M s g                      |
+
+```
 
 
 ----
 ### 24. to manage statements
+
 
 Actual interaction with the DBMS occurs within *statements*. 
 Inside an active connection we can open multiple statements.
@@ -230,7 +277,7 @@ They share a similar parameter list:
 
 ##### SQLGetEnvAttr
 
-```
+``` C
 SQLRETURN SQLGetEnvAttr (SQLHENV      henv,
                          SQLINTEGER   Attribute,
                          SQLPOINTER   Value,
@@ -265,7 +312,7 @@ Attribute 10120 unknown
 
 ##### SQLGetConnectAttrW
 
-```
+``` C
 SQLRETURN SQLGetConnectAttrW(   SQLHDBC      hdbc,
                                 SQLINTEGER   fAttr,
                                 SQLPOINTER   pvParam),;
