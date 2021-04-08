@@ -161,7 +161,7 @@ SQL_ATTR_DECFLOAT_ROUNDING_MODE (10112): 0x00000000 0x00000000
 Attribute 0 unknown
 ```
 
-Note that we are also reporting the returned length that is set to 2 for all wide-char null strings.
+Note that we are also reporting the returned length that is set to 2 for all wide-char empty strings.
 
 ##### SQLGetStmtAttrW (SERVER MODE)
 
