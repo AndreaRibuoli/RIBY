@@ -27,6 +27,9 @@ qsqcli = ileloadx.call('QSYS/QSQCLI', 1)
 pSQLAllocHandle = ILEpointer.malloc
 rc = ilesymx.call(pSQLAllocHandle, qsqcli, 'SQLAllocHandle')
 raise "Loading SQLAllocHandle failed" if rc != 1
+pSQLSetEnvAttr = ILEpointer.malloc
+rc = ilesymx.call(pSQLSetEnvAttr, qsqcli, 'SQLSetEnvAttr')
+raise "Loading SQLSetEnvAttr failed" if rc != 1
 pSQLConnectW = ILEpointer.malloc
 rc = ilesymx.call(pSQLConnectW, qsqcli, 'SQLConnectW')
 raise "Loading SQLConnectW failed" if rc != 1
@@ -48,6 +51,16 @@ ILEarguments[ 36,  4] = ['00000000'].pack("H*")         # ihandle (SQL_NULL_HAND
 ILEarguments[ 40,  8] = ['0000000000000000'].pack("H*") # padding
 ILEarguments[ 48, 16] = [env_handle.to_i.to_s(16).rjust(32,'0')].pack("H*")
 rc = ilecallx.call(pSQLAllocHandle, ILEarguments, ['FFFDFFFBFFF50000'].pack("H*"), -5, 0)
+raise "ILE system failed with rc=#{rc}" if rc != 0
+sizeint = SQLintsize.malloc
+sizeint[0, 4] = ['00000001'].pack("H*")
+ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
+ILEarguments[  32,  4] = env_handle[ 0, 4]               # henv
+ILEarguments[  36,  4] = [ 10004.to_s(16).rjust(8,'0')].pack("H*")
+ILEarguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")
+ILEarguments[  48, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
+ILEarguments[  64, 80] = ['0'.rjust(160,'0')].pack("H*")  # padding
+rc = ilecallx.call(pSQLSetEnvAttr, ILEarguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
 dbc_handle = SQLhandle.malloc
 ILEarguments[  0, 32] = ['0'.rjust(64,'0')].pack("H*")
