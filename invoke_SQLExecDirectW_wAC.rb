@@ -3,7 +3,7 @@ require 'fiddle'
 require 'fiddle/import'
 extend Fiddle::Importer
                                                                                                 
-raise "Usage: invoke_SQLAllocHandle.rb <sql>" if ARGV.length != 1
+raise "Usage: invoke_SQLAllocHandle.rb <sql> <user> <pass>" if ARGV.length != 3
 ILEpointer  = struct [ 'char b[16]' ]
 ILEarglist  = struct [ 'char c[144]' ]
 SQLhandle   = struct [ 'char a[4]' ]
@@ -29,6 +29,9 @@ qsqcli = ileloadx.call('QSYS/QSQCLI', 1)
 pSQLAllocHandle = ILEpointer.malloc
 rc = ilesymx.call(pSQLAllocHandle, qsqcli, 'SQLAllocHandle')
 raise "Loading SQLAllocHandle failed" if rc != 1
+pSQLSetEnvAttr = ILEpointer.malloc
+rc = ilesymx.call(pSQLSetEnvAttr, qsqcli, 'SQLSetEnvAttr')
+raise "Loading SQLSetEnvAttr failed" if rc != 1
 pSQLSetConnectAttrW = ILEpointer.malloc
 rc = ilesymx.call(pSQLSetConnectAttrW, qsqcli, 'SQLSetConnectAttrW')
 raise "Loading SQLSetConnectAttrW failed" if rc != 1
@@ -51,6 +54,17 @@ ILEarguments[ 40,  8] = ['0000000000000000'].pack("H*") # padding
 ILEarguments[ 48, 16] = [env_handle.to_i.to_s(16).rjust(32,'0')].pack("H*")
 rc = ilecallx.call(pSQLAllocHandle, ILEarguments, ['FFFDFFFBFFF50000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
+puts 'SQLAllocHandle (SQL_HANDLE_ENV,SQL_NULL_HANDLE,*)'
+sizeint = SQLintsize.malloc
+sizeint[0, 4] = ['00000001'].pack("H*")
+ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
+ILEarguments[  32,  4] = env_handle[ 0, 4]               # henv
+ILEarguments[  36,  4] = [ 10004.to_s(16).rjust(8,'0')].pack("H*")
+ILEarguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")
+ILEarguments[  48, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
+ILEarguments[  64, 80] = ['0'.rjust(160,'0')].pack("H*")  # padding
+rc = ilecallx.call(pSQLSetEnvAttr, ILEarguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
+raise "ILE system failed with rc=#{rc}" if rc != 0
 dbc_handle = SQLhandle.malloc
 ILEarguments[  0, 32] = ['0'.rjust(64,'0')].pack("H*")
 ILEarguments[ 32,  2] = ['0002'].pack("H*")             # htype (SQL_HANDLE_DBC)
@@ -60,8 +74,7 @@ ILEarguments[ 40,  8] = ['0000000000000000'].pack("H*") # padding
 ILEarguments[ 48, 16] = [dbc_handle.to_i.to_s(16).rjust(32,'0')].pack("H*")
 rc = ilecallx.call(pSQLAllocHandle, ILEarguments, ['FFFDFFFBFFF50000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
-sizeint = SQLintsize.malloc
-sizeint[0, 4] = ['00000001'].pack("H*")
+puts 'SQLAllocHandle (SQL_HANDLE_DBC,henv,*)'
 ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
 ILEarguments[  32,  4] = dbc_handle[ 0, 4]               # hdbc
 ILEarguments[  36,  4] = [ 10003.to_s(16).rjust(8,'0')].pack("H*")
@@ -70,9 +83,10 @@ ILEarguments[  48, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
 ILEarguments[  64, 80] = ['0'.rjust(160,'0')].pack("H*")  # padding
 rc = ilecallx.call(pSQLSetConnectAttrW, ILEarguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
+puts 'SQLSetConnectAttrW(henv,SQL_ATTR_AUTOCOMMIT,SQL_TRUE)'
 dsn  = '*LOCAL'.encode('UTF-16BE')
-user = '*CURRENT'.encode('UTF-16BE')
-pass = ''.encode('UTF-16BE')
+user = ARGV[1].encode('UTF-16BE')
+pass = ARGV[2].encode('UTF-16BE')
 ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
 ILEarguments[  32,  4] = dbc_handle[ 0, 4]               # hdbc
 ILEarguments[  36, 12] = ['0'.rjust(24,'0')].pack("H*")  # padding
