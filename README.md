@@ -79,7 +79,7 @@ bash-4.4$ invoke_SQLExecDirectW_wAC.rb 'DROP TABLE QGPL.RIBY_TBL' 'ANDREA' 'pass
 
 To reach a finer commitment control we will need to introduce a new API: [`SQLEndTran` API](https://www.ibm.com/docs/en/i/7.4?topic=functions-sqlendtran-commit-roll-back-transaction). 
 
-```
+``` C
 SQLRETURN SQLEndTran (SQLSMALLINT    hType,
                       SQLHENV        handle,
                       SQLSMALLINT    fType);
@@ -165,7 +165,7 @@ SQL_ATTR_TXN_ISOLATION (0): 0x00000002 0x00000000
 
 There are 3 aliases for the *SQL\_TXN\_READ\_UNCOMMITTED\_MASK* 
 
-```
+``` C
 #define SQL_COMMIT_NONE             1
 #define SQL_TXN_NO_COMMIT           1
 #define SQL_TXN_NOCOMMIT            1
@@ -188,7 +188,7 @@ In the field of DB2 integration it is now appropriate to arrange what we have le
 We collected enough information to start using our statement handles. 
 Let's begin with the simplest API: `SQLExecDirectW`
 
-```
+``` C
 SQLRETURN SQLExecDirectW (SQLHSTMT      hstmt,
                           SQLWCHAR      *szSqlStr,
                           SQLINTEGER    cbSqlStr);
