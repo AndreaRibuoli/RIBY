@@ -89,6 +89,7 @@ working = []
   working.push(key) if ILEarguments[16, 8].unpack("H*")[0] != 'ffffffffffffffff'
 }
 {
+  SQL_ATTR_TXN_ISOLATION: 0,
   SQL_ATTR_XML_DECLARATION: 2552,
   SQL_ATTR_CURRENT_IMPLICIT_XMLPARSE_OPTION: 2553,
   SQL_ATTR_CONCURRENT_ACCESS_RESOLUTION: 2595,

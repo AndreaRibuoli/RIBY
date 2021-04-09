@@ -117,6 +117,46 @@ MSG=La tabella RIBY_TBL in QGPL è stata creata ma non registrata su giornale.
 bash-5.0$ invoke_SQLExecDirectW_wCommit.rb 'DROP TABLE QGPL.RIBY_TBL' 'ANDREA' 'password'
 ```
 
+With autocommit 
+
+```
+$ invoke_SQLExecDirectW_wAC.rb "INSERT INTO QGPL.RIBY_TBL VALUES('PROVA')" 'ANDREA' 'password'
+RC=-1;
+SQLSTATE=55019
+ERROR=-7008
+MSG=RIBY_TBL in QGPL non valido per l'operazione.
+```
+
+or with manual commit (SQLEndTran) 
+
+```
+$ invoke_SQLExecDirectW_wCommit.rb "INSERT INTO QGPL.RIBY_TBL VALUES('PROVA')" 'ANDREA' 'password'
+RC=-1;
+SQLSTATE=55019
+ERROR=-7008
+MSG=RIBY_TBL in QGPL non valido per l'operazione.
+```
+
+files involved (with default setting) require journalling. 
+
+
+Among the info we can collect with `SQLGetInfo` there is:
+
+``` C
+#define SQL_DEFAULT_TXN_ISOLATION   49
+```
+
+``` C
+/*                                               
+ * Output values for SQL_DEFAULT_TXN_ISOLATION   
+ * info type in SQLGetInfo                       
+ */                                              
+£define SQL_TXN_READ_UNCOMMITTED_MASK 0x00000001 
+£define SQL_TXN_READ_COMMITTED_MASK   0x00000002 
+£define SQL_TXN_REPEATABLE_READ_MASK  0x00000004 
+£define SQL_TXN_SERIALIZABLE_MASK     0x00000008 
+```
+
 ##### More general considerations
 
 In the field of DB2 integration it is now appropriate to arrange what we have learnt by experiments into something more structured. As always this is the most difficult part and will probably require time.
@@ -338,6 +378,7 @@ We will revisit previous Ruby scripts for collecting *Connect* and *Stmt* attrib
 
 ```
 Environment handle 0x00000001
+SQL_ATTR_TXN_ISOLATION (0): 
 SQL_ATTR_OUTPUT_NTS (10001): 0x00000001
 SQL_ATTR_SYS_NAMING (10002): 0x00000000
 SQL_ATTR_DEFAULT_LIB (10003): 0x00000000
@@ -385,7 +426,6 @@ SQL_ATTR_INFO_APPLNAME (10105): 0x00000000 0x00000002
 SQL_ATTR_INFO_ACCTSTR (10106): 0x00000000 0x00000002
 SQL_ATTR_INFO_PROGRAMID (10107): 0x00000000 0x00000002
 SQL_ATTR_DECFLOAT_ROUNDING_MODE (10112): 0x00000000 0x00000000
-Attribute 0 unknown
 ```
 
 Note that we are also reporting the returned length that is set to 2 for all wide-char empty strings.
