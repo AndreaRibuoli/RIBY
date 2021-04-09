@@ -3,7 +3,7 @@ require 'fiddle'
 require 'fiddle/import'
 extend Fiddle::Importer
                                                                                                 
-raise "Usage: invoke_SQLAllocHandle.rb <sql>" if ARGV.length != 1
+raise "Usage: invoke_SQLAllocHandle.rb <sql> <user> <pass>" if ARGV.length != 3
 ILEpointer  = struct [ 'char b[16]' ]
 ILEarglist  = struct [ 'char c[144]' ]
 SQLhandle   = struct [ 'char a[4]' ]
@@ -74,8 +74,8 @@ ILEarguments[ 48, 16] = [dbc_handle.to_i.to_s(16).rjust(32,'0')].pack("H*")
 rc = ilecallx.call(pSQLAllocHandle, ILEarguments, ['FFFDFFFBFFF50000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
 dsn  = '*LOCAL'.encode('UTF-16BE')
-user = '*CURRENT'.encode('UTF-16BE')
-pass = ''.encode('UTF-16BE')
+user = ARGV[1].encode('UTF-16BE')
+pass = ARGV[2].encode('UTF-16BE')
 ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
 ILEarguments[  32,  4] = dbc_handle[ 0, 4]               # hdbc
 ILEarguments[  36, 12] = ['0'.rjust(24,'0')].pack("H*")  # padding
