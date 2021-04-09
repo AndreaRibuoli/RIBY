@@ -61,6 +61,11 @@ This explains why our last statements:
 seemed to be non consistent: every time the Ruby process ends, all un-committed changes are rolled back.
 So that there is no RIBY\_TBL file in QGPL when DROP request is executed!
 
+Let us introduce AUTO COMMIT. We will need `SQLSetConnectAttrW`.
+
+
+
+<!---
 We will modify previous Ruby script introducing an [`SQLEndTran`](https://www.ibm.com/docs/en/i/7.4?topic=functions-sqlendtran-commit-roll-back-transaction) call and repeat our tests.
 
 ```
@@ -91,7 +96,7 @@ SQLRETURN SQLEndTran (SQLSMALLINT    hType,
 | SQL\_SAVEPOINT\_NAME\_RELEASE  | 4 |
 | SQL\_SAVEPOINT\_NAME\_ROLLBACK | 5 |
 
-
+--->
 
 ----
 ### 26. to finally execute statements
