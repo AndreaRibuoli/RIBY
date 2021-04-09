@@ -11,6 +11,8 @@ SQLerror    = struct [ 'char e[4]' ]
 SQLstate    = struct [ 'char s[12]' ]
 SQLmsg      = struct [ 'char s[1026]' ]
 SQLmsglen   = struct [ 'char l[2]' ]
+SQLintsize  = struct [ 'char s[4]' ]
+
 stm = ARGV[0].encode('UTF-16BE')
 len = stm.length
 preload    = Fiddle.dlopen(nil)
