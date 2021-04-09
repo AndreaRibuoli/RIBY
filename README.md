@@ -107,6 +107,16 @@ SQLRETURN SQLEndTran (SQLSMALLINT    hType,
 | SQL\_SAVEPOINT\_NAME\_RELEASE  | 4 |
 | SQL\_SAVEPOINT\_NAME\_ROLLBACK | 5 |
 
+```
+bash-5.0$ invoke_SQLExecDirectW_wCommit.rb 'CREATE TABLE QGPL.RIBY_TBL (NOME CHAR(20))' 'ANDREA' 'password'
+RC=0;
+SQLSTATE=01567
+ERROR=7905
+MSG=La tabella RIBY_TBL in QGPL è stata creata ma non registrata su giornale.
+
+bash-5.0$ invoke_SQLExecDirectW_wCommit.rb 'DROP TABLE QGPL.RIBY_TBL' 'ANDREA' 'password'
+```
+
 ##### More general considerations
 
 In the field of DB2 integration it is now appropriate to arrange what we have learnt by experiments into something more structured. As always this is the most difficult part and will probably require time.
