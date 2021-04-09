@@ -61,7 +61,8 @@ This explains why our last statements:
 seemed to be non consistent: every time the Ruby process ends, all un-committed changes are rolled back.
 So that there is no RIBY\_TBL file in QGPL when DROP request is executed!
 
-Let us introduce [AUTOCOMMIT](invoke_SQLExecDirectW_wAC.rb) where we need `SQLSetConnectAttrW`.
+Let us introduce *AUTOCOMMIT* in [a variant of our original script](invoke_SQLExecDirectW_wAC.rb).
+We need `SQLSetConnectAttrW`. We also integrate the request for SERVER MODE (that is why we ask for user and password).
 
 ```
 bash-4.4$ invoke_SQLExecDirectW_wAC.rb 'CREATE TABLE QGPL.RIBY_TBL (NOME CHAR(20))' 'ANDREA' 'password'
@@ -71,13 +72,12 @@ ERROR=7905
 MSG=La tabella RIBY_TBL in QGPL è stata creata ma non registrata su giornale.
 
 bash-4.4$ invoke_SQLExecDirectW_wAC.rb 'DROP TABLE QGPL.RIBY_TBL' 'ANDREA' 'password'
-
 ```
 
 ##### Commitment Control
 
 
-To reach a finer commitment control we need to introduce in our Ruby scripts the [`SQLEndTran` API](https://www.ibm.com/docs/en/i/7.4?topic=functions-sqlendtran-commit-roll-back-transaction). 
+To reach a finer commitment control we will need to introduce a new API: [`SQLEndTran` API](https://www.ibm.com/docs/en/i/7.4?topic=functions-sqlendtran-commit-roll-back-transaction). 
 
 ```
 SQLRETURN SQLEndTran (SQLSMALLINT    hType,
