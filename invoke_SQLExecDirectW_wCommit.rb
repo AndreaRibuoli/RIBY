@@ -137,8 +137,8 @@ puts ILEarguments[ 112, 16].unpack("H*")
 puts ILEarguments[ 128, 16].unpack("H*")
 ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
 ILEarguments[  32,  4] = env_handle[ 0, 4]               # henv
-ILEarguments[  36,  4] = dbc_handle[ 0, 4]               # hdbc
-ILEarguments[  40,  8] = stm_handle[ 0, 4]               # hstmt
+ILEarguments[  36,  4] = ['00000000'].pack("H*")         # hdbc
+ILEarguments[  40,  8] = ['00000000'].pack("H*")         # hstmt
 ILEarguments[  48, 16] = [state.to_i.to_s(16).rjust(32,'0')].pack("H*")
 ILEarguments[  64, 16] = [error.to_i.to_s(16).rjust(32,'0')].pack("H*")
 ILEarguments[  80, 16] = [msg.to_i.to_s(16).rjust(32,'0')].pack("H*")
