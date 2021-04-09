@@ -123,7 +123,7 @@ ILEarguments[  34,  6] = ['0'.rjust(12,'0')].pack("H*")  # padding
 ILEarguments[  40,  4] = env_handle[ 0, 4]               # hdbc
 ILEarguments[  44,  2] = ['0000'].pack("H*")             # SQL_COMMIT
 ILEarguments[  46, 98] = ['0'.rjust(196,'0')].pack("H*") # padding
-rc = ilecallx.call(pSQLErrorW, ILEarguments, ['FFFDFFF9FFFD0000'].pack("H*"), -5, 0)
+rc = ilecallx.call(pSQLErrorW, ILEarguments, ['FFFDFFFBFFFD0000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
 puts ' 0 1 2 3 4 5 6 7 8 9 A B C D E F'
 puts ILEarguments[   0, 16].unpack("H*")
