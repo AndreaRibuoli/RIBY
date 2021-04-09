@@ -119,10 +119,10 @@ END_HERE
 puts final if (exec_rc != 0) || (l>0)
 ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
 ILEarguments[  32,  2] = ['0001'].pack("H*")             # SQL_HANDLE_ENV
-ILEarguments[  34, 10] = ['0'.rjust(20,'0')].pack("H*")  # padding
-ILEarguments[  44,  4] = env_handle[ 0, 4]               # hdbc
-ILEarguments[  48,  2] = ['0000'].pack("H*")             # SQL_COMMIT
-ILEarguments[  50, 94] = ['0'.rjust(188,'0')].pack("H*") # padding
+ILEarguments[  34,  6] = ['0'.rjust(12,'0')].pack("H*")  # padding
+ILEarguments[  40,  4] = env_handle[ 0, 4]               # hdbc
+ILEarguments[  44,  2] = ['0000'].pack("H*")             # SQL_COMMIT
+ILEarguments[  46, 98] = ['0'.rjust(196,'0')].pack("H*") # padding
 rc = ilecallx.call(pSQLErrorW, ILEarguments, ['FFFDFFF9FFFD0000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
 puts ' 0 1 2 3 4 5 6 7 8 9 A B C D E F'
