@@ -54,7 +54,6 @@ ILEarguments[ 40,  8] = ['0000000000000000'].pack("H*") # padding
 ILEarguments[ 48, 16] = [env_handle.to_i.to_s(16).rjust(32,'0')].pack("H*")
 rc = ilecallx.call(pSQLAllocHandle, ILEarguments, ['FFFDFFFBFFF50000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
-puts 'SQLAllocHandle (SQL_HANDLE_ENV,SQL_NULL_HANDLE,*)'
 sizeint = SQLintsize.malloc
 sizeint[0, 4] = ['00000001'].pack("H*")
 ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
