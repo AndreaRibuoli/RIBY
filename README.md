@@ -151,11 +151,27 @@ Among the info we can collect with `SQLGetInfo` there is:
  * Output values for SQL_DEFAULT_TXN_ISOLATION   
  * info type in SQLGetInfo                       
  */                                              
-£define SQL_TXN_READ_UNCOMMITTED_MASK 0x00000001 
-£define SQL_TXN_READ_COMMITTED_MASK   0x00000002 
-£define SQL_TXN_REPEATABLE_READ_MASK  0x00000004 
-£define SQL_TXN_SERIALIZABLE_MASK     0x00000008 
+#define SQL_TXN_READ_UNCOMMITTED_MASK 0x00000001 
+#define SQL_TXN_READ_COMMITTED_MASK   0x00000002 
+#define SQL_TXN_REPEATABLE_READ_MASK  0x00000004 
+#define SQL_TXN_SERIALIZABLE_MASK     0x00000008 
 ```
+
+In a previous script we also collected the value of **SQL\_ATTR\_TXN\_ISOLATION** that we could set to the IBM i specific
+
+```
+SQL_ATTR_TXN_ISOLATION (0): 0x00000002 0x00000000
+```
+
+There are 3 aliases for the *SQL\_TXN\_READ\_UNCOMMITTED\_MASK* 
+
+```
+#define SQL_COMMIT_NONE             1
+#define SQL_TXN_NO_COMMIT           1
+#define SQL_TXN_NOCOMMIT            1
+```
+
+by setting **1** as the *SQL\_ATTR\_TXN\_ISOLATION* level we have the ability to INSERT/UPDATE in non-journalled files.
 
 ##### More general considerations
 
