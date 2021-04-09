@@ -67,7 +67,7 @@ Let us introduce AUTO COMMIT. We will need `SQLSetConnectAttrW`.
 ##### Commitment Control
 
 
-We will need to modify our Ruby scripts introducing [`SQLEndTran`](https://www.ibm.com/docs/en/i/7.4?topic=functions-sqlendtran-commit-roll-back-transaction). 
+To reach a finer commitment control we need to introduce in our Ruby scripts the [`SQLEndTran` API](https://www.ibm.com/docs/en/i/7.4?topic=functions-sqlendtran-commit-roll-back-transaction). 
 
 ```
 SQLRETURN SQLEndTran (SQLSMALLINT    hType,
@@ -97,7 +97,7 @@ SQLRETURN SQLEndTran (SQLSMALLINT    hType,
 | SQL\_SAVEPOINT\_NAME\_RELEASE  | 4 |
 | SQL\_SAVEPOINT\_NAME\_ROLLBACK | 5 |
 
-##### Considerations
+##### More general considerations
 
 In the field of DB2 integration it is now appropriate to arrange what we have learnt by experiments into something more structured. As always this is the most difficult part and will probably require time.
 
