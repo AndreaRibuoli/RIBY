@@ -135,4 +135,23 @@ puts ILEarguments[  80, 16].unpack("H*")
 puts ILEarguments[  96, 16].unpack("H*")
 puts ILEarguments[ 112, 16].unpack("H*")
 puts ILEarguments[ 128, 16].unpack("H*")
+ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
+ILEarguments[  32,  4] = env_handle[ 0, 4]               # henv
+ILEarguments[  36,  4] = dbc_handle[ 0, 4]               # hdbc
+ILEarguments[  40,  8] = stm_handle[ 0, 4]               # hstmt
+ILEarguments[  48, 16] = [state.to_i.to_s(16).rjust(32,'0')].pack("H*")
+ILEarguments[  64, 16] = [error.to_i.to_s(16).rjust(32,'0')].pack("H*")
+ILEarguments[  80, 16] = [msg.to_i.to_s(16).rjust(32,'0')].pack("H*")
+ILEarguments[  96,  2] = ['0402'].pack("H*")             # SQL_NTS
+ILEarguments[  98, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
+ILEarguments[ 112, 16] = [msglen.to_i.to_s(16).rjust(32,'0')].pack("H*")
+rc = ilecallx.call(pSQLErrorW, ILEarguments, ['FFFBFFFBFFFBFFF5FFF5FFF5FFFDFFF50000'].pack("H*"), -5, 0)
+raise "ILE system failed with rc=#{rc}" if rc != 0
+l = msglen[0, 2].unpack("H*")[0].to_i(16) * 2
+final =<<END_HERE
+RC=#{exec_rc};
+SQLSTATE=#{state[0, 12].force_encoding('UTF-16BE').encode('utf-8')}
+ERROR=#{error[0, 4].unpack("l")[0]}
+MSG=#{msg[0, l].force_encoding('UTF-16BE').encode('utf-8')}
+END_HERE
 
