@@ -61,8 +61,18 @@ This explains why our last statements:
 seemed to be non consistent: every time the Ruby process ends, all un-committed changes are rolled back.
 So that there is no RIBY\_TBL file in QGPL when DROP request is executed!
 
-Let us introduce AUTO COMMIT. We will need `SQLSetConnectAttrW`.
+Let us introduce [AUTOCOMMIT](invoke_SQLExecDirectW_wAC.rb) where we need `SQLSetConnectAttrW`.
 
+```
+bash-4.4$ invoke_SQLExecDirectW_wAC.rb 'CREATE TABLE QGPL.RIBY_TBL (NOME CHAR(20))' 'ANDREA' 'password'
+RC=0;
+SQLSTATE=01567
+ERROR=7905
+MSG=La tabella RIBY_TBL in QGPL è stata creata ma non registrata su giornale.
+
+bash-4.4$ invoke_SQLExecDirectW_wAC.rb 'DROP TABLE QGPL.RIBY_TBL' 'ANDREA' 'password'
+
+```
 
 ##### Commitment Control
 
