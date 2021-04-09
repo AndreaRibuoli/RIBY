@@ -118,9 +118,9 @@ MSG=#{msg[0, l].force_encoding('UTF-16BE').encode('utf-8')}
 END_HERE
 puts final if (exec_rc != 0) || (l>0)
 ILEarguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
-ILEarguments[  32,   2] = ['0002'].pack("H*")             # SQL_HANDLE_DBC
+ILEarguments[  32,   2] = ['0001'].pack("H*")             # SQL_HANDLE_ENV
 ILEarguments[  34,   2] = ['0000'].pack("H*")             # padding
-ILEarguments[  36,   4] = dbc_handle[ 0, 4]               # hdbc
+ILEarguments[  36,   4] = env_handle[ 0, 4]               # hdbc
 ILEarguments[  40,   2] = ['0000'].pack("H*")             # SQL_COMMIT
 ILEarguments[  42, 102] = ['0'.rjust(204,'0')].pack("H*") # padding
 rc = ilecallx.call(pSQLErrorW, ILEarguments, ['FFFDFFFBFFFD0000'].pack("H*"), -5, 0)
