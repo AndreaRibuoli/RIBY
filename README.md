@@ -64,9 +64,10 @@ So that there is no RIBY\_TBL file in QGPL when DROP request is executed!
 Let us introduce AUTO COMMIT. We will need `SQLSetConnectAttrW`.
 
 
+##### Commitment Control
 
-<!---
-We will modify previous Ruby script introducing an [`SQLEndTran`](https://www.ibm.com/docs/en/i/7.4?topic=functions-sqlendtran-commit-roll-back-transaction) call and repeat our tests.
+
+We will need to modify our Ruby scripts introducing [`SQLEndTran`](https://www.ibm.com/docs/en/i/7.4?topic=functions-sqlendtran-commit-roll-back-transaction). 
 
 ```
 SQLRETURN SQLEndTran (SQLSMALLINT    hType,
@@ -96,7 +97,13 @@ SQLRETURN SQLEndTran (SQLSMALLINT    hType,
 | SQL\_SAVEPOINT\_NAME\_RELEASE  | 4 |
 | SQL\_SAVEPOINT\_NAME\_ROLLBACK | 5 |
 
---->
+##### Considerations
+
+In the field of DB2 integration it is now appropriate to arrange what we have learnt by experiments into something more structured. As always this is the most difficult part and will probably require time.
+
+* We rarely used Ruby `pack`/`unpack` options except **H\*** and it is probably the right time to refine our knowledge on the options available to handle big-endian signed integers of various sizes.
+* The mnemonics for Env/Connect/Stmt attribute values could be structured for the benefit of the programmer. 
+* The relationships between Env, Connect and Stmt could be better handled in an object oriented fashion: why don't we introduce Ruby classes with specialized methods? 
 
 ----
 ### 26. to finally execute statements
