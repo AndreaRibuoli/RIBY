@@ -206,6 +206,7 @@ MSG=RIBY_TBL in QGPL di tipo *FILE non trovato.
 The last 2 statements require an explanation. 
 We will explain commit logic in the next chapter!
 
+[NEXT-27](#27-to-commit-our-statements)
 
 ----
 ### 25. to diagnose on errors
@@ -268,6 +269,8 @@ bash-4.4$ invoke_SQLConnectW_wErrorMsg.rb '*LOCAL' '*CURRENT' ''
 
 bash-4.4$ 
 ```
+
+[NEXT-26](#26-to-finally-execute-statements)
 
 ----
 ### 24. to manage statements
