@@ -74,7 +74,6 @@ ILEarguments[ 40,  8] = ['0000000000000000'].pack("H*") # padding
 ILEarguments[ 48, 16] = [dbc_handle.to_i.to_s(16).rjust(32,'0')].pack("H*")
 rc = ilecallx.call(pSQLAllocHandle, ILEarguments, ['FFFDFFFBFFF50000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
-puts 'SQLAllocHandle (SQL_HANDLE_DBC,henv,*)'
 ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
 ILEarguments[  32,  4] = dbc_handle[ 0, 4]               # hdbc
 ILEarguments[  36,  4] = [ 10003.to_s(16).rjust(8,'0')].pack("H*")
@@ -83,7 +82,6 @@ ILEarguments[  48, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
 ILEarguments[  64, 80] = ['0'.rjust(160,'0')].pack("H*")  # padding
 rc = ilecallx.call(pSQLSetConnectAttrW, ILEarguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
 raise "ILE system failed with rc=#{rc}" if rc != 0
-puts 'SQLSetConnectAttrW(henv,SQL_ATTR_AUTOCOMMIT,SQL_TRUE)'
 dsn  = '*LOCAL'.encode('UTF-16BE')
 user = ARGV[1].encode('UTF-16BE')
 pass = ARGV[2].encode('UTF-16BE')
