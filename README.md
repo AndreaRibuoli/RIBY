@@ -46,10 +46,56 @@ Let's go!
 24. [to manage statements](#24-to-manage-statements)
 25. [to diagnose on errors](#25-to-diagnose-on-errors)
 26. [to finally execute statements](#26-to-finally-execute-statements)
+27. [to commit our statements](#27-to-commit-our-statements)
+
+
+----
+### 27. to commit our statements
+
+In a previous chapter we verified the DB connection attribute `SQL_ATTR_AUTOCOMMIT` (10003) was set to SQL\_FALSE.
+This explains why our last statements:
+
+1. *CREATE TABLE QGPL.RIBY_TBL (NOME CHAR(20))* 
+2. *DROP TABLE QGPL.RIBY_TBL*
+
+seemed to be non consistent: every time the Ruby process ends, all un-committed changes are rolled back.
+So that there is no RIBY\_TBL file in QGPL when DROP request is executed!
+
+We will modify previous Ruby script introducing an [`SQLEndTran`](https://www.ibm.com/docs/en/i/7.4?topic=functions-sqlendtran-commit-roll-back-transaction) call and repeat our tests.
+
+```
+SQLRETURN SQLEndTran (SQLSMALLINT    hType,
+                      SQLHENV        handle,
+                      SQLSMALLINT    fType);
+```
+
+| type         | value | hex     |
+| ------------ |:-----:| ------- |
+|  ARG_INT16   | -3    |  0xFFFD |  
+|  ARG_INT32   | -5    |  0xFFFB | 
+|  ARG_INT16   | -3    |  0xFFFD |  
+|  ARG_END     | 0     |  0x0000 | 
+
+
+```
+     | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | A | B | C | D | E | F |
+| 2x | hType |-------|  henv / hdbc  | fType |-----------------------|
+```
+
+| fType mnemonic                 | v |
+| ------------------------------ |:-:|
+| SQL\_COMMIT                    | 0 |     
+| SQL\_ROLLBACK                  | 1 |   
+| SQL\_COMMIT\_HOLD              | 2 |   
+| SQL\_ROLLBACK\_HOLD            | 3 |   
+| SQL\_SAVEPOINT\_NAME\_RELEASE  | 4 |
+| SQL\_SAVEPOINT\_NAME\_ROLLBACK | 5 |
+
 
 
 ----
 ### 26. to finally execute statements
+
 
 We collected enough information to start using our statement handles. 
 Let's begin with the simplest API: `SQLExecDirectW`
