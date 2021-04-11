@@ -1,6 +1,6 @@
 require './riby_qsqcli'
 
 
-h = RibyCli::Env.new
-d = RibyCli::Connect.new(h)
-s = RibyCli::Stmt.new(d)
+h = Env.new
+d = Connect.new(h)
+s = Stmt.new(d)
