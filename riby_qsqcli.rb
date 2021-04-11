@@ -26,7 +26,7 @@ module RibyCli
     ileArguments[  0, 32] = ['0'.rjust(64,'0')].pack("H*")
     ileArguments[ 32,  2] = [htype.to_s(16).rjust(4,'0')].pack("H*")
     ileArguments[ 34,  2] = ['0000'].pack("H*")
-    ileArguments[ 36,  4] = ihandle
+    ileArguments[ 36,  4] = [ihandle.to_s(16).rjust(8,'0')].pack("H*")
     ileArguments[ 40, 24] = [handle.to_i.to_s(16).rjust(48,'0')].pack("H*")
     rc = Ilecallx.call(P_SQLAllocHandle, ileArguments, ['FFFDFFFBFFF50000'].pack("H*"), -5, 0)
   end
@@ -39,7 +39,7 @@ class Env
     rc = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, @henv)
   end
   def handle
-    @henv[0,4]
+    @henv[0,4].unpack("l")
   end
   private
 end
@@ -52,7 +52,7 @@ class Connect
     rc = SQLAllocHandle(SQL_HANDLE_DBC, @henv.handle, @hdbc)
   end
   def handle
-    @hdbc[0,4]
+    @hdbc[0,4].unpack("l")
   end
 end
 
@@ -64,6 +64,6 @@ class Stmt
     rc = SQLAllocHandle(SQL_HANDLE_STMT, @hdbc.handle, @hstmt)
   end
   def handle
-    @hstmt[0,4]  
+    @hstmt[0,4].unpack("l")
   end
 end
