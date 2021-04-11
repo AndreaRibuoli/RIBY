@@ -9,7 +9,7 @@ module RibyCli
   
   class Env
     def initialize
-      RibyCli::loadCliApi
+##      RibyCli::loadCliApi
       @henv = SQLhandle.malloc
       rc = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, @henv)
     end
@@ -56,9 +56,9 @@ module RibyCli
   
   pfSQLAllocHandle  = ILEpointer.malloc
   
-  def loadCliApi
+##  def loadCliApi
     rc = ilesymx.call(pfSQLAllocHandle, ileloadx.call('QSYS/QSQCLI', 1), 'SQLAllocHandle')
-  end
+##  end
   
   def SQLAllocHandle(htype, ihandle, handle)
     ileArguments = ILEarglist.malloc
