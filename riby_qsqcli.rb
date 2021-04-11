@@ -1,8 +1,8 @@
 require 'fiddle'
 require 'fiddle/import'
-extend Fiddle::Importer
 
 module RibyCli
+  extend Fiddle::Importer
 
   SQL_NULL_HANDLE  = 0
   SQL_HANDLE_ENV   = 1
