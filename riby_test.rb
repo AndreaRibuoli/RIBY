@@ -1,4 +1,4 @@
-require 'riby_test.rb'
+require 'riby_qsqcli.rb'
 
 
 h = RibyCli::Env.new
