@@ -20,7 +20,7 @@ module RibyCli
   Ilecallx    = Fiddle::Function.new( Preload['_ILECALLX'], [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_SHORT, Fiddle::TYPE_INT], Fiddle::TYPE_INT )
   
   P_SQLAllocHandle  = ILEpointer.malloc
-  RC = ilesymx.call(P_SQLAllocHandle, ileloadx.call('QSYS/QSQCLI', 1), 'SQLAllocHandle')
+  RC = Ilesymx.call(P_SQLAllocHandle, Ileloadx.call('QSYS/QSQCLI', 1), 'SQLAllocHandle')
   def SQLAllocHandle(htype, ihandle, handle)
     ileArguments = ILEarglist.malloc
     ileArguments[  0, 32] = ['0'.rjust(64,'0')].pack("H*")
