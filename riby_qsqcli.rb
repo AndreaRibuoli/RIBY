@@ -40,7 +40,7 @@ module RibyCli
     end
   end
 
-  private:
+  private
 
   require 'fiddle'
   require 'fiddle/import'
