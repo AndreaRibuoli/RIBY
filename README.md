@@ -47,6 +47,12 @@ Let's go!
 25. [to diagnose on errors](#25-to-diagnose-on-errors)
 26. [to finally execute statements](#26-to-finally-execute-statements)
 27. [to commit our statements](#27-to-commit-our-statements)
+28. [to design a Ruby gem](#28-to-design-a-ruby-gem)
+
+
+----
+### 28. to design a Ruby gem
+
 
 
 ----
@@ -180,6 +186,8 @@ In the field of DB2 integration it is now appropriate to arrange what we have le
 * We rarely used Ruby `pack`/`unpack` options except **H\*** and it is probably the right time to refine our knowledge on the options available to handle big-endian signed integers of various sizes.
 * The mnemonics for Env/Connect/Stmt attribute values could be structured for the benefit of the programmer. 
 * The relationships between Env, Connect and Stmt could be better handled in an object oriented fashion: why don't we introduce Ruby classes with specialized methods? 
+
+[NEXT-28](#28-to-design-a-ruby-gem)
 
 ----
 ### 26. to finally execute statements
