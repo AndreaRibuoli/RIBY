@@ -39,7 +39,7 @@ class Env
     rc = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, @henv)
   end
   def handle
-    @henv.unpack("n")
+    @henv[0,4].unpack("n")
   end
   private
 end
@@ -52,7 +52,7 @@ class Connect
     rc = SQLAllocHandle(SQL_HANDLE_DBC, @henv.handle, @hdbc)
   end
   def handle
-    @hdbc.unpack("n")
+    @hdbc[0,4].unpack("n")
   end
 end
 
@@ -64,6 +64,6 @@ class Stmt
     rc = SQLAllocHandle(SQL_HANDLE_STMT, @hdbc.handle, @hstmt)
   end
   def handle
-    @hstmt.unpack("n")
+    @hstmt[0,4].unpack("n")
   end
 end
