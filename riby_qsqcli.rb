@@ -9,7 +9,7 @@ module RibyCli
   
   class Env
     def initialize
-      loadCliApi
+      RibyCli::loadCliApi
       @henv = SQLhandle.malloc
       rc = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, @henv)
     end
