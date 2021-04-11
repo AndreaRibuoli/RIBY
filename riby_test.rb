@@ -1,4 +1,4 @@
-require 'riby_qsqcli.rb'
+require './riby_qsqcli'
 
 
 h = RibyCli::Env.new
