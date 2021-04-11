@@ -28,7 +28,7 @@ module RibyCli
     ileArguments[ 34,  2] = ['0000'].pack("H*")
     ileArguments[ 36,  4] = [ihandle.to_s(16).rjust(8,'0')].pack("H*")
     ileArguments[ 40, 24] = [handle.to_i.to_s(16).rjust(48,'0')].pack("H*")
-    rc = ilecallx.call(P_SQLAllocHandle, ileArguments, ['FFFDFFFBFFF50000'].pack("H*"), -5, 0)
+    rc = Ilecallx.call(P_SQLAllocHandle, ileArguments, ['FFFDFFFBFFF50000'].pack("H*"), -5, 0)
   end
 end
 
@@ -42,9 +42,6 @@ class Env
     @henv.unpack("n")
   end
   private
-  def loadCliApi
-    rc = ilesymx.call(pfSQLAllocHandle, ileloadx.call('QSYS/QSQCLI', 1), 'SQLAllocHandle')
-  end
 end
 
 class Connect
