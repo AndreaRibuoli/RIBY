@@ -1,3 +1,7 @@
+#
+#   Author: Andrea Ribuoli (andrea.ribuoli@yahoo.com)
+#   Andrea Ribuoli (c) 2021
+#
 require 'fiddle'
 require 'fiddle/import'
 
@@ -9,7 +13,6 @@ module RibyCli
   SQL_HANDLE_DBC   = 2
   SQL_HANDLE_STMT  = 3
   SQL_HANDLE_DESC  = 4
-
                                                                                                 
   ILEpointer  = struct [ 'char b[16]' ]
   SQLhandle   = struct [ 'char a[4]' ]
@@ -52,21 +55,22 @@ end
 
 class Connect
   include RibyCli
-  def initialize(henv)
+  def initialize(henv, dsn)
     @hdbc = SQLhandle.malloc
     @henv = henv
+    @dsn  = dsn
     rc = SQLAllocHandle(SQL_HANDLE_DBC, @henv.handle, @hdbc)
   end
   def handle
     @hdbc[0,4]
   end
-  def SQLConnectW(dsn, user, pass)
-    dsnW  =  dsn.encode('UTF-16BE')
+  def SQLConnectW(user, pass)
+    dsnW  = @dsn.encode('UTF-16BE')
     userW = user.encode('UTF-16BE')
     passW = pass.encode('UTF-16BE')
     ileArguments = ILEarglist.malloc
     ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
-    ileArguments[  32,  4] = handle                            # hdbc
+    ileArguments[  32,  4] = handle                          # hdbc
     ileArguments[  36, 12] = ['0'.rjust(24,'0')].pack("H*")  # padding
     ileArguments[  48, 16] = [Fiddle::Pointer[dsnW].to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[  64,  2] = ['FFFD'].pack("H*")             # SQL_NTS

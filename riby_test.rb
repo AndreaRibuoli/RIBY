@@ -2,8 +2,8 @@
 require './riby_qsqcli'
 
 h = Env.new
-d = Connect.new(h)
-d.SQLConnectW('*LOCAL','*CURRENT','')
+d = Connect.new(h, '*LOCAL')
+d.SQLConnectW('*CURRENT','')
 s = Stmt.new(d)
 
 puts h::handle.unpack("l")
