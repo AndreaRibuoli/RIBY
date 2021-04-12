@@ -53,7 +53,33 @@ Let's go!
 ----
 ### 28. to design a Ruby gem
 
+If we execute [riby_test.rb script](riby_test.rb) we get:
 
+```
+$ riby_test.rb
+1
+2
+3
+```
+
+1, 2, 3 are -respectively- the handles of Environment, DB Connection, and Statement generated in our simple script:
+
+``` ruby
+#! /QOpenSys/pkgs/bin/ruby
+require_relative 'riby_qsqcli'
+
+h = Env.new
+d = Connect.new(h, '*LOCAL')
+d.Empower('*CURRENT','')
+s = Stmt.new(d)
+
+puts h::handle.unpack("l")
+puts d::handle.unpack("l")
+puts s::handle.unpack("l")
+```
+
+We were able to hide all the details of `Fiddle` and `\_ILECALLX` inside a *proto*\-gem: i.e. a script we simply refer to by using a **require** variant. The Ruby interpreter tries adding various extentions to the name provided: one of these is `.rb` so that `riby_qsqcli.rb` will be loaded.
+By using **require_relative** we are asking Ruby to limit the search to the path containing the call.
 
 ----
 ### 27. to commit our statements

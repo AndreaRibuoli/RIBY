@@ -1,5 +1,5 @@
 #! /QOpenSys/pkgs/bin/ruby
-require './riby_qsqcli'
+require_relative 'riby_qsqcli'
 
 h = Env.new
 d = Connect.new(h, '*LOCAL')
