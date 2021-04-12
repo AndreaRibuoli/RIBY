@@ -60,16 +60,68 @@ It accomplishes this to and from an external plain-text format we can read (and 
 So let us imagine we have a structure like this:
 
 ``` ruby
-SQL_ATTR_VALUES = { :SQL_ATTR_TXN_ISOLATION => {  
-                      :SQL_TXN_READ_UNCOMMITTED_MASK => 1, 
-                      :SQL_TXN_READ_COMMITTED_MASK   => 2, 
-                      :SQL_TXN_REPEATABLE_READ_MASK  => 4, 
-                      :SQL_TXN_SERIALIZABLE_MASK     => 8 }, 
-                    :SQL_ATTR_CONCURRENT_ACCESS_RESOLUTION => {
-                      :SQL_CONCURRENT_ACCESS_RESOLUTION_UNSET => 0,  
-                      :SQL_USE_CURRENTLY_COMMITTED  => 1, 
-                      :SQL_WAIT_FOR_OUTCOME   => 2, 
-                      :SQL_SKIP_LOCKED_DATA  => 4 } }
+#SQL_ATTR_VALUES = { :SQL_ATTR_TXN_ISOLATION => {
+                       :SQL_TXN_NO_COMMIT                      => 0,
+                       :SQL_TXN_READ_UNCOMMITTED_MASK          => 1,
+                       :SQL_TXN_READ_COMMITTED_MASK            => 2,
+                       :SQL_TXN_REPEATABLE_READ_MASK           => 4,
+                       :SQL_TXN_SERIALIZABLE_MASK              => 8 },
+                     :SQL_ATTR_CONCURRENT_ACCESS_RESOLUTION => {
+                       :SQL_CONCURRENT_ACCESS_RESOLUTION_UNSET => 0,
+                       :SQL_USE_CURRENTLY_COMMITTED            => 1,
+                       :SQL_WAIT_FOR_OUTCOME                   => 2,
+                       :SQL_SKIP_LOCKED_DATA                   => 3 } }
+```
+
+If we execute the following dump:
+
+```
+File.open("sqlattrvals.yaml", "w") {|f| YAML.dump(SQL_ATTR_VALUES, f)}
+```
+
+We obtain the *yaml* equivalent:
+
+
+``` yaml
+---
+:SQL_ATTR_TXN_ISOLATION:
+  :SQL_TXN_NO_COMMIT: 0 
+  :SQL_TXN_READ_UNCOMMITTED_MASK: 1
+  :SQL_TXN_READ_COMMITTED_MASK: 2
+  :SQL_TXN_REPEATABLE_READ_MASK: 4
+  :SQL_TXN_SERIALIZABLE_MASK: 8
+:SQL_ATTR_CONCURRENT_ACCESS_RESOLUTION:
+  :SQL_CONCURRENT_ACCESS_RESOLUTION_UNSET: 0
+  :SQL_USE_CURRENTLY_COMMITTED: 1
+  :SQL_WAIT_FOR_OUTCOME: 2
+  :SQL_SKIP_LOCKED_DATA: 3
+```
+
+Let us suppose to extend the content writing down the *SQL\_ATTR\_DATE\_FMT*'s optional values:
+
+``` yaml
+---
+:SQL_ATTR_TXN_ISOLATION:
+  :SQL_TXN_NO_COMMIT: 0 
+  :SQL_TXN_READ_UNCOMMITTED_MASK: 1
+  :SQL_TXN_READ_COMMITTED_MASK: 2
+  :SQL_TXN_REPEATABLE_READ_MASK: 4
+  :SQL_TXN_SERIALIZABLE_MASK: 8
+:SQL_ATTR_CONCURRENT_ACCESS_RESOLUTION:
+  :SQL_CONCURRENT_ACCESS_RESOLUTION_UNSET: 0
+  :SQL_USE_CURRENTLY_COMMITTED: 1
+  :SQL_WAIT_FOR_OUTCOME: 2
+  :SQL_SKIP_LOCKED_DATA: 3
+:SQL_ATTR_DATE_FMT:
+  :SQL_FMT_ISO: 1
+  :SQL_FMT_USA: 2
+  :SQL_FMT_EUR: 3
+  :SQL_FMT_JIS: 4
+  :SQL_FMT_MDY: 5
+  :SQL_FMT_DMY: 6
+  :SQL_FMT_YMD: 7
+  :SQL_FMT_JUL: 8
+  :SQL_FMT_JOB: 10
 ```
 
 
