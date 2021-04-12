@@ -60,7 +60,7 @@ It accomplishes this to and from an external plain-text format we can read (and 
 So let us imagine we have a structure like this:
 
 ``` ruby
-#SQL_ATTR_VALUES = { :SQL_ATTR_TXN_ISOLATION => {
+ SQL_ATTR_VALUES = { :SQL_ATTR_TXN_ISOLATION => {
                        :SQL_TXN_NO_COMMIT                      => 0,
                        :SQL_TXN_READ_UNCOMMITTED_MASK          => 1,
                        :SQL_TXN_READ_COMMITTED_MASK            => 2,
