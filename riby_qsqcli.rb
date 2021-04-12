@@ -155,7 +155,6 @@ class Connect
       lis = SQLAttrVals[:CONNECT_DECO][k]
       if lis != nil then
         attrs_setting[k] = lis.key(SQLGetConnectAttrW(v))
-        leave
       else
         lis = SQLAttrVals[:CONNECT_ORED][k]
         if lis != nil then
