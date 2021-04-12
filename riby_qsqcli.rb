@@ -64,7 +64,7 @@ class Connect
   def handle
     @hdbc[0,4]
   end
-  def SQLConnectW(user, pass)
+  def Empower(user, pass)
     dsnW  = @dsn.encode('UTF-16BE')
     userW = user.encode('UTF-16BE')
     passW = pass.encode('UTF-16BE')
