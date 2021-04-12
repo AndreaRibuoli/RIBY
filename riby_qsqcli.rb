@@ -155,6 +155,7 @@ class Connect
       z = SQLGetConnectAttrW(v)
       lis = SQLAttrVals[:VALATTR_BOOL][k]
       if lis == 1 then
+        puts k
         attrs_setting[k] = :SQL_FALSE if z == 0
         attrs_setting[k] = :SQL_TRUE  if z == 1
       else
