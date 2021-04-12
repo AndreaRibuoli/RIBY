@@ -153,28 +153,21 @@ class Connect
     attrs_setting = Hash.new
     ATTRS.each { |k,v|
       z = SQLGetConnectAttrW(v)
-      lis = SQLAttrVals[:VALATTR_BOOL][k]
-      if lis == 1 then
-        puts k
-        attrs_setting[k] = :SQL_FALSE if z == 0
-        attrs_setting[k] = :SQL_TRUE  if z == 1
+      lis = SQLAttrVals[:VALATTR_DECO][k]
+      if lis != nil then
+        attrs_setting[k] = lis.key(z)
       else
-        lis = SQLAttrVals[:VALATTR_DECO][k]
+        lis = SQLAttrVals[:VALATTR_ORED][k]
         if lis != nil then
-          attrs_setting[k] = lis.key(z)
+          tmp = []
+          lis.each {|k1,v1|
+            tmp << k1 if (z & v1)
+          }
+          attrs_setting[k] = tmp
         else
-          lis = SQLAttrVals[:VALATTR_ORED][k]
-          if lis != nil then
-            tmp = []
-            lis.each {|k1,v1|
-              tmp << k1 if (z & v1)
-            }
-            attrs_setting[k] = tmp
-          else
-            attrs_setting[k] = z
-          end
+          attrs_setting[k] = z
         end
-      end 
+      end
     }
     ATTRS_WS.each { |k,v|
       attrs_setting[k] = SQLGetConnectAttrW(v, SQLWCHAR)
