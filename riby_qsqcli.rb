@@ -82,7 +82,7 @@ class Env
       SQL_ATTR_INCLUDE_NULL_IN_LEN: 10031,
       SQL_ATTR_UTF8: 10032
     }
-    def SQLGetEnvAttr(key)
+    def SQLGetEnvAttr(key, kind = :SQLINTEGER)
       buffer  = INFObuffer.malloc
       sizeint = SQLintsize.malloc
       ileArguments = ILEarglist.malloc
@@ -95,8 +95,10 @@ class Env
       ileArguments[  68, 12] = ['0'.rjust(152,'0')].pack("H*")  # padding
       ileArguments[  80, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
       ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
+      len = sizeint[0, 4].unpack("l") - 2
       rc = Ilecallx.call(P_GetEnvAttr, ileArguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
-      buffer[0, 4].unpack("l")
+      buffer[0, 4].unpack("l") if kind == :SQLINTEGER
+      buffer[0, len].force_encoding('UTF-16BE').encode('utf-8') if kind == :SQLCHARW
     end
 end
 
