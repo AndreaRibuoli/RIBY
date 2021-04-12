@@ -39,7 +39,8 @@ module RibyCli
   P_AllocHandle      = ILEpointer.malloc; RC_AllocHandle     = Ilesymx.call(P_AllocHandle,    Qsqcli, 'SQLAllocHandle')
   P_GetEnvAttr       = ILEpointer.malloc; RC_GetEnvAttr      = Ilesymx.call(P_GetEnvAttr,     Qsqcli, 'SQLGetEnvAttr')
   P_GetConnectAttrW  = ILEpointer.malloc; RC_GetConnectAttrW = Ilesymx.call(P_GetConnectAttrW,Qsqcli, 'SQLGetConnectAttrW')
-  P_ConnectW         = ILEpointer.malloc; RC_ConnectW        = Ilesymx.call(P_ConnectW,    Qsqcli, 'SQLConnectW')
+  P_GetStmtAttrW     = ILEpointer.malloc; RC_GetStmtAttrW    = Ilesymx.call(P_GetStmtAttrW,   Qsqcli, 'SQLGetStmtAttrW')
+  P_ConnectW         = ILEpointer.malloc; RC_ConnectW        = Ilesymx.call(P_ConnectW,       Qsqcli, 'SQLConnectW')
   def SQLAllocHandle(htype, ihandle, handle)
     ileArguments = ILEarglist.malloc
     ileArguments[  0, 32] = ['0'.rjust(64,'0')].pack("H*")
@@ -187,7 +188,7 @@ class Connect
     SQL_ATTR_INFO_WRKSTNNAME: 10104,
     SQL_ATTR_INFO_APPLNAME: 10105,
     SQL_ATTR_INFO_ACCTSTR: 10106,
-    SQL_ATTR_INFO_PROGRAMID: 10107,
+    SQL_ATTR_INFO_PROGRAMID: 10107
   }
   def SQLGetConnectAttrW(key, kind = SQLINTEGER)
     buffer  = INFObuffer.malloc
@@ -219,4 +220,54 @@ class Stmt
   def handle
     @hstmt[0,4]
   end
+  def attrs
+    attrs_setting = Hash.new
+    ATTRS.each { |k,v|
+      attrs_setting[k] = SQLGetStmtAttrW(v)
+    }
+    ATTRS_WS.each { |k,v|
+      attrs_setting[k] = SQLGetStmtAttrW(v, SQLWCHAR)
+    }
+    attrs_setting
+  end
+  private
+  ATTRS = {
+    SQL_ATTR_APP_ROW_DESC:       10010,
+    SQL_ATTR_APP_PARAM_DESC:     10011,
+    SQL_ATTR_IMP_ROW_DESC:       10012,
+    SQL_ATTR_IMP_PARAM_DESC:     10013,
+    SQL_ATTR_FOR_FETCH_ONLY:     10014,
+    SQL_ATTR_CURSOR_SCROLLABLE:  10015,
+    SQL_ATTR_ROWSET_SIZE:        10016,
+    SQL_ATTR_CURSOR_HOLD:        10017,
+    SQL_ATTR_FULL_OPEN:          10018,
+    SQL_ATTR_EXTENDED_COL_INFO:  10019,
+    SQL_ATTR_BIND_TYPE:          10049,
+    SQL_ATTR_CURSOR_TYPE:        10050,
+    SQL_ATTR_CURSOR_SENSITIVITY: 10051,
+    SQL_ATTR_ROW_BIND_TYPE:      10056,
+    SQL_ATTR_PARAM_BIND_TYPE:    10057,
+    SQL_ATTR_PARAMSET_SIZE:      10058
+  }
+  ATTRS_WS = {
+  }
+  def SQLGetStmtAttrW(key, kind = SQLINTEGER)
+    buffer  = INFObuffer.malloc
+    sizeint = SQLintsize.malloc
+    ileArguments = ILEarglist.malloc
+    ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[  32,  4] = handle                          # hdbc
+    ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
+    ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")  # padding
+    ileArguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    ileArguments[  64,  4] = ['00001000'].pack("H*")         # 4096
+    ileArguments[  68, 12] = ['0'.rjust(152,'0')].pack("H*")  # padding
+    ileArguments[  80, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
+    rc = Ilecallx.call(P_GetStmtAttrW, ileArguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
+    len = sizeint[0, 4].unpack("l")[0] - 2  # remove null
+    return buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
+    return buffer[0, len].force_encoding('UTF-16BE').encode('utf-8')  if kind == SQLWCHAR
+  end
+
 end
