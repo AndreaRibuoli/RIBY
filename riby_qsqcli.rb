@@ -102,9 +102,8 @@ class Env
       ileArguments[  68, 12] = ['0'.rjust(152,'0')].pack("H*")  # padding
       ileArguments[  80, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
       ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
-      len = sizeint[0, 4].unpack("l")[0]
-      puts len if kind == SQLWCHAR
       rc = Ilecallx.call(P_GetEnvAttr, ileArguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
+      len = sizeint[0, 4].unpack("l")[0]
       buffer[0, len].force_encoding('UTF-16BE').encode('utf-8') if kind == SQLWCHAR
       buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
     end
@@ -139,6 +138,25 @@ class Connect
     ileArguments[ 128,  2] = ['FFFD'].pack("H*")             # SQL_NTS
     ileArguments[ 130, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
     rc = Ilecallx.call(P_ConnectW, ileArguments, ['FFFBFFF5FFFDFFF5FFFDFFF5FFFD0000'].pack("H*"), -5, 0)
+  end
+  private
+  def SQLGetConnectAttrW(key, kind = SQLINTEGER)
+    buffer  = INFObuffer.malloc
+    sizeint = SQLintsize.malloc
+    ileArguments = ILEarglist.malloc
+    ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[  32,  4] = handle                          # hdbc
+    ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
+    ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")  # padding
+    ileArguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    ileArguments[  64,  4] = ['00001000'].pack("H*")         # 4096
+    ileArguments[  68, 12] = ['0'.rjust(152,'0')].pack("H*")  # padding
+    ileArguments[  80, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
+    rc = Ilecallx.call(P_GetConnectAttrW, ileArguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
+    len = sizeint[0, 4].unpack("l")[0]
+    buffer[0, len].force_encoding('UTF-16BE').encode('utf-8') if kind == SQLWCHAR
+    buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
   end
 end
 
