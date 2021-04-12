@@ -154,8 +154,8 @@ class Connect
     ATTRS.each { |k,v|
       z = SQLGetConnectAttrW(v)
       lis = SQLAttrVals[:VALATTR_BOOL][k]
-      if lis != nil then
-        (z == 0)?(:SQL_FALSE):(:SQL_TRUE)
+      if lis == 1 then
+        attrs_setting[k] = (z == 0)?(:SQL_FALSE):(:SQL_TRUE)
       else
         lis = SQLAttrVals[:VALATTR_DECO][k]
         if lis != nil then
