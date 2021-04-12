@@ -92,10 +92,11 @@ class Env
       ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")  # padding
       ileArguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
       ileArguments[  64,  4] = ['00001000'].pack("H*")         # 4096
-      ileArguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
+      ileArguments[  68, 12] = ['0'.rjust(152,'0')].pack("H*")  # padding
       ileArguments[  80, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
       ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
       rc = Ilecallx.call(P_GetEnvAttr, ileArguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
+      buffer[0, 4].pack("l")
     end
 end
 
