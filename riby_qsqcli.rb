@@ -35,9 +35,9 @@ module RibyCli
                   [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_SHORT, Fiddle::TYPE_INT],
                   Fiddle::TYPE_INT )
   Qsqcli = Ileloadx.call('QSYS/QSQCLI', 1)
-  P_AllocHandle      = ILEpointer.malloc; RC_AllocHandle     = Ilesymx.call(P_AllocHandle, Qsqcli, 'SQLAllocHandle')
-  P_GetEnvAttr       = ILEpointer.malloc; RC_GetEnvAttr      = Ilesymx.call(P_GetEnvAttr,  Qsqcli, 'SQLGetEnvAttr')
-  P_GetConnectAttrW  = ILEpointer.malloc; RC_GetConnectAttrW = Ilesymx.call(P_GetEnvAttr,  Qsqcli, 'SQLGetConnectAttrW')
+  P_AllocHandle      = ILEpointer.malloc; RC_AllocHandle     = Ilesymx.call(P_AllocHandle,    Qsqcli, 'SQLAllocHandle')
+  P_GetEnvAttr       = ILEpointer.malloc; RC_GetEnvAttr      = Ilesymx.call(P_GetEnvAttr,     Qsqcli, 'SQLGetEnvAttr')
+  P_GetConnectAttrW  = ILEpointer.malloc; RC_GetConnectAttrW = Ilesymx.call(P_GetConnectAttrW,Qsqcli, 'SQLGetConnectAttrW')
   P_ConnectW         = ILEpointer.malloc; RC_ConnectW        = Ilesymx.call(P_ConnectW,    Qsqcli, 'SQLConnectW')
   def SQLAllocHandle(htype, ihandle, handle)
     ileArguments = ILEarglist.malloc
