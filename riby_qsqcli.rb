@@ -152,7 +152,7 @@ class Connect
   def attrs
     attrs_setting = Hash.new
     ATTRS.each { |k,v|
-      lis = SQLAttrVals[k]
+      lis = SQLAttrVals[:CONNECT_DECO][k]
       if lis != nil then
         attrs_setting[k] = lis.key(SQLGetConnectAttrW(v))
       else
