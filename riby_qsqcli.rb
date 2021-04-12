@@ -155,8 +155,19 @@ class Connect
       lis = SQLAttrVals[:CONNECT_DECO][k]
       if lis != nil then
         attrs_setting[k] = lis.key(SQLGetConnectAttrW(v))
+        leave
       else
-        attrs_setting[k] = SQLGetConnectAttrW(v)
+        lis = SQLAttrVals[:CONNECT_ORED][k]
+        if lis != nil then
+          tmp = []
+          z = SQLGetConnectAttrW(v)
+          lis.each {|k1,v1|
+            tmp << k1 if (z & v1)
+          }
+          attrs_setting[k] = tmp          
+        else
+          attrs_setting[k] = SQLGetConnectAttrW(v)
+        end
       end
     }
     ATTRS_WS.each { |k,v|
