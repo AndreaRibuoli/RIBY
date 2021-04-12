@@ -65,17 +65,18 @@ class Env
     ATTRS.each { |k,v|
       attrs_setting[k] = SQLGetEnvAttr(v)
     }
+    ATTRS_WS.each { |k,v|
+      attrs_setting[k] = SQLGetEnvAttr(v, SQLWCHAR)
+    }
     attrs_setting
   end
   private
     ATTRS = {
       SQL_ATTR_OUTPUT_NTS: 10001,
       SQL_ATTR_SYS_NAMING: 10002,
-      SQL_ATTR_DEFAULT_LIB: 10003,
       SQL_ATTR_SERVER_MODE: 10004,
       SQL_ATTR_JOB_SORT_SEQUENCE: 10005,
       SQL_ATTR_ENVHNDL_COUNTER: 10009,
-      SQL_ATTR_ESCAPE_CHAR: 10010,
       SQL_ATTR_DATE_FMT: 10020,
       SQL_ATTR_DATE_SEP: 10021,
       SQL_ATTR_TIME_FMT: 10022,
@@ -84,7 +85,10 @@ class Env
       SQL_ATTR_INCLUDE_NULL_IN_LEN: 10031,
       SQL_ATTR_UTF8: 10032
     }
-    def SQLGetEnvAttr(key, kind = SQLINTEGER)
+    ATTRS_WS = {
+      SQL_ATTR_DEFAULT_LIB: 10003,
+      SQL_ATTR_ESCAPE_CHAR: 10010
+    }    def SQLGetEnvAttr(key, kind = SQLINTEGER)
       buffer  = INFObuffer.malloc
       sizeint = SQLintsize.malloc
       ileArguments = ILEarglist.malloc
