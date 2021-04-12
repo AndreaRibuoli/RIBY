@@ -78,8 +78,93 @@ puts d::handle.unpack("l")
 puts s::handle.unpack("l")
 ```
 
-We were able to hide all the details of `Fiddle` and `\_ILECALLX` inside a *proto*\-gem: i.e. a script we simply refer to by using a **require** variant. The Ruby interpreter tries adding various extentions to the name provided: one of these is `.rb` so that `riby_qsqcli.rb` will be loaded.
+We were able to hide all the details of `Fiddle` and `_ILECALLX` inside a *proto*\-gem: i.e. a script we simply refer to by using a **require** variant. The Ruby interpreter tries adding various extentions to the name provided: one of these is `.rb` so that `riby_qsqcli.rb` will be loaded.
 By using **require_relative** we are asking Ruby to limit the search to the path containing the call.
+
+How was `riby_qsqcli.rb` designed?
+
+First of all we have the following general structure:
+
+``` ruby
+module RibyCli
+  def SQLAllocHandle(htype, ihandle, handle)
+    . . .
+  end    
+end
+
+class Env
+  include RibyCli
+  def initialize
+    . . .
+  end
+  def handle
+    . . .
+  end
+end
+
+class Connect
+  include RibyCli
+  def initialize(henv, dsn)
+    . . .
+  end
+  def handle
+    . . .
+  end
+  def Empower(user, pass)
+    . . .
+  end
+end
+
+class Stmt
+  include RibyCli
+  def initialize(hdbc)
+    . . .
+  end
+  def handle
+    . . .
+  end
+end
+
+```
+
+So we have a *module* named **RibyCli** we are including in the three classes provided: **Env**, **Connect**, and **Stmt**.
+This allow us to write *SQLAllocHandle* once and use it in the 3 classes.
+The **new** methods we are using accept the parameters we are declaring in the **initialize** methods (*initialize* is just a part of the actions performed by *new*)
+  
+
+``` ruby
+h = Env.new
+d = Connect.new(h, '*LOCAL')
+s = Stmt.new(d)
+```
+
+We can introduce `*LOCAL` as a default in the `Connect#initialize` method:
+
+``` ruby
+class Connect
+  include RibyCli
+  def initialize(henv, dsn='*LOCAL')
+    . . .
+  end
+  def handle
+    . . .
+  end
+  def Empower(user, pass)
+    . . .
+  end
+end
+```
+
+this way simplifying standard use:
+
+``` ruby
+h = Env.new
+d = Connect.new(h)
+d.Empower('*CURRENT','')
+s = Stmt.new(d)
+```
+
+Now the task is clear: we have to enrich functionality in each of the classes.
 
 ----
 ### 27. to commit our statements
