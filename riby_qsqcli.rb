@@ -85,6 +85,7 @@ class Env
     def SQLGetEnvAttr(key)
       buffer  = INFObuffer.malloc
       sizeint = SQLintsize.malloc
+      ileArguments = ILEarglist.malloc
       ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
       ileArguments[  32,  4] = handle                          # henv
       ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
@@ -95,7 +96,7 @@ class Env
       ileArguments[  80, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
       ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
       rc = Ilecallx.call(P_GetEnvAttr, ileArguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
-    end  
+    end
 end
 
 class Connect
