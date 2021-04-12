@@ -2,6 +2,7 @@
 #   Author: Andrea Ribuoli (andrea.ribuoli@yahoo.com)
 #   Andrea Ribuoli (c) 2021
 #
+require 'yaml'
 require 'fiddle'
 require 'fiddle/import'
 
@@ -17,6 +18,7 @@ module RibyCli
   SQLCHAR          = 2
   SQLWCHAR         = 3
   
+  SQLAttrVals = YAML.load_file('sqlattrvals.yaml')
   ILEpointer  = struct [ 'char b[16]' ]
   SQLhandle   = struct [ 'char a[4]' ]
   ILEarglist  = struct [ 'char c[144]' ]
@@ -66,7 +68,12 @@ class Env
   def attrs
     attrs_setting = Hash.new
     ATTRS.each { |k,v|
-      attrs_setting[k] = SQLGetEnvAttr(v)
+      lis = SQLAttrVals[k]
+      if lis != nil {
+        attrs_setting[k] = lis.key(SQLGetEnvAttr(v))
+      } else {
+        attrs_setting[k] = SQLGetEnvAttr(v)
+      }
     }
     ATTRS_WS.each { |k,v|
       attrs_setting[k] = SQLGetEnvAttr(v, SQLWCHAR)
