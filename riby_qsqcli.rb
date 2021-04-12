@@ -35,9 +35,10 @@ module RibyCli
                   [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_SHORT, Fiddle::TYPE_INT],
                   Fiddle::TYPE_INT )
   Qsqcli = Ileloadx.call('QSYS/QSQCLI', 1)
-  P_AllocHandle = ILEpointer.malloc; RC_AllocHandle = Ilesymx.call(P_AllocHandle, Qsqcli, 'SQLAllocHandle')
-  P_GetEnvAttr  = ILEpointer.malloc; RC_GetEnvAttr  = Ilesymx.call(P_GetEnvAttr,  Qsqcli, 'SQLGetEnvAttr')
-  P_ConnectW    = ILEpointer.malloc; RC_ConnectW    = Ilesymx.call(P_ConnectW,    Qsqcli, 'SQLConnectW')
+  P_AllocHandle      = ILEpointer.malloc; RC_AllocHandle     = Ilesymx.call(P_AllocHandle, Qsqcli, 'SQLAllocHandle')
+  P_GetEnvAttr       = ILEpointer.malloc; RC_GetEnvAttr      = Ilesymx.call(P_GetEnvAttr,  Qsqcli, 'SQLGetEnvAttr')
+  P_GetConnectAttrW  = ILEpointer.malloc; RC_GetConnectAttrW = Ilesymx.call(P_GetEnvAttr,  Qsqcli, 'SQLGetConnectAttrW')
+  P_ConnectW         = ILEpointer.malloc; RC_ConnectW        = Ilesymx.call(P_ConnectW,    Qsqcli, 'SQLConnectW')
   def SQLAllocHandle(htype, ihandle, handle)
     ileArguments = ILEarglist.malloc
     ileArguments[  0, 32] = ['0'.rjust(64,'0')].pack("H*")
@@ -89,7 +90,7 @@ class Env
       SQL_ATTR_DEFAULT_LIB: 10003,
       SQL_ATTR_ESCAPE_CHAR: 10010
     }
-    def SQLGetEnvAttr(key, kind = SQLINTEGER)
+    def SQLGetConnectAttrW(key, kind = SQLINTEGER)
       buffer  = INFObuffer.malloc
       sizeint = SQLintsize.malloc
       ileArguments = ILEarglist.malloc
@@ -102,7 +103,7 @@ class Env
       ileArguments[  68, 12] = ['0'.rjust(152,'0')].pack("H*")  # padding
       ileArguments[  80, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
       ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
-      rc = Ilecallx.call(P_GetEnvAttr, ileArguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
+      rc = Ilecallx.call(P_GetConnectAttrW, ileArguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
       len = sizeint[0, 4].unpack("l")[0]
       return buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
       return buffer[0, len].force_encoding('UTF-16BE').encode('utf-8')  if kind == SQLWCHAR
@@ -142,10 +143,10 @@ class Connect
   def attrs
     attrs_setting = Hash.new
     ATTRS.each { |k,v|
-      attrs_setting[k] = SQLGetEnvAttr(v)
+      attrs_setting[k] = SQLGetConnectAttrW(v)
     }
     ATTRS_WS.each { |k,v|
-      attrs_setting[k] = SQLGetEnvAttr(v, SQLWCHAR)
+      attrs_setting[k] = SQLGetConnectAttrW(v, SQLWCHAR)
     }
     attrs_setting
   end
