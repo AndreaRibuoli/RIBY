@@ -139,7 +139,54 @@ class Connect
     ileArguments[ 130, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
     rc = Ilecallx.call(P_ConnectW, ileArguments, ['FFFBFFF5FFFDFFF5FFFDFFF5FFFD0000'].pack("H*"), -5, 0)
   end
+  def attrs
+    attrs_setting = Hash.new
+    ATTRS.each { |k,v|
+      attrs_setting[k] = SQLGetEnvAttr(v)
+    }
+    ATTRS_WS.each { |k,v|
+      attrs_setting[k] = SQLGetEnvAttr(v, SQLWCHAR)
+    }
+    attrs_setting
+  end
   private
+  ATTRS = {
+    SQL_ATTR_TXN_ISOLATION: 0,
+    SQL_ATTR_XML_DECLARATION: 2552,
+    SQL_ATTR_CURRENT_IMPLICIT_XMLPARSE_OPTION: 2553,
+    SQL_ATTR_CONCURRENT_ACCESS_RESOLUTION: 2595,
+    SQL_ATTR_AUTO_IPD: 10001,
+    SQL_ATTR_ACCESS_MODE: 10002,
+    SQL_ATTR_AUTOCOMMIT: 10003,
+    SQL_ATTR_DBC_SYS_NAMING: 10004,
+    SQL_ATTR_DBC_DEFAULT_LIB: 10005,
+    SQL_ATTR_ADOPT_OWNER_AUTH: 10006,
+    SQL_ATTR_SYSBAS_CMT: 10007,
+    SQL_ATTR_DATE_FMT: 10020,
+    SQL_ATTR_DATE_SEP: 10021,
+    SQL_ATTR_TIME_FMT: 10022,
+    SQL_ATTR_TIME_SEP: 10023,
+    SQL_ATTR_DECIMAL_SEP: 10024,
+    SQL_ATTR_TXN_EXTERNAL: 10026,
+    SQL_ATTR_SAVEPOINT_NAME: 10028,
+    SQL_ATTR_INCLUDE_NULL_IN_LEN: 10031,
+    SQL_ATTR_UTF8: 10032,
+    SQL_ATTR_UCS2: 10035,
+    SQL_ATTR_MAX_PRECISION: 10040,
+    SQL_ATTR_MAX_SCALE: 10041,
+    SQL_ATTR_MIN_DIVIDE_SCALE: 10042,
+    SQL_ATTR_HEX_LITERALS: 10043,
+    SQL_ATTR_CORRELATOR: 10044,
+    SQL_ATTR_CONN_SORT_SEQUENCE: 10046,
+    SQL_ATTR_INFO_APPLNAME: 10105,
+    SQL_ATTR_INFO_ACCTSTR: 10106,
+    SQL_ATTR_INFO_PROGRAMID: 10107,
+    SQL_ATTR_DECFLOAT_ROUNDING_MODE: 10112
+  }
+  ATTRS_WS = {
+    SQL_ATTR_INFO_USERID: 10103,
+    SQL_ATTR_INFO_WRKSTNNAME: 10104,
+  }
   def SQLGetConnectAttrW(key, kind = SQLINTEGER)
     buffer  = INFObuffer.malloc
     sizeint = SQLintsize.malloc
@@ -155,8 +202,8 @@ class Connect
     ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
     rc = Ilecallx.call(P_GetConnectAttrW, ileArguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
     len = sizeint[0, 4].unpack("l")[0]
-    buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
-    buffer[0, len].force_encoding('UTF-16BE').encode('utf-8') if kind == SQLWCHAR
+    return buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
+    return buffer[0, len].force_encoding('UTF-16BE').encode('utf-8')  if kind == SQLWCHAR
   end
 end
 
