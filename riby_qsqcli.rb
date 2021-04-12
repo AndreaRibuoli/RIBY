@@ -88,7 +88,8 @@ class Env
     ATTRS_WS = {
       SQL_ATTR_DEFAULT_LIB: 10003,
       SQL_ATTR_ESCAPE_CHAR: 10010
-    }    def SQLGetEnvAttr(key, kind = SQLINTEGER)
+    }
+    def SQLGetEnvAttr(key, kind = SQLINTEGER)
       buffer  = INFObuffer.malloc
       sizeint = SQLintsize.malloc
       ileArguments = ILEarglist.malloc
