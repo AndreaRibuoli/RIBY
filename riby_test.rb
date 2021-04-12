@@ -1,3 +1,4 @@
+#! /QOpenSys/pkgs/bin/ruby
 require './riby_qsqcli'
 
 h = Env.new
