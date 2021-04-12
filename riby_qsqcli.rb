@@ -13,7 +13,9 @@ module RibyCli
   SQL_HANDLE_DBC   = 2
   SQL_HANDLE_STMT  = 3
   SQL_HANDLE_DESC  = 4
-                                                                                                
+  :SQLINTEGER = 1
+  :SQLWCHAR   = 2
+  
   ILEpointer  = struct [ 'char b[16]' ]
   SQLhandle   = struct [ 'char a[4]' ]
   ILEarglist  = struct [ 'char c[144]' ]
