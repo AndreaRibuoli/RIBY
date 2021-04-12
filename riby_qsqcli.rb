@@ -99,8 +99,8 @@ class Env
       ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
       len = sizeint[0, 4].unpack("l")[0] - 2
       rc = Ilecallx.call(P_GetEnvAttr, ileArguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
-      buffer[0, 4].unpack("l") if kind == SQLINTEGER
       buffer[0, len].force_encoding('UTF-16BE').encode('utf-8') if kind == SQLWCHAR
+      buffer[0, 4].unpack("l") if kind == SQLINTEGER
     end
 end
 
