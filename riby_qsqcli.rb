@@ -69,11 +69,11 @@ class Env
     attrs_setting = Hash.new
     ATTRS.each { |k,v|
       lis = SQLAttrVals[k]
-      if lis != nil {
+      if lis != nil then
         attrs_setting[k] = lis.key(SQLGetEnvAttr(v))
-      } else {
+      else
         attrs_setting[k] = SQLGetEnvAttr(v)
-      }
+      end
     }
     ATTRS_WS.each { |k,v|
       attrs_setting[k] = SQLGetEnvAttr(v, SQLWCHAR)
@@ -152,7 +152,12 @@ class Connect
   def attrs
     attrs_setting = Hash.new
     ATTRS.each { |k,v|
-      attrs_setting[k] = SQLGetConnectAttrW(v)
+      lis = SQLAttrVals[k]
+      if lis != nil then
+        attrs_setting[k] = lis.key(SQLGetConnectAttrW(v))
+      else
+        attrs_setting[k] = SQLGetConnectAttrW(v)
+      end
     }
     ATTRS_WS.each { |k,v|
       attrs_setting[k] = SQLGetConnectAttrW(v, SQLWCHAR)
