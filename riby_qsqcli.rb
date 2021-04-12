@@ -14,7 +14,8 @@ module RibyCli
   SQL_HANDLE_STMT  = 3
   SQL_HANDLE_DESC  = 4
   SQLINTEGER       = 1
-  SQLWCHAR         = 2
+  SQLCHAR          = 2
+  SQLWCHAR         = 3
   
   ILEpointer  = struct [ 'char b[16]' ]
   SQLhandle   = struct [ 'char a[4]' ]
@@ -106,7 +107,7 @@ class Env
       rc = Ilecallx.call(P_GetConnectAttrW, ileArguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
       len = sizeint[0, 4].unpack("l")[0]
       return buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
-      return buffer[0, len].force_encoding('UTF-16BE').encode('utf-8')  if kind == SQLWCHAR
+      return buffer[0, len].force_encoding('IBM037').encode('utf-8')  if kind == SQLCHAR
     end
 end
 
