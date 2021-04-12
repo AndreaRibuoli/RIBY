@@ -261,7 +261,7 @@ pp s.attrs
 ```
 
 The same method name (`attrs`) activate different methods depending on the class of the object... this is where object oriented programming is really useful.
-As soon as a lot of integers returned (e.g. **2** in `:SQL_ATTR_TXN_ISOLATION=>2`) should be decoded to simplify programmers, in the next chapter we will introduce data structures that could help us. 
+As soon as a lot of integers returned (e.g. **2** in `:SQL_ATTR_TXN_ISOLATION=>2`) should be decoded to simplify programming tasks, in the next chapter we will introduce data structures that could help us learning about **yaml**. 
 
 ----
 ### 27. to commit our statements
