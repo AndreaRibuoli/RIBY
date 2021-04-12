@@ -13,8 +13,8 @@ module RibyCli
   SQL_HANDLE_DBC   = 2
   SQL_HANDLE_STMT  = 3
   SQL_HANDLE_DESC  = 4
-  :SQLINTEGER = 1
-  :SQLWCHAR   = 2
+  SQLINTEGER       = 1
+  SQLWCHAR         = 2
   
   ILEpointer  = struct [ 'char b[16]' ]
   SQLhandle   = struct [ 'char a[4]' ]
@@ -84,7 +84,7 @@ class Env
       SQL_ATTR_INCLUDE_NULL_IN_LEN: 10031,
       SQL_ATTR_UTF8: 10032
     }
-    def SQLGetEnvAttr(key, kind = :SQLINTEGER)
+    def SQLGetEnvAttr(key, kind = SQLINTEGER)
       buffer  = INFObuffer.malloc
       sizeint = SQLintsize.malloc
       ileArguments = ILEarglist.malloc
@@ -99,8 +99,8 @@ class Env
       ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
       len = sizeint[0, 4].unpack("l")[0] - 2
       rc = Ilecallx.call(P_GetEnvAttr, ileArguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
-      buffer[0, 4].unpack("l") if kind == :SQLINTEGER
-      buffer[0, len].force_encoding('UTF-16BE').encode('utf-8') if kind == :SQLCHARW
+      buffer[0, 4].unpack("l") if kind == SQLINTEGER
+      buffer[0, len].force_encoding('UTF-16BE').encode('utf-8') if kind == SQLWCHAR
     end
 end
 
