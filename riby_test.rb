@@ -6,6 +6,7 @@ d = Connect.new(h, '*LOCAL')
 d.Empower('*CURRENT','')
 s = Stmt.new(d)
 
-puts h::handle.unpack("l")
-puts d::handle.unpack("l")
-puts s::handle.unpack("l")
+puts h.handle.unpack("l")
+puts h.attrs
+puts d.handle.unpack("l")
+puts s.handle.unpack("l")
