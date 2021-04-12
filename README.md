@@ -48,6 +48,29 @@ Let's go!
 26. [to finally execute statements](#26-to-finally-execute-statements)
 27. [to commit our statements](#27-to-commit-our-statements)
 28. [to design a Ruby gem](#28-to-design-a-ruby-gem)
+29. [to document attribute values](#29-to-document-attribute-values)
+
+
+----
+### 29. to document attribute values
+
+The **YAML** library (part of the Ruby Standard Library) helps serializing and deserializing Ruby object trees.
+It accomplishes this to and from an external plain-text format we can read (and -why not?- manually edit).
+
+So let us imagine we have a structure like this:
+
+``` ruby
+SQL_ATTR_VALUES = { :SQL_ATTR_TXN_ISOLATION => {  
+                      :SQL_TXN_READ_UNCOMMITTED_MASK => 1, 
+                      :SQL_TXN_READ_COMMITTED_MASK   => 2, 
+                      :SQL_TXN_REPEATABLE_READ_MASK  => 4, 
+                      :SQL_TXN_SERIALIZABLE_MASK     => 8 }, 
+                    :SQL_ATTR_CONCURRENT_ACCESS_RESOLUTION => {
+                      :SQL_CONCURRENT_ACCESS_RESOLUTION_UNSET => 0,  
+                      :SQL_USE_CURRENTLY_COMMITTED  => 1, 
+                      :SQL_WAIT_FOR_OUTCOME   => 2, 
+                      :SQL_SKIP_LOCKED_DATA  => 4 } }
+```
 
 
 ----
@@ -261,7 +284,7 @@ pp s.attrs
 ```
 
 The same method name (`attrs`) activate different methods depending on the class of the object... this is where object oriented programming is really useful.
-As soon as a lot of integers returned (e.g. **2** in `:SQL_ATTR_TXN_ISOLATION=>2`) should be decoded to simplify programming tasks, in the next chapter we will introduce data structures that could help us learning about **yaml**. 
+As soon as a lot of integers returned (e.g. **2** in `:SQL_ATTR_TXN_ISOLATION=>2`) should be decoded to simplify programming tasks, in the next chapter we will introduce data structures that could help us (learning about **yaml**). 
 
 ----
 ### 27. to commit our statements
