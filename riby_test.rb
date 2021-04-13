@@ -12,4 +12,4 @@ pp h.attrs
 # puts d.handle.unpack("l")
 pp d.attrs
 # puts s.handle.unpack("l")
-# pp s.attrs
+pp s.attrs
