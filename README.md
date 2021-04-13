@@ -124,7 +124,7 @@ Let us suppose to extend the content writing down the *SQL\_ATTR\_DATE\_FMT*'s o
   :SQL_FMT_JOB: 10
 ```
 
-Starting from this idea we extended the support for rendering all coded values the attributes can be set to:
+Starting from this idea we extended the support: now we render all coded values the attributes can be set to:
 
 ``` ruby
 $ riby_test.rb
@@ -176,9 +176,26 @@ $ riby_test.rb
  :SQL_ATTR_INFO_APPLNAME=>"",
  :SQL_ATTR_INFO_ACCTSTR=>"",
  :SQL_ATTR_INFO_PROGRAMID=>""}
+{:SQL_ATTR_APP_ROW_DESC=>0,
+ :SQL_ATTR_APP_PARAM_DESC=>0,
+ :SQL_ATTR_IMP_ROW_DESC=>0,
+ :SQL_ATTR_IMP_PARAM_DESC=>0,
+ :SQL_ATTR_FOR_FETCH_ONLY=>:SQL_FALSE,
+ :SQL_ATTR_CURSOR_SCROLLABLE=>:SQL_FALSE,
+ :SQL_ATTR_ROWSET_SIZE=>1,
+ :SQL_ATTR_CURSOR_HOLD=>:SQL_FALSE,
+ :SQL_ATTR_FULL_OPEN=>:SQL_FALSE,
+ :SQL_ATTR_EXTENDED_COL_INFO=>:SQL_FALSE,
+ :SQL_ATTR_BIND_TYPE=>:SQL_BIND_BY_ROW,
+ :SQL_ATTR_CURSOR_TYPE=>:SQL_CURSOR_FORWARD_ONLY,
+ :SQL_ATTR_CURSOR_SENSITIVITY=>:SQL_UNSPECIFIED,
+ :SQL_ATTR_ROW_BIND_TYPE=>:SQL_BIND_BY_ROW,
+ :SQL_ATTR_PARAM_BIND_TYPE=>:SQL_BIND_BY_ROW,
+ :SQL_ATTR_PARAMSET_SIZE=>1}
 ```
 
-
+Having a **Hash** object for visualizing Env, Connect and Stmt attribute settings sounds clever, but using this technique to update the same values is definitevely great! 
+Next time we will build on this last idea. 
 
 ----
 ### 28. to design a Ruby gem
