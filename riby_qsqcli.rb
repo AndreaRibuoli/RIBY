@@ -85,8 +85,11 @@ class Env
         end
       end
     }
-    ATTRS_WS.each { |k,v|
+    ATTRS_S.each { |k,v|
       attrs_setting[k] = SQLGetEnvAttr(v, SQLCHAR)
+    }
+    ATTRS_WS.each { |k,v|
+      attrs_setting[k] = SQLGetEnvAttr(v, SQLWCHAR)
     }
     attrs_setting
   end
@@ -105,8 +108,10 @@ class Env
       SQL_ATTR_INCLUDE_NULL_IN_LEN: 10031,
       SQL_ATTR_UTF8: 10032
     }
+    ATTRS_S = {
+      SQL_ATTR_DEFAULT_LIB: 10003
+    }
     ATTRS_WS = {
-      SQL_ATTR_DEFAULT_LIB: 10003,
       SQL_ATTR_ESCAPE_CHAR: 10010
     }
     def SQLGetEnvAttr(key, kind = SQLINTEGER)
@@ -126,6 +131,7 @@ class Env
       len = sizeint[0, 4].unpack("l")[0]
       return buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
       return buffer[0, len].force_encoding('IBM037').encode('utf-8')  if kind == SQLCHAR
+      return buffer[0, len-2].force_encoding('UTF-16BE').encode('utf-8')  if kind == SQLWCHAR
     end
 end
 
