@@ -8,7 +8,7 @@ d.Empower('*CURRENT','')
 s = Stmt.new(d)
 
 # puts h.handle.unpack("l")
-# pp h.attrs
+pp h.attrs
 # puts d.handle.unpack("l")
 pp d.attrs
 # puts s.handle.unpack("l")
