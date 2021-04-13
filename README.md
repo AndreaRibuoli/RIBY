@@ -124,7 +124,7 @@ Let us suppose to extend the content writing down the *SQL\_ATTR\_DATE\_FMT*'s o
   :SQL_FMT_JOB: 10
 ```
 
-Starting from this idea we extended the support for rendering all attributes:
+Starting from this idea we extended the support for rendering all coded values the attributes can be set to:
 
 ``` ruby
 $ riby_test.rb
@@ -177,6 +177,8 @@ $ riby_test.rb
  :SQL_ATTR_INFO_ACCTSTR=>"",
  :SQL_ATTR_INFO_PROGRAMID=>""}
 ```
+
+
 
 ----
 ### 28. to design a Ruby gem

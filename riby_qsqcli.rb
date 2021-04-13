@@ -262,13 +262,29 @@ class Stmt
   def attrs
     attrs_setting = Hash.new
     ATTRS.each { |k,v|
-      attrs_setting[k] = SQLGetStmtAttrW(v)
+      z = SQLGetStmtAttrW(v)
+      lis = SQLAttrVals[:VALATTR_DECO][k]
+      if lis != nil then
+        attrs_setting[k] = lis.key(z)
+      else
+        lis = SQLAttrVals[:VALATTR_ORED][k]
+        if lis != nil then
+          tmp = []
+          lis.each {|k1,v1|
+            tmp << k1 if (z & v1)
+          }
+          attrs_setting[k] = tmp
+        else
+          attrs_setting[k] = z
+        end
+      end
     }
     ATTRS_WS.each { |k,v|
       attrs_setting[k] = SQLGetStmtAttrW(v, SQLWCHAR)
     }
     attrs_setting
   end
+
   private
   ATTRS = {
     SQL_ATTR_APP_ROW_DESC:       10010,
