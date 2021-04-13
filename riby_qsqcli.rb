@@ -122,7 +122,7 @@ class Env
       ileArguments[  68, 12] = ['0'.rjust(24,'0')].pack("H*")  # padding
       ileArguments[  80, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
       ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
-      rc = Ilecallx.call(P_GetConnectAttrW, ileArguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
+      rc = Ilecallx.call(P_GetEnvAttr, ileArguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
       len = sizeint[0, 4].unpack("l")[0]
       return buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
       return buffer[0, len].force_encoding('IBM037').encode('utf-8')  if kind == SQLCHAR
