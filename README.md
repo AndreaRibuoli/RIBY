@@ -126,7 +126,7 @@ Let us suppose to extend the content writing down the *SQL\_ATTR\_DATE\_FMT*'s o
 
 Starting from this idea we extended the support for rendering all attributes:
 
-```
+``` ruby
 $ riby_test.rb
 {:SQL_ATTR_OUTPUT_NTS=>:SQL_TRUE,
  :SQL_ATTR_SYS_NAMING=>:SQL_FALSE,
