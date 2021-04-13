@@ -67,16 +67,27 @@ class Env
   end
   def attrs
     attrs_setting = Hash.new
+    ##
     ATTRS.each { |k,v|
-      lis = SQLAttrVals[k]
+      z = SQLGetEnvAttr(v)
+      lis = SQLAttrVals[:VALATTR_DECO][k]
       if lis != nil then
-        attrs_setting[k] = lis.key(SQLGetEnvAttr(v))
+        attrs_setting[k] = lis.key(z)
       else
-        attrs_setting[k] = SQLGetEnvAttr(v)
+        lis = SQLAttrVals[:VALATTR_ORED][k]
+        if lis != nil then
+          tmp = []
+          lis.each {|k1,v1|
+            tmp << k1 if (z & v1)
+          }
+          attrs_setting[k] = tmp
+        else
+          attrs_setting[k] = z
+        end
       end
     }
     ATTRS_WS.each { |k,v|
-      attrs_setting[k] = SQLGetEnvAttr(v, SQLWCHAR)
+      attrs_setting[k] = SQLGetEnvAttr(v, SQLCHAR)
     }
     attrs_setting
   end
