@@ -2,14 +2,14 @@
 require_relative 'riby_qsqcli'
 require 'pp'
 
+raise "Usage: invoke_SQLGetConnectAttrW.rb <user> <password>" if ARGV.length != 2
+
 h = Env.new
+h.attrs=({:SQL_ATTR_SERVER_MODE=>:SQL_TRUE})
 d = Connect.new(h, '*LOCAL')
-d.Empower('*CURRENT','')
+d.Empower(ARGV[0],ARGV[1])
 s = Stmt.new(d)
 
-puts h.handle.unpack("l")
 pp h.attrs
-puts d.handle.unpack("l")
 pp d.attrs
-puts s.handle.unpack("l")
 pp s.attrs
