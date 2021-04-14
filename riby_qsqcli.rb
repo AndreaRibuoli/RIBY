@@ -40,6 +40,7 @@ module RibyCli
   Qsqcli = Ileloadx.call('QSYS/QSQCLI', 1)
   P_AllocHandle      = ILEpointer.malloc; RC_AllocHandle     = Ilesymx.call(P_AllocHandle,    Qsqcli, 'SQLAllocHandle')
   P_GetEnvAttr       = ILEpointer.malloc; RC_GetEnvAttr      = Ilesymx.call(P_GetEnvAttr,     Qsqcli, 'SQLGetEnvAttr')
+  P_SetEnvAttr       = ILEpointer.malloc; RC_SetEnvAttr      = Ilesymx.call(P_SetEnvAttr,     Qsqcli, 'SQLSetEnvAttr')
   P_GetConnectAttrW  = ILEpointer.malloc; RC_GetConnectAttrW = Ilesymx.call(P_GetConnectAttrW,Qsqcli, 'SQLGetConnectAttrW')
   P_GetStmtAttrW     = ILEpointer.malloc; RC_GetStmtAttrW    = Ilesymx.call(P_GetStmtAttrW,   Qsqcli, 'SQLGetStmtAttrW')
   P_ConnectW         = ILEpointer.malloc; RC_ConnectW        = Ilesymx.call(P_ConnectW,       Qsqcli, 'SQLConnectW')
@@ -153,13 +154,14 @@ class Env
     def SQLSetEnvAttr(key, value, kind = SQLINTEGER)
       sizeint = SQLintsize.malloc
       sizeint[0, 4] = [value.to_s(16).rjust(8,'0')].pack("H*")
-      ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
-      ILEarguments[  32,  4] = handle
-      ILEarguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
-      ILEarguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")
-      ILEarguments[  48, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
-      ILEarguments[  64, 80] = ['0'.rjust(160,'0')].pack("H*")  # padding
-      rc = ilecallx.call(pSQLSetEnvAttr, ILEarguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
+      ileArguments = ILEarglist.malloc
+      ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
+      ileArguments[  32,  4] = handle
+      ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
+      ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")
+      ileArguments[  48, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
+      ileArguments[  64, 80] = ['0'.rjust(160,'0')].pack("H*")  # padding
+      rc = ilecallx.call(P_SetEnvAttr, ileArguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
     end
 end
 
