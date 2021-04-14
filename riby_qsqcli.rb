@@ -321,11 +321,10 @@ class Stmt
           lis = SQLAttrVals[:VALATTR_NUM][k]
           if lis != nil then
             SQLSetStmtAttrW(ATTRS[k], v)
-            else
-              lis = SQLAttrVals[:VALATTR_WCHAR][k]
-              if lis != nil then
-                SQLSetStmtAttrW(ATTRS[k], v, SQLWCHAR)
-              end
+          else
+            lis = SQLAttrVals[:VALATTR_WCHAR][k]
+            if lis != nil then
+              SQLSetStmtAttrW(ATTRS[k], v, SQLWCHAR)
             end
           end
         end
