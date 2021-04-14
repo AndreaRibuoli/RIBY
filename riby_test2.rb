@@ -7,6 +7,7 @@ raise "Usage: invoke_SQLGetConnectAttrW.rb <user> <password>" if ARGV.length != 
 h = Env.new
 h.attrs=({:SQL_ATTR_SERVER_MODE => :SQL_TRUE,
           :SQL_ATTR_DATE_FMT    => :SQL_FMT_EUR,
+          :SQL_ATTR_DEFAULT_LIB => 'INTELLIGEN',
           :SQL_ATTR_ESCAPE_CHAR => '@'
          })
 d = Connect.new(h, '*LOCAL')
