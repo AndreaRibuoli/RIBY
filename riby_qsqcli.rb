@@ -365,23 +365,16 @@ class Stmt
     return buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
     return buffer[0, len].force_encoding('UTF-16BE').encode('utf-8')  if kind == SQLWCHAR
   end
-  def SQLGetStmtAttrW(key, kind = SQLINTEGER)
-    buffer  = INFObuffer.malloc
+  def SQLSetStmtAttr(key, value, kind = SQLINTEGER)
     sizeint = SQLintsize.malloc
+    sizeint[0, 4] = [value.to_s(16).rjust(8,'0')].pack("H*")
     ileArguments = ILEarglist.malloc
     ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
-    ileArguments[  32,  4] = handle                          # hstm
+    ileArguments[  32,  4] = handle
     ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
-    ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")  # padding
-    ileArguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
-    ileArguments[  64,  4] = ['00001000'].pack("H*")         # 4096
-    ileArguments[  68, 12] = ['0'.rjust(152,'0')].pack("H*")  # padding
-    ileArguments[  80, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
-    ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
-    rc = Ilecallx.call(P_GetStmtAttrW, ileArguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
-    len = sizeint[0, 4].unpack("l")[0]  # remove null
-    len -= 2 if len>0
-    return buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
-    return buffer[0, len].force_encoding('UTF-16BE').encode('utf-8')  if kind == SQLWCHAR
+    ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")
+    ileArguments[  48, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    ileArguments[  64, 80] = ['0'.rjust(160,'0')].pack("H*")  # padding
+    rc = Ilecallx.call(P_SetStmtAttr, ileArguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
   end
 end
