@@ -220,7 +220,7 @@ class Connect
           else
             lis = SQLAttrVals[:VALATTR_WCHAR][k]
             if lis != nil then
-              attrs_setting[k] = GetConnectAttrW(v, SQLWCHAR)
+              attrs_setting[k] = SQLGetConnectAttrW(v, SQLWCHAR)
             end
           end
         end
