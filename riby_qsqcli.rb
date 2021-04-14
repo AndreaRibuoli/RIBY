@@ -325,15 +325,15 @@ class Connect
   end
   def SQLSetConnectAttrW(key, value, kind = SQLINTEGER)
     ileArguments = ILEarglist.malloc
-  #  if kind == SQLINTEGER then
-  #    sizeint = SQLintsize.malloc
-  #    sizeint[0, 4] = [value.to_s(16).rjust(8,'0')].pack("H*")
-  #    ileArguments[  48, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
-  #  end
-  #  if kind == SQLWCHAR then
-      buffer = Fiddle::Pointer[value]
+    if kind == SQLINTEGER then
+      sizeint = SQLintsize.malloc
+      sizeint[0, 4] = [value.to_s(16).rjust(8,'0')].pack("H*")
+      ileArguments[  48, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    end
+    if kind == SQLWCHAR then
+      buffer = Fiddle::Pointer[value.encode('UTF-16BE')]
       ileArguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
-  #  end
+    end
     ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
     ileArguments[  32,  4] = handle
     ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
