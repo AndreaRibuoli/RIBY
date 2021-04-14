@@ -90,9 +90,10 @@ class Env
             if lis != nil then
               SQLSetEnvAttr(ATTRS[k], v, SQLCHAR)
             else
-            lis = SQLAttrVals[:VALATTR_WCHAR][k]
-            if lis != nil then
-              SQLSetEnvAttr(ATTRS[k], v, SQLWCHAR)
+              lis = SQLAttrVals[:VALATTR_WCHAR][k]
+              if lis != nil then
+                SQLSetEnvAttr(ATTRS[k], v, SQLWCHAR)
+              end
             end
           end
         end
