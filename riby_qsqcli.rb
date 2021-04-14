@@ -302,7 +302,7 @@ class Stmt
     hattrs.each { |k,v|
       lis = SQLAttrVals[:VALATTR_DECO][k]
       if lis != nil then
-        SQLSetStmtAttr(ATTRS[k], lis[v])
+        SQLSetStmtAttrW(ATTRS[k], lis[v])
       else
         lis = SQLAttrVals[:VALATTR_ORED][k]
         if lis != nil then
@@ -310,7 +310,7 @@ class Stmt
           v.each {|k1|   # v should be an Array
             tmp |= lis[k1]
           }
-          SQLSetStmtAttr(ATTRS[k], tmp)
+          SQLSetStmtAttrW(ATTRS[k], tmp)
         end  ## introduce an else supporting explicit (free) numeric values
       end
     }
