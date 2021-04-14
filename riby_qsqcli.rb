@@ -42,6 +42,7 @@ module RibyCli
   P_GetEnvAttr       = ILEpointer.malloc; RC_GetEnvAttr      = Ilesymx.call(P_GetEnvAttr,     Qsqcli, 'SQLGetEnvAttr')
   P_SetEnvAttr       = ILEpointer.malloc; RC_SetEnvAttr      = Ilesymx.call(P_SetEnvAttr,     Qsqcli, 'SQLSetEnvAttr')
   P_GetConnectAttrW  = ILEpointer.malloc; RC_GetConnectAttrW = Ilesymx.call(P_GetConnectAttrW,Qsqcli, 'SQLGetConnectAttrW')
+  P_SetConnectAttrW  = ILEpointer.malloc; RC_SetConnectAttrW = Ilesymx.call(P_SetConnectAttrW,Qsqcli, 'SQLSetConnectAttrW')
   P_GetStmtAttrW     = ILEpointer.malloc; RC_GetStmtAttrW    = Ilesymx.call(P_GetStmtAttrW,   Qsqcli, 'SQLGetStmtAttrW')
   P_SetStmtAttrW     = ILEpointer.malloc; RC_SetStmtAttrW    = Ilesymx.call(P_SetStmtAttrW,   Qsqcli, 'SQLSetStmtAttrW')
   P_ConnectW         = ILEpointer.malloc; RC_ConnectW        = Ilesymx.call(P_ConnectW,       Qsqcli, 'SQLConnectW')
@@ -324,6 +325,25 @@ class Connect
     return buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
     return buffer[0, len].force_encoding('UTF-16BE').encode('utf-8')  if kind == SQLWCHAR
   end
+  def SQLSetConnectAttrW(key, value, kind = SQLINTEGER)
+    ileArguments = ILEarglist.malloc
+    if kind == SQLINTEGER then
+      sizeint = SQLintsize.malloc
+      sizeint[0, 4] = [value.to_s(16).rjust(8,'0')].pack("H*")
+      ileArguments[  48, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    end
+    if kind == SQLWCHAR then
+      buffer = Fiddle::Pointer[value]
+      ileArguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    end
+    ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[  32,  4] = handle
+    ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
+    ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")
+    ileArguments[  64, 80] = ['0'.rjust(160,'0')].pack("H*")  # padding
+    rc = Ilecallx.call(P_SetConnectAttrW, ileArguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
+  end
+
 end
 
 class Stmt
