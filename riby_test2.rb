@@ -10,7 +10,7 @@ h.attrs=({:SQL_ATTR_SERVER_MODE => :SQL_TRUE,
 d = Connect.new(h, '*LOCAL')
 d.Empower(ARGV[0],ARGV[1])
 s = Stmt.new(d)
-s.attrs=({:SQL_ATTR_PARAMSET_SIZE => 2})
+s.attrs=({})
 pp h.attrs
 pp d.attrs
 pp s.attrs
