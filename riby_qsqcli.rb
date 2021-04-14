@@ -331,16 +331,17 @@ class Connect
       ileArguments[  48, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
     end
     if kind == SQLWCHAR then
-      puts value
+      len = value.length
       utf16 = value.encode('UTF-16BE')
       buffer = Fiddle::Pointer[utf16]
       ileArguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
+      ileArguments[  64,  4] = [len.to_s(16).rjust(8,'0')].pack("H*")
     end
     ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
     ileArguments[  32,  4] = handle
     ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
     ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")   # padding
-    ileArguments[  64, 80] = ['0'.rjust(160,'0')].pack("H*")  # padding
+    ileArguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
     rc = Ilecallx.call(P_SetConnectAttrW, ileArguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
   end
 
