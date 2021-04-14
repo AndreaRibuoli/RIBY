@@ -164,18 +164,20 @@ class Env
         ileArguments[  48, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
       end
       if kind == SQLCHAR then
-        buffer = Fiddle::Pointer[value.encode('IBM037')]
-        ileArguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
+        len = value.length
+        ileArguments[  48, 16] = [Fiddle::Pointer[value.encode('IBM037')].to_i.to_s(16).rjust(32,'0')].pack("H*")
+        ileArguments[  64,  4] = [len.to_s(16).rjust(8,'0')].pack("H*")
       end
       if kind == SQLWCHAR then
-        buffer = Fiddle::Pointer[value.encode('UTF-16BE')]
-        ileArguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
+        len = value.length * 2
+        ileArguments[  48, 16] = [Fiddle::Pointer[value.encode('UTF-16BE')].to_i.to_s(16).rjust(32,'0')].pack("H*")
+        ileArguments[  64,  4] = [len.to_s(16).rjust(8,'0')].pack("H*")
       end
       ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
       ileArguments[  32,  4] = handle
       ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
-      ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")
-      ileArguments[  64, 80] = ['0'.rjust(160,'0')].pack("H*")  # padding
+      ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")   # padding
+      ileArguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
       rc = Ilecallx.call(P_SetEnvAttr, ileArguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
     end
 end
@@ -457,14 +459,15 @@ class Stmt
       ileArguments[  48, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
     end
     if kind == SQLWCHAR then
-      buffer = Fiddle::Pointer[value]
-      ileArguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
+      len = value.length * 2
+      ileArguments[  48, 16] = [Fiddle::Pointer[value.encode('UTF-16BE')].to_i.to_s(16).rjust(32,'0')].pack("H*")
+      ileArguments[  64,  4] = [len.to_s(16).rjust(8,'0')].pack("H*")
     end
     ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
     ileArguments[  32,  4] = handle
     ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
-    ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")
-    ileArguments[  64, 80] = ['0'.rjust(160,'0')].pack("H*")  # padding
+    ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")   # padding
+    ileArguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
     rc = Ilecallx.call(P_SetStmtAttrW, ileArguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
   end
 end
