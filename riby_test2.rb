@@ -11,10 +11,7 @@ h.attrs=({:SQL_ATTR_DATE_FMT    => :SQL_FMT_EUR,
          })
 d = Connect.new(h, '*LOCAL')
 d.Empower(ARGV[0],ARGV[1])
-d.attrs=({:SQL_ATTR_DBC_DEFAULT_LIB => "PROVA     ",
-          :SQL_ATTR_SAVEPOINT_NAME  => "ADESSO"    ,
-          :SQL_ATTR_TIME_FMT        => :SQL_FMT_EUR
-         })
+d.attrs=({SQL_ATTR_TIME_FMT      => :SQL_FMT_EUR})
 s = Stmt.new(d)
 s.attrs=({:SQL_ATTR_FOR_FETCH_ONLY => :SQL_TRUE})
 pp h.attrs
