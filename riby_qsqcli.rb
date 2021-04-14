@@ -161,7 +161,7 @@ class Env
       ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")
       ileArguments[  48, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
       ileArguments[  64, 80] = ['0'.rjust(160,'0')].pack("H*")  # padding
-      rc = ilecallx.call(P_SetEnvAttr, ileArguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
+      rc = Ilecallx.call(P_SetEnvAttr, ileArguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
     end
 end
 
