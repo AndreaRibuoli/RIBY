@@ -99,7 +99,10 @@ class Env
           }
           attrs_setting[k] = tmp
         else
-          attrs_setting[k] = z
+          lis = SQLAttrVals[:VALATTR_NUM][k]
+          if lis != nil then
+            attrs_setting[k] = z
+          end
         end
       end
     }
@@ -211,7 +214,10 @@ class Connect
           }
           attrs_setting[k] = tmp
         else
-          attrs_setting[k] = z
+          lis = SQLAttrVals[:VALATTR_NUM][k]
+          if lis != nil then
+            attrs_setting[k] = z
+          end
         end
       end
     }
@@ -305,7 +311,10 @@ class Stmt
           }
           attrs_setting[k] = tmp
         else
-          attrs_setting[k] = z
+          lis = SQLAttrVals[:VALATTR_NUM][k]
+          if lis != nil then
+            attrs_setting[k] = z
+          end
         end
       end
     }
