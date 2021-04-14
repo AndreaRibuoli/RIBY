@@ -331,7 +331,8 @@ class Connect
       ileArguments[  48, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
     end
     if kind == SQLWCHAR then
-      buffer = Fiddle::Pointer[value.encode('UTF-16BE')]
+      utf16 = value.encode('UTF-16BE')
+      buffer = Fiddle::Pointer[utf16]
       ileArguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
     end
     ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
