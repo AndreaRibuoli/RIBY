@@ -86,13 +86,13 @@ class Env
   def attrs
     attrs_setting = Hash.new
     ATTRS.each { |k,v|
-      z = SQLGetEnvAttr(v)
       lis = SQLAttrVals[:VALATTR_DECO][k]
       if lis != nil then
-        attrs_setting[k] = lis.key(z)
+        attrs_setting[k] = lis.key(SQLGetEnvAttr(v))
       else
         lis = SQLAttrVals[:VALATTR_ORED][k]
         if lis != nil then
+          z = SQLGetEnvAttr(v)
           tmp = []
           lis.each {|k1,v1|
             tmp << k1 if (z & v1)
@@ -101,13 +101,15 @@ class Env
         else
           lis = SQLAttrVals[:VALATTR_NUM][k]
           if lis != nil then
-            attrs_setting[k] = z
+            attrs_setting[k] = SQLGetEnvAttr(v)
+          else
+            lis = SQLAttrVals[:VALATTR_CHAR][k]
+            if lis != nil then
+              attrs_setting[k] = SQLGetEnvAttr(v, SQLCHAR)
+            end
           end
         end
       end
-    }
-    ATTRS_S.each { |k,v|
-      attrs_setting[k] = SQLGetEnvAttr(v, SQLCHAR)
     }
     ATTRS_WS.each { |k,v|
       attrs_setting[k] = SQLGetEnvAttr(v, SQLWCHAR)
@@ -118,6 +120,7 @@ class Env
     ATTRS = {
       SQL_ATTR_OUTPUT_NTS: 10001,
       SQL_ATTR_SYS_NAMING: 10002,
+      SQL_ATTR_DEFAULT_LIB: 10003
       SQL_ATTR_SERVER_MODE: 10004,
       SQL_ATTR_JOB_SORT_SEQUENCE: 10005,
       SQL_ATTR_ENVHNDL_COUNTER: 10009,
@@ -128,9 +131,6 @@ class Env
       SQL_ATTR_DECIMAL_SEP: 10024,
       SQL_ATTR_INCLUDE_NULL_IN_LEN: 10031,
       SQL_ATTR_UTF8: 10032
-    }
-    ATTRS_S = {
-      SQL_ATTR_DEFAULT_LIB: 10003
     }
     ATTRS_WS = {
       SQL_ATTR_ESCAPE_CHAR: 10010
