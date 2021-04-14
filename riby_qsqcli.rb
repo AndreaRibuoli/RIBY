@@ -209,6 +209,34 @@ class Connect
     ileArguments[ 130, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
     rc = Ilecallx.call(P_ConnectW, ileArguments, ['FFFBFFF5FFFDFFF5FFFDFFF5FFFD0000'].pack("H*"), -5, 0)
   end
+  def attrs= (hattrs)
+    hattrs.each { |k,v|
+      lis = SQLAttrVals[:VALATTR_DECO][k]
+      if lis != nil then
+        SQLSetConnectAttrW(ATTRS[k], lis[v])
+      else
+        lis = SQLAttrVals[:VALATTR_ORED][k]
+        if lis != nil then
+          tmp = 0
+          v.each {|k1|   # v should be an Array
+            tmp |= lis[k1]
+          }
+          SQLSetConnectAttrW(ATTRS[k], tmp)
+        else
+          lis = SQLAttrVals[:VALATTR_NUM][k]
+          if lis != nil then
+            SQLSetConnectAttrW(ATTRS[k], v)
+          else
+            lis = SQLAttrVals[:VALATTR_WCHAR][k]
+            if lis != nil then
+              SQLSetConnectAttrW(ATTRS[k], v, SQLWCHAR)
+            end
+          end
+        end
+      end
+    }
+  end
+
   def attrs
     attrs_setting = Hash.new
     ATTRS.each { |k,v|
