@@ -65,6 +65,23 @@ class Env
   def handle
     @henv[0,4]
   end
+  def attrs= (hattrs)
+    hattrs.each { |k,v|
+      lis = SQLAttrVals[:VALATTR_DECO][k]
+      if lis != nil then
+        SQLSetEnvAttr(ATTRS[k], lis.key[v])
+      else
+        lis = SQLAttrVals[:VALATTR_ORED][k]
+        if lis != nil then
+          tmp = 0
+          v.each {|k1|   # v should be an Array
+            tmp |= lis[k1]
+          }
+          SQLSetEnvAttr(ATTRS[k], tmp)
+        end  ## introduce an else supporting explicit (free) numeric values
+      end
+    }
+  end
   def attrs
     attrs_setting = Hash.new
     ATTRS.each { |k,v|
@@ -132,6 +149,17 @@ class Env
       return buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
       return buffer[0, len].force_encoding('IBM037').encode('utf-8')  if kind == SQLCHAR
       return buffer[0, len-2].force_encoding('UTF-16BE').encode('utf-8')  if kind == SQLWCHAR
+    end
+    def SQLSetEnvAttr(key, value, kind = SQLINTEGER)
+      sizeint = SQLintsize.malloc
+      sizeint[0, 4] = [value.to_s(16).rjust(8,'0')].pack("H*")
+      ILEarguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
+      ILEarguments[  32,  4] = handle
+      ILEarguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
+      ILEarguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")
+      ILEarguments[  48, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
+      ILEarguments[  64, 80] = ['0'.rjust(160,'0')].pack("H*")  # padding
+      rc = ilecallx.call(pSQLSetEnvAttr, ILEarguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
     end
 end
 

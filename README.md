@@ -49,6 +49,18 @@ Let's go!
 27. [to commit our statements](#27-to-commit-our-statements)
 28. [to design a Ruby gem](#28-to-design-a-ruby-gem)
 29. [to document attribute values](#29-to-document-attribute-values)
+30. [to set attributes](#30-to-set-attributes)
+
+
+----
+### 30. to set attributes
+
+Given the **YAML** file, named [sqlattrvals.yaml](sqlattrvals.yaml) and introduced (and later refined) in previous chapter, we are now ready to use it to implement a simple attribute setting interface.
+
+The idea is to support a new method for each of the classes named `attrs=`. This method will accept a hash as parameter.
+The hash has to be consistent with the output of `attrs` result but will contain only the attributes we would like to set.
+
+
 
 
 ----
