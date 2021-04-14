@@ -201,13 +201,13 @@ class Connect
   def attrs
     attrs_setting = Hash.new
     ATTRS.each { |k,v|
-      z = SQLGetConnectAttrW(v)
       lis = SQLAttrVals[:VALATTR_DECO][k]
       if lis != nil then
-        attrs_setting[k] = lis.key(z)
+        attrs_setting[k] = lis.key(SQLGetConnectAttrW(v))
       else
         lis = SQLAttrVals[:VALATTR_ORED][k]
         if lis != nil then
+          z = SQLGetConnectAttrW(v)
           tmp = []
           lis.each {|k1,v1|
             tmp << k1 if (z & v1)
@@ -216,13 +216,15 @@ class Connect
         else
           lis = SQLAttrVals[:VALATTR_NUM][k]
           if lis != nil then
-            attrs_setting[k] = z
+            attrs_setting[k] = SQLGetConnectAttrW(v)
+          else
+            lis = SQLAttrVals[:VALATTR_WCHAR][k]
+            if lis != nil then
+              attrs_setting[k] = GetConnectAttrW(v, SQLWCHAR)
+            end
           end
         end
       end
-    }
-    ATTRS_WS.each { |k,v|
-      attrs_setting[k] = SQLGetConnectAttrW(v, SQLWCHAR)
     }
     attrs_setting
   end
@@ -255,14 +257,6 @@ class Connect
     SQL_ATTR_DECFLOAT_ROUNDING_MODE: 10112
   }
   ATTRS_WS = {
-    SQL_ATTR_CURRENT_IMPLICIT_XMLPARSE_OPTION: 2553,
-    SQL_ATTR_DBC_DEFAULT_LIB: 10005,
-    SQL_ATTR_SAVEPOINT_NAME: 10028,
-    SQL_ATTR_INFO_USERID: 10103,
-    SQL_ATTR_INFO_WRKSTNNAME: 10104,
-    SQL_ATTR_INFO_APPLNAME: 10105,
-    SQL_ATTR_INFO_ACCTSTR: 10106,
-    SQL_ATTR_INFO_PROGRAMID: 10107
   }
   def SQLGetConnectAttrW(key, kind = SQLINTEGER)
     buffer  = INFObuffer.malloc
