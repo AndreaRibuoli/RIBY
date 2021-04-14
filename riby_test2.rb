@@ -12,5 +12,5 @@ d.Empower(ARGV[0],ARGV[1])
 s = Stmt.new(d)
 
 pp h.attrs
-# pp d.attrs
-# pp s.attrs
+pp d.attrs
+pp s.attrs
