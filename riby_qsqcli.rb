@@ -81,10 +81,25 @@ class Env
             tmp |= lis[k1]
           }
           SQLSetEnvAttr(ATTRS[k], tmp)
-        end  ## introduce an else supporting explicit (free) numeric values
+        else
+          lis = SQLAttrVals[:VALATTR_NUM][k]
+          if lis != nil then
+            SQLSetEnvAttr(ATTRS[k], v)
+          else
+            lis = SQLAttrVals[:VALATTR_CHAR][k]
+            if lis != nil then
+              SQLSetEnvAttr(ATTRS[k], v, SQLCHAR)
+            else
+            lis = SQLAttrVals[:VALATTR_WCHAR][k]
+            if lis != nil then
+              SQLSetEnvAttr(ATTRS[k], v, SQLWCHAR)
+            end
+          end
+        end
       end
     }
   end
+
   def attrs
     attrs_setting = Hash.new
     ATTRS.each { |k,v|
@@ -239,7 +254,6 @@ class Connect
       end
     }
   end
-
   def attrs
     attrs_setting = Hash.new
     ATTRS.each { |k,v|
