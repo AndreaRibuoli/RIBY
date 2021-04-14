@@ -6,7 +6,9 @@ raise "Usage: invoke_SQLGetConnectAttrW.rb <user> <password>" if ARGV.length != 
 
 h = Env.new
 h.attrs=({:SQL_ATTR_SERVER_MODE => :SQL_TRUE,
-          :SQL_ATTR_DATE_FMT    => :SQL_FMT_EUR})
+          :SQL_ATTR_DATE_FMT    => :SQL_FMT_EUR,
+          :SQL_ATTR_ESCAPE_CHAR => '@'
+         })
 d = Connect.new(h, '*LOCAL')
 d.Empower(ARGV[0],ARGV[1])
 s = Stmt.new(d)
