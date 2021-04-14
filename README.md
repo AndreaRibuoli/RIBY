@@ -79,7 +79,7 @@ pp h.attrs
 # pp s.attrs
 ```
 
-The changes are reflected in the pretty print of the list of current settiings for Env attributes:
+The changes are reflected in the pretty print of the list of current settings for Env attributes:
 
 ``` ruby
 bash-4.4$ riby_test2.rb 'ANDREA' 'password'
