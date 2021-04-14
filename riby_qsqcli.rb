@@ -382,7 +382,7 @@ class Stmt
     return buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
     return buffer[0, len].force_encoding('UTF-16BE').encode('utf-8')  if kind == SQLWCHAR
   end
-  def SQLSetStmtAttr(key, value, kind = SQLINTEGER)
+  def SQLSetStmtAttrW(key, value, kind = SQLINTEGER)
     sizeint = SQLintsize.malloc
     sizeint[0, 4] = [value.to_s(16).rjust(8,'0')].pack("H*")
     ileArguments = ILEarglist.malloc
@@ -392,6 +392,6 @@ class Stmt
     ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")
     ileArguments[  48, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[  64, 80] = ['0'.rjust(160,'0')].pack("H*")  # padding
-    rc = Ilecallx.call(P_SetStmtAttr, ileArguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
+    rc = Ilecallx.call(P_SetStmtAttrW, ileArguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
   end
 end
