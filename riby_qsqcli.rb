@@ -69,7 +69,7 @@ class Env
     hattrs.each { |k,v|
       lis = SQLAttrVals[:VALATTR_DECO][k]
       if lis != nil then
-        SQLSetEnvAttr(ATTRS[k], lis.key[v])
+        SQLSetEnvAttr(ATTRS[k], lis[v])
       else
         lis = SQLAttrVals[:VALATTR_ORED][k]
         if lis != nil then
