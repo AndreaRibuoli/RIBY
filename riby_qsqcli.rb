@@ -116,9 +116,6 @@ class Env
         end
       end
     }
-    ATTRS_WS.each { |k,v|
-      attrs_setting[k] = SQLGetEnvAttr(v, SQLWCHAR)
-    }
     attrs_setting
   end
   private
