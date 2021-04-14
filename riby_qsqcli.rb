@@ -163,7 +163,11 @@ class Env
         ileArguments[  48, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
       end
       if kind == SQLCHAR then
-        buffer = Fiddle::Pointer[value]
+        buffer = Fiddle::Pointer[value.encode('IBM037')]
+        ileArguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
+      end
+      if kind == SQLWCHAR then
+        buffer = Fiddle::Pointer[value.encode('UTF-16BE')]
         ileArguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
       end
       ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
