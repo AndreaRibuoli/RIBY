@@ -106,6 +106,11 @@ class Env
             lis = SQLAttrVals[:VALATTR_CHAR][k]
             if lis != nil then
               attrs_setting[k] = SQLGetEnvAttr(v, SQLCHAR)
+            else
+              lis = SQLAttrVals[:VALATTR_WCHAR][k]
+              if lis != nil then
+                attrs_setting[k] = SQLGetEnvAttr(v, SQLWCHAR)
+              end
             end
           end
         end
@@ -124,6 +129,7 @@ class Env
       SQL_ATTR_SERVER_MODE: 10004,
       SQL_ATTR_JOB_SORT_SEQUENCE: 10005,
       SQL_ATTR_ENVHNDL_COUNTER: 10009,
+      SQL_ATTR_ESCAPE_CHAR: 10010,
       SQL_ATTR_DATE_FMT: 10020,
       SQL_ATTR_DATE_SEP: 10021,
       SQL_ATTR_TIME_FMT: 10022,
@@ -131,9 +137,6 @@ class Env
       SQL_ATTR_DECIMAL_SEP: 10024,
       SQL_ATTR_INCLUDE_NULL_IN_LEN: 10031,
       SQL_ATTR_UTF8: 10032
-    }
-    ATTRS_WS = {
-      SQL_ATTR_ESCAPE_CHAR: 10010
     }
     def SQLGetEnvAttr(key, kind = SQLINTEGER)
       buffer  = INFObuffer.malloc
