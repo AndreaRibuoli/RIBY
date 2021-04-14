@@ -156,14 +156,20 @@ class Env
       return buffer[0, len-2].force_encoding('UTF-16BE').encode('utf-8')  if kind == SQLWCHAR
     end
     def SQLSetEnvAttr(key, value, kind = SQLINTEGER)
-      sizeint = SQLintsize.malloc
-      sizeint[0, 4] = [value.to_s(16).rjust(8,'0')].pack("H*")
       ileArguments = ILEarglist.malloc
+      if kind == SQLINTEGER then
+        sizeint = SQLintsize.malloc
+        sizeint[0, 4] = [value.to_s(16).rjust(8,'0')].pack("H*")
+        ileArguments[  48, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
+      end
+      if kind == SQLWCHAR then
+        buffer = Fiddle::Pointer[value]
+        ileArguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
+      end
       ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
       ileArguments[  32,  4] = handle
       ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
       ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")
-      ileArguments[  48, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
       ileArguments[  64, 80] = ['0'.rjust(160,'0')].pack("H*")  # padding
       rc = Ilecallx.call(P_SetEnvAttr, ileArguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
     end
@@ -311,7 +317,18 @@ class Stmt
             tmp |= lis[k1]
           }
           SQLSetStmtAttrW(ATTRS[k], tmp)
-        end  ## introduce an else supporting explicit (free) numeric values
+        else
+          lis = SQLAttrVals[:VALATTR_NUM][k]
+          if lis != nil then
+            SQLSetStmtAttrW(ATTRS[k], v)
+            else
+              lis = SQLAttrVals[:VALATTR_WCHAR][k]
+              if lis != nil then
+                SQLSetStmtAttrW(ATTRS[k], v, SQLWCHAR)
+              end
+            end
+          end
+        end
       end
     }
   end
@@ -383,14 +400,20 @@ class Stmt
     return buffer[0, len].force_encoding('UTF-16BE').encode('utf-8')  if kind == SQLWCHAR
   end
   def SQLSetStmtAttrW(key, value, kind = SQLINTEGER)
-    sizeint = SQLintsize.malloc
-    sizeint[0, 4] = [value.to_s(16).rjust(8,'0')].pack("H*")
     ileArguments = ILEarglist.malloc
+    if kind == SQLINTEGER then
+      sizeint = SQLintsize.malloc
+      sizeint[0, 4] = [value.to_s(16).rjust(8,'0')].pack("H*")
+      ileArguments[  48, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    end
+    if kind == SQLWCHAR then
+      buffer = Fiddle::Pointer[value]
+      ileArguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    end
     ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
     ileArguments[  32,  4] = handle
     ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
     ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")
-    ileArguments[  48, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[  64, 80] = ['0'.rjust(160,'0')].pack("H*")  # padding
     rc = Ilecallx.call(P_SetStmtAttrW, ileArguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
   end
