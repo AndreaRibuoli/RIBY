@@ -3,6 +3,7 @@ require_relative 'riby_qsqcli'
 require 'pp'
 
 h = Env.new
+h.attrs=({:SQL_ATTR_SERVER_MODE=>:SQL_TRUE})
 d = Connect.new(h, '*LOCAL')
 d.Empower('*CURRENT','')
 s = Stmt.new(d)
