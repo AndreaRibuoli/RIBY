@@ -203,8 +203,8 @@ class Connect
     ObjectSpace.define_finalizer(self, self.class.finalize)
   end
   def self.finalize
-    proc {
-      puts "finalizing"
+    proc { |handle|
+      puts "finalizing #{handle}"
     }
   end
   def handle
@@ -371,8 +371,8 @@ class Stmt
     ObjectSpace.define_finalizer(self, self.class.finalize)
   end
   def self.finalize
-    proc {
-      puts "finalizing"
+    proc { |handle|
+      puts "finalizing #{handle}"
     }
   end
   def handle
