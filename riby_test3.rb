@@ -5,7 +5,7 @@ require 'pp'
 raise "Usage: #{__FILE__} <user> <password>" if ARGV.length != 2
 
 h = Env.new
-h.attrs=({:SQL_ATTR_SERVER:MODE => :SQL_TRUE})
+h.attrs=({:SQL_ATTR_SERVER_MODE => :SQL_TRUE})
 d1 = Connect.new(h, '*LOCAL')
 d1.Empower(ARGV[0],ARGV[1])
 s1 = Stmt.new(d1)
