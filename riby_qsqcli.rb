@@ -64,12 +64,14 @@ class Env
   def initialize
     @henv = SQLhandle.malloc
     rc = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, @henv)
+    SQLSetEnvAttr(ATTRS[:SQL_ATTR_INCLUDE_NULL_IN_LEN], 0)
   end
   def handle
     @henv[0,4]
   end
   def attrs= (hattrs)
     hattrs.each { |k,v|
+      next if (k == :SQL_ATTR_INCLUDE_NULL_IN_LEN)
       lis = SQLAttrVals[:VALATTR_DECO][k]
       if lis != nil then
         SQLSetEnvAttr(ATTRS[k], lis[v])
@@ -159,8 +161,8 @@ class Env
       rc = Ilecallx.call(P_GetEnvAttr, ileArguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
       len = sizeint[0, 4].unpack("l")[0]
       return buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
-      return buffer[0, len-1].force_encoding('IBM037').encode('utf-8')  if kind == SQLCHAR
-      return buffer[0, len-2].force_encoding('UTF-16BE').encode('utf-8')  if kind == SQLWCHAR
+      return buffer[0, len].force_encoding('IBM037').encode('utf-8')  if kind == SQLCHAR
+      return buffer[0, len].force_encoding('UTF-16BE').encode('utf-8')  if kind == SQLWCHAR
     end
     def SQLSetEnvAttr(key, value, kind = SQLINTEGER)
       ileArguments = ILEarglist.malloc
@@ -326,7 +328,6 @@ class Connect
     ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
     rc = Ilecallx.call(P_GetConnectAttrW, ileArguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
     len = sizeint[0, 4].unpack("l")[0]  # remove null
-    len -= 2 if len>0
     return buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
     return buffer[0, len].force_encoding('UTF-16BE').encode('utf-8')  if kind == SQLWCHAR
   end
@@ -452,7 +453,7 @@ class Stmt
     ileArguments[  80, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
     rc = Ilecallx.call(P_GetStmtAttrW, ileArguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
-    len = sizeint[0, 4].unpack("l")[0] - 2  # remove null
+    len = sizeint[0, 4].unpack("l")[0]  
     return buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
     return buffer[0, len].force_encoding('UTF-16BE').encode('utf-8')  if kind == SQLWCHAR
   end
