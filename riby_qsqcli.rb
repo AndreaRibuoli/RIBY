@@ -173,6 +173,7 @@ class Env
       end
       if kind == SQLCHAR then
         len = value.length
+        len += 1 if key == ATTRS[:SQL_ATTR_DEFAULT_LIB]
         ileArguments[  48, 16] = [Fiddle::Pointer[value.encode('IBM037')].to_i.to_s(16).rjust(32,'0')].pack("H*")
         ileArguments[  64,  4] = [len.to_s(16).rjust(8,'0')].pack("H*")
       end
