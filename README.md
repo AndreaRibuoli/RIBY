@@ -51,7 +51,6 @@ Let's go!
 29. [to document attribute values](#29-to-document-attribute-values)
 30. [to set attributes](#30-to-set-attributes)
 
-
 ----
 ### 30. to set attributes
 
@@ -301,6 +300,8 @@ $ riby_test.rb
 Having a **Hash** object for visualizing Env, Connect and Stmt attribute settings sounds clever, but using this technique to update the same values is definitevely great! 
 Next time we will build on this last idea. 
 
+[NEXT-30](#30-to-set-attributes)
+
 ----
 ### 28. to design a Ruby gem
 
@@ -499,6 +500,8 @@ pp s.attrs
 
 The same method name (`attrs`) activate different methods depending on the class of the object... this is where object oriented programming is really useful.
 As soon as a lot of integers returned (e.g. **2** in `:SQL_ATTR_TXN_ISOLATION=>2`) should be decoded to simplify programming tasks, in the next chapter we will introduce data structures that could help us (learning about **yaml**). 
+
+[NEXT-29](#29-to-document-attribute-values)
 
 ----
 ### 27. to commit our statements
