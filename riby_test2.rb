@@ -12,7 +12,8 @@ h.attrs=({:SQL_ATTR_DATE_FMT    => :SQL_FMT_EUR,
 d = Connect.new(h, '*LOCAL')
 d.Empower(ARGV[0],ARGV[1])
 d.attrs=({:SQL_ATTR_TIME_FMT        => :SQL_FMT_EUR,
-          :SQL_ATTR_DBC_DEFAULT_LIB => 'PROVAPIENA'
+          :SQL_ATTR_DBC_DEFAULT_LIB => 'PROVAPIENA',
+          :SQL_ATTR_MAX_PRECISION   => 63
          })
 s = Stmt.new(d)
 s.attrs=({:SQL_ATTR_FOR_FETCH_ONLY => :SQL_TRUE})
