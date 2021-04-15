@@ -66,7 +66,7 @@ module RibyCli
     ileArguments[ 36,   4] = handle
     ileArguments[ 40, 104] = ['0'.rjust(208,'0')].pack("H*")
     Ilecallx.call(P_FreeHandle, ileArguments, ['FFFDFFFB0000'].pack("H*"), -5, 0)
-    rc = ileArguments[ 0, 4].unpack('l')[0]
+    return ileArguments[ 0, 4].unpack('l')[0]
   end
 end
 
