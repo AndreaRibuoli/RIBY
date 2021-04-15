@@ -65,7 +65,7 @@ class Env
     @henv = SQLhandle.malloc
     rc = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, @henv)
     SQLSetEnvAttr(ATTRS[:SQL_ATTR_INCLUDE_NULL_IN_LEN], 0)
-    ObjectSpace.define_finalizer(self, proc { puts "Env Finalizer on #{handle}" })
+    ObjectSpace.define_finalizer(self, lambda {|handle| puts "Env Finalizer on #{handle}" })
   end
   def handle
     @henv[0,4]
