@@ -84,7 +84,7 @@ warning: finalizer references object to be finalized
 
 Being aware, we will avoid the warnings with a common trick:
 
-```
+``` ruby
   def initialize
     @henv = SQLhandle.malloc
     rc = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, @henv)
