@@ -50,6 +50,109 @@ Let's go!
 28. [to design a Ruby gem](#28-to-design-a-ruby-gem)
 29. [to document attribute values](#29-to-document-attribute-values)
 30. [to set attributes](#30-to-set-attributes)
+31. [to let Ruby free handles](#31-to-let-ruby-free-handles)
+
+----
+### 31. to let Ruby free handles
+
+In our study of object oriented development in Ruby we would like to ignore the burden of caring for all the `SQLFreeHandle` operations required. We would like to move this task to Ruby garbage collector (GC).
+
+How can we require Ruby GC to trigger a method before de-allocating an object?
+
+First of all, having created links among the 3 Class instances, the GC will take care of the appropriate order of deallocation. It would be nice to be able to plug our `SQLFreeHandle` statements...
+
+The following code does the trick in class **Env** (similar `initialize` methods are in *Connect* and *Stmt* classes): 
+
+``` ruby
+  def initialize
+    @henv = SQLhandle.malloc
+    rc = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, @henv)
+     . . .
+    ObjectSpace.define_finalizer(self, proc {
+             rc = SQLFreeHandle(SQL_HANDLE_ENV, @henv[0,4])
+             puts "Free Env (#{rc})" if $-W >= 2
+                                            })
+     . . .                                       
+  end
+```
+
+The `ObjectSpace#define_finalizer` method adds a procedure as a finalizer that will be called when the object instance is about to be destroyed. As soon as we are referenceing the actual object instance being destroyed we are warned with many massages stating: 
+
+```
+warning: finalizer references object to be finalized
+```
+
+Being aware, we will avoid the warnings with a common trick:
+
+```
+  def initialize
+    @henv = SQLhandle.malloc
+    rc = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, @henv)
+     . . .
+    old_verbose = $VERBOSE
+    $VERBOSE = nil
+    ObjectSpace.define_finalizer(self, proc {
+                                              rc = SQLFreeHandle(SQL_HANDLE_ENV, @henv[0,4])
+                                              puts "Free Env (#{rc})" if $-W >= 2
+                                            })
+    $VERBOSE = old_verbose
+  end
+```
+
+We will also provide a message reporting the return code of the `SQLFreeHandle` operation, but only when the user activate 
+a warning level greater or equal 2.
+
+The following script:
+
+``` ruby
+#! /QOpenSys/pkgs/bin/ruby
+require_relative 'riby_qsqcli'
+require 'pp'
+
+raise "Usage: #{__FILE__} <user> <password>" if ARGV.length != 2
+
+h = Env.new
+h.attrs=({:SQL_ATTR_SERVER_MODE => :SQL_TRUE})
+d1 = Connect.new(h, '*LOCAL')
+d1.Empower(ARGV[0],ARGV[1])
+s1 = Stmt.new(d1)
+puts s1.handle.unpack('l')
+begin
+  d2 = Connect.new(h, '*LOCAL')
+  d2.Empower(ARGV[0],ARGV[1])
+  s2 = Stmt.new(d2)
+  puts s2.handle.unpack('l')
+end
+s3 = Stmt.new(d1)
+puts s3.handle.unpack('l')
+s4 = Stmt.new(d1)
+puts s4.handle.unpack('l')
+```
+
+```
+bash-4.4$ ruby riby_test3.rb 'ANDREA' 'password'
+3
+5
+6
+7
+```
+
+```
+bash-4.4$ ruby -W2 riby_test3.rb 'ANDREA' 'password'
+3
+5
+6
+7
+Free Stmt (0)
+Free Stmt (0)
+Free Stmt (0)
+Free Connect (0)
+Free Stmt (0)
+Free Connect (0)
+Free Env (0)
+```
+
+ 
 
 ----
 ### 30. to set attributes
