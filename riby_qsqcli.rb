@@ -39,6 +39,7 @@ module RibyCli
                   Fiddle::TYPE_INT )
   Qsqcli = Ileloadx.call('QSYS/QSQCLI', 1)
   P_AllocHandle      = ILEpointer.malloc; RC_AllocHandle     = Ilesymx.call(P_AllocHandle,    Qsqcli, 'SQLAllocHandle')
+  P_FreeHandle       = ILEpointer.malloc; RC_FreeHandle      = Ilesymx.call(P_FreeHandle,     Qsqcli, 'SQLFreeHandle')
   P_GetEnvAttr       = ILEpointer.malloc; RC_GetEnvAttr      = Ilesymx.call(P_GetEnvAttr,     Qsqcli, 'SQLGetEnvAttr')
   P_SetEnvAttr       = ILEpointer.malloc; RC_SetEnvAttr      = Ilesymx.call(P_SetEnvAttr,     Qsqcli, 'SQLSetEnvAttr')
   P_GetConnectAttrW  = ILEpointer.malloc; RC_GetConnectAttrW = Ilesymx.call(P_GetConnectAttrW,Qsqcli, 'SQLGetConnectAttrW')
@@ -57,6 +58,16 @@ module RibyCli
     ileArguments[ 64, 80] = ['0'.rjust(160,'0')].pack("H*")  # padding
     rc = Ilecallx.call(P_AllocHandle, ileArguments, ['FFFDFFFBFFF50000'].pack("H*"), -5, 0)
   end
+  def SQLFreeHandle(htype, handle)
+    ileArguments = ILEarglist.malloc
+    ileArguments[  0,  32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[ 32,   2] = [htype.to_s(16).rjust(4,'0')].pack("H*")
+    ileArguments[ 34,   2] = ['0000'].pack("H*")
+    ileArguments[ 36,   4] = handle
+    ileArguments[ 40, 104] = ['0'.rjust(208,'0')].pack("H*")
+    rc = Ilecallx.call(P_FreeHandle, ileArguments, ['FFFDFFFB0000'].pack("H*"), -5, 0)
+    rc = ileArguments[ 0, 4].unpack('l')[0]
+  end
 end
 
 class Env
@@ -65,12 +76,7 @@ class Env
     @henv = SQLhandle.malloc
     rc = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, @henv)
     SQLSetEnvAttr(ATTRS[:SQL_ATTR_INCLUDE_NULL_IN_LEN], 0)
-    ObjectSpace.define_finalizer(self, proc { puts "finalizing Env #{@henv[0,4].unpack('l')[0]}" })
-  end
-  def self.finalize
-    proc { |handle|
-      puts "finalizing Env"
-    }
+    ObjectSpace.define_finalizer(self, proc { rc = SQLFreeHandle(SQL_HANDLE_ENV, @henv[0,4]); puts "Free rc = #{rc}" })
   end
   def handle
     @henv[0,4]
