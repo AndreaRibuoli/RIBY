@@ -70,14 +70,11 @@ class Env
   end
   def self.finalize
     proc { |handle|
-      puts "finalizing #{handle_i}"
+      puts "finalizing Env"
     }
   end
   def handle
     @henv[0,4]
-  end
-  def handle_i
-    @henv[0,4].unpack("l")[0]
   end
   def attrs= (hattrs)
     hattrs.each { |k,v|
@@ -207,7 +204,7 @@ class Connect
   end
   def self.finalize
     proc { |handle|
-      puts "finalizing #{handle}"
+      puts "finalizing Connect"
     }
   end
   def handle
@@ -375,7 +372,7 @@ class Stmt
   end
   def self.finalize
     proc { |handle|
-      puts "finalizing #{handle}"
+      puts "finalizing Stmt"
     }
   end
   def handle
