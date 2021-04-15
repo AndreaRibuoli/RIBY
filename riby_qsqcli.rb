@@ -363,7 +363,7 @@ class Stmt
     @hstmt = SQLhandle.malloc
     @hdbc = hdbc
     rc = SQLAllocHandle(SQL_HANDLE_STMT, @hdbc.handle, @hstmt)
-    ObjectSpace.define_finalizer(self, proc { |henv| puts "finalizing Stmt depending on Connect #{hdbc}" })
+    ObjectSpace.define_finalizer(self, proc { |hdbc| puts "finalizing Stmt depending on Connect #{hdbc}" })
   end
   def handle
     @hstmt[0,4]
