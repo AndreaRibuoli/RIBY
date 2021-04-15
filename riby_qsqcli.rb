@@ -200,12 +200,7 @@ class Connect
     @henv = henv
     @dsn  = dsn
     rc = SQLAllocHandle(SQL_HANDLE_DBC, @henv.handle, @hdbc)
-    ObjectSpace.define_finalizer(self, self.class.finalize)
-  end
-  def self.finalize
-    proc { |handle|
-      puts "finalizing Connect"
-    }
+    ObjectSpace.define_finalizer(self, proc { |henv| puts "finalizing Connect depending on Env #{henv}" })
   end
   def handle
     @hdbc[0,4]
@@ -368,12 +363,7 @@ class Stmt
     @hstmt = SQLhandle.malloc
     @hdbc = hdbc
     rc = SQLAllocHandle(SQL_HANDLE_STMT, @hdbc.handle, @hstmt)
-    ObjectSpace.define_finalizer(self, self.class.finalize)
-  end
-  def self.finalize
-    proc { |handle|
-      puts "finalizing Stmt"
-    }
+    ObjectSpace.define_finalizer(self, proc { |henv| puts "finalizing Stmt depending on Connect #{hdbc}" })
   end
   def handle
     @hstmt[0,4]
