@@ -160,6 +160,7 @@ class Env
       ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
       rc = Ilecallx.call(P_GetEnvAttr, ileArguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
       len = sizeint[0, 4].unpack("l")[0]
+      len -= 1 if key == ATTRS[:SQL_ATTR_DEFAULT_LIB]
       return buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
       return buffer[0, len].force_encoding('IBM037').encode('utf-8')  if kind == SQLCHAR
     end
@@ -172,7 +173,6 @@ class Env
       end
       if kind == SQLCHAR then
         len = value.length
-        len += 1 if key == ATTRS[:SQL_ATTR_DEFAULT_LIB]
         ileArguments[  48, 16] = [Fiddle::Pointer[value.encode('IBM037')].to_i.to_s(16).rjust(32,'0')].pack("H*")
         ileArguments[  64,  4] = [len.to_s(16).rjust(8,'0')].pack("H*")
       end
