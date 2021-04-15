@@ -76,7 +76,10 @@ class Env
     @henv = SQLhandle.malloc
     rc = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, @henv)
     SQLSetEnvAttr(ATTRS[:SQL_ATTR_INCLUDE_NULL_IN_LEN], 0)
+    old_verbose = $VERBOSE
+    $VERBOSE = nil
     ObjectSpace.define_finalizer(self, proc { rc = SQLFreeHandle(SQL_HANDLE_ENV, @henv[0,4]); puts "Free Env (#{rc})" })
+    $VERBOSE = old_verbose
   end
   def handle
     @henv[0,4]
@@ -205,7 +208,10 @@ class Connect
     @henv = henv
     @dsn  = dsn
     rc = SQLAllocHandle(SQL_HANDLE_DBC, @henv.handle, @hdbc)
+    old_verbose = $VERBOSE
+    $VERBOSE = nil
     ObjectSpace.define_finalizer(self, proc { rc = SQLFreeHandle(SQL_HANDLE_DBC, @hdbc[0,4]); puts "Free Connect (#{rc})" })
+    $VERBOSE = old_verbose
   end
   def handle
     @hdbc[0,4]
