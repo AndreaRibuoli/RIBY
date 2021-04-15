@@ -355,7 +355,11 @@ class Stmt
     @hstmt = SQLhandle.malloc
     @hdbc = hdbc
     rc = SQLAllocHandle(SQL_HANDLE_STMT, @hdbc.handle, @hstmt)
+    ObjectSpace.define_finalizer(self, proc {|id| puts "Finalizer three on #{id}" })
   end
+  def self.finalize(name)
+      proc { puts "Disalloca #{name}" }
+    end
   def handle
     @hstmt[0,4]
   end
