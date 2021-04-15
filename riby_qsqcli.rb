@@ -70,11 +70,14 @@ class Env
   end
   def self.finalize
     proc { |handle|
-      puts "finalizing #{handle}"
+      puts "finalizing #{handle_i}"
     }
   end
   def handle
     @henv[0,4]
+  end
+  def handle_i
+    @henv[0,4].unpack("l")[0]
   end
   def attrs= (hattrs)
     hattrs.each { |k,v|
