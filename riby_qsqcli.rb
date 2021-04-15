@@ -368,7 +368,7 @@ class Stmt
     @hstmt = SQLhandle.malloc
     @hdbc = hdbc
     rc = SQLAllocHandle(SQL_HANDLE_STMT, @hdbc.handle, @hstmt)
-    ObjectSpace.define_finalizer(self, proc { puts "finalizing Stmt #{@hstmt[0,4].unpack('l')[0]}" })
+    ObjectSpace.define_finalizer(self, proc { rc = SQLFreeHandle(SQL_HANDLE_STMT, @hstmt[0,4]); puts "Free Stmt (#{rc})" })
   end
   def handle
     @hstmt[0,4]
