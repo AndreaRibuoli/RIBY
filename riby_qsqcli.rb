@@ -200,7 +200,7 @@ class Connect
     @henv = henv
     @dsn  = dsn
     rc = SQLAllocHandle(SQL_HANDLE_DBC, @henv.handle, @hdbc)
-    ObjectSpace.define_finalizer(self, proc { puts "finalizing Connect #{@hdbc}" })
+    ObjectSpace.define_finalizer(self, proc { puts "finalizing Connect #{@hdbc[0,4].unpack('l')[0]}" })
   end
   def handle
     @hdbc[0,4]
