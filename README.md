@@ -92,8 +92,8 @@ Being aware, we will avoid the warnings with a common trick:
     old_verbose = $VERBOSE
     $VERBOSE = nil
     ObjectSpace.define_finalizer(self, proc {
-                                              rc = SQLFreeHandle(SQL_HANDLE_ENV, @henv[0,4])
-                                              puts "Free Env (#{rc})" if $-W >= 2
+             rc = SQLFreeHandle(SQL_HANDLE_ENV, @henv[0,4])
+             puts "Free Env (#{rc})" if $-W >= 2
                                             })
     $VERBOSE = old_verbose
   end
@@ -129,6 +129,8 @@ s4 = Stmt.new(d1)
 puts s4.handle.unpack('l')
 ```
 
+has the following standard behaviour:
+
 ```
 bash-4.4$ ruby riby_test3.rb 'ANDREA' 'password'
 3
@@ -136,6 +138,8 @@ bash-4.4$ ruby riby_test3.rb 'ANDREA' 'password'
 6
 7
 ```
+
+or this one when option `-W2` is passed to Ruby interpreter:
 
 ```
 bash-4.4$ ruby -W2 riby_test3.rb 'ANDREA' 'password'
@@ -255,7 +259,8 @@ bash-4.4$ riby_test2.rb 'ANDREA' 'password'
  :SQL_ATTR_PARAM_BIND_TYPE=>:SQL_BIND_BY_ROW,
  :SQL_ATTR_PARAMSET_SIZE=>1}
  ```
-
+ 
+[NEXT-31](#31-to-let-ruby-free-handles)
 
 ----
 ### 29. to document attribute values
