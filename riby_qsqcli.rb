@@ -176,7 +176,7 @@ class Env
       ileArguments[  68, 12] = ['0'.rjust(24,'0')].pack("H*")  # padding
       ileArguments[  80, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
       ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
-      rc = Ilecallx.call(P_GetEnvAttr, ileArguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
+      Ilecallx.call(P_GetEnvAttr, ileArguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
       len = sizeint[0, 4].unpack("l")[0]
       len -= 1 if key == ATTRS[:SQL_ATTR_DEFAULT_LIB]
       return buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
@@ -200,7 +200,7 @@ class Env
       ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
       ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")   # padding
       ileArguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
-      rc = Ilecallx.call(P_SetEnvAttr, ileArguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
+      Ilecallx.call(P_SetEnvAttr, ileArguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
     end
 end
 
@@ -239,9 +239,9 @@ class Connect
     ileArguments[ 112, 16] = [Fiddle::Pointer[passW].to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[ 128,  2] = ['FFFD'].pack("H*")             # SQL_NTS
     ileArguments[ 130, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
-    rc = Ilecallx.call(P_ConnectW, ileArguments, ['FFFBFFF5FFFDFFF5FFFDFFF5FFFD0000'].pack("H*"), -5, 0)
+    return Ilecallx.call(P_ConnectW, ileArguments, ['FFFBFFF5FFFDFFF5FFFDFFF5FFFD0000'].pack("H*"), -5, 0)
   end
-  def attrs= (hattrs)
+  def attrs= hattrs
     hattrs.each { |k,v|
       lis = SQLAttrVals[:VALATTR_DECO][k]
       if lis != nil then
@@ -347,7 +347,7 @@ class Connect
     ileArguments[  68, 12] = ['0'.rjust(152,'0')].pack("H*")  # padding
     ileArguments[  80, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
-    rc = Ilecallx.call(P_GetConnectAttrW, ileArguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
+    Ilecallx.call(P_GetConnectAttrW, ileArguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
     len = sizeint[0, 4].unpack("l")[0]  # remove null
     return buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
     return buffer[0, len].force_encoding('UTF-16BE').encode('utf-8')  if kind == SQLWCHAR
@@ -369,7 +369,7 @@ class Connect
     ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
     ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")   # padding
     ileArguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
-    rc = Ilecallx.call(P_SetConnectAttrW, ileArguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
+    return Ilecallx.call(P_SetConnectAttrW, ileArguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
   end
 
 end
@@ -391,7 +391,7 @@ class Stmt
   def handle
     @hstmt[0,4]
   end
-  def attrs= (hattrs)
+  def attrs= hattrs
     hattrs.each { |k,v|
       lis = SQLAttrVals[:VALATTR_DECO][k]
       if lis != nil then
@@ -480,7 +480,7 @@ class Stmt
     ileArguments[  68, 12] = ['0'.rjust(152,'0')].pack("H*")  # padding
     ileArguments[  80, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
-    rc = Ilecallx.call(P_GetStmtAttrW, ileArguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
+    Ilecallx.call(P_GetStmtAttrW, ileArguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
     len = sizeint[0, 4].unpack("l")[0]
     return buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
     return buffer[0, len].force_encoding('UTF-16BE').encode('utf-8')  if kind == SQLWCHAR
@@ -502,6 +502,6 @@ class Stmt
     ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
     ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")   # padding
     ileArguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
-    rc = Ilecallx.call(P_SetStmtAttrW, ileArguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
+    return Ilecallx.call(P_SetStmtAttrW, ileArguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
   end
 end
