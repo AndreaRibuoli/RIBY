@@ -56,7 +56,7 @@ module RibyCli
     ileArguments[ 40,  8] = ['0'.rjust(16,'0')].pack("H*")
     ileArguments[ 48, 16] = [handle.to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[ 64, 80] = ['0'.rjust(160,'0')].pack("H*")  # padding
-    rc = Ilecallx.call(P_AllocHandle, ileArguments, ['FFFDFFFBFFF50000'].pack("H*"), -5, 0)
+    Ilecallx.call(P_AllocHandle, ileArguments, ['FFFDFFFBFFF50000'].pack("H*"), -5, 0)
   end
   def SQLFreeHandle(htype, handle)
     ileArguments = ILEarglist.malloc
@@ -65,7 +65,7 @@ module RibyCli
     ileArguments[ 34,   2] = ['0000'].pack("H*")
     ileArguments[ 36,   4] = handle
     ileArguments[ 40, 104] = ['0'.rjust(208,'0')].pack("H*")
-    rc = Ilecallx.call(P_FreeHandle, ileArguments, ['FFFDFFFB0000'].pack("H*"), -5, 0)
+    Ilecallx.call(P_FreeHandle, ileArguments, ['FFFDFFFB0000'].pack("H*"), -5, 0)
     rc = ileArguments[ 0, 4].unpack('l')[0]
   end
 end
@@ -87,7 +87,7 @@ class Env
   def handle
     @henv[0,4]
   end
-  def attrs= (hattrs)
+  def attrs= hattrs
     hattrs.each { |k,v|
       next if (k == :SQL_ATTR_INCLUDE_NULL_IN_LEN)
       lis = SQLAttrVals[:VALATTR_DECO][k]
