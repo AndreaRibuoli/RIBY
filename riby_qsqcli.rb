@@ -357,10 +357,7 @@ class Connect
     ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
     ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")   # padding
     ileArguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
-    old_verbose = $VERBOSE
-    $VERBOSE = nil
     rc = Ilecallx.call(P_SetConnectAttrW, ileArguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
-    $VERBOSE = old_verbose
   end
 
 end
@@ -371,7 +368,10 @@ class Stmt
     @hstmt = SQLhandle.malloc
     @hdbc = hdbc
     rc = SQLAllocHandle(SQL_HANDLE_STMT, @hdbc.handle, @hstmt)
+    old_verbose = $VERBOSE
+    $VERBOSE = nil
     ObjectSpace.define_finalizer(self, proc { rc = SQLFreeHandle(SQL_HANDLE_STMT, @hstmt[0,4]); puts "Free Stmt (#{rc})" })
+    $VERBOSE = old_verbose
   end
   def handle
     @hstmt[0,4]
