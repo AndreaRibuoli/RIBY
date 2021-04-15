@@ -76,7 +76,7 @@ class Env
     @henv = SQLhandle.malloc
     rc = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, @henv)
     SQLSetEnvAttr(ATTRS[:SQL_ATTR_INCLUDE_NULL_IN_LEN], 0)
-    ObjectSpace.define_finalizer(self, proc { rc = SQLFreeHandle(SQL_HANDLE_ENV, @henv[0,4]); puts "Free rc = #{rc}" })
+    ObjectSpace.define_finalizer(self, proc { rc = SQLFreeHandle(SQL_HANDLE_ENV, @henv[0,4]); puts "Free Env (#{rc})" })
   end
   def handle
     @henv[0,4]
@@ -205,7 +205,7 @@ class Connect
     @henv = henv
     @dsn  = dsn
     rc = SQLAllocHandle(SQL_HANDLE_DBC, @henv.handle, @hdbc)
-    ObjectSpace.define_finalizer(self, proc { puts "finalizing Connect #{@hdbc[0,4].unpack('l')[0]}" })
+    ObjectSpace.define_finalizer(self, proc { rc = SQLFreeHandle(SQL_HANDLE_DBC, @hdbc[0,4]); puts "Free Connect (#{rc})" })
   end
   def handle
     @hdbc[0,4]
