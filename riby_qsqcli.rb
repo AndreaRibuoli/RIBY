@@ -81,6 +81,7 @@ class Env
     ObjectSpace.define_finalizer(self, proc { rc = SQLFreeHandle(SQL_HANDLE_ENV, @henv[0,4]); puts "Free Env (#{rc})" })
     $VERBOSE = old_verbose
     puts old_verbose
+    puts $-W
   end
   def handle
     @henv[0,4]
