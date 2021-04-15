@@ -78,10 +78,11 @@ class Env
     SQLSetEnvAttr(ATTRS[:SQL_ATTR_INCLUDE_NULL_IN_LEN], 0)
     old_verbose = $VERBOSE
     $VERBOSE = nil
-    ObjectSpace.define_finalizer(self, proc { rc = SQLFreeHandle(SQL_HANDLE_ENV, @henv[0,4]); puts "Free Env (#{rc})" })
+    ObjectSpace.define_finalizer(self, proc {
+                                              rc = SQLFreeHandle(SQL_HANDLE_ENV, @henv[0,4])
+                                              puts "Free Env (#{rc})" if $-W >= 2
+                                            })
     $VERBOSE = old_verbose
-    puts old_verbose
-    puts $-W
   end
   def handle
     @henv[0,4]
@@ -212,7 +213,10 @@ class Connect
     rc = SQLAllocHandle(SQL_HANDLE_DBC, @henv.handle, @hdbc)
     old_verbose = $VERBOSE
     $VERBOSE = nil
-    ObjectSpace.define_finalizer(self, proc { rc = SQLFreeHandle(SQL_HANDLE_DBC, @hdbc[0,4]); puts "Free Connect (#{rc})" })
+    ObjectSpace.define_finalizer(self, proc {
+                                              rc = SQLFreeHandle(SQL_HANDLE_DBC, @hdbc[0,4])
+                                              puts "Free Connect (#{rc})"  if $-W >= 2
+                                            })
     $VERBOSE = old_verbose
   end
   def handle
@@ -378,7 +382,10 @@ class Stmt
     rc = SQLAllocHandle(SQL_HANDLE_STMT, @hdbc.handle, @hstmt)
     old_verbose = $VERBOSE
     $VERBOSE = nil
-    ObjectSpace.define_finalizer(self, proc { rc = SQLFreeHandle(SQL_HANDLE_STMT, @hstmt[0,4]); puts "Free Stmt (#{rc})" })
+    ObjectSpace.define_finalizer(self, proc {
+                                              rc = SQLFreeHandle(SQL_HANDLE_STMT, @hstmt[0,4])
+                                              puts "Free Stmt (#{rc})"  if $-W >= 2
+                                            })
     $VERBOSE = old_verbose
   end
   def handle
