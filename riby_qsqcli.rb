@@ -65,7 +65,10 @@ class Env
     @henv = SQLhandle.malloc
     rc = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, @henv)
     SQLSetEnvAttr(ATTRS[:SQL_ATTR_INCLUDE_NULL_IN_LEN], 0)
-    ObjectSpace.define_finalizer(self, proc {|id| puts "Finalizer one on #{id}" })
+    ObjectSpace.define_finalizer(self, proc { self.class.finalize(@henv) })
+  end
+  def self.finalize(handle)
+    proc { puts "Env Finalizer on #{handle}" }
   end
   def handle
     @henv[0,4]
@@ -194,7 +197,10 @@ class Connect
     @henv = henv
     @dsn  = dsn
     rc = SQLAllocHandle(SQL_HANDLE_DBC, @henv.handle, @hdbc)
-    ObjectSpace.define_finalizer(self, proc {|id| puts "Finalizer two on #{id}" })
+    ObjectSpace.define_finalizer(self, proc { self.class.finalize(@hdbc) })
+  end
+  def self.finalize(handle)
+    proc { puts "Connect Finalizer on #{handle}" }
   end
   def handle
     @hdbc[0,4]
@@ -357,11 +363,11 @@ class Stmt
     @hstmt = SQLhandle.malloc
     @hdbc = hdbc
     rc = SQLAllocHandle(SQL_HANDLE_STMT, @hdbc.handle, @hstmt)
-    ObjectSpace.define_finalizer(self, proc {|id| puts "Finalizer three on #{id}" })
+    ObjectSpace.define_finalizer(self, proc { self.class.finalize(@hstmt) })
   end
-#  def self.finalize(name)
-#      proc { puts "Disalloca #{name}" }
-#    end
+  def self.finalize(handle)
+    proc { puts "Stmt Finalizer on #{handle}" }
+  end
   def handle
     @hstmt[0,4]
   end
