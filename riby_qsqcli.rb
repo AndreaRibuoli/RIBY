@@ -64,9 +64,8 @@ class Env
   def initialize
     @henv = SQLhandle.malloc
     rc = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, @henv)
-    pro = @henv[0,4]
     SQLSetEnvAttr(ATTRS[:SQL_ATTR_INCLUDE_NULL_IN_LEN], 0)
-    ObjectSpace.define_finalizer(self, self.class.finalize)
+    ObjectSpace.define_finalizer(self, proc { puts "finalizing Env #{@henv[0,4].unpack('l')[0]}" })
   end
   def self.finalize
     proc { |handle|
@@ -363,7 +362,7 @@ class Stmt
     @hstmt = SQLhandle.malloc
     @hdbc = hdbc
     rc = SQLAllocHandle(SQL_HANDLE_STMT, @hdbc.handle, @hstmt)
-    ObjectSpace.define_finalizer(self, proc { puts "finalizing Stmt #{hdbc}" })
+    ObjectSpace.define_finalizer(self, proc { puts "finalizing Stmt #{@hstmt[0,4].unpack('l')[0]}" })
   end
   def handle
     @hstmt[0,4]
