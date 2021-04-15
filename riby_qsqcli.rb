@@ -63,6 +63,7 @@ class Env
   include RibyCli
   def initialize
     @henv = SQLhandle.malloc
+    puts "Env #{henv}"
     rc = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, @henv)
     SQLSetEnvAttr(ATTRS[:SQL_ATTR_INCLUDE_NULL_IN_LEN], 0)
     ObjectSpace.define_finalizer(self, lambda {|handle| puts "Env Finalizer on #{handle}" })
