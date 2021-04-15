@@ -162,7 +162,6 @@ class Env
       len = sizeint[0, 4].unpack("l")[0]
       return buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
       return buffer[0, len].force_encoding('IBM037').encode('utf-8')  if kind == SQLCHAR
-      return buffer[0, len].force_encoding('UTF-16BE').encode('utf-8')  if kind == SQLWCHAR
     end
     def SQLSetEnvAttr(key, value, kind = SQLINTEGER)
       ileArguments = ILEarglist.malloc
@@ -172,13 +171,8 @@ class Env
         ileArguments[  48, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
       end
       if kind == SQLCHAR then
-        len = value.length + 1
+        len = value.length
         ileArguments[  48, 16] = [Fiddle::Pointer[value.encode('IBM037')].to_i.to_s(16).rjust(32,'0')].pack("H*")
-        ileArguments[  64,  4] = [len.to_s(16).rjust(8,'0')].pack("H*")
-      end
-      if kind == SQLWCHAR then
-        len = value.length * 2
-        ileArguments[  48, 16] = [Fiddle::Pointer[value.encode('UTF-16BE')].to_i.to_s(16).rjust(32,'0')].pack("H*")
         ileArguments[  64,  4] = [len.to_s(16).rjust(8,'0')].pack("H*")
       end
       ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
