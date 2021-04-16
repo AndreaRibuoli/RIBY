@@ -76,7 +76,7 @@ The following code does the trick in class **Env** (similar `initialize` methods
   end
 ```
 
-The `ObjectSpace#define_finalizer` method adds a procedure as a finalizer that will be called when the object instance is about to be destroyed. As soon as we are referencing the actual object instance being destroyed we are warned with many massages stating: 
+The `ObjectSpace#define_finalizer` method adds a procedure as a finalizer that will be called when the object instance is about to be destroyed. As soon as we are referring to the actual object instance being destroyed we are warned with many massages stating: 
 
 ```
 warning: finalizer references object to be finalized
