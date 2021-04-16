@@ -378,6 +378,7 @@ class Stmt
   include RibyCli
   def initialize(hdbc)
     @hstmt = SQLhandle.malloc
+    puts hdbc
     # @hdbc = hdbc
     rc = SQLAllocHandle(SQL_HANDLE_STMT, hdbc.handle, @hstmt)
     old_verbose = $VERBOSE
