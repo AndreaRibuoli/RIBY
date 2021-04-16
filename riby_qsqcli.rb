@@ -388,8 +388,7 @@ class Stmt
   end
   def self.finalizer_proc(h)
     proc {
-   #  rc = SQLFreeHandle(SQL_HANDLE_STMT, h)
-      rc = 0
+      rc = SQLFreeHandle(SQL_HANDLE_STMT, h)
       puts "Free Stmt (#{rc})"  if $-W >= 2
     }
   end
