@@ -215,7 +215,7 @@ class Connect
     old_verbose = $VERBOSE
     $VERBOSE = nil
     ObjectSpace.define_finalizer(self, proc {
-                                              rc = SQLFreeHandle(SQL_HANDLE_DBC, temp)
+                                              rc = RibyCli::SQLFreeHandle(RibyCli::SQL_HANDLE_DBC, temp)
                                               puts "Free Connect (#{rc})"  if $-W >= 2
                                             })
     $VERBOSE = old_verbose
