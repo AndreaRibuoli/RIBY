@@ -382,13 +382,13 @@ class Stmt
     temp = @hstmt[0,4]
     # @hdbc = hdbc
     rc = SQLAllocHandle(SQL_HANDLE_STMT, hdbc.handle, @hstmt)
-    old_verbose = $VERBOSE
-    $VERBOSE = nil
+   # old_verbose = $VERBOSE
+   # $VERBOSE = nil
     ObjectSpace.define_finalizer(self, proc {
                                               rc = SQLFreeHandle(SQL_HANDLE_STMT, temp)
                                               puts "Free Stmt (#{rc})"  if $-W >= 2
                                             })
-    $VERBOSE = old_verbose
+   # $VERBOSE = old_verbose
   end
   def handle
     @hstmt[0,4]
