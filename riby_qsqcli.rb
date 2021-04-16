@@ -390,7 +390,7 @@ class Stmt
     proc {
   #    rc = RibyCli::SQLFreeHandle(3, h)
       rc = 0
-      puts "Free Stmt #{h} (#{rc})"  if $-W >= 2
+      puts "Free Stmt #{h.unpack('l')} (#{rc})"  if $-W >= 2
     }
   end
   def handle
