@@ -206,16 +206,16 @@ class Env
 end
 
 class Connect
-  #include RibyCli
+  include RibyCli
   def initialize(henv, dsn)
-    @hdbc = RibyCli::SQLhandle.malloc
+    @hdbc = SQLhandle.malloc
     temp = @hdbc[0,4]
     @dsn  = dsn
-    rc = RibyCli::SQLAllocHandle(RibyCli::SQL_HANDLE_DBC, henv, @hdbc)
+    rc = SQLAllocHandle(SQL_HANDLE_DBC, henv, @hdbc)
     old_verbose = $VERBOSE
     $VERBOSE = nil
     ObjectSpace.define_finalizer(self, proc {
-                                              rc = RibyCli::SQLFreeHandle(RibyCli::SQL_HANDLE_DBC, temp)
+                                              rc = SQLFreeHandle(SQL_HANDLE_DBC, temp)
                                               puts "Free Connect (#{rc})"  if $-W >= 2
                                             })
     $VERBOSE = old_verbose
@@ -382,13 +382,13 @@ class Stmt
     temp = @hstmt[0,4]
     # @hdbc = hdbc
     rc = SQLAllocHandle(SQL_HANDLE_STMT, hdbc.handle, @hstmt)
-   # old_verbose = $VERBOSE
-   # $VERBOSE = nil
+    old_verbose = $VERBOSE
+    $VERBOSE = nil
     ObjectSpace.define_finalizer(self, proc {
                                               rc = SQLFreeHandle(SQL_HANDLE_STMT, temp)
                                               puts "Free Stmt (#{rc})"  if $-W >= 2
                                             })
-   # $VERBOSE = old_verbose
+    $VERBOSE = old_verbose
   end
   def handle
     @hstmt[0,4]
