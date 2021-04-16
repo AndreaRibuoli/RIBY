@@ -348,10 +348,30 @@ Free Env 1 (0)
 
 This has been a long chapter... but there is still something to consider it completed!
 In a previous one we introduce `SQLGetInfoW` and now we will integrate that support in our `Connect` class in order 
-to collect the **SQL\_CONNECTION\_JOB\_NAME**. 
+to collect the **SQL\_CONNECTION\_JOB\_NAME** (we introduce `Connect#jobname`). 
 
-If everything is working as expected the 1+10=11 Connect class instances we are creating in our Ruby script will be using 
-(i.e. reusing) a much smaller number of QSQSERV jobs (possibly only three).
+We then discover that an `SQLFreeHandle` for a Connect does not release the **QSQSRVR** job in order for it to be reused.
+This behaviour requires the following implementation inside the **Connect** class:
+
+``` ruby
+  def initialize(henv, dsn)
+    @hdbc = SQLhandle.malloc
+    @dsn  = dsn
+    rc = SQLAllocHandle(SQL_HANDLE_DBC, henv.handle, @hdbc)
+    temp = @hdbc[0,4]
+    puts " Alloc Connect #{temp.unpack('l')[0]} (#{rc})" if $-W >= 2
+    ObjectSpace.define_finalizer(self, Connect.finalizer_proc(temp))
+  end
+  def self.finalizer_proc(h)
+    proc {
+      rc = RibyCli::SQLDisconnect(h)
+      puts " Disconnect #{h.unpack('l')[0]} (#{rc})"  if $-W >= 2
+      rc = RibyCli::SQLFreeHandle(SQL_HANDLE_DBC, h)
+      puts " Free Connect #{h.unpack('l')[0]} (#{rc})"  if $-W >= 2
+    }
+  end
+```
+
 
 
 
