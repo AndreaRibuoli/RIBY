@@ -55,7 +55,7 @@ Let's go!
 ----
 ### 31. to let Ruby free handles
 
-In our study of object oriented development in Ruby we would like to ignore the burden of caring for all the `SQLFreeHandle` operations required. We would like to move this task to Ruby garbage collector (GC).
+In our study of object oriented development in Ruby we would like to ignore caring for all the `SQLFreeHandle` operations usually required. We would like to move this task to Ruby garbage collector (GC).
 
 How can we require Ruby GC to trigger a method before de-allocating an object?
 
@@ -99,7 +99,7 @@ Being aware, we will avoid the warnings with a common trick:
   end
 ```
 
-We will also provide a message reporting the return code of the `SQLFreeHandle` operation, but only when the user activate 
+We will also provide a message reporting the return code of the `SQLFreeHandle` operation, but only when the user activates 
 a warning level greater or equal 2.
 
 The following script:
