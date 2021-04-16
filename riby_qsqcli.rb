@@ -81,9 +81,8 @@ class Env
   end
   def self.finalizer_proc(h)
     proc {
- #  rc = SQLFreeHandle(SQL_HANDLE_ENV, h)
-      rc = 0
-      puts "Free Env (#{rc})" if $-W >= 2
+      rc = RibyCli::SQLFreeHandle(SQL_HANDLE_ENV, h)
+      puts "Free Env #{h.unpack('l')[0]} (#{rc})" if $-W >= 2
     }
   end
   def handle
@@ -217,9 +216,8 @@ class Connect
   end
   def self.finalizer_proc(h)
     proc {
-   #  rc = SQLFreeHandle(SQL_HANDLE_DBC, h)
-      rc = 0
-      puts "Free Connect (#{rc})"  if $-W >= 2
+      rc = RibyCli::SQLFreeHandle(SQL_HANDLE_DBC, h)
+      puts "Free Connect #{h.unpack('l')[0]} (#{rc})"  if $-W >= 2
     }
   end
   def handle
@@ -389,7 +387,7 @@ class Stmt
   def self.finalizer_proc(h)
     proc {
       rc = RibyCli::SQLFreeHandle(SQL_HANDLE_STMT, h)
-      puts "Free Stmt #{h.unpack('l')} (#{rc})"  if $-W >= 2
+      puts "Free Stmt #{h.unpack('l')[0]} (#{rc})"  if $-W >= 2
     }
   end
   def handle
