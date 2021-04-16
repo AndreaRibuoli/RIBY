@@ -98,7 +98,7 @@ class Env
         lis = SQLAttrVals[:VALATTR_ORED][k]
         if lis != nil then
           tmp = 0
-          v.each {|k1|   # v should be an Array
+          v.each {|k1|
             tmp |= lis[k1]
           }
           SQLSetEnvAttr(ATTRS[k], tmp)
@@ -251,7 +251,7 @@ class Connect
         lis = SQLAttrVals[:VALATTR_ORED][k]
         if lis != nil then
           tmp = 0
-          v.each {|k1|   # v should be an Array
+          v.each {|k1|
             tmp |= lis[k1]
           }
           SQLSetConnectAttrW(ATTRS[k], tmp)
@@ -402,7 +402,7 @@ class Stmt
         lis = SQLAttrVals[:VALATTR_ORED][k]
         if lis != nil then
           tmp = 0
-          v.each {|k1|   # v should be an Array
+          v.each {|k1|  
             tmp |= lis[k1]
           }
           SQLSetStmtAttrW(ATTRS[k], tmp)
