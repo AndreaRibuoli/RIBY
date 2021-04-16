@@ -76,8 +76,7 @@ module RibyCli
     ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
     ileArguments[  32,   4] = handle                          # hdbc
     ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
-    rc = Ilecallx.call(P_Disconnect, ileArguments, ['FFFB000000000000'].pack("H*"), -5, 0)
-    return rc
+    rc = Ilecallx.call(P_Disconnect, ileArguments, ['FFFB0000'].pack("H*"), -5, 0)
   end
 end
 
@@ -230,8 +229,8 @@ class Connect
   end
   def self.finalizer_proc(h)
     proc {
-      rc = RibyCli::SQLDisconnect(h)
-      puts " Disconnect #{h.unpack('l')[0]} (#{rc})"  if $-W >= 2
+    #  rc = RibyCli::SQLDisconnect(h)
+    #  puts " Disconnect #{h.unpack('l')[0]} (#{rc})"  if $-W >= 2
       rc = RibyCli::SQLFreeHandle(SQL_HANDLE_DBC, h)
       puts " Free Connect #{h.unpack('l')[0]} (#{rc})"  if $-W >= 2
     }
