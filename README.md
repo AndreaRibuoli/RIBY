@@ -156,7 +156,8 @@ Free Connect (0)
 Free Env (0)
 ```
 
- 
+Unfortunately our design requires much more work if we would like to have the garbage collector (**GC**) able to free the resources not needed *while* executing. 
+In order to test this aspect we will use **`GC.stress = true`** statement: it will force a run of the GC every time Ruby allocates a new object. We need a brand new chapter!  
 
 ----
 ### 30. to set attributes
