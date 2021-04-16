@@ -83,9 +83,11 @@ class Env
  #   $VERBOSE = old_verbose
   end
   def self.finalizer_proc(h)
+    proc {
  #  rc = SQLFreeHandle(SQL_HANDLE_ENV, h)
-    rc = 0
-    puts "Free Env (#{rc})" if $-W >= 2
+      rc = 0
+      puts "Free Env (#{rc})" if $-W >= 2
+    }
   end
   def handle
     @henv[0,4]
