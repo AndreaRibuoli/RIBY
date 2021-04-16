@@ -48,7 +48,7 @@ module RibyCli
   P_GetStmtAttrW     = ILEpointer.malloc; RC_GetStmtAttrW    = Ilesymx.call(P_GetStmtAttrW,   Qsqcli, 'SQLGetStmtAttrW')
   P_SetStmtAttrW     = ILEpointer.malloc; RC_SetStmtAttrW    = Ilesymx.call(P_SetStmtAttrW,   Qsqcli, 'SQLSetStmtAttrW')
   P_ConnectW         = ILEpointer.malloc; RC_ConnectW        = Ilesymx.call(P_ConnectW,       Qsqcli, 'SQLConnectW')
-  P_Disconnect       = ILEpointer.malloc; RC_Disconnect      = Ilesymx.call(P_Disconnect,     Qsqcli, 'SQLDisonnect')
+  P_Disconnect       = ILEpointer.malloc; RC_Disconnect      = Ilesymx.call(P_Disconnect,     Qsqcli, 'SQLDisconnect')
   P_GetInfoW         = ILEpointer.malloc; RC_GetInfoW        = Ilesymx.call(P_GetInfoW,       Qsqcli, 'SQLGetInfoW')
   def SQLAllocHandle(htype, ihandle, handle)
     ileArguments = ILEarglist.malloc
@@ -413,13 +413,13 @@ class Connect
     len = ('0000' + size[ 0, 2].unpack("H*")[0]).to_i(16)
     return buffer[ 0, len].force_encoding('UTF-16BE').encode('utf-8') if kind == SQLWCHAR
   end
-  def SQLDisconnect()
+  def SQLDisconnect
     ileArguments = ILEarglist.malloc
     ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
     ileArguments[  32,   4] = handle                          # hdbc
     ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
     puts P_Disconnect
-#   rc = Ilecallx.call(P_Disconnect, ileArguments, ['FFFB0000'].pack("H*"), -5, 0)
+    rc = Ilecallx.call(P_Disconnect, ileArguments, ['FFFB0000'].pack("H*"), -5, 0)
   end
 end
 
