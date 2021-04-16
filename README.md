@@ -156,12 +156,154 @@ Free Connect (0)
 Free Env (0)
 ```
 
-Unfortunately our design requires much more work if we would like to have the garbage collector (**GC**) able to free the resources not needed *while* executing. The warning message we were silencing was actually telling us that the GC cannot
-automatically free our class instances because we created a self-reference. 
-There is [a enjoyable presentation](https://www.youtube.com/watch?v=qXo3fqjY50o) by Colin Fulton on the exact subject.
+Unfortunately our design requires much more work if we would like to have the garbage collector (**GC**) able to free the resources not needed *while* executing. 
+
+The warning message we were silencing was actually telling us that the GC cannot automatically free our class instances because we created a self-reference. There is [a enjoyable presentation](https://www.youtube.com/watch?v=qXo3fqjY50o) by Colin Fulton that explains where our initial error was located.
+This is the revised version:
+
+``` ruby
+  def initialize
+    @henv = SQLhandle.malloc
+    rc = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, @henv)
+    temp = @henv[0,4]
+    SQLSetEnvAttr(ATTRS[:SQL_ATTR_INCLUDE_NULL_IN_LEN], 0)
+    ObjectSpace.define_finalizer(self, Env.finalizer_proc(temp))
+  end
+  def self.finalizer_proc(h)
+    proc {
+      rc = RibyCli::SQLFreeHandle(SQL_HANDLE_ENV, h)
+      puts "Free Env #{h.unpack('l')[0]} (#{rc})" if $-W >= 2
+    }
+  end
+```
+
+Note that we had to define SQLFreeHandle as self.SQLFreeHandle (i.e. as a module(/class) method) end 
+
 In order to test GC activity we will use **`GC.stress = true`** statement: it will force a run of the GC every time Ruby allocates a new object. 
 
-We need a brand new chapter!  
+``` ruby
+#! /QOpenSys/pkgs/bin/ruby
+require_relative 'riby_qsqcli'
+require 'pp'
+
+raise "Usage: #{__FILE__} <user> <password>" if ARGV.length != 2
+
+h = Env.new
+puts "Env #{h.handle.unpack('l')[0]}"
+h.attrs=({:SQL_ATTR_SERVER_MODE => :SQL_TRUE})
+d1 = Connect.new(h, '*LOCAL')
+puts " Connect #{d1.handle.unpack('l')[0]}"
+d1.Empower(ARGV[0],ARGV[1])
+s1 = Stmt.new(d1)
+puts "  Stmt #{s1.handle.unpack('l')[0]}"
+s2 = Stmt.new(d1)
+puts "  Stmt #{s2.handle.unpack('l')[0]}"
+GC.stress = true
+20.times {
+  di = Connect.new(h, '*LOCAL')
+  puts " Connect #{di.handle.unpack('l')[0]}"
+  di.Empower(ARGV[0],ARGV[1])
+  si = Stmt.new(di)
+  puts "  Stmt #{si.handle.unpack('l')[0]}"
+}
+s3 = Stmt.new(d1)
+puts "  Stmt #{s3.handle.unpack('l')[0]}"
+```
+
+With the required changes we are now able to have all the `SQLFreeHandle`s executed by the finalizers:
+
+```
+Env 1
+ Connect 2
+  Stmt 3
+  Stmt 4
+ Connect 5
+  Stmt 6
+Free Connect 5 (0)
+Free Stmt 6 (0)
+ Connect 7
+  Stmt 8
+Free Connect 7 (0)
+Free Stmt 8 (0)
+ Connect 9
+  Stmt 10
+Free Connect 9 (0)
+Free Stmt 10 (0)
+ Connect 11
+  Stmt 12
+Free Connect 11 (0)
+Free Stmt 12 (0)
+ Connect 13
+  Stmt 14
+Free Connect 13 (0)
+Free Stmt 14 (0)
+ Connect 15
+  Stmt 16
+Free Connect 15 (0)
+Free Stmt 16 (0)
+ Connect 17
+  Stmt 18
+Free Connect 17 (0)
+Free Stmt 18 (0)
+ Connect 19
+  Stmt 20
+Free Connect 19 (0)
+Free Stmt 20 (0)
+ Connect 21
+  Stmt 22
+Free Connect 21 (0)
+Free Stmt 22 (0)
+ Connect 23
+  Stmt 24
+Free Connect 23 (0)
+Free Stmt 24 (0)
+ Connect 25
+  Stmt 26
+Free Connect 25 (0)
+Free Stmt 26 (0)
+ Connect 27
+  Stmt 28
+Free Connect 27 (0)
+Free Stmt 28 (0)
+ Connect 29
+  Stmt 30
+Free Connect 29 (0)
+Free Stmt 30 (0)
+ Connect 31
+  Stmt 32
+Free Connect 31 (0)
+Free Stmt 32 (0)
+ Connect 33
+  Stmt 34
+Free Connect 33 (0)
+Free Stmt 34 (0)
+ Connect 35
+  Stmt 36
+Free Connect 35 (0)
+Free Stmt 36 (0)
+ Connect 37
+  Stmt 38
+Free Connect 37 (0)
+Free Stmt 38 (0)
+ Connect 39
+  Stmt 40
+Free Connect 39 (0)
+Free Stmt 40 (0)
+ Connect 41
+  Stmt 42
+Free Connect 41 (0)
+Free Stmt 42 (0)
+ Connect 43
+  Stmt 44
+Free Connect 43 (0)
+Free Stmt 44 (0)
+  Stmt 45
+Free Stmt 45 (0)
+Free Stmt 4 (0)
+Free Stmt 3 (0)
+Free Connect 2 (0)
+Free Env 1 (0)
+```
 
 ----
 ### 30. to set attributes
