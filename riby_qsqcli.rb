@@ -77,7 +77,7 @@ module RibyCli
     ileArguments[  32,   4] = handle                          # hdbc
     ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
     rc = Ilecallx.call(P_Disconnect, ileArguments, ['FFFB000000000000'].pack("H*"), -5, 0)
-    return ileArguments[ 0, 4].unpack('l')[0]
+    return rc
   end
 end
 
