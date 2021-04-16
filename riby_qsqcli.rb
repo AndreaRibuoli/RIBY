@@ -77,10 +77,7 @@ class Env
     rc = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, @henv)
     temp = @henv[0,4]
     SQLSetEnvAttr(ATTRS[:SQL_ATTR_INCLUDE_NULL_IN_LEN], 0)
- #   old_verbose = $VERBOSE
- #   $VERBOSE = nil
     ObjectSpace.define_finalizer(self, Env.finalizer_proc(temp))
- #   $VERBOSE = old_verbose
   end
   def self.finalizer_proc(h)
     proc {
@@ -216,13 +213,14 @@ class Connect
     @dsn  = dsn
     rc = SQLAllocHandle(SQL_HANDLE_DBC, henv.handle, @hdbc)
     temp = @hdbc[0,4]
-    old_verbose = $VERBOSE
-    $VERBOSE = nil
-    ObjectSpace.define_finalizer(self, proc {
-                                              rc = SQLFreeHandle(SQL_HANDLE_DBC, temp)
-                                              puts "Free Connect (#{rc})"  if $-W >= 2
-                                            })
-    $VERBOSE = old_verbose
+    ObjectSpace.define_finalizer(self, Connect.finalizer_proc(temp))
+  end
+  def self.finalizer_proc(h)
+    proc {
+   #  rc = SQLFreeHandle(SQL_HANDLE_DBC, h)
+      rc = 0
+      puts "Free Connect (#{rc})"  if $-W >= 2
+    }
   end
   def handle
     @hdbc[0,4]
