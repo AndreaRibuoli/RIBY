@@ -4,6 +4,7 @@ require 'pp'
 
 raise "Usage: #{__FILE__} <user> <password>" if ARGV.length != 2
 
+GC.stress = true
 15.times {
   h = Env.new
   h.attrs=({:SQL_ATTR_SERVER_MODE => :SQL_TRUE})
