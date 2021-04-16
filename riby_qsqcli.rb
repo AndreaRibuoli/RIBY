@@ -318,7 +318,7 @@ class Connect
     SQLGetInfoW(INFO[:SQL_CONNECTION_JOB_NAME], SQLWCHAR)
   end
   def disconnect
-    SQLDisconnect
+    SQLDisconnect()
   end
   private
   ATTRS = {
@@ -413,7 +413,7 @@ class Connect
     len = ('0000' + size[ 0, 2].unpack("H*")[0]).to_i(16)
     return buffer[ 0, len].force_encoding('UTF-16BE').encode('utf-8') if kind == SQLWCHAR
   end
-  def SQLDisconnect
+  def SQLDisconnect()
     puts P_Disconnect
     ileArguments = ILEarglist.malloc
     ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
