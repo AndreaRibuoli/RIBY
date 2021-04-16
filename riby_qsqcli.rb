@@ -386,6 +386,7 @@ class Connect
   def SQLGetInfoW(key, kind = SQLINTEGER)
     size   = SQLretsize.malloc
     buffer = INFObuffer.malloc
+    ileArguments = ILEarglist.malloc
     ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
     ileArguments[  32,  4] = handle                          # hdbc
     ileArguments[  36,  2] = key.pack("H*")                  #
