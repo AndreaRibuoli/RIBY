@@ -12,7 +12,7 @@ s1 = Stmt.new(d1)
 puts s1.handle.unpack('l')
 s2 = Stmt.new(d1)
 puts s2.handle.unpack('l')
-5.times {
+500.times {
   di = Connect.new(h, '*LOCAL')
   di.Empower(ARGV[0],ARGV[1])
   si = Stmt.new(di)
