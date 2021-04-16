@@ -389,7 +389,7 @@ class Connect
     ileArguments = ILEarglist.malloc
     ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
     ileArguments[  32,  4] = handle                          # hdbc
-    ileArguments[  36,  2] = [key.to_s(16).rjust(8,'0')].pack("H*")    #
+    ileArguments[  36,  2] = [key.to_s(16).rjust(4,'0')].pack("H*")    #
     ileArguments[  38, 10] = ['0'.rjust(20,'0')].pack("H*")  # padding
     ileArguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[  64,  2] = ['1000'].pack("H*")             # 4096
