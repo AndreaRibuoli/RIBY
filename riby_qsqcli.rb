@@ -229,8 +229,8 @@ class Connect
   end
   def self.finalizer_proc(h)
     proc {
-    #  rc = RibyCli::SQLDisconnect(h)
-    #  puts " Disconnect #{h.unpack('l')[0]} (#{rc})"  if $-W >= 2
+      rc = RibyCli::SQLDisconnect(h)
+      puts " Disconnect #{h.unpack('l')[0]} (#{rc})"  if $-W >= 2
       rc = RibyCli::SQLFreeHandle(SQL_HANDLE_DBC, h)
       puts " Free Connect #{h.unpack('l')[0]} (#{rc})"  if $-W >= 2
     }
