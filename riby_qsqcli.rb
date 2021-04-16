@@ -206,7 +206,7 @@ class Env
 end
 
 class Connect
-  include RibyCli
+  #include RibyCli
   def initialize(henv, dsn)
     @hdbc = SQLhandle.malloc
     temp = @hdbc[0,4]
