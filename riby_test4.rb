@@ -8,12 +8,12 @@ h = Env.new
 h.attrs=({:SQL_ATTR_SERVER_MODE => :SQL_TRUE})
 d1 = Connect.new(h, '*LOCAL')
 d1.Empower(ARGV[0],ARGV[1])
-s1 = Stmt.new(d1)
-s2 = Stmt.new(d1)
+Stmt.new(d1)
+Stmt.new(d1)
 GC.stress = true
 20.times {
   di = Connect.new(h, '*LOCAL')
   di.Empower(ARGV[0],ARGV[1])
-  si = Stmt.new(di)
+  Stmt.new(di)
 }
-s3 = Stmt.new(d1)
+Stmt.new(d1)
