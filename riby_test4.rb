@@ -10,14 +10,14 @@ d1 = Connect.new(h, '*LOCAL')
 d1.Empower(ARGV[0],ARGV[1])
 s1 = Stmt.new(d1)
 puts s1.handle.unpack('l')
+s2 = Stmt.new(d1)
+puts s2.handle.unpack('l')
 5.times {
-  d2 = Connect.new(h, '*LOCAL')
-  d2.Empower(ARGV[0],ARGV[1])
-  s2 = Stmt.new(d2)
-  puts s2.handle.unpack('l')
+  di = Connect.new(h, '*LOCAL')
+  di.Empower(ARGV[0],ARGV[1])
+  si = Stmt.new(di)
+  puts si.handle.unpack('l')
+  GC.start
 }
-GC.start
 s3 = Stmt.new(d1)
 puts s3.handle.unpack('l')
-s4 = Stmt.new(d1)
-puts s4.handle.unpack('l')
