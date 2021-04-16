@@ -388,8 +388,7 @@ class Stmt
   end
   def self.finalizer_proc(h)
     proc {
-      rc = RibyCli::SQLFreeHandle(3, h)
-      rc = 0
+      rc = RibyCli::SQLFreeHandle(SQL_HANDLE_STMT, h)
       puts "Free Stmt #{h.unpack('l')} (#{rc})"  if $-W >= 2
     }
   end
