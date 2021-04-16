@@ -265,6 +265,87 @@ Alloc Env 1 (0)
 Free Env 1 (0)
 ```
 
+Assigning a Stmt object to a variable keeps it allocated. 
+
+``` ruby
+#! /QOpenSys/pkgs/bin/ruby
+require_relative 'riby_qsqcli'
+require 'pp'
+
+raise "Usage: #{__FILE__} <user> <password>" if ARGV.length != 2
+
+h = Env.new
+h.attrs=({:SQL_ATTR_SERVER_MODE => :SQL_TRUE})
+d1 = Connect.new(h, '*LOCAL')
+d1.Empower(ARGV[0],ARGV[1])
+s1 =Stmt.new(d1)
+s2 =Stmt.new(d1)
+GC.stress = true
+10.times {
+  di = Connect.new(h, '*LOCAL')
+  di.Empower(ARGV[0],ARGV[1])
+  Stmt.new(di)
+}
+s3 =Stmt.new(d1)
+puts "Statements #{s1.handle.unpack('l')[0]}, #{s2.handle.unpack('l')[0]} and #{s3.handle.unpack('l')[0]} are still allocated"
+```
+
+The garbage collector will behave differently:
+
+```
+Alloc Env 1 (0)
+ Alloc Connect 2 (0)
+  Alloc Stmt 3 (0)
+  Alloc Stmt 4 (0)
+ Alloc Connect 5 (0)
+  Alloc Stmt 6 (0)
+  Free Stmt 6 (0)
+ Free Connect 5 (0)
+ Alloc Connect 7 (0)
+  Alloc Stmt 8 (0)
+  Free Stmt 8 (0)
+ Alloc Connect 9 (0)
+ Free Connect 7 (0)
+  Alloc Stmt 10 (0)
+  Free Stmt 10 (0)
+ Alloc Connect 11 (0)
+ Free Connect 9 (0)
+  Alloc Stmt 12 (0)
+  Free Stmt 12 (0)
+ Alloc Connect 13 (0)
+ Free Connect 11 (0)
+  Alloc Stmt 14 (0)
+  Free Stmt 14 (0)
+ Alloc Connect 15 (0)
+ Free Connect 13 (0)
+  Alloc Stmt 16 (0)
+  Free Stmt 16 (0)
+ Alloc Connect 17 (0)
+ Free Connect 15 (0)
+  Alloc Stmt 18 (0)
+  Free Stmt 18 (0)
+ Alloc Connect 19 (0)
+ Free Connect 17 (0)
+  Alloc Stmt 20 (0)
+  Free Stmt 20 (0)
+ Alloc Connect 21 (0)
+ Free Connect 19 (0)
+  Alloc Stmt 22 (0)
+  Free Stmt 22 (0)
+ Alloc Connect 23 (0)
+ Free Connect 21 (0)
+  Alloc Stmt 24 (0)
+ Free Connect 23 (0)
+  Free Stmt 24 (0)
+  Alloc Stmt 25 (0)
+Statements 3, 4 and 25 are still allocated
+  Free Stmt 25 (0)
+  Free Stmt 4 (0)
+  Free Stmt 3 (0)
+ Free Connect 2 (0)
+Free Env 1 (0)
+```
+
 ----
 ### 30. to set attributes
 
