@@ -210,7 +210,7 @@ class Connect
     @hdbc = SQLhandle.malloc
     # @henv = henv
     @dsn  = dsn
-    rc = SQLAllocHandle(SQL_HANDLE_DBC, henv.handle, @hdbc)
+    rc = SQLAllocHandle(SQL_HANDLE_DBC, henv, @hdbc)
     old_verbose = $VERBOSE
     $VERBOSE = nil
     ObjectSpace.define_finalizer(self, proc {
@@ -378,7 +378,6 @@ class Stmt
   include RibyCli
   def initialize(hdbc)
     @hstmt = SQLhandle.malloc
-    puts hdbc
     # @hdbc = hdbc
     rc = SQLAllocHandle(SQL_HANDLE_STMT, hdbc.handle, @hstmt)
     old_verbose = $VERBOSE
