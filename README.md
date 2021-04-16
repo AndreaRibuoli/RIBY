@@ -158,7 +158,7 @@ Free Env (0)
 
 Unfortunately our design requires much more work if we would like to have the garbage collector (**GC**) able to free the resources not needed *while* executing. 
 
-The warning message we were silencing was actually telling us that the GC cannot automatically free our class instances because we created a self-reference. There is [a enjoyable presentation](https://www.youtube.com/watch?v=qXo3fqjY50o) by Colin Fulton that explains where our initial error was located.
+The warning message we were silencing was actually telling us that the GC cannot automatically free our class instances because we created a self-reference. There is [an enjoyable presentation](https://www.youtube.com/watch?v=qXo3fqjY50o) by Colin Fulton that explains where our initial error was located.
 This is the revised version:
 
 ``` ruby
