@@ -71,6 +71,14 @@ module RibyCli
     Ilecallx.call(P_FreeHandle, ileArguments, ['FFFDFFFB0000'].pack("H*"), -5, 0)
     return ileArguments[ 0, 4].unpack('l')[0]
   end
+  def self.SQLDisconnect(handle)
+    ileArguments = ILEarglist.malloc
+    ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[  32,   4] = handle                          # hdbc
+    ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
+    rc = Ilecallx.call(P_Disconnect, ileArguments, ['FFFB0000'].pack("H*"), -5, 0)
+    return ileArguments[ 0, 4].unpack('l')[0]
+  end
 end
 
 class Env
@@ -222,6 +230,8 @@ class Connect
   end
   def self.finalizer_proc(h)
     proc {
+      rc = RibyCli::SQLDisconnect(h)
+      puts " Disconnect #{h.unpack('l')[0]} (#{rc})"  if $-W >= 2
       rc = RibyCli::SQLFreeHandle(SQL_HANDLE_DBC, h)
       puts " Free Connect #{h.unpack('l')[0]} (#{rc})"  if $-W >= 2
     }
@@ -400,14 +410,6 @@ class Connect
     rc = Ilecallx.call(P_GetInfoW, ileArguments, ['FFFBFFFDFFF5FFFDFFF50000'].pack("H*"), -5, 0)
     len = ('0000' + size[ 0, 2].unpack("H*")[0]).to_i(16)
     return buffer[ 0, len].force_encoding('UTF-16BE').encode('utf-8') if kind == SQLWCHAR
-  end
-  def SQLDisconnect
-    ileArguments = ILEarglist.malloc
-    ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
-    ileArguments[  32,   4] = handle                          # hdbc
-    ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
-    rc = Ilecallx.call(P_Disconnect, ileArguments, ['FFFB0000'].pack("H*"), -5, 0)
-    return ileArguments[ 0, 4].unpack('l')[0]
   end
 end
 
