@@ -76,8 +76,10 @@ class Env
     @henv = SQLhandle.malloc
     rc = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, @henv)
     temp = @henv[0,4]
+    puts "Alloc Env #{temp.unpack('l')[0]} (#{rc})" if $-W >= 2
     SQLSetEnvAttr(ATTRS[:SQL_ATTR_INCLUDE_NULL_IN_LEN], 0)
     ObjectSpace.define_finalizer(self, Env.finalizer_proc(temp))
+    return rc
   end
   def self.finalizer_proc(h)
     proc {
@@ -212,12 +214,13 @@ class Connect
     @dsn  = dsn
     rc = SQLAllocHandle(SQL_HANDLE_DBC, henv.handle, @hdbc)
     temp = @hdbc[0,4]
+    puts " Alloc Connect #{temp.unpack('l')[0]} (#{rc})" if $-W >= 2
     ObjectSpace.define_finalizer(self, Connect.finalizer_proc(temp))
   end
   def self.finalizer_proc(h)
     proc {
       rc = RibyCli::SQLFreeHandle(SQL_HANDLE_DBC, h)
-      puts "Free Connect #{h.unpack('l')[0]} (#{rc})"  if $-W >= 2
+      puts " Free Connect #{h.unpack('l')[0]} (#{rc})"  if $-W >= 2
     }
   end
   def handle
@@ -382,12 +385,13 @@ class Stmt
     # @hdbc = hdbc
     rc = SQLAllocHandle(SQL_HANDLE_STMT, hdbc.handle, @hstmt)
     temp = @hstmt[0,4]
+    puts "  Alloc Stmt #{temp.unpack('l')[0]} (#{rc})" if $-W >= 2
     ObjectSpace.define_finalizer(self, Stmt.finalizer_proc(temp))
   end
   def self.finalizer_proc(h)
     proc {
       rc = RibyCli::SQLFreeHandle(SQL_HANDLE_STMT, h)
-      puts "Free Stmt #{h.unpack('l')[0]} (#{rc})"  if $-W >= 2
+      puts "  Free Stmt #{h.unpack('l')[0]} (#{rc})"  if $-W >= 2
     }
   end
   def handle
