@@ -177,7 +177,12 @@ This is the revised version:
   end
 ```
 
-Note that we had to define SQLFreeHandle as self.SQLFreeHandle (i.e. as a module(/class) method) end 
+Note that we had to:
+
+* define SQLFreeHandle as self.SQLFreeHandle (i.e. as a module/class method) and 
+* call it from the `proc` using its qualified name `RibyCli::SQLFreeHandle`
+
+Omitting any of these steps compromizes the goal.
 
 In order to test GC activity we will use **`GC.stress = true`** statement: it will force a run of the GC every time Ruby allocates a new object. 
 
