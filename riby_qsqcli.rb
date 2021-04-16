@@ -210,7 +210,7 @@ class Connect
   def initialize(henv, dsn)
     @hdbc = SQLhandle.malloc
     @dsn  = dsn
-    rc = SQLAllocHandle(SQL_HANDLE_DBC, henv, @hdbc)
+    rc = SQLAllocHandle(SQL_HANDLE_DBC, henv.handle, @hdbc)
     temp = @hdbc[0,4]
     old_verbose = $VERBOSE
     $VERBOSE = nil
