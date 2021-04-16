@@ -77,13 +77,15 @@ class Env
     rc = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, @henv)
     temp = @henv[0,4]
     SQLSetEnvAttr(ATTRS[:SQL_ATTR_INCLUDE_NULL_IN_LEN], 0)
-    old_verbose = $VERBOSE
-    $VERBOSE = nil
-    ObjectSpace.define_finalizer(self, proc {
-                                              rc = SQLFreeHandle(SQL_HANDLE_ENV, temp)
-                                              puts "Free Env (#{rc})" if $-W >= 2
-                                            })
-    $VERBOSE = old_verbose
+ #   old_verbose = $VERBOSE
+ #   $VERBOSE = nil
+    ObjectSpace.define_finalizer(self, Env.finalizer_proc(temp))
+ #   $VERBOSE = old_verbose
+  end
+  def self.finalizer_proc(h)
+ #  rc = SQLFreeHandle(SQL_HANDLE_ENV, h)
+    rc = 0
+    puts "Free Env (#{rc})" if $-W >= 2
   end
   def handle
     @henv[0,4]
