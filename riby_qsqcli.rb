@@ -410,6 +410,15 @@ class Connect
     len = ('0000' + size[ 0, 2].unpack("H*")[0]).to_i(16)
     return buffer[ 0, len].force_encoding('UTF-16BE').encode('utf-8') if kind == SQLWCHAR
   end
+  def SQLDisconnect
+    puts P_Disconnect
+    ileArguments = ILEarglist.malloc
+    ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[  32,   4] = handle                          # hdbc
+    ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
+    rc = Ilecallx.call(P_Disconnect, ileArguments, ['FFFB0000'].pack("H*"), -5, 0)
+    puts rc 
+  end
 end
 
 class Stmt
