@@ -372,7 +372,52 @@ This behaviour requires the following implementation inside the **Connect** clas
   end
 ```
 
+So, in order to implement real reuse of **QSQSRVR** jobs, the finalizer requires `SQLDisconnect` (as we did):
 
+```
+Alloc Env 1 (0)
+ Alloc Connect 2 (0)
+  Alloc Stmt 3 (0)
+  Alloc Stmt 4 (0)
+ Alloc Connect 5 (0)
+  Alloc Stmt 6 (0)
+  Free Stmt 6 (0)
+Connect 5: 357949/QUSER/QSQSRVR
+ Disconnect 5 (0)
+ Free Connect 5 (0)
+ Alloc Connect 5 (0)
+  Alloc Stmt 6 (0)
+  Free Stmt 6 (0)
+Connect 5: 357949/QUSER/QSQSRVR
+ Disconnect 5 (0)
+ Free Connect 5 (0)
+ Alloc Connect 5 (0)
+  Alloc Stmt 6 (0)
+  Free Stmt 6 (0)
+Connect 5: 357949/QUSER/QSQSRVR
+ Disconnect 5 (0)
+ Free Connect 5 (0)
+ Alloc Connect 5 (0)
+  Alloc Stmt 6 (0)
+  Free Stmt 6 (0)
+Connect 5: 357949/QUSER/QSQSRVR
+ Disconnect 5 (0)
+ Free Connect 5 (0)
+ Alloc Connect 5 (0)
+  Alloc Stmt 6 (0)
+  Free Stmt 6 (0)
+Connect 5: 357949/QUSER/QSQSRVR
+ Disconnect 5 (0)
+ Free Connect 5 (0)
+  Alloc Stmt 5 (0)
+Statements 3, 4 and 5 are still allocated
+  Free Stmt 5 (0)
+  Free Stmt 4 (0)
+  Free Stmt 3 (0)
+ Disconnect 2 (0)
+ Free Connect 2 (0)
+Free Env 1 (0)
+```
 
 
 ----
