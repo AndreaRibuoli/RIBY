@@ -211,7 +211,7 @@ class Connect
     @hdbc = RibyCli::SQLhandle.malloc
     temp = @hdbc[0,4]
     @dsn  = dsn
-    rc = RibyCli::SQLAllocHandle(SQL_HANDLE_DBC, henv, @hdbc)
+    rc = RibyCli::SQLAllocHandle(RibyCli::SQL_HANDLE_DBC, henv, @hdbc)
     old_verbose = $VERBOSE
     $VERBOSE = nil
     ObjectSpace.define_finalizer(self, proc {
