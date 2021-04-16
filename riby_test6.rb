@@ -12,7 +12,7 @@ s1 =Stmt.new(d1)
 s2 =Stmt.new(d1)
 puts "DB Connect #{d1.handle.unpack('l')[0]}: #{d1.jobname}"
 GC.stress = true
-10.times {
+50.times {
   di = Connect.new(h, '*LOCAL')
   di.Empower(ARGV[0],ARGV[1])
   Stmt.new(di)
