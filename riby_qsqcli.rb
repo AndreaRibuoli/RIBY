@@ -317,6 +317,9 @@ class Connect
   def jobname
     SQLGetInfoW(INFO[:SQL_CONNECTION_JOB_NAME], SQLWCHAR)
   end
+  def disconnect
+    SQLDisconnect
+  end
   private
   ATTRS = {
     SQL_ATTR_TXN_ISOLATION: 0,
