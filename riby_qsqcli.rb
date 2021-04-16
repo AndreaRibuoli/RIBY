@@ -24,6 +24,7 @@ module RibyCli
   ILEarglist  = struct [ 'char c[144]' ]
   INFObuffer  = struct [ 'char i[4096]' ]
   SQLintsize  = struct [ 'char s[4]' ]
+  SQLretsize  = struct [ 'char s[2]' ]
   Preload     = Fiddle.dlopen(nil)
   Ileloadx    = Fiddle::Function.new(
                   Preload['_ILELOADX'],
@@ -47,6 +48,7 @@ module RibyCli
   P_GetStmtAttrW     = ILEpointer.malloc; RC_GetStmtAttrW    = Ilesymx.call(P_GetStmtAttrW,   Qsqcli, 'SQLGetStmtAttrW')
   P_SetStmtAttrW     = ILEpointer.malloc; RC_SetStmtAttrW    = Ilesymx.call(P_SetStmtAttrW,   Qsqcli, 'SQLSetStmtAttrW')
   P_ConnectW         = ILEpointer.malloc; RC_ConnectW        = Ilesymx.call(P_ConnectW,       Qsqcli, 'SQLConnectW')
+  P_GetInfoW         = ILEpointer.malloc; RC_GetInfoW        = Ilesymx.call(P_GetInfoW,       Qsqcli, 'SQLGetInfoW')
   def SQLAllocHandle(htype, ihandle, handle)
     ileArguments = ILEarglist.malloc
     ileArguments[  0, 32] = ['0'.rjust(64,'0')].pack("H*")
@@ -302,6 +304,9 @@ class Connect
     }
     attrs_setting
   end
+  def jobname
+    SQLGetInfoW(INFO[:SQL_CONNECTION_JOB_NAME], SQLWCHAR)
+  end
   private
   ATTRS = {
     SQL_ATTR_TXN_ISOLATION: 0,
@@ -337,6 +342,9 @@ class Connect
     SQL_ATTR_INFO_ACCTSTR: 10106,
     SQL_ATTR_INFO_PROGRAMID: 10107,
     SQL_ATTR_DECFLOAT_ROUNDING_MODE: 10112
+  }
+  INFO = {
+    SQL_CONNECTION_JOB_NAME: 202
   }
   def SQLGetConnectAttrW(key, kind = SQLINTEGER)
     buffer  = INFObuffer.malloc
@@ -375,7 +383,22 @@ class Connect
     ileArguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
     return Ilecallx.call(P_SetConnectAttrW, ileArguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
   end
-
+  def SQLGetInfoW(key, kind = SQLINTEGER)
+    size   = SQLretsize.malloc
+    buffer = INFObuffer.malloc
+    ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[  32,  4] = handle                          # hdbc
+    ileArguments[  36,  2] = key.pack("H*")                  #
+    ileArguments[  38, 10] = ['0'.rjust(20,'0')].pack("H*")  # padding
+    ileArguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    ileArguments[  64,  2] = ['1000'].pack("H*")             # 4096
+    ileArguments[  66, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
+    ileArguments[  80, 16] = [size.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")
+    rc = Ilecallx.call(P_GetInfoW, ileArguments, ['FFFBFFFDFFF5FFFDFFF50000'].pack("H*"), -5, 0)
+    len = ('0000' + size[ 0, 2].unpack("H*")[0]).to_i(16)
+    return buffer[ 0, len].force_encoding('UTF-16BE').encode('utf-8') if kind == SQLWCHAR
+  end
 end
 
 class Stmt

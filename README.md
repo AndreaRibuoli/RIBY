@@ -346,6 +346,15 @@ Statements 3, 4 and 25 are still allocated
 Free Env 1 (0)
 ```
 
+This has been a long chapter... but there is still something to consider it completed!
+In a previous one we introduce `SQLGetInfoW` and now we will integrate that support in our `Connect` class in order 
+to collect the **SQL\_CONNECTION\_JOB\_NAME**. 
+
+If everything is working as expected the 1+10=11 Connect class instances we are creating in our Ruby script will be using 
+(i.e. reusing) a much smaller number of QSQSERV jobs (possibly only three).
+
+
+
 ----
 ### 30. to set attributes
 
