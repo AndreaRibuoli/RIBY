@@ -290,12 +290,13 @@ Statements 3, 4 and 25 are still allocated
 Free Env 1 (0)
 ```
 
-This has been a long chapter... but there is still something to consider it completed!
-In a previous one we introduce `SQLGetInfoW` and now we will integrate that support in our `Connect` class in order 
-to collect the **SQL\_CONNECTION\_JOB\_NAME** (we introduce `Connect#jobname`). 
+This has been a long chapter... but there is still something to manage if we would like to consider it completed!
+In a previous one we introduced `SQLGetInfoW` and now we will integrate that support in our `Connect` class in order 
+to collect the **SQL\_CONNECTION\_JOB\_NAME** value (the method introduced is named `Connect#jobname`). 
 
-We then discover that an `SQLFreeHandle` for a Connect does not release the **QSQSRVR** job in order for it to be reused.
-This behaviour requires the following implementation inside the **Connect** class:
+Adding this support we discover that an `SQLFreeHandle` for a Connect does not release the **QSQSRVR** jobs.
+In order for those jobs to be reused an `SQLDisconnect` is required.
+The following implementation inside the **Connect** class introduces the API observing the previous notes to prevent self\-referencing:
 
 ``` ruby
   def initialize(henv, dsn)
@@ -316,7 +317,7 @@ This behaviour requires the following implementation inside the **Connect** clas
   end
 ```
 
-So, in order to implement real reuse of **QSQSRVR** jobs, the finalizer requires `SQLDisconnect` (as we did).
+So, in order to implement real reuse of **QSQSRVR** jobs we need an `SQLDisconnect`.
 
 The following script:
 
@@ -391,7 +392,7 @@ Statements 3, 4 and 5 are still allocated
 Free Env 1 (0)
 ```
 
-Once we remove the testing trick (`GC.stress = true`) the effectiveness in reuse of **QSQSRVR** jobs is statistically relevant:
+Once we remove the testing trick (`GC.stress = true`) the effectiveness in reuse of **QSQSRVR** jobs is statistically relevant (less that 20 jobs execute the 100 requests):
 
 ``` ruby
 #! /QOpenSys/pkgs/bin/ruby
@@ -511,7 +512,7 @@ $ riby_test7.rb andrea password | sort
 331849/QUSER/QSQSRVR : Connect 0000000e
 ```
 
-Now let us suppose the sequence of user actions includes an explicit `Connect#disconnect` so that we close DB connection synchronously but let the Connect handle waiting to be garbage collected:
+Now let us suppose the sequence of user actions includes an explicit `Connect#disconnect` so that we close DB connection synchronously (letting Connect `SQLFreeHandle` occur during garbage collection):
 
 ``` ruby
 h = Env.new
@@ -630,7 +631,6 @@ $ riby_test8.rb andrea password | sort
 344071/QUSER/QSQSRVR : Connect 00000010
 344071/QUSER/QSQSRVR : Connect 00000010
 ```
-
 
 ----
 ### 30. to set attributes
