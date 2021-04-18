@@ -52,8 +52,19 @@ Let's go!
 30. [to set attributes](#30-to-set-attributes)
 31. [to let Ruby free handles](#31-to-let-ruby-free-handles)
 
+<!---
+32. [to lto customize subsystem](#31-to-customize-subsystem)
+
+----
+### 32. to customize subsystem
+
+There is [an IBM i Support document](https://www.ibm.com/support/pages/qsqsrvr-subsystem-customization) explaining how
+to set an application specific subsystem for the -otherwise **QSYSWRK**'s- SQL CLI connection jobs (only when server mode is active).
+--->
+
 ----
 ### 31. to let Ruby free handles
+
 
 In our study of object oriented development in Ruby we would like to ignore caring for all the `SQLFreeHandle` operations usually required. We would like to move this task to Ruby garbage collector (GC).
 
