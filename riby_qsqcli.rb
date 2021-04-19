@@ -39,21 +39,6 @@ module RibyCli
                   Preload['_ILECALLX'],
                   [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_SHORT, Fiddle::TYPE_INT],
                   Fiddle::TYPE_INT )
-=begin
- SQLApiList = [
-                                'SQLAllocHandle',
-                                'SQLFreeHandle',
-                                'SQLDisconnect',
-                                'SQLGetEnvAttr',
-                                'SQLSetEnvAttr',
-                                'SQLGetConnectAttrW',
-                                'SQLSetConnectAttrW',
-                                'SQLGetStmtAttrW',
-                                'SQLSetStmtAttrW',
-                                'SQLConnectW',
-                                'SQLGetInfoW'
-                               ]
-=end
   SQLApiList = {
                 'SQLAllocHandle'      => ['FFFDFFFBFFF50000'].pack("H*"),
                 'SQLFreeHandle'       => ['FFFDFFFB0000'].pack("H*"),
