@@ -11,6 +11,6 @@ h.attrs=({:SQL_ATTR_SERVER_MODE => :SQL_TRUE})
   di = Connect.new(h, '*LOCAL')
   di.Empower(ARGV[0],ARGV[1])
   Stmt.new(di)
-  puts "#{di.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} #{di.jobname}"
+  puts "#{di.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Connect: #{di.jobname}"
   di.disconnect
 }                                                                      
