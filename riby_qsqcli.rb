@@ -224,7 +224,8 @@ class Connect
   include RibyCli
   def initialize(henv, dsn)
     @hdbc = SQLhandle.malloc
-    @henv = henv
+    @hstmts = {}
+    # @henv = henv
     @dsn  = dsn
     rc = SQLAllocHandle(SQL_HANDLE_DBC, henv.handle, @hdbc)
     temp = @hdbc[0,4]
@@ -238,6 +239,12 @@ class Connect
       rc = RibyCli::SQLFreeHandle(SQL_HANDLE_DBC, h)
       puts " Free Connect #{h.unpack('l')[0]} (#{rc})"  if $-W >= 2
     }
+  end
+  def add(stmt)
+    @hstmts[stmt.handle] = stmt
+  end
+  def delete(handle)
+    @hstmts.delete(handle)
   end
   def handle
     @hdbc[0,4]
@@ -434,16 +441,18 @@ class Stmt
   include RibyCli
   def initialize(hdbc)
     @hstmt = SQLhandle.malloc
-    @hdbc = hdbc
+    # @hdbc = hdbc
     rc = SQLAllocHandle(SQL_HANDLE_STMT, hdbc.handle, @hstmt)
+    hdbc.add(self)
     temp = @hstmt[0,4]
     puts "  Alloc Stmt #{temp.unpack('l')[0]} (#{rc})" if $-W >= 2
-    ObjectSpace.define_finalizer(self, Stmt.finalizer_proc(temp))
+    ObjectSpace.define_finalizer(self, Stmt.finalizer_proc(temp,hdbc))
   end
-  def self.finalizer_proc(h)
+  def self.finalizer_proc(h,hdbc)
     proc {
       rc = RibyCli::SQLFreeHandle(SQL_HANDLE_STMT, h)
       puts "  Free Stmt #{h.unpack('l')[0]} (#{rc})"  if $-W >= 2
+      hdbc.delete(h)
     }
   end
   def handle
