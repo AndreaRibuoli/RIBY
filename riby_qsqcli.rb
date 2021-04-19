@@ -39,11 +39,13 @@ module RibyCli
                   Preload['_ILECALLX'],
                   [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_SHORT, Fiddle::TYPE_INT],
                   Fiddle::TYPE_INT )
+  SQLApiList = ['SQLAllocHandle', 'SQLFreeHandle']
+  SQLApis = {}
+  SQLApiList.each { |key| SQLApis[key] = ILEpointer.malloc }
   Qsqcli = Ileloadx.call('QSYS/QSQCLI', 1)
-  SQLApis = {'SQLAllocHandle' => ILEpointer.malloc}
   SQLApis.each {|key, val| Ilesymx.call(val, Qsqcli, key) }
   
-  P_FreeHandle       = ILEpointer.malloc; Ilesymx.call(P_FreeHandle,     Qsqcli, 'SQLFreeHandle')
+        
   P_GetEnvAttr       = ILEpointer.malloc; Ilesymx.call(P_GetEnvAttr,     Qsqcli, 'SQLGetEnvAttr')
   P_SetEnvAttr       = ILEpointer.malloc; Ilesymx.call(P_SetEnvAttr,     Qsqcli, 'SQLSetEnvAttr')
   P_GetConnectAttrW  = ILEpointer.malloc; Ilesymx.call(P_GetConnectAttrW,Qsqcli, 'SQLGetConnectAttrW')
@@ -73,7 +75,7 @@ module RibyCli
     ileArguments[ 34,   2] = ['0000'].pack("H*")
     ileArguments[ 36,   4] = handle
     ileArguments[ 40, 104] = ['0'.rjust(208,'0')].pack("H*")
-    Ilecallx.call(P_FreeHandle, ileArguments, ['FFFDFFFB0000'].pack("H*"), -5, 0)
+    Ilecallx.call(SQLApis['SQLFreeHandle'], ileArguments, ['FFFDFFFB0000'].pack("H*"), -5, 0)
     return ileArguments[ 0, 4].unpack('l')[0]
   end
   def self.SQLDisconnect(handle)
