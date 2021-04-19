@@ -338,7 +338,7 @@ class Connect
     SQLGetInfoW(INFO[:SQL_CONNECTION_JOB_NAME], SQLWCHAR)
   end
   def disconnect
-    puts " Disconnect #{handle.unpack('l')[0]} ##SYNCHRONOUS DISCONNECT IGNORED##"  if $-W >= 2
+    puts "#{handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} ## SYNCHRONOUS SQLDisconnect IGNORED!!! ##"  if $-W >= 2
     # SQLDisconnect()
   end
   private
