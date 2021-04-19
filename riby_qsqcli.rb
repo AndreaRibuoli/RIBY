@@ -39,18 +39,6 @@ module RibyCli
                   [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_SHORT, Fiddle::TYPE_INT],
                   Fiddle::TYPE_INT )
   Qsqcli = Ileloadx.call('QSYS/QSQCLI', 1)
-P_AllocHandle      = ILEpointer.malloc; RC_AllocHandle     = Ilesymx.call(P_AllocHandle,    Qsqcli, 'SQLAllocHandle')
-P_FreeHandle       = ILEpointer.malloc; RC_FreeHandle      = Ilesymx.call(P_FreeHandle,     Qsqcli, 'SQLFreeHandle')
-P_GetEnvAttr       = ILEpointer.malloc; RC_GetEnvAttr      = Ilesymx.call(P_GetEnvAttr,     Qsqcli, 'SQLGetEnvAttr')
-P_SetEnvAttr       = ILEpointer.malloc; RC_SetEnvAttr      = Ilesymx.call(P_SetEnvAttr,     Qsqcli, 'SQLSetEnvAttr')
-P_GetConnectAttrW  = ILEpointer.malloc; RC_GetConnectAttrW = Ilesymx.call(P_GetConnectAttrW,Qsqcli, 'SQLGetConnectAttrW')
-P_SetConnectAttrW  = ILEpointer.malloc; RC_SetConnectAttrW = Ilesymx.call(P_SetConnectAttrW,Qsqcli, 'SQLSetConnectAttrW')
-P_GetStmtAttrW     = ILEpointer.malloc; RC_GetStmtAttrW    = Ilesymx.call(P_GetStmtAttrW,   Qsqcli, 'SQLGetStmtAttrW')
-P_SetStmtAttrW     = ILEpointer.malloc; RC_SetStmtAttrW    = Ilesymx.call(P_SetStmtAttrW,   Qsqcli, 'SQLSetStmtAttrW')
-P_ConnectW         = ILEpointer.malloc; RC_ConnectW        = Ilesymx.call(P_ConnectW,       Qsqcli, 'SQLConnectW')
-P_Disconnect       = ILEpointer.malloc; RC_Disconnect      = Ilesymx.call(P_Disconnect,     Qsqcli, 'SQLDisconnect')
-P_GetInfoW         = ILEpointer.malloc; RC_GetInfoW        = Ilesymx.call(P_GetInfoW,       Qsqcli, 'SQLGetInfoW')
-=begin
   P_AllocHandle      = ILEpointer.malloc; Ilesymx.call(P_AllocHandle,    Qsqcli, 'SQLAllocHandle')
   P_FreeHandle       = ILEpointer.malloc; Ilesymx.call(P_FreeHandle,     Qsqcli, 'SQLFreeHandle')
   P_GetEnvAttr       = ILEpointer.malloc; Ilesymx.call(P_GetEnvAttr,     Qsqcli, 'SQLGetEnvAttr')
@@ -62,7 +50,6 @@ P_GetInfoW         = ILEpointer.malloc; RC_GetInfoW        = Ilesymx.call(P_GetI
   P_ConnectW         = ILEpointer.malloc; Ilesymx.call(P_ConnectW,       Qsqcli, 'SQLConnectW')
   P_Disconnect       = ILEpointer.malloc; Ilesymx.call(P_Disconnect,     Qsqcli, 'SQLDisconnect')
   P_GetInfoW         = ILEpointer.malloc; Ilesymx.call(P_GetInfoW,       Qsqcli, 'SQLGetInfoW')
-=end
 
   def SQLAllocHandle(htype, ihandle, handle)
     ileArguments = ILEarglist.malloc
@@ -432,6 +419,7 @@ class Connect
     ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
     ileArguments[  32,   4] = handle                          # hdbc
     ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
+    puts " Disconnect #{h.unpack('l')[0]} (#{rc}) SYNCHRONOUS"  if $-W >= 2
     rc = Ilecallx.call(P_Disconnect, ileArguments, ['FFFB0000'].pack("H*"), -5, 0)
   end
 end
