@@ -7,7 +7,7 @@ raise "Usage: #{__FILE__} <user> <password>" if ARGV.length != 2
 # GC.stress = true
 h = Env.new
 h.attrs=({:SQL_ATTR_SERVER_MODE => :SQL_TRUE,
-         :SQL_ATTR_SERVERMODE_SUBSYSTEM => "RIBY_SBS"
+         :SQL_ATTR_SERVERMODE_SUBSYSTEM => "RIBY_SBSD"
          })
 100.times {
   di = Connect.new(h, '*LOCAL')
