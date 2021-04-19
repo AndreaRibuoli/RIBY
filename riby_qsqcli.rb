@@ -39,18 +39,83 @@ module RibyCli
                   Preload['_ILECALLX'],
                   [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_SHORT, Fiddle::TYPE_INT],
                   Fiddle::TYPE_INT )
-  SQLApiList = {
-                'SQLAllocHandle'      => [ -3,  -5, -11,                      0].pack("n*"),
-                'SQLFreeHandle'       => [ -3,  -5,                           0].pack("n*"),
-                'SQLGetEnvAttr'       => [ -5,  -5, -11,  -5, -11,            0].pack("n*"),
-                'SQLGetConnectAttrW'  => [ -5,  -5, -11,  -5, -11,            0].pack("n*"),
-                'SQLSetConnectAttrW'  => [ -5,  -5, -11,  -5, -11,            0].pack("n*"),
-                'SQLSetEnvAttr'       => [ -5,  -5, -11,  -5,                 0].pack("n*"),
-                'SQLGetStmtAttrW'     => [ -5,  -5, -11,  -5,                 0].pack("n*"),
-                'SQLSetStmtAttrW'     => [ -5,  -5, -11,  -5,                 0].pack("n*"),
-                'SQLConnectW'         => [ -5, -11,  -3, -11,  -3, -11,  -3,  0].pack("n*"),
-                'SQLDisconnect'       => [ -5,                                0].pack("n*"),
-                'SQLGetInfoW'         => [ -5,  -3, -11,  -3, -11,            0].pack("n*")
+  SQLApiList = {            #----#----#----#----#----#----#----#----#----#----#----#----#----#----#
+  'SQLAllocHandle'       => [ - 3, - 5, -11,                                                     0].pack("n*"),
+  'SQLFreeHandle'        => [ - 3, - 5,                                                          0].pack("n*"),
+  'SQLGetEnvAttr'        => [ - 5, - 5, -11, - 5, -11,                                           0].pack("n*"),
+  'SQLGetConnectAttrW'   => [ - 5, - 5, -11, - 5, -11,                                           0].pack("n*"),
+  'SQLGetStmtAttrW'      => [ - 5, - 5, -11, - 5, -11,                                           0].pack("n*"),
+  'SQLSetEnvAttr'        => [ - 5, - 5, -11, - 5,                                                0].pack("n*"),
+  'SQLSetConnectAttrW'   => [ - 5, - 5, -11, - 5,                                                0].pack("n*"),
+  'SQLSetStmtAttrW'      => [ - 5, - 5, -11, - 5,                                                0].pack("n*"),
+  'SQLConnectW'          => [ - 5, -11, - 3, -11, - 3, -11, - 3,                                 0].pack("n*"),
+  'SQLDisconnect'        => [ - 5,                                                               0].pack("n*"),
+  'SQLGetInfoW'          => [ - 5, - 3, -11, - 3, -11,                                           0].pack("n*"),
+  'SQLBindCol'           => [ - 5, - 5, - 5, -11, - 5, -11,                                      0].pack("n*"),
+  'SQLBindFileToCol'     => [ - 5, - 3, -11, -11, -11, - 3, -11, -11,                            0].pack("n*"),
+  'SQLBindFileToParam'   => [ - 5, - 3, - 3, -11, -11, -11, - 3, -11,                            0].pack("n*"),
+  'SQLBindParam'         => [ - 5, - 3, - 3, - 3, - 5, - 3, -11, -11,                            0].pack("n*"),
+  'SQLBindParameter'     => [ - 5, - 5, - 5, - 5, - 5, - 5, - 5, -11, - 5, -11,                  0].pack("n*"),
+  'SQLCancel'            => [ - 5,                                                               0].pack("n*"),
+  'SQLCloseCursor'       => [ - 5,                                                               0].pack("n*"),
+  'SQLColumnsW'          => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3,                       0].pack("n*"),
+  'SQLColumnPrivilegesW' => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3,                       0].pack("n*"),
+  'SQLColAttributesW'    => [ - 5, - 3, - 3, -11, - 5, -11, -11,                                 0].pack("n*"),
+  'SQLColAttributeW'     => [ - 5, - 3, - 3, -11, - 3, -11, -11,                                 0].pack("n*"),
+  'SQLCopyDesc'          => [ - 5, - 5,                                                          0].pack("n*"),
+  'SQLDataSourcesW'      => [ - 5, - 3, -11, - 3, -11, -11, - 3, -11,                            0].pack("n*"),
+  'SQLDescribeColW'      => [ - 5, - 3, -11, - 3, -11, -11, -11, -11, -11,                       0].pack("n*"),
+  'SQLDescribeParam'     => [ - 5, - 3, -11, -11, -11, -11,                                      0].pack("n*"),
+  'SQLDriverConnectW'    => [ - 5, -11, -11, - 3, -11, - 3, -11, - 3,                            0].pack("n*"),
+  'SQLEndTran'           => [ - 3, - 5, - 3,                                                     0].pack("n*"),
+  'SQLErrorW'            => [ - 5, - 5, - 5, -11, -11, -11, - 3, -11,                            0].pack("n*"),
+  'SQLExecute'           => [ - 5,                                                               0].pack("n*"),
+  'SQLExecDirectW'       => [ - 5, -11, - 5,                                                     0].pack("n*"),
+  'SQLExtendedFetch'     => [ - 5, - 3, - 5, -11, -11,                                           0].pack("n*"),
+  'SQLFetch'             => [ - 5,                                                               0].pack("n*"),
+  'SQLFetchScroll'       => [ - 5, - 3, - 5,                                                     0].pack("n*"),
+  'SQLForeignKeysW'      => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3, -11, - 3, -11, - 3,   0].pack("n*"),
+  'SQLGetCol'            => [ - 5, - 3, - 3, -11, - 5, -11,                                      0].pack("n*"),
+  'SQLGetConnectOptionW' => [ - 5, - 3, -11,                                                     0].pack("n*"),
+  'SQLGetCursorNameW'    => [ - 5, -11, - 3, -11,                                                0].pack("n*"),
+  'SQLGetData'           => [ - 5, - 3, - 3, -11, - 5, -11,                                      0].pack("n*"),
+  'SQLGetDescFieldW'     => [ - 5, - 3, - 3, -11, - 5, -11,                                      0].pack("n*"),
+  'SQLGetDescRecW'       => [ - 5, - 3, -11, - 3, -11, -11, -11, -11, -11, -11, -11,             0].pack("n*"),
+  'SQLGetDiagFieldW'     => [ - 3, - 5, - 3, - 3, -11, - 3, -11,                                 0].pack("n*"),
+  'SQLGetDiagRecW'       => [ - 3, - 5, - 3, -11, -11, -11, - 3, -11,                            0].pack("n*"),
+  'SQLGetFunctions'      => [ - 5, - 3, -11,                                                     0].pack("n*"),
+  'SQLGetLength'         => [ - 5, - 5, - 5, -11, -11,                                           0].pack("n*"),
+  'SQLGetPositionW'      => [ - 5, - 3, - 5, - 5, -11, - 5, - 5, -11, -11,                       0].pack("n*"),
+  'SQLGetStmtOptionW'    => [ - 5, - 3, -11,                                                     0].pack("n*"),
+  'SQLGetSubStringW'     => [ - 5, - 5, - 5, - 5, - 5, - 5, -11, - 5, -11, -11,                  0].pack("n*"),
+  'SQLGetTypeInfoW'      => [ - 5, - 3,                                                          0].pack("n*"),
+  'SQLLanguages'         => [ - 5,                                                               0].pack("n*"),
+  'SQLMoreResults'       => [ - 5,                                                               0].pack("n*"),
+  'SQLNativeSQLW'        => [ - 5, -11, - 5, -11, - 5, -11,                                      0].pack("n*"),
+  'SQLNextResult'        => [ - 5, - 5,                                                          0].pack("n*"),
+  'SQLNumParams'         => [ - 5, -11,                                                          0].pack("n*"),
+  'SQLNumResultCols'     => [ - 5, -11,                                                          0].pack("n*"),
+  'SQLParamData'         => [ - 5, -11,                                                          0].pack("n*"),
+  'SQLParamOptions'      => [ - 5, - 5, -11,                                                     0].pack("n*"),
+  'SQLPrepareW'          => [ - 5, -11, - 5,                                                     0].pack("n*"),
+  'SQLPrimaryKeysW'      => [ - 5, -11, - 3, -11, - 3, -11, - 3,                                 0].pack("n*"),
+  'SQLProceduresW'       => [ - 5, -11, - 3, -11, - 3, -11, - 3,                                 0].pack("n*"),
+  'SQLProcedureColumnsW' => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3,                       0].pack("n*"),
+  'SQLPutData'           => [ - 5, -11, - 5,                                                     0].pack("n*"),
+  'SQLReleaseEnv'        => [ - 5,                                                               0].pack("n*"),
+  'SQLRowCount'          => [ - 5, -11,                                                          0].pack("n*"),
+  'SQLSetConnectOptionW' => [ - 5, - 3, -11,                                                     0].pack("n*"),
+  'SQLSetCursorNameW'    => [ - 5, -11, - 3,                                                     0].pack("n*"),
+  'SQLSetDescFieldW'     => [ - 5, - 3, - 3, -11, - 5,                                           0].pack("n*"),
+  'SQLSetDescRec'        => [ - 5, - 3, - 3, - 3, - 5, - 3, - 3, -11, -11, -11,                  0].pack("n*"),
+  'SQLSetParam'          => [ - 5, - 3, - 3, - 3, - 5, - 3, -11, -11,                            0].pack("n*"),
+  'SQLSetStmtOptionW'    => [ - 5, - 3, -11,                                                     0].pack("n*"),
+  'SQLSpecialColumnsW'   => [ - 5, - 3, -11, - 3, -11, - 3, -11, - 3, - 3, - 3,                  0].pack("n*"),
+  'SQLStartTran'         => [ - 3, - 5, - 5, - 5,                                                0].pack("n*"),
+  'SQLStatisticsW'       => [ - 5, -11, - 3, -11, - 3, -11, - 3, - 3, - 3,                       0].pack("n*"),
+  'SQLTablesW'           => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3,                       0].pack("n*"),
+  'SQLTablePrivilegesW'  => [ - 5, -11, - 3, -11, - 3, -11, - 3,                                 0].pack("n*"),
+  'SQLTransact'          => [ - 5, - 5, - 3,                                                     0].pack("n*")
                }
   SQLApis = {}
   SQLApiList.each { |key, val| SQLApis[key] = ILEpointer.malloc }
@@ -66,7 +131,7 @@ module RibyCli
     ileArguments[ 40,  8] = ['0'.rjust(16,'0')].pack("H*")
     ileArguments[ 48, 16] = [handle.to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[ 64, 80] = ['0'.rjust(160,'0')].pack("H*")  # padding
-    Ilecallx.call(SQLApis['SQLAllocHandle'], ileArguments, SQLApiList['SQLAllocHandle'], -5, 0)
+    Ilecallx.call(SQLApis['SQLAllocHandle'], ileArguments, SQLApiList['SQLAllocHandle'], - 5, 0)
     return ileArguments[ 0, 4].unpack('l')[0]
   end
   def self.SQLFreeHandle(htype, handle)
@@ -76,7 +141,7 @@ module RibyCli
     ileArguments[ 34,   2] = ['0000'].pack("H*")
     ileArguments[ 36,   4] = handle
     ileArguments[ 40, 104] = ['0'.rjust(208,'0')].pack("H*")
-    Ilecallx.call(SQLApis['SQLFreeHandle'], ileArguments, SQLApiList['SQLFreeHandle'], -5, 0)
+    Ilecallx.call(SQLApis['SQLFreeHandle'], ileArguments, SQLApiList['SQLFreeHandle'], - 5, 0)
     return ileArguments[ 0, 4].unpack('l')[0]
   end
   def self.SQLDisconnect(handle)
@@ -84,7 +149,7 @@ module RibyCli
     ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
     ileArguments[  32,   4] = handle                          # hdbc
     ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
-    Ilecallx.call(SQLApis['SQLDisconnect'], ileArguments, SQLApiList['SQLDisconnect'], -5, 0)
+    Ilecallx.call(SQLApis['SQLDisconnect'], ileArguments, SQLApiList['SQLDisconnect'], - 5, 0)
     return ileArguments[ 0, 4].unpack('l')[0]
   end
 end
@@ -205,7 +270,7 @@ class Env
       ileArguments[  68, 12] = ['0'.rjust(24,'0')].pack("H*")  # padding
       ileArguments[  80, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
       ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
-      Ilecallx.call(SQLApis['SQLGetEnvAttr'], ileArguments, SQLApiList['SQLGetEnvAttr'], -5, 0)
+      Ilecallx.call(SQLApis['SQLGetEnvAttr'], ileArguments, SQLApiList['SQLGetEnvAttr'], - 5, 0)
       len = sizeint[0, 4].unpack("l")[0]
       len -= 1 if (key == ATTRS[:SQL_ATTR_DEFAULT_LIB] && len>1)
       return buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
@@ -229,7 +294,7 @@ class Env
       ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
       ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")   # padding
       ileArguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
-      Ilecallx.call(SQLApis['SQLSetEnvAttr'], ileArguments, SQLApiList['SQLSetEnvAttr'], -5, 0)
+      Ilecallx.call(SQLApis['SQLSetEnvAttr'], ileArguments, SQLApiList['SQLSetEnvAttr'], - 5, 0)
     end
 end
 
@@ -281,7 +346,7 @@ class Connect
     ileArguments[ 112, 16] = [Fiddle::Pointer[passW].to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[ 128,  2] = ['FFFD'].pack("H*")             # SQL_NTS
     ileArguments[ 130, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
-    return Ilecallx.call(SQLApis['SQLConnectW'], ileArguments, SQLApiList['SQLConnectW'], -5, 0)
+    return Ilecallx.call(SQLApis['SQLConnectW'], ileArguments, SQLApiList['SQLConnectW'], - 5, 0)
   end
   def attrs= hattrs
     hattrs.each { |k,v|
@@ -407,7 +472,7 @@ class Connect
     ileArguments[  68, 12] = ['0'.rjust(152,'0')].pack("H*")  # padding
     ileArguments[  80, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
-    Ilecallx.call(SQLApis['SQLGetConnectAttrW'], ileArguments, SQLApiList['SQLGetConnectAttrW'], -5, 0)
+    Ilecallx.call(SQLApis['SQLGetConnectAttrW'], ileArguments, SQLApiList['SQLGetConnectAttrW'], - 5, 0)
     len = sizeint[0, 4].unpack("l")[0]  # remove null
     return buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
     return buffer[0, len].force_encoding('UTF-16BE').encode('utf-8')  if kind == SQLWCHAR
@@ -429,7 +494,7 @@ class Connect
     ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
     ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")   # padding
     ileArguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
-    return Ilecallx.call(SQLApis['SQLSetConnectAttrW'], ileArguments, SQLApiList['SQLSetConnectAttrW'], -5, 0)
+    return Ilecallx.call(SQLApis['SQLSetConnectAttrW'], ileArguments, SQLApiList['SQLSetConnectAttrW'], - 5, 0)
   end
   def SQLGetInfoW(key, kind = SQLINTEGER)
     size   = SQLretsize.malloc
@@ -444,7 +509,7 @@ class Connect
     ileArguments[  66, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
     ileArguments[  80, 16] = [size.to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")
-    Ilecallx.call(SQLApis['SQLGetInfoW'], ileArguments, SQLApiList['SQLGetInfoW'], -5, 0)
+    Ilecallx.call(SQLApis['SQLGetInfoW'], ileArguments, SQLApiList['SQLGetInfoW'], - 5, 0)
     len = ('0000' + size[ 0, 2].unpack("H*")[0]).to_i(16)
     return buffer[ 0, len].force_encoding('UTF-16BE').encode('utf-8') if kind == SQLWCHAR
   end
@@ -453,7 +518,7 @@ class Connect
     ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
     ileArguments[  32,   4] = handle                          # hdbc
     ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
-    Ilecallx.call(SQLApis['SQLDisconnect'], ileArguments, SQLApiList['SQLDisconnect'], -5, 0)
+    Ilecallx.call(SQLApis['SQLDisconnect'], ileArguments, SQLApiList['SQLDisconnect'], - 5, 0)
     rc = ileArguments[ 0, 4].unpack('l')[0]
     puts " Disconnect #{handle.unpack('l')[0]} (#{rc}) SYNCHRONOUS"  if $-W >= 2
     return rc 
@@ -575,7 +640,7 @@ class Stmt
     ileArguments[  68, 12] = ['0'.rjust(152,'0')].pack("H*")  # padding
     ileArguments[  80, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
-    Ilecallx.call(SQLApis['SQLGetStmtAttrW'], ileArguments, SQLApiList['SQLGetStmtAttrW'], -5, 0)
+    Ilecallx.call(SQLApis['SQLGetStmtAttrW'], ileArguments, SQLApiList['SQLGetStmtAttrW'], - 5, 0)
     len = sizeint[0, 4].unpack("l")[0]
     return buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
     return buffer[0, len].force_encoding('UTF-16BE').encode('utf-8')  if kind == SQLWCHAR
@@ -597,7 +662,7 @@ class Stmt
     ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
     ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")   # padding
     ileArguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
-    Ilecallx.call(SQLApis['SQLSetStmtAttrW'], ileArguments, SQLApiList['SQLSetStmtAttrW'], -5, 0)
+    Ilecallx.call(SQLApis['SQLSetStmtAttrW'], ileArguments, SQLApiList['SQLSetStmtAttrW'], - 5, 0)
     return ileArguments[ 0, 4].unpack('l')[0]
   end
 end
