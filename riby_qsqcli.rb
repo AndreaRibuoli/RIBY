@@ -454,13 +454,13 @@ class Stmt
     rc = SQLAllocHandle(SQL_HANDLE_STMT, hdbc.handle, @hstmt)
     temp = @hstmt[0,4]
     hdbc.add(temp)
-    puts "  Alloc Stmt #{temp.unpack('l')[0]} (#{rc})" if $-W >= 2
+    puts "#{temp.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Stmt (#{rc})" if $-W >= 2
     ObjectSpace.define_finalizer(self, Stmt.finalizer_proc(temp,hdbc))
   end
   def self.finalizer_proc(h,hdbc)
     proc {
       rc = RibyCli::SQLFreeHandle(SQL_HANDLE_STMT, h)
-      puts "  Free Stmt #{h.unpack('l')[0]} (#{rc})"  if $-W >= 2
+      puts "#{h.unpack('H*')} #{'%10.7f' % Time.now.to_f} Free Stmt (#{rc})"  if $-W >= 2
       hdbc.delete(h)
     }
   end
