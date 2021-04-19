@@ -201,7 +201,7 @@ class Env
       ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
       Ilecallx.call(P_GetEnvAttr, ileArguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
       len = sizeint[0, 4].unpack("l")[0]
-      len -= 1 if key == ATTRS[:SQL_ATTR_DEFAULT_LIB]
+      len -= 1 if (key == ATTRS[:SQL_ATTR_DEFAULT_LIB] && len>1)
       return buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
       return buffer[0, len].force_encoding('IBM037').encode('utf-8')  if kind == SQLCHAR
     end
