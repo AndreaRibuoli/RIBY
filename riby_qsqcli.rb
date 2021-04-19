@@ -237,15 +237,15 @@ class Connect
     rc = SQLAllocHandle(SQL_HANDLE_DBC, henv.handle, @hdbc)
     temp = @hdbc[0,4]
     henv.add(temp)
-    puts "#{temp.unpack('H*')} Alloc Connect (#{rc})" if $-W >= 2
+    puts "#{temp.unpack('H*')} #{Time.now} Alloc Connect (#{rc})" if $-W >= 2
     ObjectSpace.define_finalizer(self, Connect.finalizer_proc(temp,henv))
   end
   def self.finalizer_proc(h,henv)
     proc {
       rc = RibyCli::SQLDisconnect(h)
-      puts "#{h.unpack('H*')} Disconnect (#{rc})"  if $-W >= 2
+      puts "#{h.unpack('H*')} #{Time.now} Disconnect (#{rc})"  if $-W >= 2
       rc = RibyCli::SQLFreeHandle(SQL_HANDLE_DBC, h)
-      puts "#{h.unpack('H*')} Free Connect (#{rc})"  if $-W >= 2
+      puts "#{h.unpack('H*')} #{Time.now} Free Connect (#{rc})"  if $-W >= 2
       henv.delete(h)
     }
   end
