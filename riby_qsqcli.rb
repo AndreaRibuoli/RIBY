@@ -68,7 +68,7 @@ module RibyCli
                 'SQLGetInfoW'         => ['FFFBFFFDFFF5FFFDFFF50000'].pack("H*")
                }
   SQLApis = {}
-  SQLApiList.each { |key| SQLApis[key] = ILEpointer.malloc }
+  SQLApiList.each { |key, val| SQLApis[key] = ILEpointer.malloc }
   Qsqcli = Ileloadx.call('QSYS/QSQCLI', 1)
   SQLApis.each {|key, val| Ilesymx.call(val, Qsqcli, key) }
   
