@@ -376,14 +376,14 @@ class Connect
     SQL_ATTR_INFO_ACCTSTR:                     10106,
     SQL_ATTR_INFO_PROGRAMID:                   10107,
     SQL_ATTR_DECFLOAT_ROUNDING_MODE:           10112,
-    SQL_ATTR_OLD_MTADTA_BEHAVIOR:              10113, # bool
-    SQL_ATTR_NULL_REQUIRED:                    10114, # bool
+    SQL_ATTR_OLD_MTADTA_BEHAVIOR:              10113,
+    SQL_ATTR_NULL_REQUIRED:                    10114,
     SQL_ATTR_FREE_LOCATORS:                    10115, # complex
-    SQL_ATTR_EXTENDED_INDICATORS:              10116, # bool
-    SQL_ATTR_NULLT_ARRAY_RESULTS:              10117, # bool
-    SQL_ATTR_NULLT_OUTPUT_PARMS:               10118, # bool
+    SQL_ATTR_EXTENDED_INDICATORS:              10116,
+    SQL_ATTR_NULLT_ARRAY_RESULTS:              10117,
+    SQL_ATTR_NULLT_OUTPUT_PARMS:               10118,
     SQL_ATTR_TIMESTAMP_PREC:                   10119,
-    SQL_ATTR_SERVERMODE_SUBSYSTEM:             10204  # wchar
+    SQL_ATTR_SERVERMODE_SUBSYSTEM:             10204
   }
   INFO = {
     SQL_CONNECTION_JOB_NAME: 202
