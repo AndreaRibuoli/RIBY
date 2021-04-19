@@ -52,10 +52,12 @@ Let's go!
 30. [to set attributes](#30-to-set-attributes)
 31. [to let Ruby free handles](#31-to-let-ruby-free-handles)
 32. [to work hard for a fix](#32-to-work-hard-for-a-fix)
-33. [to lto customize subsystem](#33-to-customize-subsystem)
+
+<!---
+3X. [to lto customize subsystem](#3X-to-customize-subsystem)
 
 ----
-### 33. to customize subsystem
+### 3X. to customize subsystem
 
 There is [an IBM i Support document](https://www.ibm.com/support/pages/qsqsrvr-subsystem-customization) explaining how
 to set up an application specific subsystem for the -otherwise **QSYSWRK**'s- SQL CLI connection jobs.
@@ -64,7 +66,7 @@ This obviously holds true only when SERVER MODE is active.
 There is a corresponding Environment attribute named **SQL\_ATTR\_SERVERMODE\_SUBSYSTEM** that we were not retrieving 
 in previous requests.
 
-
+--->
 
 ### 32. to work hard for a fix
 
