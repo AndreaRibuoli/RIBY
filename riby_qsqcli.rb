@@ -9,6 +9,7 @@ require 'fiddle/import'
 module RibyCli
   extend Fiddle::Importer
 
+  private
   SQL_NULL_HANDLE  = 0
   SQL_HANDLE_ENV   = 1
   SQL_HANDLE_DBC   = 2
@@ -51,7 +52,6 @@ module RibyCli
   P_Disconnect       = ILEpointer.malloc; Ilesymx.call(P_Disconnect,     Qsqcli, 'SQLDisconnect')
   P_GetInfoW         = ILEpointer.malloc; Ilesymx.call(P_GetInfoW,       Qsqcli, 'SQLGetInfoW')
 
-  private
   def SQLAllocHandle(htype, ihandle, handle)
     ileArguments = ILEarglist.malloc
     ileArguments[  0, 32] = ['0'.rjust(64,'0')].pack("H*")
