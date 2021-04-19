@@ -224,7 +224,7 @@ class Connect
   include RibyCli
   def initialize(henv, dsn)
     @hdbc = SQLhandle.malloc
-    @hstmts = {}
+    @hstmts = []
     # @henv = henv
     @dsn  = dsn
     rc = SQLAllocHandle(SQL_HANDLE_DBC, henv.handle, @hdbc)
@@ -240,8 +240,8 @@ class Connect
       puts " Free Connect #{h.unpack('l')[0]} (#{rc})"  if $-W >= 2
     }
   end
-  def add(stmt)
-    @hstmts[stmt.handle] = stmt
+  def add(handle)
+    @hstmts << handle
   end
   def delete(handle)
     @hstmts.delete(handle)
@@ -441,10 +441,10 @@ class Stmt
   include RibyCli
   def initialize(hdbc)
     @hstmt = SQLhandle.malloc
-    # @hdbc = hdbc
+    @hdbc = hdbc
     rc = SQLAllocHandle(SQL_HANDLE_STMT, hdbc.handle, @hstmt)
-    hdbc.add(self)
     temp = @hstmt[0,4]
+    hdbc.add(temp)
     puts "  Alloc Stmt #{temp.unpack('l')[0]} (#{rc})" if $-W >= 2
     ObjectSpace.define_finalizer(self, Stmt.finalizer_proc(temp,hdbc))
   end
