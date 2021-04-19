@@ -39,7 +39,6 @@ module RibyCli
                   [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_SHORT, Fiddle::TYPE_INT],
                   Fiddle::TYPE_INT )
   Qsqcli = Ileloadx.call('QSYS/QSQCLI', 1)
-=begin
 P_AllocHandle      = ILEpointer.malloc; RC_AllocHandle     = Ilesymx.call(P_AllocHandle,    Qsqcli, 'SQLAllocHandle')
 P_FreeHandle       = ILEpointer.malloc; RC_FreeHandle      = Ilesymx.call(P_FreeHandle,     Qsqcli, 'SQLFreeHandle')
 P_GetEnvAttr       = ILEpointer.malloc; RC_GetEnvAttr      = Ilesymx.call(P_GetEnvAttr,     Qsqcli, 'SQLGetEnvAttr')
@@ -51,7 +50,7 @@ P_SetStmtAttrW     = ILEpointer.malloc; RC_SetStmtAttrW    = Ilesymx.call(P_SetS
 P_ConnectW         = ILEpointer.malloc; RC_ConnectW        = Ilesymx.call(P_ConnectW,       Qsqcli, 'SQLConnectW')
 P_Disconnect       = ILEpointer.malloc; RC_Disconnect      = Ilesymx.call(P_Disconnect,     Qsqcli, 'SQLDisconnect')
 P_GetInfoW         = ILEpointer.malloc; RC_GetInfoW        = Ilesymx.call(P_GetInfoW,       Qsqcli, 'SQLGetInfoW')
-=end
+=begin
   P_AllocHandle      = ILEpointer.malloc; Ilesymx.call(P_AllocHandle,    Qsqcli, 'SQLAllocHandle')
   P_FreeHandle       = ILEpointer.malloc; Ilesymx.call(P_FreeHandle,     Qsqcli, 'SQLFreeHandle')
   P_GetEnvAttr       = ILEpointer.malloc; Ilesymx.call(P_GetEnvAttr,     Qsqcli, 'SQLGetEnvAttr')
@@ -63,7 +62,8 @@ P_GetInfoW         = ILEpointer.malloc; RC_GetInfoW        = Ilesymx.call(P_GetI
   P_ConnectW         = ILEpointer.malloc; Ilesymx.call(P_ConnectW,       Qsqcli, 'SQLConnectW')
   P_Disconnect       = ILEpointer.malloc; Ilesymx.call(P_Disconnect,     Qsqcli, 'SQLDisconnect')
   P_GetInfoW         = ILEpointer.malloc; Ilesymx.call(P_GetInfoW,       Qsqcli, 'SQLGetInfoW')
-  
+=end
+
   def SQLAllocHandle(htype, ihandle, handle)
     ileArguments = ILEarglist.malloc
     ileArguments[  0, 32] = ['0'.rjust(64,'0')].pack("H*")
