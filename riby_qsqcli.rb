@@ -419,7 +419,7 @@ class Connect
     ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
     ileArguments[  32,   4] = handle                          # hdbc
     ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
-    puts " Disconnect #{h.unpack('l')[0]} (#{rc}) SYNCHRONOUS"  if $-W >= 2
+    puts " Disconnect #{handle.unpack('l')[0]} (#{rc}) SYNCHRONOUS"  if $-W >= 2
     rc = Ilecallx.call(P_Disconnect, ileArguments, ['FFFB0000'].pack("H*"), -5, 0)
   end
 end
