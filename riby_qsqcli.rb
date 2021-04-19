@@ -87,6 +87,7 @@ class Env
   include RibyCli
   def initialize
     @henv = SQLhandle.malloc
+    @hdbcs = []  # array of handles to allow deallocation by GC
     rc = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, @henv)
     temp = @henv[0,4]
     puts "Alloc Env #{temp.unpack('l')[0]} (#{rc})" if $-W >= 2
@@ -99,6 +100,12 @@ class Env
       rc = RibyCli::SQLFreeHandle(SQL_HANDLE_ENV, h)
       puts "Free Env #{h.unpack('l')[0]} (#{rc})" if $-W >= 2
     }
+  end
+  def add(handle)
+    @hdbcs << handle
+  end
+  def delete(handle)
+    @hdbcs.delete(handle)
   end
   def handle
     @henv[0,4]
@@ -224,20 +231,22 @@ class Connect
   include RibyCli
   def initialize(henv, dsn)
     @hdbc = SQLhandle.malloc
-    @hstmts = []
-    # @henv = henv
+    @hstmts = []  # array of handles to allow deallocation by GC
+    @henv = henv
     @dsn  = dsn
     rc = SQLAllocHandle(SQL_HANDLE_DBC, henv.handle, @hdbc)
     temp = @hdbc[0,4]
+    henv.add(temp)
     puts " Alloc Connect #{temp.unpack('l')[0]} (#{rc})" if $-W >= 2
-    ObjectSpace.define_finalizer(self, Connect.finalizer_proc(temp))
+    ObjectSpace.define_finalizer(self, Connect.finalizer_proc(temp,henv))
   end
-  def self.finalizer_proc(h)
+  def self.finalizer_proc(h,henv)
     proc {
       rc = RibyCli::SQLDisconnect(h)
       puts " Disconnect #{h.unpack('l')[0]} (#{rc})"  if $-W >= 2
       rc = RibyCli::SQLFreeHandle(SQL_HANDLE_DBC, h)
       puts " Free Connect #{h.unpack('l')[0]} (#{rc})"  if $-W >= 2
+      henv.delete(h)
     }
   end
   def add(handle)
