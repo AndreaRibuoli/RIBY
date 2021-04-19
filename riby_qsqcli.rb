@@ -430,7 +430,7 @@ class Connect
     ileArguments[  66, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
     ileArguments[  80, 16] = [size.to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")
-    rc = Ilecallx.call(P_GetInfoW, ileArguments, ['FFFBFFFDFFF5FFFDFFF50000'].pack("H*"), -5, 0)
+    Ilecallx.call(P_GetInfoW, ileArguments, ['FFFBFFFDFFF5FFFDFFF50000'].pack("H*"), -5, 0)
     len = ('0000' + size[ 0, 2].unpack("H*")[0]).to_i(16)
     return buffer[ 0, len].force_encoding('UTF-16BE').encode('utf-8') if kind == SQLWCHAR
   end
