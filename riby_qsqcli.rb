@@ -48,7 +48,7 @@ module RibyCli
                 'SQLSetEnvAttr'       => ['FFFBFFFBFFF5FFFB0000'].pack("H*"),
                 'SQLGetStmtAttrW'     => ['FFFBFFFBFFF5FFFB0000'].pack("H*"),
                 'SQLSetStmtAttrW'     => ['FFFBFFFBFFF5FFFB0000'].pack("H*"),
-                'SQLConnectW'         => ['FFFBFFF5FFFDFFF5FFFDFFF5FFFD0000'].pack("H*"),
+                'SQLConnectW'         => [-5, -11, -3, -11, -3, -11, -3, 0].unpack('n*').pack("H*")[0],
                 'SQLDisconnect'       => [-5, 0].unpack('n*').pack("H*")[0],
                 'SQLGetInfoW'         => ['FFFBFFFDFFF5FFFDFFF50000'].pack("H*")
                }
