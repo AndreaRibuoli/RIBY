@@ -39,7 +39,7 @@ module RibyCli
                   Preload['_ILECALLX'],
                   [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_SHORT, Fiddle::TYPE_INT],
                   Fiddle::TYPE_INT )
-  SQLApiList = ['SQLAllocHandle', 'SQLFreeHandle']
+  SQLApiList = ['SQLAllocHandle', 'SQLFreeHandle', 'SQLDisconnect']
   SQLApis = {}
   SQLApiList.each { |key| SQLApis[key] = ILEpointer.malloc }
   Qsqcli = Ileloadx.call('QSYS/QSQCLI', 1)
@@ -53,7 +53,6 @@ module RibyCli
   P_GetStmtAttrW     = ILEpointer.malloc; Ilesymx.call(P_GetStmtAttrW,   Qsqcli, 'SQLGetStmtAttrW')
   P_SetStmtAttrW     = ILEpointer.malloc; Ilesymx.call(P_SetStmtAttrW,   Qsqcli, 'SQLSetStmtAttrW')
   P_ConnectW         = ILEpointer.malloc; Ilesymx.call(P_ConnectW,       Qsqcli, 'SQLConnectW')
-  P_Disconnect       = ILEpointer.malloc; Ilesymx.call(P_Disconnect,     Qsqcli, 'SQLDisconnect')
   P_GetInfoW         = ILEpointer.malloc; Ilesymx.call(P_GetInfoW,       Qsqcli, 'SQLGetInfoW')
 
   def SQLAllocHandle(htype, ihandle, handle)
@@ -83,7 +82,7 @@ module RibyCli
     ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
     ileArguments[  32,   4] = handle                          # hdbc
     ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
-    Ilecallx.call(P_Disconnect, ileArguments, ['FFFB0000'].pack("H*"), -5, 0)
+    Ilecallx.call(SQLApis['SQLDisconnect'], ileArguments, ['FFFB0000'].pack("H*"), -5, 0)
     return ileArguments[ 0, 4].unpack('l')[0]
   end
 end
@@ -452,7 +451,7 @@ class Connect
     ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
     ileArguments[  32,   4] = handle                          # hdbc
     ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
-    Ilecallx.call(P_Disconnect, ileArguments, ['FFFB0000'].pack("H*"), -5, 0)
+    Ilecallx.call(SQLApis['SQLDisconnect'], ileArguments, ['FFFB0000'].pack("H*"), -5, 0)
     rc = ileArguments[ 0, 4].unpack('l')[0]
     puts " Disconnect #{handle.unpack('l')[0]} (#{rc}) SYNCHRONOUS"  if $-W >= 2
     return rc 
