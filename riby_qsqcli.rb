@@ -26,6 +26,11 @@ module RibyCli
   INFObuffer  = struct [ 'char i[4096]' ]
   SQLintsize  = struct [ 'char s[4]' ]
   SQLretsize  = struct [ 'char s[2]' ]
+  SQLerror    = struct [ 'char e[4]' ]
+  SQLstate    = struct [ 'char s[12]' ]
+  SQLmsg      = struct [ 'char s[1026]' ]
+  SQLmsglen   = struct [ 'char l[2]' ]
+
   Preload     = Fiddle.dlopen(nil)
   Ileloadx    = Fiddle::Function.new(
                   Preload['_ILELOADX'],
@@ -134,6 +139,29 @@ module RibyCli
     Ilecallx.call(SQLApis['SQLAllocHandle'], ileArguments, SQLApiList['SQLAllocHandle'], - 5, 0)
     return ileArguments[ 0, 4].unpack('l')[0]
   end
+  def SQLErrorW(henv, hdbc=SQL_NULL_HANDLE, hstmt=SQL_NULL_HANDLE)
+    state  = SQLstate.malloc
+    error  = SQLerror.malloc
+    msg    = SQLmsg.malloc
+    msglen = SQLmsglen.malloc
+    ileArguments = ILEarglist.malloc
+    ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[  32,  4] = env_handle[ 0, 4]               # henv
+    ileArguments[  36,  4] = dbc_handle[ 0, 4]               # hdbc
+    ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")  # padding
+    ileArguments[  48, 16] = [state.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    ileArguments[  64, 16] = [error.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    ileArguments[  80, 16] = [msg.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    ileArguments[  96,  2] = ['0402'].pack("H*")             # SQL_NTS
+    ileArguments[  98, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
+    ileArguments[ 112, 16] = [msglen.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    Ilecallx.call(SQLApis['SQLErrorW'], ileArguments, SQLApiList['SQLErrorW'], - 5, 0)
+    l = msglen[0, 2].unpack("H*")[0].to_i(16) * 2
+    return [ileArguments[ 0, 4].unpack('l')[0],
+     state[0, 12].force_encoding('UTF-16BE').encode('utf-8'),
+     error[0, 4].unpack("l")[0],
+     msg[0, l].force_encoding('UTF-16BE').encode('utf-8')]
+  end
   def self.SQLFreeHandle(htype, handle)
     ileArguments = ILEarglist.malloc
     ileArguments[  0,  32] = ['0'.rjust(64,'0')].pack("H*")
@@ -180,6 +208,9 @@ class Env
   end
   def handle
     @henv[0,4]
+  end
+  def error
+    SQLErrorW(handle)
   end
   def attrs= hattrs
     hattrs.each { |k,v|
@@ -328,6 +359,9 @@ class Connect
   end
   def handle
     @hdbc[0,4]
+  end
+  def error
+    SQLErrorW(@henv.handle, handle)
   end
   def Empower(user, pass)
     dsnW  = @dsn.encode('UTF-16BE')
