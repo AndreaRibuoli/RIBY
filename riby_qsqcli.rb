@@ -39,9 +39,34 @@ module RibyCli
                   Preload['_ILECALLX'],
                   [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_SHORT, Fiddle::TYPE_INT],
                   Fiddle::TYPE_INT )
-  SQLApiList = ['SQLAllocHandle', 'SQLFreeHandle', 'SQLDisconnect', 'SQLGetEnvAttr', 'SQLSetEnvAttr',
-                'SQLGetConnectAttrW', 'SQLSetConnectAttrW', 'SQLGetStmtAttrW', 'SQLSetStmtAttrW',
-                'SQLConnectW', 'SQLGetInfoW']
+=begin
+ SQLApiList = [
+                                'SQLAllocHandle',
+                                'SQLFreeHandle',
+                                'SQLDisconnect',
+                                'SQLGetEnvAttr',
+                                'SQLSetEnvAttr',
+                                'SQLGetConnectAttrW',
+                                'SQLSetConnectAttrW',
+                                'SQLGetStmtAttrW',
+                                'SQLSetStmtAttrW',
+                                'SQLConnectW',
+                                'SQLGetInfoW'
+                               ]
+=end
+  SQLApiList = {
+                'SQLAllocHandle'      => ['FFFDFFFBFFF50000'].pack("H*"),
+                'SQLFreeHandle'       => ['FFFDFFFB0000'].pack("H*"),
+                'SQLGetEnvAttr'       => ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"),
+                'SQLGetConnectAttrW'  => ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"),
+                'SQLSetConnectAttrW'  => ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"),
+                'SQLSetEnvAttr'       => ['FFFBFFFBFFF5FFFB0000'].pack("H*"),
+                'SQLGetStmtAttrW'     => ['FFFBFFFBFFF5FFFB0000'].pack("H*"),
+                'SQLSetStmtAttrW'     => ['FFFBFFFBFFF5FFFB0000'].pack("H*"),
+                'SQLConnectW'         => ['FFFBFFF5FFFDFFF5FFFDFFF5FFFD0000'].pack("H*"),
+                'SQLDisconnect'       => ['FFFB0000'].pack("H*"),
+                'SQLGetInfoW'         => ['FFFBFFFDFFF5FFFDFFF50000'].pack("H*")
+               }
   SQLApis = {}
   SQLApiList.each { |key| SQLApis[key] = ILEpointer.malloc }
   Qsqcli = Ileloadx.call('QSYS/QSQCLI', 1)
@@ -56,7 +81,7 @@ module RibyCli
     ileArguments[ 40,  8] = ['0'.rjust(16,'0')].pack("H*")
     ileArguments[ 48, 16] = [handle.to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[ 64, 80] = ['0'.rjust(160,'0')].pack("H*")  # padding
-    Ilecallx.call(SQLApis['SQLAllocHandle'], ileArguments, ['FFFDFFFBFFF50000'].pack("H*"), -5, 0)
+    Ilecallx.call(SQLApis['SQLAllocHandle'], ileArguments, SQLApiList['SQLAllocHandle'], -5, 0)
     return ileArguments[ 0, 4].unpack('l')[0]
   end
   def self.SQLFreeHandle(htype, handle)
@@ -66,7 +91,7 @@ module RibyCli
     ileArguments[ 34,   2] = ['0000'].pack("H*")
     ileArguments[ 36,   4] = handle
     ileArguments[ 40, 104] = ['0'.rjust(208,'0')].pack("H*")
-    Ilecallx.call(SQLApis['SQLFreeHandle'], ileArguments, ['FFFDFFFB0000'].pack("H*"), -5, 0)
+    Ilecallx.call(SQLApis['SQLFreeHandle'], ileArguments, SQLApiList['SQLFreeHandle'], -5, 0)
     return ileArguments[ 0, 4].unpack('l')[0]
   end
   def self.SQLDisconnect(handle)
@@ -74,7 +99,7 @@ module RibyCli
     ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
     ileArguments[  32,   4] = handle                          # hdbc
     ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
-    Ilecallx.call(SQLApis['SQLDisconnect'], ileArguments, ['FFFB0000'].pack("H*"), -5, 0)
+    Ilecallx.call(SQLApis['SQLDisconnect'], ileArguments, SQLApiList['SQLDisconnect'], -5, 0)
     return ileArguments[ 0, 4].unpack('l')[0]
   end
 end
@@ -195,7 +220,7 @@ class Env
       ileArguments[  68, 12] = ['0'.rjust(24,'0')].pack("H*")  # padding
       ileArguments[  80, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
       ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
-      Ilecallx.call(SQLApis['SQLGetEnvAttr'], ileArguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
+      Ilecallx.call(SQLApis['SQLGetEnvAttr'], ileArguments, SQLApiList['SQLGetEnvAttr'], -5, 0)
       len = sizeint[0, 4].unpack("l")[0]
       len -= 1 if (key == ATTRS[:SQL_ATTR_DEFAULT_LIB] && len>1)
       return buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
@@ -219,7 +244,7 @@ class Env
       ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
       ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")   # padding
       ileArguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
-      Ilecallx.call(SQLApis['SQLSetEnvAttr'], ileArguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
+      Ilecallx.call(SQLApis['SQLSetEnvAttr'], ileArguments, SQLApiList['SQLSetEnvAttr'], -5, 0)
     end
 end
 
@@ -271,7 +296,7 @@ class Connect
     ileArguments[ 112, 16] = [Fiddle::Pointer[passW].to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[ 128,  2] = ['FFFD'].pack("H*")             # SQL_NTS
     ileArguments[ 130, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
-    return Ilecallx.call(SQLApis['SQLConnectW'], ileArguments, ['FFFBFFF5FFFDFFF5FFFDFFF5FFFD0000'].pack("H*"), -5, 0)
+    return Ilecallx.call(SQLApis['SQLConnectW'], ileArguments, SQLApiList['SQLConnectW'], -5, 0)
   end
   def attrs= hattrs
     hattrs.each { |k,v|
@@ -397,7 +422,7 @@ class Connect
     ileArguments[  68, 12] = ['0'.rjust(152,'0')].pack("H*")  # padding
     ileArguments[  80, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
-    Ilecallx.call(SQLApis['SQLGetConnectAttrW'], ileArguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
+    Ilecallx.call(SQLApis['SQLGetConnectAttrW'], ileArguments, SQLApiList['SQLGetConnectAttrW'], -5, 0)
     len = sizeint[0, 4].unpack("l")[0]  # remove null
     return buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
     return buffer[0, len].force_encoding('UTF-16BE').encode('utf-8')  if kind == SQLWCHAR
@@ -419,7 +444,7 @@ class Connect
     ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
     ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")   # padding
     ileArguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
-    return Ilecallx.call(SQLApis['SQLSetConnectAttrW'], ileArguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
+    return Ilecallx.call(SQLApis['SQLSetConnectAttrW'], ileArguments, SQLApiList['SQLSetConnectAttrW'], -5, 0)
   end
   def SQLGetInfoW(key, kind = SQLINTEGER)
     size   = SQLretsize.malloc
@@ -434,7 +459,7 @@ class Connect
     ileArguments[  66, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
     ileArguments[  80, 16] = [size.to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")
-    Ilecallx.call(SQLApis['SQLGetInfoW'], ileArguments, ['FFFBFFFDFFF5FFFDFFF50000'].pack("H*"), -5, 0)
+    Ilecallx.call(SQLApis['SQLGetInfoW'], ileArguments, SQLApiList['SQLGetInfoW'], -5, 0)
     len = ('0000' + size[ 0, 2].unpack("H*")[0]).to_i(16)
     return buffer[ 0, len].force_encoding('UTF-16BE').encode('utf-8') if kind == SQLWCHAR
   end
@@ -443,7 +468,7 @@ class Connect
     ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
     ileArguments[  32,   4] = handle                          # hdbc
     ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
-    Ilecallx.call(SQLApis['SQLDisconnect'], ileArguments, ['FFFB0000'].pack("H*"), -5, 0)
+    Ilecallx.call(SQLApis['SQLDisconnect'], ileArguments, SQLApiList['SQLDisconnect'], -5, 0)
     rc = ileArguments[ 0, 4].unpack('l')[0]
     puts " Disconnect #{handle.unpack('l')[0]} (#{rc}) SYNCHRONOUS"  if $-W >= 2
     return rc 
@@ -565,7 +590,7 @@ class Stmt
     ileArguments[  68, 12] = ['0'.rjust(152,'0')].pack("H*")  # padding
     ileArguments[  80, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
-    Ilecallx.call(SQLApis['SQLGetStmtAttrW'], ileArguments, ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"), -5, 0)
+    Ilecallx.call(SQLApis['SQLGetStmtAttrW'], ileArguments, SQLApiList['SQLGetStmtAttrW'], -5, 0)
     len = sizeint[0, 4].unpack("l")[0]
     return buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
     return buffer[0, len].force_encoding('UTF-16BE').encode('utf-8')  if kind == SQLWCHAR
@@ -587,7 +612,7 @@ class Stmt
     ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
     ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")   # padding
     ileArguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
-    Ilecallx.call(SQLApis['SQLSetStmtAttrW'], ileArguments, ['FFFBFFFBFFF5FFFB0000'].pack("H*"), -5, 0)
+    Ilecallx.call(SQLApis['SQLSetStmtAttrW'], ileArguments, SQLApiList['SQLSetStmtAttrW'], -5, 0)
     return ileArguments[ 0, 4].unpack('l')[0]
   end
 end
