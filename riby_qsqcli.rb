@@ -161,7 +161,7 @@ class Env
     @hdbcs = []  # array of handles to allow deallocation by GC
     rc = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, @henv)
     temp = @henv[0,4]
-    puts "Alloc Env #{temp.unpack('l')[0]} (#{rc})" if $-W >= 2
+    puts "#{temp.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Env (#{rc})" if $-W >= 2
     SQLSetEnvAttr(ATTRS[:SQL_ATTR_INCLUDE_NULL_IN_LEN], 0)
     ObjectSpace.define_finalizer(self, Env.finalizer_proc(temp))
     return rc
@@ -169,7 +169,7 @@ class Env
   def self.finalizer_proc(h)
     proc {
       rc = RibyCli::SQLFreeHandle(SQL_HANDLE_ENV, h)
-      puts "Free Env #{h.unpack('l')[0]} (#{rc})" if $-W >= 2
+      puts "#{h.unpack('H*')} #{'%10.7f' % Time.now.to_f} Free Env (#{rc})" if $-W >= 2
     }
   end
   def add(handle)
