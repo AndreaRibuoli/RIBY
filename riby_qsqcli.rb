@@ -40,17 +40,17 @@ module RibyCli
                   [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_SHORT, Fiddle::TYPE_INT],
                   Fiddle::TYPE_INT )
   SQLApiList = {
-                'SQLAllocHandle'      => ['FFFDFFFBFFF50000'].pack("H*"),
-                'SQLFreeHandle'       => ['FFFDFFFB0000'].pack("H*"),
-                'SQLGetEnvAttr'       => ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"),
-                'SQLGetConnectAttrW'  => ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"),
-                'SQLSetConnectAttrW'  => ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"),
-                'SQLSetEnvAttr'       => [ -5,  -5, -11,  -5,  0].pack("n*"),
-                'SQLGetStmtAttrW'     => [ -5,  -5, -11,  -5,  0].pack("n*"),
-                'SQLSetStmtAttrW'     => [ -5,  -5, -11,  -5,  0].pack("n*"),
-                'SQLConnectW'         => [ -5, -11,  -3, -11, -3, -11, -3,  0].pack("n*"),
-                'SQLDisconnect'       => [ -5,   0].pack("n*"),
-                'SQLGetInfoW'         => [ -5,  -3, -11,  -3, -11,  0].pack("n*")
+                'SQLAllocHandle'      => [ -3,  -5, -11,                      0].pack("n*"),
+                'SQLFreeHandle'       => [ -3,  -5,                           0].pack("n*"),
+                'SQLGetEnvAttr'       => [ -5,  -5, -11,  -5, -11,            0].pack("n*"),
+                'SQLGetConnectAttrW'  => [ -5,  -5, -11,  -5, -11,            0].pack("n*"),
+                'SQLSetConnectAttrW'  => [ -5,  -5, -11,  -5, -11,            0].pack("n*"),
+                'SQLSetEnvAttr'       => [ -5,  -5, -11,  -5,                 0].pack("n*"),
+                'SQLGetStmtAttrW'     => [ -5,  -5, -11,  -5,                 0].pack("n*"),
+                'SQLSetStmtAttrW'     => [ -5,  -5, -11,  -5,                 0].pack("n*"),
+                'SQLConnectW'         => [ -5, -11,  -3, -11,  -3, -11,  -3,  0].pack("n*"),
+                'SQLDisconnect'       => [ -5,                                0].pack("n*"),
+                'SQLGetInfoW'         => [ -5,  -3, -11,  -3, -11,            0].pack("n*")
                }
   SQLApis = {}
   SQLApiList.each { |key, val| SQLApis[key] = ILEpointer.malloc }
