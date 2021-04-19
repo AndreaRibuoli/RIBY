@@ -45,12 +45,12 @@ module RibyCli
                 'SQLGetEnvAttr'       => ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"),
                 'SQLGetConnectAttrW'  => ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"),
                 'SQLSetConnectAttrW'  => ['FFFBFFFBFFF5FFFBFFF50000'].pack("H*"),
-                'SQLSetEnvAttr'       => ['FFFBFFFBFFF5FFFB0000'].pack("H*"),
-                'SQLGetStmtAttrW'     => ['FFFBFFFBFFF5FFFB0000'].pack("H*"),
-                'SQLSetStmtAttrW'     => ['FFFBFFFBFFF5FFFB0000'].pack("H*"),
-                'SQLConnectW'         => [-5, -11, -3, -11, -3, -11, -3, 0].pack("n*"),
-                'SQLDisconnect'       => [-5, 0].pack("n*"),
-                'SQLGetInfoW'         => ['FFFBFFFDFFF5FFFDFFF50000'].pack("H*")
+                'SQLSetEnvAttr'       => [ -5,  -5, -11,  -5,  0].pack("n*"),
+                'SQLGetStmtAttrW'     => [ -5,  -5, -11,  -5,  0].pack("n*"),
+                'SQLSetStmtAttrW'     => [ -5,  -5, -11,  -5,  0].pack("n*"),
+                'SQLConnectW'         => [ -5, -11,  -3, -11, -3, -11, -3,  0].pack("n*"),
+                'SQLDisconnect'       => [ -5,   0].pack("n*"),
+                'SQLGetInfoW'         => [ -5,  -3, -11,  -3, -11,  0].pack("n*")
                }
   SQLApis = {}
   SQLApiList.each { |key, val| SQLApis[key] = ILEpointer.malloc }
