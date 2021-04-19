@@ -61,6 +61,7 @@ module RibyCli
     ileArguments[ 48, 16] = [handle.to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[ 64, 80] = ['0'.rjust(160,'0')].pack("H*")  # padding
     Ilecallx.call(P_AllocHandle, ileArguments, ['FFFDFFFBFFF50000'].pack("H*"), -5, 0)
+    return ileArguments[ 0, 4].unpack('l')[0]
   end
   def self.SQLFreeHandle(htype, handle)
     ileArguments = ILEarglist.malloc
