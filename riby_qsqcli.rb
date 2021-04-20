@@ -208,11 +208,11 @@ class Env
     return rc
   end
   def self.finalizer_proc(h)
-    proc { 
-    #  rc1 = RibyCli::SQLRelaseEnv(h)
-    #  puts "#{h.unpack('H*')} #{'%10.7f' % Time.now.to_f} Release Env (#{rc1})"  if $-W >= 2
-      rc = RibyCli::SQLFreeHandle(SQL_HANDLE_ENV, h)
-      puts "#{h.unpack('H*')} #{'%10.7f' % Time.now.to_f} Free Env (#{rc})" if $-W >= 2
+    proc {
+      rc = RibyCli::SQLRelaseEnv(h)
+      puts "#{h.unpack('H*')} #{'%10.7f' % Time.now.to_f} Release Env (#{rc})"  if $-W >= 2
+    #  rc = RibyCli::SQLFreeHandle(SQL_HANDLE_ENV, h)
+    #  puts "#{h.unpack('H*')} #{'%10.7f' % Time.now.to_f} Free Env (#{rc})" if $-W >= 2
     }
   end
   def add(handle)
