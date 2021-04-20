@@ -10,7 +10,7 @@ module RibyCli
   extend Fiddle::Importer
 
   private
-  SQL_NULL_HANDLE  = 0
+  SQL_NULL_HANDLE  = [ 0, 0, 0, 0].pack("C*")
   SQL_HANDLE_ENV   = 1
   SQL_HANDLE_DBC   = 2
   SQL_HANDLE_STMT  = 3
@@ -146,13 +146,14 @@ module RibyCli
     msglen = SQLmsglen.malloc
     ileArguments = ILEarglist.malloc
     ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
-    ileArguments[  32,  4] = env_handle[ 0, 4]               # henv
-    ileArguments[  36,  4] = dbc_handle[ 0, 4]               # hdbc
-    ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")  # padding
+    ileArguments[  32,  4] = henv
+    ileArguments[  36,  4] = hdbc
+    ileArguments[  40,  4] = hstmt
+    ileArguments[  44,  4] = ['0'.rjust(8,'0')].pack("H*")  # padding
     ileArguments[  48, 16] = [state.to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[  64, 16] = [error.to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[  80, 16] = [msg.to_i.to_s(16).rjust(32,'0')].pack("H*")
-    ileArguments[  96,  2] = ['0402'].pack("H*")             # SQL_NTS
+    ileArguments[  96,  2] = ['0402'].pack("H*")             #
     ileArguments[  98, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
     ileArguments[ 112, 16] = [msglen.to_i.to_s(16).rjust(32,'0')].pack("H*")
     Ilecallx.call(SQLApis['SQLErrorW'], ileArguments, SQLApiList['SQLErrorW'], - 5, 0)
