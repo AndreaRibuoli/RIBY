@@ -343,16 +343,16 @@ class Env
       Ilecallx.call(SQLApis['SQLSetEnvAttr'], ileArguments, SQLApiList['SQLSetEnvAttr'], - 5, 0)
       return ileArguments[ 16, 4].unpack('l')[0]
     end
-    def SQLReleaseEnv
-      ileArguments = ILEarglist.malloc
-      ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
-      ileArguments[  32,   4] = handle                          # henv
-      ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
-      Ilecallx.call(SQLApis['SQLReleaseEnv'], ileArguments, SQLApiList['SQLReleaseEnv'], - 5, 0)
-      rc = ileArguments[ 16, 4].unpack('l')[0]
-      puts " ReleaseEnv #{handle.unpack('l')[0]} (#{rc}) SYNCHRONOUS"  if $-W >= 2
-      return rc
-    end
+#    def SQLReleaseEnv
+#      ileArguments = ILEarglist.malloc
+#      ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
+#      ileArguments[  32,   4] = handle                          # henv
+#      ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
+#      Ilecallx.call(SQLApis['SQLReleaseEnv'], ileArguments, SQLApiList['SQLReleaseEnv'], - 5, 0)
+#      rc = ileArguments[ 16, 4].unpack('l')[0]
+#      puts " ReleaseEnv #{handle.unpack('l')[0]} (#{rc}) SYNCHRONOUS"  if $-W >= 2
+#      return rc
+#    end
 end
 
 class Connect
