@@ -159,7 +159,7 @@ module RibyCli
     Ilecallx.call(SQLApis['SQLErrorW'], ileArguments, SQLApiList['SQLErrorW'], - 5, 0)
     l = msglen[0, 2].unpack("H*")[0].to_i(16) * 2
     return [ileArguments[ 0, 4].unpack('l')[0],
-     state[0, 5].force_encoding('UTF-16BE').encode('utf-8'),
+     state[0, 10].force_encoding('UTF-16BE').encode('utf-8'),
      error[0, 4].unpack("l")[0],
      msg[0, l].force_encoding('UTF-16BE').encode('utf-8')]
   end
