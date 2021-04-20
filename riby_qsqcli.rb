@@ -332,7 +332,7 @@ end
 
 class Connect
   include RibyCli
-  def initialize(henv, dsn)
+  def initialize(henv, dsn = '*LOCAL')
     @hdbc = SQLhandle.malloc
     @hstmts = []  # array of handles to allow deallocation by GC
     @henv = henv
