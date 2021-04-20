@@ -744,13 +744,13 @@ class Stmt
     stm = sql.encode('UTF-16BE')
     len = stm.length
     ileArguments = ILEarglist.malloc
-    ILEarguments[  0, 32] = ['0'.rjust(64,'0')].pack("H*")
-    ILEarguments[ 32,  4] = handle                          # hstmt
-    ILEarguments[ 36, 12] = ['0'.rjust(24,'0')].pack("H*")  # padding
-    ILEarguments[ 48, 16] = [Fiddle::Pointer[stm].to_i.to_s(16).rjust(32,'0')].pack("H*")
-    ILEarguments[ 64,  4] = [len.to_s(16).rjust(8,'0')].pack("H*")
-    ILEarguments[ 68, 84] = ['0'.rjust(168,'0')].pack("H*")  # padding
+    ileArguments[  0, 32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[ 32,  4] = handle                          # hstmt
+    ileArguments[ 36, 12] = ['0'.rjust(24,'0')].pack("H*")  # padding
+    ileArguments[ 48, 16] = [Fiddle::Pointer[stm].to_i.to_s(16).rjust(32,'0')].pack("H*")
+    ileArguments[ 64,  4] = [len.to_s(16).rjust(8,'0')].pack("H*")
+    ileArguments[ 68, 84] = ['0'.rjust(168,'0')].pack("H*")  # padding
     Ilecallx.call(SQLApis['SQLExecDirectW'], ileArguments, SQLApiList['SQLExecDirectW'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
-
+end
