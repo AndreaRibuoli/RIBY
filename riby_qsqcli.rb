@@ -55,6 +55,7 @@ module RibyCli
   'SQLSetStmtAttrW'      => [ - 5, - 5, -11, - 5,                                                0].pack("n*"),
   'SQLConnectW'          => [ - 5, -11, - 3, -11, - 3, -11, - 3,                                 0].pack("n*"),
   'SQLDisconnect'        => [ - 5,                                                               0].pack("n*"),
+  'SQLReleaseEnv'        => [ - 5,                                                               0].pack("n*"),
   'SQLGetInfoW'          => [ - 5, - 3, -11, - 3, -11,                                           0].pack("n*"),
   'SQLBindCol'           => [ - 5, - 5, - 5, -11, - 5, -11,                                      0].pack("n*"),
   'SQLBindFileToCol'     => [ - 5, - 3, -11, -11, -11, - 3, -11, -11,                            0].pack("n*"),
@@ -107,7 +108,6 @@ module RibyCli
   'SQLProceduresW'       => [ - 5, -11, - 3, -11, - 3, -11, - 3,                                 0].pack("n*"),
   'SQLProcedureColumnsW' => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3,                       0].pack("n*"),
   'SQLPutData'           => [ - 5, -11, - 5,                                                     0].pack("n*"),
-  'SQLReleaseEnv'        => [ - 5,                                                               0].pack("n*"),
   'SQLRowCount'          => [ - 5, -11,                                                          0].pack("n*"),
   'SQLSetConnectOptionW' => [ - 5, - 3, -11,                                                     0].pack("n*"),
   'SQLSetCursorNameW'    => [ - 5, -11, - 3,                                                     0].pack("n*"),
@@ -171,6 +171,14 @@ module RibyCli
     ileArguments[ 36,   4] = handle
     ileArguments[ 40, 104] = ['0'.rjust(208,'0')].pack("H*")
     Ilecallx.call(SQLApis['SQLFreeHandle'], ileArguments, SQLApiList['SQLFreeHandle'], - 5, 0)
+    return ileArguments[ 16, 4].unpack('l')[0]
+  end
+  def self.SQLReleaseEnv(handle)
+    ileArguments = ILEarglist.malloc
+    ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[  32,   4] = handle                          # henv
+    ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
+    Ilecallx.call(SQLApis['SQLReleaseEnv'], ileArguments, SQLApiList['SQLReleaseEnv'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
   def self.SQLDisconnect(handle)
@@ -272,6 +280,10 @@ class Env
     }
     attrs_setting
   end
+  def release
+    puts "#{handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} ## SYNCHRONOUS SQLReleaseEnv IGNORED!!! ##"  if $-W >= 2
+    # SQLReleaseEnv()
+  end
   private
     ATTRS = {
       SQL_ATTR_OUTPUT_NTS: 10001,
@@ -328,6 +340,16 @@ class Env
       ileArguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
       Ilecallx.call(SQLApis['SQLSetEnvAttr'], ileArguments, SQLApiList['SQLSetEnvAttr'], - 5, 0)
       return ileArguments[ 16, 4].unpack('l')[0]
+    end
+    def SQLReleaseEnv
+      ileArguments = ILEarglist.malloc
+      ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
+      ileArguments[  32,   4] = handle                          # henv
+      ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
+      Ilecallx.call(SQLApis['SQLReleaseEnv'], ileArguments, SQLApiList['SQLReleaseEnv'], - 5, 0)
+      rc = ileArguments[ 16, 4].unpack('l')[0]
+      puts " ReleaseEnv #{handle.unpack('l')[0]} (#{rc}) SYNCHRONOUS"  if $-W >= 2
+      return rc
     end
 end
 
