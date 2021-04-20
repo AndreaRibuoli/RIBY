@@ -381,7 +381,8 @@ class Connect
     ileArguments[ 112, 16] = [Fiddle::Pointer[passW].to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[ 128,  2] = ['FFFD'].pack("H*")             # SQL_NTS
     ileArguments[ 130, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
-    return Ilecallx.call(SQLApis['SQLConnectW'], ileArguments, SQLApiList['SQLConnectW'], - 5, 0)
+    Ilecallx.call(SQLApis['SQLConnectW'], ileArguments, SQLApiList['SQLConnectW'], - 5, 0)
+    return ileArguments[ 0, 4].unpack('l')[0]
   end
   def attrs= hattrs
     hattrs.each { |k,v|
