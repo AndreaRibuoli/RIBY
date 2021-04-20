@@ -164,15 +164,6 @@ module RibyCli
      msg[0, l].force_encoding('UTF-16BE').encode('utf-8')]
   end
 
-  def self.SQLReleaseEnz(handle)
-    ileArguments = ILEarglist.malloc
-    ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
-    ileArguments[  32,   4] = handle                             # henv
-    ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
-    Ilecallx.call(SQLApis['SQLReleaseEnv'], ileArguments, SQLApiList['SQLReleaseEnv'], - 5, 0)
-    return ileArguments[ 16, 4].unpack('l')[0]
-  end
-
   def self.SQLFreeHandle(htype, handle)
     ileArguments = ILEarglist.malloc
     ileArguments[  0,  32] = ['0'.rjust(64,'0')].pack("H*")
@@ -193,6 +184,15 @@ module RibyCli
     return ileArguments[ 16, 4].unpack('l')[0]
   end
   
+  def self.SQLReleaseEnv(handle)
+    ileArguments = ILEarglist.malloc
+    ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[  32,   4] = handle                             # henv
+    ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
+    Ilecallx.call(SQLApis['SQLReleaseEnv'], ileArguments, SQLApiList['SQLReleaseEnv'], - 5, 0)
+    return ileArguments[ 16, 4].unpack('l')[0]
+  end
+
 end
 
 class Env
@@ -209,10 +209,10 @@ class Env
   end
   def self.finalizer_proc(h)
     proc {
-      rc = RibyCli::SQLRelaseEnz(h)
-    #  puts "#{h.unpack('H*')} #{'%10.7f' % Time.now.to_f} Release Env (#{rc})"  if $-W >= 2
-    #  rc = RibyCli::SQLFreeHandle(SQL_HANDLE_ENV, h)
-    #  puts "#{h.unpack('H*')} #{'%10.7f' % Time.now.to_f} Free Env (#{rc})" if $-W >= 2
+      rc = RibyCli::SQLReleaseEnv(h)
+      puts "#{h.unpack('H*')} #{'%10.7f' % Time.now.to_f} Release Env (#{rc})"  if $-W >= 2
+      rc = RibyCli::SQLFreeHandle(SQL_HANDLE_ENV, h)
+      puts "#{h.unpack('H*')} #{'%10.7f' % Time.now.to_f} Free Env (#{rc})" if $-W >= 2
     }
   end
   def add(handle)
