@@ -174,7 +174,7 @@ module RibyCli
     return ileArguments[ 16, 4].unpack('l')[0]
   end
   
-  def self.SQLReleaseEnv(henv)
+  def self.SQLReleaseEnv(htype, handle)
 #    ileArguments = ILEarglist.malloc
 #    ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
 #    ileArguments[  32,   4] = henv                             # henv
@@ -208,7 +208,7 @@ class Env
   end
   def self.finalizer_proc(h)
     proc {
-      rc = RibyCli.SQLRelaseEnv(h)
+      rc = RibyCli::SQLRelaseEnv(SQL_HANDLE_ENV, h)
       puts "#{h.unpack('H*')} #{'%10.7f' % Time.now.to_f} Release Env (#{rc})"  if $-W >= 2
       rc = RibyCli::SQLFreeHandle(SQL_HANDLE_ENV, h)
       puts "#{h.unpack('H*')} #{'%10.7f' % Time.now.to_f} Free Env (#{rc})" if $-W >= 2
