@@ -13,4 +13,5 @@ h.attrs=({:SQL_ATTR_SERVER_MODE => :SQL_TRUE})
   Stmt.new(di)
   puts "#{di.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Connect: #{di.jobname}"
   di.disconnect
-}                                                                      
+}
+h.release
