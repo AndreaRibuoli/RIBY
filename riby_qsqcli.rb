@@ -49,7 +49,6 @@ module RibyCli
  ##
  
   SQLApiList = {            #----#----#----#----#----#----#----#----#----#----#----#----#----#----#
-  'SQLErrorW'            => [ - 5, - 5, - 5, -11, -11, -11, - 3, -11,                            0].pack("n*"),
   'SQLGetDiagRecW'       => [ - 3, - 5, - 3, -11, -11, -11, - 3, -11,                            0].pack("n*"),
   'SQLAllocHandle'       => [ - 3, - 5, -11,                                                     0].pack("n*"),
   'SQLFreeHandle'        => [ - 3, - 5,                                                          0].pack("n*"),
@@ -142,30 +141,6 @@ module RibyCli
     ileArguments[ 64, 80] = ['0'.rjust(160,'0')].pack("H*")  # padding
     Ilecallx.call(SQLApis['SQLAllocHandle'], ileArguments, SQLApiList['SQLAllocHandle'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
-  end
-  def SQLErrorW(henv, hdbc=SQL_NULL_HANDLE, hstmt=SQL_NULL_HANDLE)
-    state  = SQLstate.malloc
-    error  = SQLerror.malloc
-    msg    = SQLmsg.malloc
-    msglen = SQLmsglen.malloc
-    ileArguments = ILEarglist.malloc
-    ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
-    ileArguments[  32,  4] = henv
-    ileArguments[  36,  4] = hdbc
-    ileArguments[  40,  4] = hstmt
-    ileArguments[  44,  4] = ['0'.rjust(8,'0')].pack("H*")  # padding
-    ileArguments[  48, 16] = [state.to_i.to_s(16).rjust(32,'0')].pack("H*")
-    ileArguments[  64, 16] = [error.to_i.to_s(16).rjust(32,'0')].pack("H*")
-    ileArguments[  80, 16] = [msg.to_i.to_s(16).rjust(32,'0')].pack("H*")
-    ileArguments[  96,  2] = ['0402'].pack("H*")             #
-    ileArguments[  98, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
-    ileArguments[ 112, 16] = [msglen.to_i.to_s(16).rjust(32,'0')].pack("H*")
-    Ilecallx.call(SQLApis['SQLErrorW'], ileArguments, SQLApiList['SQLErrorW'], - 5, 0)
-    l = msglen[0, 2].unpack("H*")[0].to_i(16) * 2
-    return [ileArguments[ 16, 4].unpack('l')[0],
-     state[0, 10].force_encoding('UTF-16BE').encode('utf-8'),
-     error[0, 4].unpack("l")[0],
-     msg[0, l].force_encoding('UTF-16BE').encode('utf-8')]
   end
   def SQLGetDiagRecW(htype, handle, recnum = 0)
     state  = SQLstate.malloc
