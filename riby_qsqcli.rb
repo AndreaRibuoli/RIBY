@@ -167,7 +167,7 @@ module RibyCli
      error[0, 4].unpack("l")[0],
      msg[0, l].force_encoding('UTF-16BE').encode('utf-8')]
   end
-  def SQLGetDiagRecW(htype, handle, recnum)
+  def SQLGetDiagRecW(htype, handle, recnum = 0)
     state  = SQLstate.malloc
     error  = SQLerror.malloc
     msg    = SQLmsg.malloc
@@ -234,9 +234,8 @@ class Env
   def handle
     @henv[0,4]
   end
-  def error
-    SQLGetDiagRecW(SQL_HANDLE_ENV, handle, 1)
-    # SQLErrorW(handle)
+  def error(n = 1)
+    SQLGetDiagRecW(SQL_HANDLE_ENV, handle, n)
   end
   def attrs= hattrs
     hattrs.each { |k,v|
@@ -410,9 +409,8 @@ class Connect
   def handle
     @hdbc[0,4]
   end
-  def error
-    SQLGetDiagRecW(SQL_HANDLE_DBC, handle, 1)
-    # SQLErrorW(@henv.handle, handle)
+  def error(n = 1)
+    SQLGetDiagRecW(SQL_HANDLE_DBC, handle, n)
   end
   def empower(user, pass)
     dsnW  = @dsn.encode('UTF-16BE')
@@ -643,9 +641,8 @@ class Stmt
   def handle
     @hstmt[0,4]
   end
-  def error
-    SQLGetDiagRecW(SQL_HANDLE_STMT, handle, 1)
-    # SQLErrorW(@henv.handle, handle)
+  def error(n = 1)
+    SQLGetDiagRecW(SQL_HANDLE_STMT, handle, n)
   end
   def attrs= hattrs
     hattrs.each { |k,v|
