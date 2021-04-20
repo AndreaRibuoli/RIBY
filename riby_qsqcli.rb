@@ -703,6 +703,7 @@ class Stmt
     SQL_ATTR_UNKNOWN_10065:      10065,
     SQL_ATTR_UNKNOWN_10066:      10066
   }
+  def SQLGetStmtAttrW(key, kind = SQLINTEGER)
     buffer  = INFObuffer.malloc
     sizeint = SQLintsize.malloc
     ileArguments = ILEarglist.malloc
