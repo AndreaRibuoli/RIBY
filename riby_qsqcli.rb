@@ -208,7 +208,7 @@ class Env
     return rc
   end
   def self.finalizer_proc(h)
-    proc {
+    proc {|h|
       rc1 = RibyCli::SQLRelaseEnv(h)
       rc2 = RibyCli::SQLFreeHandle(SQL_HANDLE_ENV, h)
       puts "#{h.unpack('H*')} #{'%10.7f' % Time.now.to_f} Release Env (#{rc1})"  if $-W >= 2
