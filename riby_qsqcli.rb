@@ -163,6 +163,16 @@ module RibyCli
      error[0, 4].unpack("l")[0],
      msg[0, l].force_encoding('UTF-16BE').encode('utf-8')]
   end
+
+  def self.SQLReleaseEnv(htype, handle)
+#    ileArguments = ILEarglist.malloc
+#    ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
+#    ileArguments[  32,   4] = henv                             # henv
+#    ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
+#    Ilecallx.call(SQLApis['SQLReleaseEnv'], ileArguments, SQLApiList['SQLReleaseEnv'], - 5, 0)
+#    return ileArguments[ 16, 4].unpack('l')[0]
+  end
+
   def self.SQLFreeHandle(htype, handle)
     ileArguments = ILEarglist.malloc
     ileArguments[  0,  32] = ['0'.rjust(64,'0')].pack("H*")
@@ -174,15 +184,6 @@ module RibyCli
     return ileArguments[ 16, 4].unpack('l')[0]
   end
   
-  def self.SQLReleaseEnv(htype, handle)
-#    ileArguments = ILEarglist.malloc
-#    ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
-#    ileArguments[  32,   4] = henv                             # henv
-#    ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
-#    Ilecallx.call(SQLApis['SQLReleaseEnv'], ileArguments, SQLApiList['SQLReleaseEnv'], - 5, 0)
-#    return ileArguments[ 16, 4].unpack('l')[0]
-  end
-
   def self.SQLDisconnect(handle)
     ileArguments = ILEarglist.malloc
     ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
