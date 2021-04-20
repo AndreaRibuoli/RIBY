@@ -175,16 +175,6 @@ module RibyCli
     return ileArguments[ 16, 4].unpack('l')[0]
   end
   
-  def self.SQLDisconnect(handle)
-    ileArguments = ILEarglist.malloc
-    ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
-    ileArguments[  32,   4] = handle                          # hdbc
-    ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
-    Ilecallx.call(SQLApis['SQLDisconnect'], ileArguments, SQLApiList['SQLDisconnect'], - 5, 0)
-    return ileArguments[ 16, 4].unpack('l')[0]
-  end
-  
-
 end
 
 class Env
@@ -478,6 +468,16 @@ class Connect
     puts "#{handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} ## SYNCHRONOUS SQLDisconnect IGNORED!!! ##"  if $-W >= 2
     # SQLDisconnect()
   end
+
+  def self.SQLDisconnect(hdbc)
+    ileArguments = ILEarglist.malloc
+    ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[  32,   4] = hdbc
+    ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
+    Ilecallx.call(SQLApis['SQLDisconnect'], ileArguments, SQLApiList['SQLDisconnect'], - 5, 0)
+    return ileArguments[ 16, 4].unpack('l')[0]
+  end
+
   private
   ATTRS = {
     SQL_ATTR_TXN_ISOLATION:                        0,
