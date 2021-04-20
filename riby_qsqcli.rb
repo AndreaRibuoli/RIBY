@@ -364,7 +364,7 @@ class Connect
   def error
     SQLErrorW(@henv.handle, handle)
   end
-  def Empower(user, pass)
+  def empower(user, pass)
     dsnW  = @dsn.encode('UTF-16BE')
     userW = user.encode('UTF-16BE')
     passW = pass.encode('UTF-16BE')

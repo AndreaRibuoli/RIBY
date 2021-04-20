@@ -4,7 +4,7 @@ require 'pp'
 
 h = Env.new
 d = Connect.new(h, '*LOCAL')
-d.Empower('*CURRENT','')
+d.empower('*CURRENT','')
 s = Stmt.new(d)
 
 puts h.handle.unpack("l")

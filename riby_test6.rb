@@ -9,7 +9,7 @@ h = Env.new
 h.attrs=({:SQL_ATTR_SERVER_MODE => :SQL_TRUE})
 5.times {
   di = Connect.new(h, '*LOCAL')
-  di.Empower(ARGV[0],ARGV[1])
+  di.empower(ARGV[0],ARGV[1])
   Stmt.new(di)
   puts "Connect #{di.handle.unpack('l')[0]}: #{di.jobname}"
 }

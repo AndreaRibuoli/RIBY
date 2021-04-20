@@ -7,12 +7,12 @@ raise "Usage: #{__FILE__} <user> <password>" if ARGV.length != 2
 h = Env.new
 h.attrs=({:SQL_ATTR_SERVER_MODE => :SQL_TRUE})
 d1 = Connect.new(h, '*LOCAL')
-d1.Empower(ARGV[0],ARGV[1])
+d1.empower(ARGV[0],ARGV[1])
 s1 = Stmt.new(d1)
 puts s1.handle.unpack('l')
 begin
   d2 = Connect.new(h, '*LOCAL')
-  d2.Empower(ARGV[0],ARGV[1])
+  d2.empower(ARGV[0],ARGV[1])
   s2 = Stmt.new(d2)
   puts s2.handle.unpack('l')
 end

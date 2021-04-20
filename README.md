@@ -860,12 +860,12 @@ raise "Usage: #{__FILE__} <user> <password>" if ARGV.length != 2
 h = Env.new
 h.attrs=({:SQL_ATTR_SERVER_MODE => :SQL_TRUE})
 d1 = Connect.new(h, '*LOCAL')
-d1.Empower(ARGV[0],ARGV[1])
+d1.empower(ARGV[0],ARGV[1])
 s1 = Stmt.new(d1)
 puts s1.handle.unpack('l')
 begin
   d2 = Connect.new(h, '*LOCAL')
-  d2.Empower(ARGV[0],ARGV[1])
+  d2.empower(ARGV[0],ARGV[1])
   s2 = Stmt.new(d2)
   puts s2.handle.unpack('l')
 end
@@ -944,13 +944,13 @@ raise "Usage: #{__FILE__} <user> <password>" if ARGV.length != 2
 h = Env.new
 h.attrs=({:SQL_ATTR_SERVER_MODE => :SQL_TRUE})
 d1 = Connect.new(h, '*LOCAL')
-d1.Empower(ARGV[0],ARGV[1])
+d1.empower(ARGV[0],ARGV[1])
 Stmt.new(d1)
 Stmt.new(d1)
 GC.stress = true
 10.times {
   di = Connect.new(h, '*LOCAL')
-  di.Empower(ARGV[0],ARGV[1])
+  di.empower(ARGV[0],ARGV[1])
   Stmt.new(di)
 }
 Stmt.new(d1)
@@ -996,13 +996,13 @@ raise "Usage: #{__FILE__} <user> <password>" if ARGV.length != 2
 h = Env.new
 h.attrs=({:SQL_ATTR_SERVER_MODE => :SQL_TRUE})
 d1 = Connect.new(h, '*LOCAL')
-d1.Empower(ARGV[0],ARGV[1])
+d1.empower(ARGV[0],ARGV[1])
 s1 =Stmt.new(d1)
 s2 =Stmt.new(d1)
 GC.stress = true
 10.times {
   di = Connect.new(h, '*LOCAL')
-  di.Empower(ARGV[0],ARGV[1])
+  di.empower(ARGV[0],ARGV[1])
   Stmt.new(di)
 }
 s3 =Stmt.new(d1)
@@ -1077,13 +1077,13 @@ raise "Usage: #{__FILE__} <user> <password>" if ARGV.length != 2
 h = Env.new
 h.attrs=({:SQL_ATTR_SERVER_MODE => :SQL_TRUE})
 d1 = Connect.new(h, '*LOCAL')
-d1.Empower(ARGV[0],ARGV[1])
+d1.empower(ARGV[0],ARGV[1])
 s1 =Stmt.new(d1)
 s2 =Stmt.new(d1)
 GC.stress = true
 5.times {
   di = Connect.new(h, '*LOCAL')
-  di.Empower(ARGV[0],ARGV[1])
+  di.empower(ARGV[0],ARGV[1])
   Stmt.new(di)
   puts "Connect #{di.handle.unpack('l')[0]}: #{di.jobname}"
 }
@@ -1148,7 +1148,7 @@ h = Env.new
 h.attrs=({:SQL_ATTR_SERVER_MODE => :SQL_TRUE})
 100.times {
   di = Connect.new(h, '*LOCAL')
-  di.Empower(ARGV[0],ARGV[1])
+  di.empower(ARGV[0],ARGV[1])
   Stmt.new(di)
   puts "#{di.jobname} : Connect #{di.handle.unpack('H*')[0]}"
 }                                                                      
@@ -1265,7 +1265,7 @@ h = Env.new
 h.attrs=({:SQL_ATTR_SERVER_MODE => :SQL_TRUE})
 100.times {
   di = Connect.new(h, '*LOCAL')
-  di.Empower(ARGV[0],ARGV[1])
+  di.empower(ARGV[0],ARGV[1])
   Stmt.new(di)
   puts "#{di.jobname} : Connect #{di.handle.unpack('H*')[0]}"
   di.disconnect
@@ -1398,7 +1398,7 @@ h.attrs=({:SQL_ATTR_DATE_FMT    => :SQL_FMT_EUR,
           :SQL_ATTR_DEFAULT_LIB => 'INTELLIGEN'
          })
 d = Connect.new(h, '*LOCAL')
-d.Empower(ARGV[0],ARGV[1])
+d.empower(ARGV[0],ARGV[1])
 d.attrs=({:SQL_ATTR_TIME_FMT        => :SQL_FMT_EUR,
           :SQL_ATTR_DBC_DEFAULT_LIB => 'PROVAPIENA',
           :SQL_ATTR_MAX_PRECISION   => 63
@@ -1650,7 +1650,7 @@ require_relative 'riby_qsqcli'
 
 h = Env.new
 d = Connect.new(h, '*LOCAL')
-d.Empower('*CURRENT','')
+d.empower('*CURRENT','')
 s = Stmt.new(d)
 
 puts h::handle.unpack("l")
@@ -1690,7 +1690,7 @@ class Connect
   def handle
     . . .
   end
-  def Empower(user, pass)
+  def empower(user, pass)
     . . .
   end
 end
@@ -1729,7 +1729,7 @@ class Connect
   def handle
     . . .
   end
-  def Empower(user, pass)
+  def empower(user, pass)
     . . .
   end
 end
@@ -1740,7 +1740,7 @@ this way simplifying standard use:
 ``` ruby
 h = Env.new
 d = Connect.new(h)
-d.Empower('*CURRENT','')
+d.empower('*CURRENT','')
 s = Stmt.new(d)
 ```
 
@@ -1815,7 +1815,7 @@ require 'pp'
 
 h = Env.new
 d = Connect.new(h, '*LOCAL')
-d.Empower('*CURRENT','')
+d.empower('*CURRENT','')
 s = Stmt.new(d)
 
 puts h.handle.unpack("l")
