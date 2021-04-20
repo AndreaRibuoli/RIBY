@@ -44,7 +44,13 @@ module RibyCli
                   Preload['_ILECALLX'],
                   [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_SHORT, Fiddle::TYPE_INT],
                   Fiddle::TYPE_INT )
+ ##
+ ## In ODBC 3.0, SQLError() has been deprecated and replaced with SQLGetDiagRec() and SQLGetDiagField()
+ ##
+ 
   SQLApiList = {            #----#----#----#----#----#----#----#----#----#----#----#----#----#----#
+  'SQLErrorW'            => [ - 5, - 5, - 5, -11, -11, -11, - 3, -11,                            0].pack("n*"),
+  'SQLGetDiagRecW'       => [ - 3, - 5, - 3, -11, -11, -11, - 3, -11,                            0].pack("n*"),
   'SQLAllocHandle'       => [ - 3, - 5, -11,                                                     0].pack("n*"),
   'SQLFreeHandle'        => [ - 3, - 5,                                                          0].pack("n*"),
   'SQLGetEnvAttr'        => [ - 5, - 5, -11, - 5, -11,                                           0].pack("n*"),
@@ -74,7 +80,6 @@ module RibyCli
   'SQLDescribeParam'     => [ - 5, - 3, -11, -11, -11, -11,                                      0].pack("n*"),
   'SQLDriverConnectW'    => [ - 5, -11, -11, - 3, -11, - 3, -11, - 3,                            0].pack("n*"),
   'SQLEndTran'           => [ - 3, - 5, - 3,                                                     0].pack("n*"),
-  'SQLErrorW'            => [ - 5, - 5, - 5, -11, -11, -11, - 3, -11,                            0].pack("n*"),
   'SQLExecute'           => [ - 5,                                                               0].pack("n*"),
   'SQLExecDirectW'       => [ - 5, -11, - 5,                                                     0].pack("n*"),
   'SQLExtendedFetch'     => [ - 5, - 3, - 5, -11, -11,                                           0].pack("n*"),
@@ -88,7 +93,6 @@ module RibyCli
   'SQLGetDescFieldW'     => [ - 5, - 3, - 3, -11, - 5, -11,                                      0].pack("n*"),
   'SQLGetDescRecW'       => [ - 5, - 3, -11, - 3, -11, -11, -11, -11, -11, -11, -11,             0].pack("n*"),
   'SQLGetDiagFieldW'     => [ - 3, - 5, - 3, - 3, -11, - 3, -11,                                 0].pack("n*"),
-  'SQLGetDiagRecW'       => [ - 3, - 5, - 3, -11, -11, -11, - 3, -11,                            0].pack("n*"),
   'SQLGetFunctions'      => [ - 5, - 3, -11,                                                     0].pack("n*"),
   'SQLGetLength'         => [ - 5, - 5, - 5, -11, -11,                                           0].pack("n*"),
   'SQLGetPositionW'      => [ - 5, - 3, - 5, - 5, -11, - 5, - 5, -11, -11,                       0].pack("n*"),
@@ -163,7 +167,31 @@ module RibyCli
      error[0, 4].unpack("l")[0],
      msg[0, l].force_encoding('UTF-16BE').encode('utf-8')]
   end
-
+  def SQLGetDiagRecW(htype, handle, recnum)
+    state  = SQLstate.malloc
+    error  = SQLerror.malloc
+    msg    = SQLmsg.malloc
+    msglen = SQLmsglen.malloc
+    ileArguments = ILEarglist.malloc
+    ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[  32,  2] = [htype.to_s(16).rjust(4,'0')].pack("H*")
+    ileArguments[  34,  2] = ['0000'].pack("H*")             # padding
+    ileArguments[  36,  4] = handle
+    ileArguments[  40,  2] = [recnum.to_s(16).rjust(4,'0')].pack("H*")
+    ileArguments[  42,  6] = ['0'.rjust(12,'0')].pack("H*")  # padding
+    ileArguments[  48, 16] = [state.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    ileArguments[  64, 16] = [error.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    ileArguments[  80, 16] = [msg.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    ileArguments[  96,  2] = ['0402'].pack("H*")             #
+    ileArguments[  98, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
+    ileArguments[ 112, 16] = [msglen.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    Ilecallx.call(SQLApis['SQLGetDiagRecW'], ileArguments, SQLApiList['SQLGetDiagRecW'], - 5, 0)
+    l = msglen[0, 2].unpack("H*")[0].to_i(16) * 2
+    return [ileArguments[ 16, 4].unpack('l')[0],
+     state[0, 10].force_encoding('UTF-16BE').encode('utf-8'),
+     error[0, 4].unpack("l")[0],
+     msg[0, l].force_encoding('UTF-16BE').encode('utf-8')]
+  end
   def self.SQLFreeHandle(htype, handle)
     ileArguments = ILEarglist.malloc
     ileArguments[  0,  32] = ['0'.rjust(64,'0')].pack("H*")
@@ -207,7 +235,8 @@ class Env
     @henv[0,4]
   end
   def error
-    SQLErrorW(handle)
+    SQLGetDiagRecW(SQL_HANDLE_ENV, handle, 1)
+    # SQLErrorW(handle)
   end
   def attrs= hattrs
     hattrs.each { |k,v|
@@ -382,7 +411,8 @@ class Connect
     @hdbc[0,4]
   end
   def error
-    SQLErrorW(@henv.handle, handle)
+    SQLGetDiagRecW(SQL_HANDLE_DBC, handle, 1)
+    # SQLErrorW(@henv.handle, handle)
   end
   def empower(user, pass)
     dsnW  = @dsn.encode('UTF-16BE')
@@ -612,6 +642,10 @@ class Stmt
   end
   def handle
     @hstmt[0,4]
+  end
+  def error
+    SQLGetDiagRecW(SQL_HANDLE_STMT, handle, 1)
+    # SQLErrorW(@henv.handle, handle)
   end
   def attrs= hattrs
     hattrs.each { |k,v|
