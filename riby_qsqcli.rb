@@ -62,6 +62,7 @@ module RibyCli
   'SQLDisconnect'        => [ - 5,                                                               0].pack("n*"),
   'SQLReleaseEnv'        => [ - 5,                                                               0].pack("n*"),
   'SQLGetInfoW'          => [ - 5, - 3, -11, - 3, -11,                                           0].pack("n*"),
+  'SQLExecDirectW'       => [ - 5, -11, - 5,                                                     0].pack("n*"),
   'SQLBindCol'           => [ - 5, - 5, - 5, -11, - 5, -11,                                      0].pack("n*"),
   'SQLBindFileToCol'     => [ - 5, - 3, -11, -11, -11, - 3, -11, -11,                            0].pack("n*"),
   'SQLBindFileToParam'   => [ - 5, - 3, - 3, -11, -11, -11, - 3, -11,                            0].pack("n*"),
@@ -80,7 +81,6 @@ module RibyCli
   'SQLDriverConnectW'    => [ - 5, -11, -11, - 3, -11, - 3, -11, - 3,                            0].pack("n*"),
   'SQLEndTran'           => [ - 3, - 5, - 3,                                                     0].pack("n*"),
   'SQLExecute'           => [ - 5,                                                               0].pack("n*"),
-  'SQLExecDirectW'       => [ - 5, -11, - 5,                                                     0].pack("n*"),
   'SQLExtendedFetch'     => [ - 5, - 3, - 5, -11, -11,                                           0].pack("n*"),
   'SQLFetch'             => [ - 5,                                                               0].pack("n*"),
   'SQLFetchScroll'       => [ - 5, - 3, - 5,                                                     0].pack("n*"),
@@ -613,6 +613,9 @@ class Stmt
       hdbc.delete(h)
     }
   end
+  def execdirect(sql)
+    SQLExecDirectW(sql)
+  end
   def handle
     @hstmt[0,4]
   end
@@ -700,7 +703,6 @@ class Stmt
     SQL_ATTR_UNKNOWN_10065:      10065,
     SQL_ATTR_UNKNOWN_10066:      10066
   }
-  def SQLGetStmtAttrW(key, kind = SQLINTEGER)
     buffer  = INFObuffer.malloc
     sizeint = SQLintsize.malloc
     ileArguments = ILEarglist.malloc
@@ -736,6 +738,19 @@ class Stmt
     ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")   # padding
     ileArguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
     Ilecallx.call(SQLApis['SQLSetStmtAttrW'], ileArguments, SQLApiList['SQLSetStmtAttrW'], - 5, 0)
+    return ileArguments[ 16, 4].unpack('l')[0]
+  end
+  def SQLExecDirectW(sql)
+    stm = sql.encode('UTF-16BE')
+    len = stm.length
+    ileArguments = ILEarglist.malloc
+    ILEarguments[  0, 32] = ['0'.rjust(64,'0')].pack("H*")
+    ILEarguments[ 32,  4] = handle                          # hstmt
+    ILEarguments[ 36, 12] = ['0'.rjust(24,'0')].pack("H*")  # padding
+    ILEarguments[ 48, 16] = [Fiddle::Pointer[stm].to_i.to_s(16).rjust(32,'0')].pack("H*")
+    ILEarguments[ 64,  4] = [len.to_s(16).rjust(8,'0')].pack("H*")
+    ILEarguments[ 68, 84] = ['0'.rjust(168,'0')].pack("H*")  # padding
+    Ilecallx.call(SQLApis['SQLExecDirectW'], ileArguments, SQLApiList['SQLExecDirectW'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
 end
