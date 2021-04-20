@@ -173,6 +173,7 @@ module RibyCli
     Ilecallx.call(SQLApis['SQLFreeHandle'], ileArguments, SQLApiList['SQLFreeHandle'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
+  
   def self.SQLReleaseEnv(handle)
     ileArguments = ILEarglist.malloc
     ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
@@ -181,6 +182,7 @@ module RibyCli
     Ilecallx.call(SQLApis['SQLReleaseEnv'], ileArguments, SQLApiList['SQLReleaseEnv'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
+  
   def self.SQLDisconnect(handle)
     ileArguments = ILEarglist.malloc
     ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
@@ -189,6 +191,7 @@ module RibyCli
     Ilecallx.call(SQLApis['SQLDisconnect'], ileArguments, SQLApiList['SQLDisconnect'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
+  
 end
 
 class Env
@@ -205,7 +208,7 @@ class Env
   end
   def self.finalizer_proc(h)
     proc {
- #     rc = RibyCli::SQLRelaseEnv(h)
+      rc = RibyCli::SQLRelaseEnv(h)
  #     puts "#{h.unpack('H*')} #{'%10.7f' % Time.now.to_f} Release Env (#{rc})"  if $-W >= 2
       rc = RibyCli::SQLFreeHandle(SQL_HANDLE_ENV, h)
       puts "#{h.unpack('H*')} #{'%10.7f' % Time.now.to_f} Free Env (#{rc})" if $-W >= 2
