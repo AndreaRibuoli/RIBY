@@ -53,6 +53,8 @@ module RibyCli
  ##
  ## In ODBC 3.0, SQLError() has been deprecated and replaced with SQLGetDiagRec() and SQLGetDiagField()
  ##
+ ## DB2 for i CLI does not support asynchronous statement processing (SQLCancel).
+ ##
  
   SQLApiList = {            #----#----#----#----#----#----#----#----#----#----#----#----#----#----#
   'SQLGetDiagRecW'       => [ - 3, - 5, - 3, -11, -11, -11, - 3, -11,                            0].pack("n*"),
@@ -70,12 +72,12 @@ module RibyCli
   'SQLGetInfoW'          => [ - 5, - 3, -11, - 3, -11,                                           0].pack("n*"),
   'SQLExecDirectW'       => [ - 5, -11, - 5,                                                     0].pack("n*"),
   'SQLEndTran'           => [ - 3, - 5, - 3,                                                     0].pack("n*"),
+  'SQLCancel'            => [ - 5,                                                               0].pack("n*"), ##
   'SQLBindCol'           => [ - 5, - 5, - 5, -11, - 5, -11,                                      0].pack("n*"),
   'SQLBindFileToCol'     => [ - 5, - 3, -11, -11, -11, - 3, -11, -11,                            0].pack("n*"),
   'SQLBindFileToParam'   => [ - 5, - 3, - 3, -11, -11, -11, - 3, -11,                            0].pack("n*"),
   'SQLBindParam'         => [ - 5, - 3, - 3, - 3, - 5, - 3, -11, -11,                            0].pack("n*"),
   'SQLBindParameter'     => [ - 5, - 5, - 5, - 5, - 5, - 5, - 5, -11, - 5, -11,                  0].pack("n*"),
-  'SQLCancel'            => [ - 5,                                                               0].pack("n*"),
   'SQLCloseCursor'       => [ - 5,                                                               0].pack("n*"),
   'SQLColumnsW'          => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3,                       0].pack("n*"),
   'SQLColumnPrivilegesW' => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3,                       0].pack("n*"),
