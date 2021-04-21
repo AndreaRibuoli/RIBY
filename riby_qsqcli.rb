@@ -628,7 +628,7 @@ class Stmt
   def execdirect(sql)    SQLExecDirectW(sql); end
   def handle()           @hstmt[0,4]; end
   def error(n = 1)       SQLGetDiagRecW(SQL_HANDLE_STMT, handle, n); end
-  def cancel()           SQLCancel; end 
+  def cancel()           SQLCancel(); end 
   def attrs= hattrs
     hattrs.each { |k,v|
       lis = SQLAttrVals[:VALATTR_DECO][k]
@@ -763,7 +763,7 @@ class Stmt
     Ilecallx.call(SQLApis['SQLExecDirectW'], ileArguments, SQLApiList['SQLExecDirectW'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
-  def SQLCancel
+  def SQLCancel()
     ileArguments = ILEarglist.malloc
     ileArguments[  0,  32] = ['0'.rjust(64,'0')].pack("H*")
     ileArguments[ 32,   4] = handle                           # hstmt
