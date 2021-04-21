@@ -226,12 +226,12 @@ class Env
   def handle
     @henv[0,4]
   end
-  def commit()          SQLEndTran(SQL_HANDLE_ENV, handle, SQL_COMMIT) end
-  def rollback()        SQLEndTran(SQL_HANDLE_ENV, handle, SQL_ROLLBACK) end
-  def commit_hold()     SQLEndTran(SQL_HANDLE_ENV, handle, SQL_COMMIT_HOLD) end
-  def rollback_hold()   SQLEndTran(SQL_HANDLE_ENV, handle, SQL_ROLLBACK_HOLD) end
-  def savptn_release()  SQLEndTran(SQL_HANDLE_ENV, handle, SQL_SAVEPOINT_NAME_RELEASE) end
-  def savptn_rollback() SQLEndTran(SQL_HANDLE_ENV, handle, SQL_SAVEPOINT_NAME_ROLLBACK) end
+  #def commit()          SQLEndTran(SQL_HANDLE_ENV, handle, SQL_COMMIT) end
+  #def rollback()        SQLEndTran(SQL_HANDLE_ENV, handle, SQL_ROLLBACK) end
+  #def commit_hold()     SQLEndTran(SQL_HANDLE_ENV, handle, SQL_COMMIT_HOLD) end
+  #def rollback_hold()   SQLEndTran(SQL_HANDLE_ENV, handle, SQL_ROLLBACK_HOLD) end
+  #def savptn_release()  SQLEndTran(SQL_HANDLE_ENV, handle, SQL_SAVEPOINT_NAME_RELEASE) end
+  #def savptn_rollback() SQLEndTran(SQL_HANDLE_ENV, handle, SQL_SAVEPOINT_NAME_ROLLBACK) end
   def error(n = 1)
     SQLGetDiagRecW(SQL_HANDLE_ENV, handle, n)
   end
@@ -407,12 +407,12 @@ class Connect
   def handle
     @hdbc[0,4]
   end
-  def commit()          begin SQLEndTran(SQL_HANDLE_DBC, handle, SQL_COMMIT) end
-  def rollback()        begin SQLEndTran(SQL_HANDLE_DBC, handle, SQL_ROLLBACK) end
-  def commit_hold()     begin SQLEndTran(SQL_HANDLE_DBC, handle, SQL_COMMIT_HOLD) end
-  def rollback_hold()   begin SQLEndTran(SQL_HANDLE_DBC, handle, SQL_ROLLBACK_HOLD) end
-  def savptn_release()  begin SQLEndTran(SQL_HANDLE_DBC, handle, SQL_SAVEPOINT_NAME_RELEASE) end
-  def savptn_rollback() begin SQLEndTran(SQL_HANDLE_DBC, handle, SQL_SAVEPOINT_NAME_ROLLBACK) end
+  #def commit()          begin SQLEndTran(SQL_HANDLE_DBC, handle, SQL_COMMIT) end
+  #def rollback()        begin SQLEndTran(SQL_HANDLE_DBC, handle, SQL_ROLLBACK) end
+  #def commit_hold()     begin SQLEndTran(SQL_HANDLE_DBC, handle, SQL_COMMIT_HOLD) end
+  #def rollback_hold()   begin SQLEndTran(SQL_HANDLE_DBC, handle, SQL_ROLLBACK_HOLD) end
+  #def savptn_release()  begin SQLEndTran(SQL_HANDLE_DBC, handle, SQL_SAVEPOINT_NAME_RELEASE) end
+  #def savptn_rollback() begin SQLEndTran(SQL_HANDLE_DBC, handle, SQL_SAVEPOINT_NAME_ROLLBACK) end
   def error(n = 1)
     SQLGetDiagRecW(SQL_HANDLE_DBC, handle, n)
   end
