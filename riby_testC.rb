@@ -9,6 +9,6 @@ e.attrs = { :SQL_ATTR_SERVER_MODE => :SQL_TRUE }
 c = Connect.new(e)
 pp c.empower(ARGV[0], ARGV[1])
 s = Stmt.new(c)
-Thread.new { s.cancel }
+Thread.new { s.cancel; pp s.error }
 pp s.error
 pp s.error
