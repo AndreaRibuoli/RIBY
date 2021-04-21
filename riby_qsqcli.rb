@@ -773,7 +773,7 @@ class Stmt
   def SQLExecDirectW(sql)
     len = sql.length
     buffer  = INFObuffer.malloc
-    buffer[0, len] = sql.encode('UTF-16BE')
+    buffer[0, len*2] = sql.encode('UTF-16BE')
     ileArguments = ILEarglist.malloc
     ileArguments[  0, 32] = ['0'.rjust(64,'0')].pack("H*")
     ileArguments[ 32,  4] = handle                          # hstmt
