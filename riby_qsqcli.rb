@@ -63,6 +63,7 @@ module RibyCli
   'SQLReleaseEnv'        => [ - 5,                                                               0].pack("n*"),
   'SQLGetInfoW'          => [ - 5, - 3, -11, - 3, -11,                                           0].pack("n*"),
   'SQLExecDirectW'       => [ - 5, -11, - 5,                                                     0].pack("n*"),
+  'SQLEndTran'           => [ - 3, - 5, - 3,                                                     0].pack("n*"),
   'SQLBindCol'           => [ - 5, - 5, - 5, -11, - 5, -11,                                      0].pack("n*"),
   'SQLBindFileToCol'     => [ - 5, - 3, -11, -11, -11, - 3, -11, -11,                            0].pack("n*"),
   'SQLBindFileToParam'   => [ - 5, - 3, - 3, -11, -11, -11, - 3, -11,                            0].pack("n*"),
@@ -79,7 +80,6 @@ module RibyCli
   'SQLDescribeColW'      => [ - 5, - 3, -11, - 3, -11, -11, -11, -11, -11,                       0].pack("n*"),
   'SQLDescribeParam'     => [ - 5, - 3, -11, -11, -11, -11,                                      0].pack("n*"),
   'SQLDriverConnectW'    => [ - 5, -11, -11, - 3, -11, - 3, -11, - 3,                            0].pack("n*"),
-  'SQLEndTran'           => [ - 3, - 5, - 3,                                                     0].pack("n*"),
   'SQLExecute'           => [ - 5,                                                               0].pack("n*"),
   'SQLExtendedFetch'     => [ - 5, - 3, - 5, -11, -11,                                           0].pack("n*"),
   'SQLFetch'             => [ - 5,                                                               0].pack("n*"),
@@ -177,7 +177,18 @@ module RibyCli
     Ilecallx.call(SQLApis['SQLFreeHandle'], ileArguments, SQLApiList['SQLFreeHandle'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
-  
+  def SQLEndTran(htype, handle, ftype)
+    ileArguments = ILEarglist.malloc
+    ileArguments[  0,  32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[ 32,   2] = [htype.to_s(16).rjust(4,'0')].pack("H*")
+    ileArguments[ 34,   2] = ['0000'].pack("H*")
+    ileArguments[ 36,   4] = handle
+    ileArguments[ 40,   2] = [ftype.to_s(16).rjust(4,'0')].pack("H*")
+    ileArguments[ 42, 102] = ['0'.rjust(204,'0')].pack("H*")
+    Ilecallx.call(SQLApis['SQLEndTran'], ileArguments, SQLApiList['SQLEndTran'], - 5, 0)
+    return ileArguments[ 16, 4].unpack('l')[0]
+  end
+
 end
 
 class Env
@@ -209,6 +220,12 @@ class Env
   def handle
     @henv[0,4]
   end
+  def commit          begin SQLEndTran(SQL_HANDLE_ENV, handle, SQL_COMMIT) end
+  def rollback        begin SQLEndTran(SQL_HANDLE_ENV, handle, SQL_ROLLBACK) end
+  def commit_hold     begin SQLEndTran(SQL_HANDLE_ENV, handle, SQL_COMMIT_HOLD) end
+  def rollback_hold   begin SQLEndTran(SQL_HANDLE_ENV, handle, SQL_ROLLBACK_HOLD) end
+  def savptn_rollback begin SQLEndTran(SQL_HANDLE_ENV, handle, SQL_SAVEPOINT_NAME_ROLLBACK) end
+  def savptn_release  begin SQLEndTran(SQL_HANDLE_ENV, handle, SQL_SAVEPOINT_NAME_RELEASE) end
   def error(n = 1)
     SQLGetDiagRecW(SQL_HANDLE_ENV, handle, n)
   end
@@ -384,6 +401,12 @@ class Connect
   def handle
     @hdbc[0,4]
   end
+  def commit          begin SQLEndTran(SQL_HANDLE_DBC, handle, SQL_COMMIT) end
+  def rollback        begin SQLEndTran(SQL_HANDLE_DBC, handle, SQL_ROLLBACK) end
+  def commit_hold     begin SQLEndTran(SQL_HANDLE_DBC, handle, SQL_COMMIT_HOLD) end
+  def rollback_hold   begin SQLEndTran(SQL_HANDLE_DBC, handle, SQL_ROLLBACK_HOLD) end
+  def savptn_rollback begin SQLEndTran(SQL_HANDLE_DBC, handle, SQL_SAVEPOINT_NAME_ROLLBACK) end
+  def savptn_release  begin SQLEndTran(SQL_HANDLE_DBC, handle, SQL_SAVEPOINT_NAME_RELEASE) end
   def error(n = 1)
     SQLGetDiagRecW(SQL_HANDLE_DBC, handle, n)
   end
