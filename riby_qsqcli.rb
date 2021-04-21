@@ -196,7 +196,6 @@ module RibyCli
     Ilecallx.call(SQLApis['SQLEndTran'], ileArguments, SQLApiList['SQLEndTran'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
-
 end
 
 class Env
@@ -310,72 +309,72 @@ class Env
   end
 
   private
-    ATTRS = {
-      SQL_ATTR_OUTPUT_NTS: 10001,
-      SQL_ATTR_SYS_NAMING: 10002,
-      SQL_ATTR_DEFAULT_LIB: 10003,
-      SQL_ATTR_SERVER_MODE: 10004,
-      SQL_ATTR_JOB_SORT_SEQUENCE: 10005,
-      SQL_ATTR_ENVHNDL_COUNTER: 10009,
-      SQL_ATTR_ESCAPE_CHAR: 10010,
-      SQL_ATTR_DATE_FMT: 10020,
-      SQL_ATTR_DATE_SEP: 10021,
-      SQL_ATTR_TIME_FMT: 10022,
-      SQL_ATTR_TIME_SEP: 10023,
-      SQL_ATTR_DECIMAL_SEP: 10024,
-      SQL_ATTR_INCLUDE_NULL_IN_LEN: 10031,
-      SQL_ATTR_UTF8: 10032
-    }
-    def SQLGetEnvAttr(key, kind = SQLINTEGER)
-      buffer  = INFObuffer.malloc
+  ATTRS = {
+    SQL_ATTR_OUTPUT_NTS: 10001,
+    SQL_ATTR_SYS_NAMING: 10002,
+    SQL_ATTR_DEFAULT_LIB: 10003,
+    SQL_ATTR_SERVER_MODE: 10004,
+    SQL_ATTR_JOB_SORT_SEQUENCE: 10005,
+    SQL_ATTR_ENVHNDL_COUNTER: 10009,
+    SQL_ATTR_ESCAPE_CHAR: 10010,
+    SQL_ATTR_DATE_FMT: 10020,
+    SQL_ATTR_DATE_SEP: 10021,
+    SQL_ATTR_TIME_FMT: 10022,
+    SQL_ATTR_TIME_SEP: 10023,
+    SQL_ATTR_DECIMAL_SEP: 10024,
+    SQL_ATTR_INCLUDE_NULL_IN_LEN: 10031,
+    SQL_ATTR_UTF8: 10032
+  }
+  def SQLGetEnvAttr(key, kind = SQLINTEGER)
+    buffer  = INFObuffer.malloc
+    sizeint = SQLintsize.malloc
+    ileArguments = ILEarglist.malloc
+    ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[  32,  4] = handle                          # henv
+    ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
+    ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")  # padding
+    ileArguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    ileArguments[  64,  4] = ['00001000'].pack("H*")         # 4096
+    ileArguments[  68, 12] = ['0'.rjust(24,'0')].pack("H*")  # padding
+    ileArguments[  80, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
+    Ilecallx.call(SQLApis['SQLGetEnvAttr'], ileArguments, SQLApiList['SQLGetEnvAttr'], - 5, 0)
+    len = sizeint[0, 4].unpack("l")[0]
+    len -= 1 if (key == ATTRS[:SQL_ATTR_DEFAULT_LIB] && len>1)
+    return buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
+    return buffer[0, len].force_encoding('IBM037').encode('utf-8')  if kind == SQLCHAR
+  end
+  def SQLSetEnvAttr(key, value, kind = SQLINTEGER)
+    ileArguments = ILEarglist.malloc
+    if kind == SQLINTEGER then
       sizeint = SQLintsize.malloc
-      ileArguments = ILEarglist.malloc
-      ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
-      ileArguments[  32,  4] = handle                          # henv
-      ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
-      ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")  # padding
-      ileArguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
-      ileArguments[  64,  4] = ['00001000'].pack("H*")         # 4096
-      ileArguments[  68, 12] = ['0'.rjust(24,'0')].pack("H*")  # padding
-      ileArguments[  80, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
-      ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
-      Ilecallx.call(SQLApis['SQLGetEnvAttr'], ileArguments, SQLApiList['SQLGetEnvAttr'], - 5, 0)
-      len = sizeint[0, 4].unpack("l")[0]
-      len -= 1 if (key == ATTRS[:SQL_ATTR_DEFAULT_LIB] && len>1)
-      return buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
-      return buffer[0, len].force_encoding('IBM037').encode('utf-8')  if kind == SQLCHAR
+      sizeint[0, 4] = [value.to_s(16).rjust(8,'0')].pack("H*")
+      ileArguments[  48, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
     end
-    def SQLSetEnvAttr(key, value, kind = SQLINTEGER)
-      ileArguments = ILEarglist.malloc
-      if kind == SQLINTEGER then
-        sizeint = SQLintsize.malloc
-        sizeint[0, 4] = [value.to_s(16).rjust(8,'0')].pack("H*")
-        ileArguments[  48, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
-      end
-      if kind == SQLCHAR then
-        len = value.length
-        len += 1 if key == ATTRS[:SQL_ATTR_DEFAULT_LIB]
-        ileArguments[  48, 16] = [Fiddle::Pointer[value.encode('IBM037')].to_i.to_s(16).rjust(32,'0')].pack("H*")
-        ileArguments[  64,  4] = [len.to_s(16).rjust(8,'0')].pack("H*")
-      end
-      ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
-      ileArguments[  32,  4] = handle
-      ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
-      ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")   # padding
-      ileArguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
-      Ilecallx.call(SQLApis['SQLSetEnvAttr'], ileArguments, SQLApiList['SQLSetEnvAttr'], - 5, 0)
-      return ileArguments[ 16, 4].unpack('l')[0]
+    if kind == SQLCHAR then
+      len = value.length
+      len += 1 if key == ATTRS[:SQL_ATTR_DEFAULT_LIB]
+      ileArguments[  48, 16] = [Fiddle::Pointer[value.encode('IBM037')].to_i.to_s(16).rjust(32,'0')].pack("H*")
+      ileArguments[  64,  4] = [len.to_s(16).rjust(8,'0')].pack("H*")
     end
-    def SQLReleaseEnv
-      ileArguments = ILEarglist.malloc
-      ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
-      ileArguments[  32,   4] = handle                          # henv
-      ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
-      Ilecallx.call(SQLApis['SQLReleaseEnv'], ileArguments, SQLApiList['SQLReleaseEnv'], - 5, 0)
-      rc = ileArguments[ 16, 4].unpack('l')[0]
-      puts " ReleaseEnv #{handle.unpack('l')[0]} (#{rc}) SYNCHRONOUS"  if $-W >= 2
-      return rc
-    end
+    ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[  32,  4] = handle
+    ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
+    ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")   # padding
+    ileArguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
+    Ilecallx.call(SQLApis['SQLSetEnvAttr'], ileArguments, SQLApiList['SQLSetEnvAttr'], - 5, 0)
+    return ileArguments[ 16, 4].unpack('l')[0]
+  end
+  def SQLReleaseEnv
+    ileArguments = ILEarglist.malloc
+    ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[  32,   4] = handle                          # henv
+    ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
+    Ilecallx.call(SQLApis['SQLReleaseEnv'], ileArguments, SQLApiList['SQLReleaseEnv'], - 5, 0)
+    rc = ileArguments[ 16, 4].unpack('l')[0]
+    puts " ReleaseEnv #{handle.unpack('l')[0]} (#{rc}) SYNCHRONOUS"  if $-W >= 2
+    return rc
+  end
 end
 
 class Connect
