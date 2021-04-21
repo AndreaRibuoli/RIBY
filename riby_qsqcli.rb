@@ -168,10 +168,12 @@ module RibyCli
     ileArguments[ 112, 16] = [msglen.to_i.to_s(16).rjust(32,'0')].pack("H*")
     Ilecallx.call(SQLApis['SQLGetDiagRecW'], ileArguments, SQLApiList['SQLGetDiagRecW'], - 5, 0)
     l = msglen[0, 2].unpack("H*")[0].to_i(16) * 2
-    return [ileArguments[ 16, 4].unpack('l')[0],
-     state[0, 10].force_encoding('UTF-16BE').encode('utf-8'),
-     error[0, 4].unpack("l")[0],
-     msg[0, l].force_encoding('UTF-16BE').encode('utf-8')]
+    rc = ileArguments[ 16, 4].unpack('l')[0]
+    s = state[0, 10].force_encoding('UTF-16BE').encode('utf-8')
+    e = error[0, 4].unpack("l")[0]
+    m = msg[0, l].force_encoding('UTF-16BE').encode('utf-8')
+    return [rc,       s, e, m] if l>0
+    return [rc, '00000', e, m] if l==0
   end
   def self.SQLFreeHandle(htype, handle)
     ileArguments = ILEarglist.malloc
