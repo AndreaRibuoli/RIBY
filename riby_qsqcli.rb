@@ -226,12 +226,12 @@ class Env
   def handle
     @henv[0,4]
   end
-  #def commit()          SQLEndTran(SQL_HANDLE_ENV, handle, SQL_COMMIT) end
-  #def rollback()        SQLEndTran(SQL_HANDLE_ENV, handle, SQL_ROLLBACK) end
-  #def commit_hold()     SQLEndTran(SQL_HANDLE_ENV, handle, SQL_COMMIT_HOLD) end
-  #def rollback_hold()   SQLEndTran(SQL_HANDLE_ENV, handle, SQL_ROLLBACK_HOLD) end
-  #def savptn_release()  SQLEndTran(SQL_HANDLE_ENV, handle, SQL_SAVEPOINT_NAME_RELEASE) end
-  #def savptn_rollback() SQLEndTran(SQL_HANDLE_ENV, handle, SQL_SAVEPOINT_NAME_ROLLBACK) end
+  def commit()          SQLEndTran(SQL_HANDLE_ENV, handle, SQL_COMMIT); end
+  def rollback()        SQLEndTran(SQL_HANDLE_ENV, handle, SQL_ROLLBACK); end
+  def commit_hold()     SQLEndTran(SQL_HANDLE_ENV, handle, SQL_COMMIT_HOLD); end
+  def rollback_hold()   SQLEndTran(SQL_HANDLE_ENV, handle, SQL_ROLLBACK_HOLD); end
+  def savptn_release()  SQLEndTran(SQL_HANDLE_ENV, handle, SQL_SAVEPOINT_NAME_RELEASE); end
+  def savptn_rollback() SQLEndTran(SQL_HANDLE_ENV, handle, SQL_SAVEPOINT_NAME_ROLLBACK); end
   def error(n = 1)
     SQLGetDiagRecW(SQL_HANDLE_ENV, handle, n)
   end
