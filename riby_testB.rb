@@ -10,4 +10,6 @@ c = Connect.new(e)
 pp c.empower(ARGV[0], ARGV[1])
 s = Stmt.new(c)
 s.execdirect(ARGV[2])
-pp s.error(1)
+pp s.error
+c.commit
+pp s.error
