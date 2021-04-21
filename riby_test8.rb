@@ -7,7 +7,7 @@ raise "Usage: #{__FILE__} <user> <password>" if ARGV.length != 2
 h = Env.new
 h.attrs=({:SQL_ATTR_SERVER_MODE => :SQL_TRUE})
 # GC.stress = true
-100.times {
+1000.times {
   di = Connect.new(h, '*LOCAL')
   di.empower(ARGV[0],ARGV[1])
   Stmt.new(di)
