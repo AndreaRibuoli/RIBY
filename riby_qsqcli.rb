@@ -218,24 +218,16 @@ class Env
       puts "#{h.unpack('H*')} #{'%10.7f' % Time.now.to_f} Free Env (#{rc})" if $-W >= 2
     }
   end
-  def add(handle)
-    @hdbcs << handle
-  end
-  def delete(handle)
-    @hdbcs.delete(handle)
-  end
-  def handle
-    @henv[0,4]
-  end
+  def add(handle)       @hdbcs << handle; end
+  def delete(handle)    @hdbcs.delete(handle); end
+  def handle()          @henv[0,4]; end
   def commit()          SQLEndTran(SQL_HANDLE_ENV, handle, SQL_COMMIT); end
   def rollback()        SQLEndTran(SQL_HANDLE_ENV, handle, SQL_ROLLBACK); end
   def commit_hold()     SQLEndTran(SQL_HANDLE_ENV, handle, SQL_COMMIT_HOLD); end
   def rollback_hold()   SQLEndTran(SQL_HANDLE_ENV, handle, SQL_ROLLBACK_HOLD); end
   def savptn_release()  SQLEndTran(SQL_HANDLE_ENV, handle, SQL_SAVEPOINT_NAME_RELEASE); end
   def savptn_rollback() SQLEndTran(SQL_HANDLE_ENV, handle, SQL_SAVEPOINT_NAME_ROLLBACK); end
-  def error(n = 1)
-    SQLGetDiagRecW(SQL_HANDLE_ENV, handle, n)
-  end
+  def error(n = 1)      SQLGetDiagRecW(SQL_HANDLE_ENV, handle, n); end
   def attrs= hattrs
     hattrs.each { |k,v|
       next if (k == :SQL_ATTR_INCLUDE_NULL_IN_LEN)
@@ -264,7 +256,6 @@ class Env
       end
     }
   end
-
   def attrs
     attrs_setting = Hash.new
     ATTRS.each { |k,v|
@@ -399,24 +390,17 @@ class Connect
       henv.delete(h)
     }
   end
-  def add(handle)
-    @hstmts << handle
-  end
-  def delete(handle)
-    @hstmts.delete(handle)
-  end
-  def handle
-    @hdbc[0,4]
-  end
+  def add(handle)       @hstmts << handle; end
+  def delete(handle)    @hstmts.delete(handle); end
+  def handle()          @hdbc[0,4]; end
   def commit()          SQLEndTran(SQL_HANDLE_DBC, handle, SQL_COMMIT); end
   def rollback()        SQLEndTran(SQL_HANDLE_DBC, handle, SQL_ROLLBACK); end
   def commit_hold()     SQLEndTran(SQL_HANDLE_DBC, handle, SQL_COMMIT_HOLD); end
   def rollback_hold()   SQLEndTran(SQL_HANDLE_DBC, handle, SQL_ROLLBACK_HOLD); end
   def savptn_release()  SQLEndTran(SQL_HANDLE_DBC, handle, SQL_SAVEPOINT_NAME_RELEASE); end
   def savptn_rollback() SQLEndTran(SQL_HANDLE_DBC, handle, SQL_SAVEPOINT_NAME_ROLLBACK); end
-  def error(n = 1)
-    SQLGetDiagRecW(SQL_HANDLE_DBC, handle, n)
-  end
+  def error(n = 1)      SQLGetDiagRecW(SQL_HANDLE_DBC, handle, n); end
+  def jobname()         SQLGetInfoW(INFO[:SQL_CONNECTION_JOB_NAME], SQLWCHAR); end
   def empower(user, pass)
     dsnW  = @dsn.encode('UTF-16BE')
     userW = user.encode('UTF-16BE')
@@ -494,14 +478,10 @@ class Connect
     }
     attrs_setting
   end
-  def jobname
-    SQLGetInfoW(INFO[:SQL_CONNECTION_JOB_NAME], SQLWCHAR)
-  end
   def disconnect
     puts "#{handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} ## SYNCHRONOUS SQLDisconnect IGNORED!!! ##"  if $-W >= 2
     # SQLDisconnect()
   end
-
   def self.SQLDisconnect(hdbc)
     ileArguments = ILEarglist.malloc
     ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
@@ -643,15 +623,9 @@ class Stmt
       hdbc.delete(h)
     }
   end
-  def execdirect(sql)
-    SQLExecDirectW(sql)
-  end
-  def handle
-    @hstmt[0,4]
-  end
-  def error(n = 1)
-    SQLGetDiagRecW(SQL_HANDLE_STMT, handle, n)
-  end
+  def execdirect(sql)    SQLExecDirectW(sql); end
+  def handle()           @hstmt[0,4]; end
+  def error(n = 1)       SQLGetDiagRecW(SQL_HANDLE_STMT, handle, n); end
   def attrs= hattrs
     hattrs.each { |k,v|
       lis = SQLAttrVals[:VALATTR_DECO][k]
@@ -709,6 +683,7 @@ class Stmt
     }
     attrs_setting
   end
+  
   private
   ATTRS = {
     SQL_ATTR_APP_ROW_DESC:       10010,
