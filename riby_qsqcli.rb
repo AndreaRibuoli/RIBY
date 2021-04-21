@@ -10,14 +10,20 @@ module RibyCli
   extend Fiddle::Importer
 
   private
-  SQL_NULL_HANDLE  = [ 0, 0, 0, 0].pack("C*")
-  SQL_HANDLE_ENV   = 1
-  SQL_HANDLE_DBC   = 2
-  SQL_HANDLE_STMT  = 3
-  SQL_HANDLE_DESC  = 4
-  SQLINTEGER       = 1
-  SQLCHAR          = 2
-  SQLWCHAR         = 3
+  SQL_NULL_HANDLE              = [ 0, 0, 0, 0].pack("C*")
+  SQL_HANDLE_ENV               = 1
+  SQL_HANDLE_DBC               = 2
+  SQL_HANDLE_STMT              = 3
+  SQL_HANDLE_DESC              = 4
+  SQLINTEGER                   = 1
+  SQLCHAR                      = 2
+  SQLWCHAR                     = 3
+  SQL_COMMIT                   = 0
+  SQL_ROLLBACK                 = 1
+  SQL_COMMIT_HOLD              = 2
+  SQL_ROLLBACK_HOLD            = 3
+  SQL_SAVEPOINT_NAME_RELEASE   = 4
+  SQL_SAVEPOINT_NAME_ROLLBACK  = 5
   
   SQLAttrVals = YAML.load_file('sqlattrvals.yaml')
   ILEpointer  = struct [ 'char b[16]' ]
@@ -224,8 +230,8 @@ class Env
   def rollback        begin SQLEndTran(SQL_HANDLE_ENV, handle, SQL_ROLLBACK) end
   def commit_hold     begin SQLEndTran(SQL_HANDLE_ENV, handle, SQL_COMMIT_HOLD) end
   def rollback_hold   begin SQLEndTran(SQL_HANDLE_ENV, handle, SQL_ROLLBACK_HOLD) end
-  def savptn_rollback begin SQLEndTran(SQL_HANDLE_ENV, handle, SQL_SAVEPOINT_NAME_ROLLBACK) end
   def savptn_release  begin SQLEndTran(SQL_HANDLE_ENV, handle, SQL_SAVEPOINT_NAME_RELEASE) end
+  def savptn_rollback begin SQLEndTran(SQL_HANDLE_ENV, handle, SQL_SAVEPOINT_NAME_ROLLBACK) end
   def error(n = 1)
     SQLGetDiagRecW(SQL_HANDLE_ENV, handle, n)
   end
@@ -405,8 +411,8 @@ class Connect
   def rollback        begin SQLEndTran(SQL_HANDLE_DBC, handle, SQL_ROLLBACK) end
   def commit_hold     begin SQLEndTran(SQL_HANDLE_DBC, handle, SQL_COMMIT_HOLD) end
   def rollback_hold   begin SQLEndTran(SQL_HANDLE_DBC, handle, SQL_ROLLBACK_HOLD) end
-  def savptn_rollback begin SQLEndTran(SQL_HANDLE_DBC, handle, SQL_SAVEPOINT_NAME_ROLLBACK) end
   def savptn_release  begin SQLEndTran(SQL_HANDLE_DBC, handle, SQL_SAVEPOINT_NAME_RELEASE) end
+  def savptn_rollback begin SQLEndTran(SQL_HANDLE_DBC, handle, SQL_SAVEPOINT_NAME_ROLLBACK) end
   def error(n = 1)
     SQLGetDiagRecW(SQL_HANDLE_DBC, handle, n)
   end
