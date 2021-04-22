@@ -11,7 +11,7 @@ module RibyCli
 
   private
   SQL_NTS                      = [ -3].pack("n*")
-  SQL_NULL_HANDLE              = [ 0, 0].pack("n*")
+  SQL_NULL_HANDLE              = [  0].pack("l*")
   SQL_HANDLE_ENV               = 1
   SQL_HANDLE_DBC               = 2
   SQL_HANDLE_STMT              = 3
