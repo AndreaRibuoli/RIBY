@@ -648,7 +648,7 @@ class Stmt
   def tables(s,n,t)             SQLTablesW(s,n,t); end
   def primarykeys(s,n)          SQLPrimaryKeysW(s,n); end
   def foreignkeys(s1,n1,s2,n2)  SQLForeignKeysW(s1,n1,s2,n2); end
-  def indexes(s,n)              SQLStatisticsW(s, n); end 
+  def indexes(s,n,u=true)       SQLStatisticsW(s,n,(u==true) ? SQL_INDEX_UNIQUE : SQL_INDEX_ALL); end
   def attrs= hattrs
     hattrs.each { |k,v|
       lis = SQLAttrVals[:VALATTR_DECO][k]
@@ -888,7 +888,7 @@ class Stmt
 #    Ilecallx.call(SQLApis['SQLForeignKeysW'], ileArguments, SQLApiList['SQLForeignKeysW'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
-  def SQLStatisticsW(schema, tablename, unique = SQL_INDEX_UNIQUE)
+  def SQLStatisticsW(schema, tablename, unique)
     #  ls = [   schema.length * 2].pack("s*")
     #  ln = [tablename.length * 2].pack("s*")
     #  lt = [tabletype.length * 2].pack("s*")
