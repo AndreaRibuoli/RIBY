@@ -9,7 +9,11 @@ e.attrs = { :SQL_ATTR_SERVER_MODE => :SQL_TRUE }
 c = Connect.new(e)
 pp c.empower(ARGV[0], ARGV[1])
 s = Stmt.new(c)
-s.execdirect(ARGV[2])
+# s.execdirect(ARGV[2])
+# pp s.error
+s.prepare(ARGV[2])
+pp s.error
+c.execute
 pp s.error
 c.commit
 pp s.error
