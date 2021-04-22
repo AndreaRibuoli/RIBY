@@ -38,7 +38,7 @@ module RibyCli
   SQLAttrVals = YAML.load_file('sqlattrvals.yaml')
   ILEpointer  = struct [ 'char b[16]' ]
   SQLhandle   = struct [ 'char a[4]' ]
-  ILEarglist  = struct [ 'char c[144]' ]
+  ILEarglist  = struct [ 'char c[176]' ]
   SQL_MAX_INFO_LENGTH       = 4096
   INFObuffer  = struct [ "char i[#{SQL_MAX_INFO_LENGTH}]" ]
   SQLintsize  = struct [ 'char s[4]' ]
@@ -65,6 +65,7 @@ module RibyCli
                   Fiddle::TYPE_INT )
  ##
  ## In ODBC 3.0, SQLError() has been deprecated and replaced with SQLGetDiagRec() and SQLGetDiagField()
+ ## In ODBC 3.0, SQLTransact() has been deprecated and replaced with SQLEndTran()
  ##
  ## DB2 for i CLI does not support asynchronous statement processing (SQLCancel).
  ##
@@ -80,6 +81,7 @@ module RibyCli
   'SQLSetConnectAttrW'   => [ - 5, - 5, -11, - 5,                                                0].pack("s*"),
   'SQLSetStmtAttrW'      => [ - 5, - 5, -11, - 5,                                                0].pack("s*"),
   'SQLConnectW'          => [ - 5, -11, - 3, -11, - 3, -11, - 3,                                 0].pack("s*"),
+  'SQLTablesW'           => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3,                       0].pack("s*"),
   'SQLDisconnect'        => [ - 5,                                                               0].pack("s*"),
   'SQLReleaseEnv'        => [ - 5,                                                               0].pack("s*"),
   'SQLGetInfoW'          => [ - 5, - 3, -11, - 3, -11,                                           0].pack("s*"),
@@ -142,9 +144,7 @@ module RibyCli
   'SQLSpecialColumnsW'   => [ - 5, - 3, -11, - 3, -11, - 3, -11, - 3, - 3, - 3,                  0].pack("s*"),
   'SQLStartTran'         => [ - 3, - 5, - 5, - 5,                                                0].pack("s*"),
   'SQLStatisticsW'       => [ - 5, -11, - 3, -11, - 3, -11, - 3, - 3, - 3,                       0].pack("s*"),
-  'SQLTablesW'           => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3,                       0].pack("s*"),
-  'SQLTablePrivilegesW'  => [ - 5, -11, - 3, -11, - 3, -11, - 3,                                 0].pack("s*"),
-  'SQLTransact'          => [ - 5, - 5, - 3,                                                     0].pack("s*")
+  'SQLTablePrivilegesW'  => [ - 5, -11, - 3, -11, - 3, -11, - 3,                                 0].pack("s*")
                }
   SQLApis = {}
   SQLApiList.each { |key, val| SQLApis[key] = ILEpointer.malloc }
@@ -638,7 +638,8 @@ class Stmt
   def execdirect(sql)    SQLExecDirectW(sql); end
   def handle()           @hstmt[0,4]; end
   def error(n = 1)       SQLGetDiagRecW(SQL_HANDLE_STMT, handle, n); end
-  def cancel()           SQLCancel(); end 
+  def cancel()           SQLCancel(); end
+  def tables(c,s,n,t)    SQLTablesW(c,s,n,t); end
   def attrs= hattrs
     hattrs.each { |k,v|
       lis = SQLAttrVals[:VALATTR_DECO][k]
@@ -775,6 +776,30 @@ class Stmt
     ileArguments[  0,  32] = PAD_32
     ileArguments[ 32,   4] = handle
     Ilecallx.call(SQLApis['SQLCancel'], ileArguments, SQLApiList['SQLCancel'], - 5, 0)
+    return ileArguments[ 16, 4].unpack('l')[0]
+  end
+  def SQLTablesW(catalog, schema, tablename, tabletype)
+    cat = Fiddle::Pointer[  catalog.encode('UTF-16BE')]
+    sch = Fiddle::Pointer[   schema.encode('UTF-16BE')]
+    tnm = Fiddle::Pointer[tablename.encode('UTF-16BE')]
+    tty = Fiddle::Pointer[tabletype.encode('UTF-16BE')]
+    ileArguments = ILEarglist.malloc
+    ileArguments[   0, 32] = PAD_32
+    ileArguments[  32,  4] = handle
+    ileArguments[  36, 12] = PAD_12
+    ileArguments[  48, 16] = [0, cat.to_i].pack("q*")
+    ileArguments[  64,  2] = SQL_NTS
+    ileArguments[  66, 14] = PAD_14
+    ileArguments[  80, 16] = [0, sch.to_i].pack("q*")
+    ileArguments[  96,  2] = SQL_NTS
+    ileArguments[  98, 14] = PAD_14
+    ileArguments[ 112, 16] = [0, tnm.to_i].pack("q*")
+    ileArguments[ 128,  2] = SQL_NTS
+    ileArguments[ 130, 14] = PAD_14
+    ileArguments[ 144, 16] = [0, tty.to_i].pack("q*")
+    ileArguments[ 160,  2] = SQL_NTS
+    ileArguments[ 162, 14] = PAD_14
+    Ilecallx.call(SQLApis['SQLTablesW'], ileArguments, SQLApiList['SQLTablesW'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
 end
