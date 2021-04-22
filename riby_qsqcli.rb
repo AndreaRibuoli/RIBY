@@ -645,7 +645,7 @@ class Stmt
   def primarykeys(s,n)          SQLPrimaryKeysW(s,n); end
   def foreignkeys(s1,n1,s2,n2)  SQLForeignKeysW(s1,n1,s2,n2); end
   def indexes(s,n,u=true)       SQLStatisticsW(s,n,(u==true) ? SQL_INDEX_UNIQUE : SQL_INDEX_ALL); end
-  def numcols                   SQLNumResultCols; end
+  def numcols()                 SQLNumResultCols(); end
   def attrs= hattrs
     hattrs.each { |k,v|
       lis = SQLAttrVals[:VALATTR_DECO][k]
