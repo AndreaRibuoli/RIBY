@@ -555,11 +555,11 @@ class Connect
     sizeint = SQLintsize.malloc
     ileArguments = ILEarglist.malloc
     ileArguments[   0, 32] = PAD_32
-    ileArguments[  32,  4] = handle                          # hdbc
+    ileArguments[  32,  4] = handle
     ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
     ileArguments[  40,  8] = PAD_08
     ileArguments[  48, 16] = [0, buffer.to_i].pack("q*")
-    ileArguments[  64,  4] = [SQL_MAX_INFO_LENGTH].pack("H*")         # 4096
+    ileArguments[  64,  4] = [SQL_MAX_INFO_LENGTH].pack("H*")
     ileArguments[  68, 12] = PAD_12
     ileArguments[  80, 16] = [0, sizeint.to_i].pack("q*")
     Ilecallx.call(SQLApis['SQLGetConnectAttrW'], ileArguments, SQLApiList['SQLGetConnectAttrW'], - 5, 0)
@@ -595,7 +595,7 @@ class Connect
     ileArguments[  36,  2] = [key.to_s(16).rjust(4,'0')].pack("H*")
     ileArguments[  38, 10] = PAD_10
     ileArguments[  48, 16] = [0, buffer.to_i].pack("q*")
-    ileArguments[  64,  2] = ['1000'].pack("H*")             # 4096
+    ileArguments[  64,  2] = [SQL_MAX_INFO_LENGTH].pack("l*")
     ileArguments[  66, 14] = PAD_14
     ileArguments[  80, 16] = [0, size.to_i].pack("q*")
     ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")
