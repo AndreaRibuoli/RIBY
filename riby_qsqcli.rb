@@ -81,6 +81,7 @@ module RibyCli
   'SQLSetConnectAttrW'   => [ - 5, - 5, -11, - 5,                                                0].pack("s*"),
   'SQLSetStmtAttrW'      => [ - 5, - 5, -11, - 5,                                                0].pack("s*"),
   'SQLConnectW'          => [ - 5, -11, - 3, -11, - 3, -11, - 3,                                 0].pack("s*"),
+  'SQLTables'            => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3,                       0].pack("s*"),
   'SQLTablesW'           => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3,                       0].pack("s*"),
   'SQLDisconnect'        => [ - 5,                                                               0].pack("s*"),
   'SQLReleaseEnv'        => [ - 5,                                                               0].pack("s*"),
