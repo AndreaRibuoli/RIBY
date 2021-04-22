@@ -335,14 +335,16 @@ class Env
     sizeint = SQLintsize.malloc
     ileArguments = ILEarglist.malloc
     ileArguments[   0, 32] = PAD_32
-    ileArguments[  32,  4] = handle                          # henv
+    ileArguments[  32,  4] = handle
     ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
     ileArguments[  40,  8] = PAD_08
     ileArguments[  48, 16] = [0, buffer.to_i].pack("q*")
-    ileArguments[  64,  4] = [SQL_MAX_INFO_LENGTH].pack("l*")         #
+    ileArguments[  64,  4] = [SQL_MAX_INFO_LENGTH].pack("l*")
     ileArguments[  68, 12] = PAD_12
     ileArguments[  80, 16] = [0, sizeint.to_i].pack("q*")
     Ilecallx.call(SQLApis['SQLGetEnvAttr'], ileArguments, SQLApiList['SQLGetEnvAttr'], - 5, 0)
+    rc = ileArguments[ 16, 4].unpack('l')[0]
+    return nil if rc != 0
     len = sizeint[0, 4].unpack("l")[0]
     len -= 1 if (key == ATTRS[:SQL_ATTR_DEFAULT_LIB] && len>1)
     return buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
@@ -371,7 +373,7 @@ class Env
   def SQLReleaseEnv
     ileArguments = ILEarglist.malloc
     ileArguments[   0,  32] = PAD_32
-    ileArguments[  32,   4] = handle                          # henv
+    ileArguments[  32,   4] = handle
     ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
     Ilecallx.call(SQLApis['SQLReleaseEnv'], ileArguments, SQLApiList['SQLReleaseEnv'], - 5, 0)
     rc = ileArguments[ 16, 4].unpack('l')[0]
@@ -419,7 +421,7 @@ class Connect
     passW = pass.encode('UTF-16BE')
     ileArguments = ILEarglist.malloc
     ileArguments[   0, 32] = PAD_32
-    ileArguments[  32,  4] = handle                       
+    ileArguments[  32,  4] = handle
     ileArguments[  36, 12] = PAD_12
     ileArguments[  48, 16] = [0, Fiddle::Pointer[dsnW].to_i].pack("q*")
     ileArguments[  64,  2] = SQL_NTS
