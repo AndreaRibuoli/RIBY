@@ -44,7 +44,9 @@ module RibyCli
   SQLretsize  = struct [ 'char s[2]' ]
   SQLerror    = struct [ 'char e[4]' ]
   SQLstate    = struct [ 'char s[12]' ]
-  SQLmsg      = struct [ 'char s[1026]' ]
+  SQL_MAX_MESSAGE_LENGTH       = 512
+  SQLmsg      = struct [ "char s[#{(SQL_MAX_MESSAGE_LENGTH+1)*2}]" ]
+  SQLMAXMSGLN = [(SQL_MAX_MESSAGE_LENGTH+1)*2].pack("s*")
   SQLmsglen   = struct [ 'char l[2]' ]
 
   Preload     = Fiddle.dlopen(nil)
@@ -175,7 +177,7 @@ module RibyCli
     ileArguments[  48, 16] = [0, state.to_i].pack("q*")
     ileArguments[  64, 16] = [0, error.to_i].pack("q*")
     ileArguments[  80, 16] = [0, msg.to_i].pack("q*")
-    ileArguments[  96,  2] = ['0402'].pack("H*")
+    ileArguments[  96,  2] = SQLMAXMSGLN
     ileArguments[  98, 14] = PAD_14
     ileArguments[ 112, 16] = [0, msglen.to_i].pack("q*")
     Ilecallx.call(SQLApis['SQLGetDiagRecW'], ileArguments, SQLApiList['SQLGetDiagRecW'], - 5, 0)
