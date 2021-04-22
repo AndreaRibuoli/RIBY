@@ -780,6 +780,9 @@ class Stmt
   end
   def SQLTablesW(schema, tablename, tabletype)
   # cat = Fiddle::Pointer[  catalog.encode('UTF-16BE')]
+    ls = [   schema.length * 2].pack("s*")
+    ln = [tablename.length * 2].pack("s*")
+    lt = [tabletype.length * 2].pack("s*")
     sch = Fiddle::Pointer[   schema.encode('UTF-16BE')]
     tnm = Fiddle::Pointer[tablename.encode('UTF-16BE')]
     tty = Fiddle::Pointer[tabletype.encode('UTF-16BE')]
@@ -792,13 +795,13 @@ class Stmt
     ileArguments[  64,  2] = [0].pack("s*")
     ileArguments[  66, 14] = PAD_14
     ileArguments[  80, 16] = [0, sch.to_i].pack("q*")
-    ileArguments[  96,  2] = SQL_NTS
+    ileArguments[  96,  2] = ls
     ileArguments[  98, 14] = PAD_14
     ileArguments[ 112, 16] = [0, tnm.to_i].pack("q*")
-    ileArguments[ 128,  2] = SQL_NTS
+    ileArguments[ 128,  2] = ln
     ileArguments[ 130, 14] = PAD_14
     ileArguments[ 144, 16] = [0, tty.to_i].pack("q*")
-    ileArguments[ 160,  2] = SQL_NTS
+    ileArguments[ 160,  2] = lt
     ileArguments[ 162, 14] = PAD_14
     Ilecallx.call(SQLApis['SQLTablesW'], ileArguments, SQLApiList['SQLTablesW'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
