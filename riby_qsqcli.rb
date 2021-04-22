@@ -14,6 +14,9 @@ module RibyCli
   PAD_02                       = [ 0].pack("n*")
   PAD_04                       = [ 0].pack("l*")
   PAD_06                       = [ 0, 0, 0].pack("n*")
+  PAD_08                       = [ 0, 0].pack("l*")
+  PAD_12                       = [ 0, 0, 0].pack("l*")
+  PAD_32                       = [ 0, 0, 0, 0, 0, 0, 0, 0].pack("l*")
   SQL_NTS                      = [-3].pack("n*")
   SQL_NULL_HANDLE              = [ 0].pack("l*")
   SQL_HANDLE_ENV               = [ 1].pack("n*")
@@ -145,11 +148,11 @@ module RibyCli
   
   def SQLAllocHandle(htype, ihandle, handle)
     ileArguments = ILEarglist.malloc
-    ileArguments[  0, 32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[  0, 32] = PAD_32
     ileArguments[ 32,  2] = htype
     ileArguments[ 34,  2] = PAD_02
     ileArguments[ 36,  4] = ihandle
-    ileArguments[ 40,  8] = ['0'.rjust(16,'0')].pack("H*")
+    ileArguments[ 40,  8] = PAD_08
     ileArguments[ 48, 16] = [handle.to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[ 64, 80] = ['0'.rjust(160,'0')].pack("H*")  # padding
     Ilecallx.call(SQLApis['SQLAllocHandle'], ileArguments, SQLApiList['SQLAllocHandle'], - 5, 0)
@@ -161,12 +164,12 @@ module RibyCli
     msg    = SQLmsg.malloc
     msglen = SQLmsglen.malloc
     ileArguments = ILEarglist.malloc
-    ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[   0, 32] = PAD_32
     ileArguments[  32,  2] = htype
-    ileArguments[  34,  2] = PAD_02             # padding
+    ileArguments[  34,  2] = PAD_02
     ileArguments[  36,  4] = handle
     ileArguments[  40,  2] = [recnum.to_s(16).rjust(4,'0')].pack("H*")
-    ileArguments[  42,  6] = ['0'.rjust(12,'0')].pack("H*")  # padding
+    ileArguments[  42,  6] = PAD_06
     ileArguments[  48, 16] = [state.to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[  64, 16] = [error.to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[  80, 16] = [msg.to_i.to_s(16).rjust(32,'0')].pack("H*")
@@ -184,7 +187,7 @@ module RibyCli
   end
   def self.SQLFreeHandle(htype, handle)
     ileArguments = ILEarglist.malloc
-    ileArguments[  0,  32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[  0,  32] = PAD_32
     ileArguments[ 32,   2] = htype
     ileArguments[ 34,   2] = PAD_02
     ileArguments[ 36,   4] = handle
@@ -194,7 +197,7 @@ module RibyCli
   end
   def SQLEndTran(htype, handle, ftype)
     ileArguments = ILEarglist.malloc
-    ileArguments[  0,  32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[  0,  32] = PAD_32
     ileArguments[ 32,   2] = htype
     ileArguments[ 34,   2] = PAD_02
     ileArguments[ 36,   4] = handle
@@ -299,7 +302,7 @@ class Env
   end
   def self.SQLReleaseEnv(henv)
     ileArguments = ILEarglist.malloc
-    ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[   0,  32] = PAD_32
     ileArguments[  32,   4] = henv
     ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
     Ilecallx.call(SQLApis['SQLReleaseEnv'], ileArguments, SQLApiList['SQLReleaseEnv'], - 5, 0)
@@ -327,13 +330,13 @@ class Env
     buffer  = INFObuffer.malloc
     sizeint = SQLintsize.malloc
     ileArguments = ILEarglist.malloc
-    ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[   0, 32] = PAD_32
     ileArguments[  32,  4] = handle                          # henv
     ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
-    ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")  # padding
+    ileArguments[  40,  8] = PAD_08
     ileArguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[  64,  4] = ['00001000'].pack("H*")         # 4096
-    ileArguments[  68, 12] = ['0'.rjust(24,'0')].pack("H*")  # padding
+    ileArguments[  68, 12] = PAD_12  # padding
     ileArguments[  80, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
     Ilecallx.call(SQLApis['SQLGetEnvAttr'], ileArguments, SQLApiList['SQLGetEnvAttr'], - 5, 0)
@@ -355,17 +358,17 @@ class Env
       ileArguments[  48, 16] = [Fiddle::Pointer[value.encode('IBM037')].to_i.to_s(16).rjust(32,'0')].pack("H*")
       ileArguments[  64,  4] = [len.to_s(16).rjust(8,'0')].pack("H*")
     end
-    ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[   0, 32] = PAD_32
     ileArguments[  32,  4] = handle
     ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
-    ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")   # padding
+    ileArguments[  40,  8] = PAD_08   # padding
     ileArguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
     Ilecallx.call(SQLApis['SQLSetEnvAttr'], ileArguments, SQLApiList['SQLSetEnvAttr'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
   def SQLReleaseEnv
     ileArguments = ILEarglist.malloc
-    ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[   0,  32] = PAD_32
     ileArguments[  32,   4] = handle                          # henv
     ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
     Ilecallx.call(SQLApis['SQLReleaseEnv'], ileArguments, SQLApiList['SQLReleaseEnv'], - 5, 0)
@@ -413,9 +416,9 @@ class Connect
     userW = user.encode('UTF-16BE')
     passW = pass.encode('UTF-16BE')
     ileArguments = ILEarglist.malloc
-    ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[   0, 32] = PAD_32
     ileArguments[  32,  4] = handle                          # hdbc
-    ileArguments[  36, 12] = ['0'.rjust(24,'0')].pack("H*")  # padding
+    ileArguments[  36, 12] = PAD_12  # padding
     ileArguments[  48, 16] = [Fiddle::Pointer[dsnW].to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[  64,  2] = SQL_NTS
     ileArguments[  66, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
@@ -491,7 +494,7 @@ class Connect
   end
   def self.SQLDisconnect(hdbc)
     ileArguments = ILEarglist.malloc
-    ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[   0,  32] = PAD_32
     ileArguments[  32,   4] = hdbc
     ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
     Ilecallx.call(SQLApis['SQLDisconnect'], ileArguments, SQLApiList['SQLDisconnect'], - 5, 0)
@@ -549,10 +552,10 @@ class Connect
     buffer  = INFObuffer.malloc
     sizeint = SQLintsize.malloc
     ileArguments = ILEarglist.malloc
-    ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[   0, 32] = PAD_32
     ileArguments[  32,  4] = handle                          # hdbc
     ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
-    ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")  # padding
+    ileArguments[  40,  8] = PAD_08  # padding
     ileArguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[  64,  4] = ['00001000'].pack("H*")         # 4096
     ileArguments[  68, 12] = ['0'.rjust(152,'0')].pack("H*")  # padding
@@ -575,10 +578,10 @@ class Connect
       ileArguments[  48, 16] = [Fiddle::Pointer[value.encode('UTF-16BE')].to_i.to_s(16).rjust(32,'0')].pack("H*")
       ileArguments[  64,  4] = [len.to_s(16).rjust(8,'0')].pack("H*")
     end
-    ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[   0, 32] = PAD_32
     ileArguments[  32,  4] = handle
     ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
-    ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")   # padding
+    ileArguments[  40,  8] = PAD_08   # padding
     ileArguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
     Ilecallx.call(SQLApis['SQLSetConnectAttrW'], ileArguments, SQLApiList['SQLSetConnectAttrW'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
@@ -587,7 +590,7 @@ class Connect
     size   = SQLretsize.malloc
     buffer = INFObuffer.malloc
     ileArguments = ILEarglist.malloc
-    ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[   0, 32] = PAD_32
     ileArguments[  32,  4] = handle                          # hdbc
     ileArguments[  36,  2] = [key.to_s(16).rjust(4,'0')].pack("H*")    #
     ileArguments[  38, 10] = ['0'.rjust(20,'0')].pack("H*")  # padding
@@ -602,7 +605,7 @@ class Connect
   end
   def SQLDisconnect
     ileArguments = ILEarglist.malloc
-    ileArguments[   0,  32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[   0,  32] = PAD_32
     ileArguments[  32,   4] = handle                          # hdbc
     ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
     Ilecallx.call(SQLApis['SQLDisconnect'], ileArguments, SQLApiList['SQLDisconnect'], - 5, 0)
@@ -720,13 +723,13 @@ class Stmt
     buffer  = INFObuffer.malloc
     sizeint = SQLintsize.malloc
     ileArguments = ILEarglist.malloc
-    ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
-    ileArguments[  32,  4] = handle                          # hdbc
+    ileArguments[   0, 32] = PAD_32
+    ileArguments[  32,  4] = handle
     ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
-    ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")  # padding
+    ileArguments[  40,  8] = PAD_08
     ileArguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[  64,  4] = ['00001000'].pack("H*")         # 4096
-    ileArguments[  68, 12] = ['0'.rjust(152,'0')].pack("H*")  # padding
+    ileArguments[  68, 12] = PAD_12
     ileArguments[  80, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
     Ilecallx.call(SQLApis['SQLGetStmtAttrW'], ileArguments, SQLApiList['SQLGetStmtAttrW'], - 5, 0)
@@ -746,10 +749,10 @@ class Stmt
       ileArguments[  48, 16] = [Fiddle::Pointer[value.encode('UTF-16BE')].to_i.to_s(16).rjust(32,'0')].pack("H*")
       ileArguments[  64,  4] = [len.to_s(16).rjust(8,'0')].pack("H*")
     end
-    ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[   0, 32] = PAD_32
     ileArguments[  32,  4] = handle
     ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
-    ileArguments[  40,  8] = ['0'.rjust(16,'0')].pack("H*")   # padding
+    ileArguments[  40,  8] = PAD_08
     ileArguments[  68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
     Ilecallx.call(SQLApis['SQLSetStmtAttrW'], ileArguments, SQLApiList['SQLSetStmtAttrW'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
@@ -759,9 +762,9 @@ class Stmt
     buffer  = INFObuffer.malloc
     buffer[0, len*2] = sql.encode('UTF-16BE')
     ileArguments = ILEarglist.malloc
-    ileArguments[  0, 32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[  0, 32] = PAD_32
     ileArguments[ 32,  4] = handle                          # hstmt
-    ileArguments[ 36, 12] = ['0'.rjust(24,'0')].pack("H*")  # padding
+    ileArguments[ 36, 12] = PAD_12
     ileArguments[ 48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[ 64,  4] = [len.to_s(16).rjust(8,'0')].pack("H*")
     ileArguments[ 68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
@@ -770,7 +773,7 @@ class Stmt
   end
   def SQLCancel()
     ileArguments = ILEarglist.malloc
-    ileArguments[  0,  32] = ['0'.rjust(64,'0')].pack("H*")
+    ileArguments[  0,  32] = PAD_32
     ileArguments[ 32,   4] = handle                           # hstmt
     ileArguments[ 36, 108] = ['0'.rjust(216,'0')].pack("H*")  # padding
     Ilecallx.call(SQLApis['SQLCancel'], ileArguments, SQLApiList['SQLCancel'], - 5, 0)
