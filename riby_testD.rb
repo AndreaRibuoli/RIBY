@@ -14,4 +14,6 @@ pp s.error(0)
 s2 = Stmt.new(c)
 s2.primarykeys(ARGV[2], ARGV[3])
 pp s2.error(0)
-pp c.error
+s3 = Stmt.new(c)
+s3.foreignkeys(ARGV[2], ARGV[3], '', '')
+pp s3.error(0)

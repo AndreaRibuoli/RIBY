@@ -38,7 +38,7 @@ module RibyCli
   SQLAttrVals = YAML.load_file('sqlattrvals.yaml')
   ILEpointer  = struct [ 'char b[16]' ]
   SQLhandle   = struct [ 'char a[4]' ]
-  ILEarglist  = struct [ 'char c[176]' ]
+  ILEarglist  = struct [ 'char c[240]' ]
   SQL_MAX_INFO_LENGTH       = 4096
   INFObuffer  = struct [ "char i[#{SQL_MAX_INFO_LENGTH}]" ]
   SQLintsize  = struct [ 'char s[4]' ]
@@ -85,6 +85,7 @@ module RibyCli
   'SQLTablesW'           => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3,                       0].pack("s*"),
   'SQLPrimaryKeys'       => [ - 5, -11, - 3, -11, - 3, -11, - 3,                                 0].pack("s*"),
   'SQLPrimaryKeysW'      => [ - 5, -11, - 3, -11, - 3, -11, - 3,                                 0].pack("s*"),
+  'SQLForeignKeysW'      => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3, -11, - 3, -11, - 3,   0].pack("s*"),
   'SQLDisconnect'        => [ - 5,                                                               0].pack("s*"),
   'SQLReleaseEnv'        => [ - 5,                                                               0].pack("s*"),
   'SQLGetInfoW'          => [ - 5, - 3, -11, - 3, -11,                                           0].pack("s*"),
@@ -110,7 +111,6 @@ module RibyCli
   'SQLExtendedFetch'     => [ - 5, - 3, - 5, -11, -11,                                           0].pack("s*"),
   'SQLFetch'             => [ - 5,                                                               0].pack("s*"),
   'SQLFetchScroll'       => [ - 5, - 3, - 5,                                                     0].pack("s*"),
-  'SQLForeignKeysW'      => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3, -11, - 3, -11, - 3,   0].pack("s*"),
   'SQLGetCol'            => [ - 5, - 3, - 3, -11, - 5, -11,                                      0].pack("s*"),
   'SQLGetConnectOptionW' => [ - 5, - 3, -11,                                                     0].pack("s*"),
   'SQLGetCursorNameW'    => [ - 5, -11, - 3, -11,                                                0].pack("s*"),
@@ -637,12 +637,13 @@ class Stmt
       hdbc.delete(h)
     }
   end
-  def execdirect(sql)    SQLExecDirectW(sql); end
-  def handle()           @hstmt[0,4]; end
-  def error(n = 1)       SQLGetDiagRecW(SQL_HANDLE_STMT, handle, n); end
-  def cancel()           SQLCancel(); end
-  def tables(s,n,t)      SQLTablesW(s,n,t); end
-  def primarykeys(s,n)   SQLPrimaryKeysW(s,n); end
+  def execdirect(sql)           SQLExecDirectW(sql); end
+  def handle()                  @hstmt[0,4]; end
+  def error(n = 1)              SQLGetDiagRecW(SQL_HANDLE_STMT, handle, n); end
+  def cancel()                  SQLCancel(); end
+  def tables(s,n,t)             SQLTablesW(s,n,t); end
+  def primarykeys(s,n)          SQLPrimaryKeysW(s,n); end
+  def foreignkeys(s1,n1,s2,n2)  SQLForeignKeysW(s1,n1,s2,n2); end
   def attrs= hattrs
     hattrs.each { |k,v|
       lis = SQLAttrVals[:VALATTR_DECO][k]
@@ -843,5 +844,44 @@ class Stmt
     Ilecallx.call(SQLApis['SQLPrimaryKeysW'], ileArguments, SQLApiList['SQLPrimaryKeysW'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
-  
+  def SQLForeignKeysW(schema1, tablename1, schema2, tablename2)
+    ls1 = [   schema1.length * 2].pack("s*")
+    ln1 = [tablename1.length * 2].pack("s*")
+    ls2 = [   schema2.length * 2].pack("s*")
+    ln2 = [tablename2.length * 2].pack("s*")
+    ## cat1 = Fiddle::Pointer[  catalog1.encode('UTF-16BE')]
+    sch1 = Fiddle::Pointer[   schema1.encode('UTF-16BE')]
+    tnm1 = Fiddle::Pointer[tablename1.encode('UTF-16BE')]
+    ## cat2 = Fiddle::Pointer[  catalog2.encode('UTF-16BE')]
+    sch2 = Fiddle::Pointer[   schema2.encode('UTF-16BE')]
+    tnm2 = Fiddle::Pointer[tablename2.encode('UTF-16BE')]
+    ileArguments = ILEarglist.malloc
+    ileArguments[   0, 32] = PAD_32
+    ileArguments[  32,  4] = handle
+    ileArguments[  36, 12] = PAD_12
+#   ileArguments[  48, 16] = [0, cat1.to_i].pack("q*")
+    ileArguments[  48, 16] = [0, 0].pack("q*")
+    ileArguments[  64,  2] = [0].pack("s*")
+    ileArguments[  66, 14] = PAD_14
+    ileArguments[  80, 16] = [0, sch1.to_i].pack("q*")
+    ileArguments[  96,  2] = ls1
+    ileArguments[  98, 14] = PAD_14
+    ileArguments[ 112, 16] = [0, tnm1.to_i].pack("q*")
+    ileArguments[ 128,  2] = ln1
+    ileArguments[ 130, 14] = PAD_14
+#   ileArguments[ 144, 16] = [0, cat2.to_i].pack("q*")
+    ileArguments[ 144, 16] = [0, 0].pack("q*")
+    ileArguments[ 160,  2] = [0].pack("s*")
+    ileArguments[ 162, 14] = PAD_14
+    ileArguments[ 176, 16] = [0, sch2.to_i].pack("q*")
+    ileArguments[ 192,  2] = ls2
+    ileArguments[ 194, 14] = PAD_14
+    ileArguments[ 208, 16] = [0, tnm2.to_i].pack("q*")
+    ileArguments[ 224,  2] = ln2
+    ileArguments[ 226, 14] = PAD_14
+#    Ilecallx.call(SQLApis['SQLTables'], ileArguments, SQLApiList['SQLTables'], - 5, 0)
+    Ilecallx.call(SQLApis['SQLForeignKeysW'], ileArguments, SQLApiList['SQLForeignKeysW'], - 5, 0)
+    return ileArguments[ 16, 4].unpack('l')[0]
+
+  end
 end
