@@ -153,7 +153,6 @@ module RibyCli
     ileArguments[ 34,  2] = PAD_02
     ileArguments[ 36,  4] = ihandle
     ileArguments[ 40,  8] = PAD_08
-#   ileArguments[ 48, 16] = [handle.to_i.to_s(16).rjust(32,'0')].pack("H*")
     ileArguments[ 48, 16] = [0, handle.to_i].pack("q*")
     ileArguments[ 64, 80] = ['0'.rjust(160,'0')].pack("H*")  # padding
     Ilecallx.call(SQLApis['SQLAllocHandle'], ileArguments, SQLApiList['SQLAllocHandle'], - 5, 0)
@@ -171,12 +170,12 @@ module RibyCli
     ileArguments[  36,  4] = handle
     ileArguments[  40,  2] = [recnum.to_s(16).rjust(4,'0')].pack("H*")
     ileArguments[  42,  6] = PAD_06
-    ileArguments[  48, 16] = [state.to_i.to_s(16).rjust(32,'0')].pack("H*")
-    ileArguments[  64, 16] = [error.to_i.to_s(16).rjust(32,'0')].pack("H*")
-    ileArguments[  80, 16] = [msg.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    ileArguments[  48, 16] = [0, state.to_i].pack("q*")
+    ileArguments[  64, 16] = [0, error.to_i].pack("q*")
+    ileArguments[  80, 16] = [0, msg.to_i].pack("q*")
     ileArguments[  96,  2] = ['0402'].pack("H*")             #
     ileArguments[  98, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
-    ileArguments[ 112, 16] = [msglen.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    ileArguments[ 112, 16] = [0, msglen.to_i].pack("q*")
     Ilecallx.call(SQLApis['SQLGetDiagRecW'], ileArguments, SQLApiList['SQLGetDiagRecW'], - 5, 0)
     l = msglen[0, 2].unpack("H*")[0].to_i(16) * 2
     rc = ileArguments[ 16, 4].unpack('l')[0]
@@ -335,10 +334,10 @@ class Env
     ileArguments[  32,  4] = handle                          # henv
     ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
     ileArguments[  40,  8] = PAD_08
-    ileArguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    ileArguments[  48, 16] = [0, buffer.to_i].pack("q*")
     ileArguments[  64,  4] = ['00001000'].pack("H*")         # 4096
     ileArguments[  68, 12] = PAD_12  # padding
-    ileArguments[  80, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    ileArguments[  80, 16] = [0, sizeint.to_i].pack("q*")
     ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
     Ilecallx.call(SQLApis['SQLGetEnvAttr'], ileArguments, SQLApiList['SQLGetEnvAttr'], - 5, 0)
     len = sizeint[0, 4].unpack("l")[0]
@@ -351,12 +350,12 @@ class Env
     if kind == SQLINTEGER then
       sizeint = SQLintsize.malloc
       sizeint[0, 4] = [value.to_s(16).rjust(8,'0')].pack("H*")
-      ileArguments[  48, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
+      ileArguments[  48, 16] = [0, sizeint.to_i].pack("q*")
     end
     if kind == SQLCHAR then
       len = value.length
       len += 1 if key == ATTRS[:SQL_ATTR_DEFAULT_LIB]
-      ileArguments[  48, 16] = [Fiddle::Pointer[value.encode('IBM037')].to_i.to_s(16).rjust(32,'0')].pack("H*")
+      ileArguments[  48, 16] = [0, Fiddle::Pointer[value.encode('IBM037')].to_i].pack("q*")
       ileArguments[  64,  4] = [len.to_s(16).rjust(8,'0')].pack("H*")
     end
     ileArguments[   0, 32] = PAD_32
@@ -420,13 +419,13 @@ class Connect
     ileArguments[   0, 32] = PAD_32
     ileArguments[  32,  4] = handle                          # hdbc
     ileArguments[  36, 12] = PAD_12  # padding
-    ileArguments[  48, 16] = [Fiddle::Pointer[dsnW].to_i.to_s(16).rjust(32,'0')].pack("H*")
+    ileArguments[  48, 16] = [0, Fiddle::Pointer[dsnW].to_i].pack("q*")
     ileArguments[  64,  2] = SQL_NTS
     ileArguments[  66, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
-    ileArguments[  80, 16] = [Fiddle::Pointer[userW].to_i.to_s(16).rjust(32,'0')].pack("H*")
+    ileArguments[  80, 16] = [0, Fiddle::Pointer[userW].to_i].pack("q*")
     ileArguments[  96,  2] = SQL_NTS
     ileArguments[  98, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
-    ileArguments[ 112, 16] = [Fiddle::Pointer[passW].to_i.to_s(16).rjust(32,'0')].pack("H*")
+    ileArguments[ 112, 16] = [0, Fiddle::Pointer[passW].to_i].pack("q*")
     ileArguments[ 128,  2] = SQL_NTS
     ileArguments[ 130, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
     Ilecallx.call(SQLApis['SQLConnectW'], ileArguments, SQLApiList['SQLConnectW'], - 5, 0)
@@ -557,10 +556,10 @@ class Connect
     ileArguments[  32,  4] = handle                          # hdbc
     ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
     ileArguments[  40,  8] = PAD_08  # padding
-    ileArguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    ileArguments[  48, 16] = [0, buffer.to_i].pack("q*")
     ileArguments[  64,  4] = ['00001000'].pack("H*")         # 4096
     ileArguments[  68, 12] = ['0'.rjust(152,'0')].pack("H*")  # padding
-    ileArguments[  80, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    ileArguments[  80, 16] = [0, sizeint.to_i].pack("q*")
     ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
     Ilecallx.call(SQLApis['SQLGetConnectAttrW'], ileArguments, SQLApiList['SQLGetConnectAttrW'], - 5, 0)
     len = sizeint[0, 4].unpack("l")[0]  # remove null
@@ -572,11 +571,11 @@ class Connect
     if kind == SQLINTEGER then
       sizeint = SQLintsize.malloc
       sizeint[0, 4] = [value.to_s(16).rjust(8,'0')].pack("H*")
-      ileArguments[  48, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
+      ileArguments[  48, 16] = [0, sizeint.to_i].pack("q*")
     end
     if kind == SQLWCHAR then
       len = value.length * 2
-      ileArguments[  48, 16] = [Fiddle::Pointer[value.encode('UTF-16BE')].to_i.to_s(16).rjust(32,'0')].pack("H*")
+      ileArguments[  48, 16] = [0, Fiddle::Pointer[value.encode('UTF-16BE')].to_i].pack("q*")
       ileArguments[  64,  4] = [len.to_s(16).rjust(8,'0')].pack("H*")
     end
     ileArguments[   0, 32] = PAD_32
@@ -595,10 +594,10 @@ class Connect
     ileArguments[  32,  4] = handle                          # hdbc
     ileArguments[  36,  2] = [key.to_s(16).rjust(4,'0')].pack("H*")    #
     ileArguments[  38, 10] = ['0'.rjust(20,'0')].pack("H*")  # padding
-    ileArguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    ileArguments[  48, 16] = [0, buffer.to_i].pack("q*")
     ileArguments[  64,  2] = ['1000'].pack("H*")             # 4096
     ileArguments[  66, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
-    ileArguments[  80, 16] = [size.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    ileArguments[  80, 16] = [0, size.to_i].pack("q*")
     ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")
     Ilecallx.call(SQLApis['SQLGetInfoW'], ileArguments, SQLApiList['SQLGetInfoW'], - 5, 0)
     len = ('0000' + size[ 0, 2].unpack("H*")[0]).to_i(16)
@@ -728,10 +727,10 @@ class Stmt
     ileArguments[  32,  4] = handle
     ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
     ileArguments[  40,  8] = PAD_08
-    ileArguments[  48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    ileArguments[  48, 16] = [0, buffer.to_i].pack("q*")
     ileArguments[  64,  4] = ['00001000'].pack("H*")         # 4096
     ileArguments[  68, 12] = PAD_12
-    ileArguments[  80, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    ileArguments[  80, 16] = [0, sizeint.to_i].pack("q*")
     ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
     Ilecallx.call(SQLApis['SQLGetStmtAttrW'], ileArguments, SQLApiList['SQLGetStmtAttrW'], - 5, 0)
     len = sizeint[0, 4].unpack("l")[0]
@@ -743,11 +742,11 @@ class Stmt
     if kind == SQLINTEGER then
       sizeint = SQLintsize.malloc
       sizeint[0, 4] = [value.to_s(16).rjust(8,'0')].pack("H*")
-      ileArguments[  48, 16] = [sizeint.to_i.to_s(16).rjust(32,'0')].pack("H*")
+      ileArguments[  48, 16] = [0, sizeint.to_i].pack("q*")
     end
     if kind == SQLWCHAR then
       len = value.length * 2
-      ileArguments[  48, 16] = [Fiddle::Pointer[value.encode('UTF-16BE')].to_i.to_s(16).rjust(32,'0')].pack("H*")
+      ileArguments[  48, 16] = [0, Fiddle::Pointer[value.encode('UTF-16BE')].to_i].pack("q*")
       ileArguments[  64,  4] = [len.to_s(16).rjust(8,'0')].pack("H*")
     end
     ileArguments[   0, 32] = PAD_32
@@ -766,7 +765,7 @@ class Stmt
     ileArguments[  0, 32] = PAD_32
     ileArguments[ 32,  4] = handle                          # hstmt
     ileArguments[ 36, 12] = PAD_12
-    ileArguments[ 48, 16] = [buffer.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    ileArguments[ 48, 16] = [0, buffer.to_i].pack("q*")
     ileArguments[ 64,  4] = [len.to_s(16).rjust(8,'0')].pack("H*")
     ileArguments[ 68, 76] = ['0'.rjust(152,'0')].pack("H*")  # padding
     Ilecallx.call(SQLApis['SQLExecDirectW'], ileArguments, SQLApiList['SQLExecDirectW'], - 5, 0)
