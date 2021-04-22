@@ -39,7 +39,8 @@ module RibyCli
   ILEpointer  = struct [ 'char b[16]' ]
   SQLhandle   = struct [ 'char a[4]' ]
   ILEarglist  = struct [ 'char c[144]' ]
-  INFObuffer  = struct [ 'char i[4096]' ]
+  SQL_MAX_INFO_LENGTH       = 4096
+  INFObuffer  = struct [ "char i[#{SQL_MAX_INFO_LENGTH}]" ]
   SQLintsize  = struct [ 'char s[4]' ]
   SQLretsize  = struct [ 'char s[2]' ]
   SQLerror    = struct [ 'char e[4]' ]
@@ -339,7 +340,7 @@ class Env
     ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
     ileArguments[  40,  8] = PAD_08
     ileArguments[  48, 16] = [0, buffer.to_i].pack("q*")
-    ileArguments[  64,  4] = ['00001000'].pack("H*")         # 4096
+    ileArguments[  64,  4] = [SQL_MAX_INFO_LENGTH].pack("l*")         #
     ileArguments[  68, 12] = PAD_12
     ileArguments[  80, 16] = [0, sizeint.to_i].pack("q*")
     ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
@@ -561,7 +562,7 @@ class Connect
     ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
     ileArguments[  40,  8] = PAD_08
     ileArguments[  48, 16] = [0, buffer.to_i].pack("q*")
-    ileArguments[  64,  4] = ['00001000'].pack("H*")         # 4096
+    ileArguments[  64,  4] = [SQL_MAX_INFO_LENGTH].pack("H*")         # 4096
     ileArguments[  68, 12] = PAD_12
     ileArguments[  80, 16] = [0, sizeint.to_i].pack("q*")
     ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
@@ -732,7 +733,7 @@ class Stmt
     ileArguments[  36,  4] = [key.to_s(16).rjust(8,'0')].pack("H*")
     ileArguments[  40,  8] = PAD_08
     ileArguments[  48, 16] = [0, buffer.to_i].pack("q*")
-    ileArguments[  64,  4] = ['00001000'].pack("H*")         # 4096
+    ileArguments[  64,  4] = [SQL_MAX_INFO_LENGTH].pack("l*")        
     ileArguments[  68, 12] = PAD_12
     ileArguments[  80, 16] = [0, sizeint.to_i].pack("q*")
     ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")  # padding
