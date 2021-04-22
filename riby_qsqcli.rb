@@ -25,6 +25,8 @@ module RibyCli
   SQL_HANDLE_DBC               = [ 2].pack("s*")
   SQL_HANDLE_STMT              = [ 3].pack("s*")
   SQL_HANDLE_DESC              = [ 4].pack("s*")
+  SQL_INDEX_UNIQUE             = [ 0].pack("s*")
+  SQL_INDEX_ALL                = [ 1].pack("s*")
   SQLINTEGER                   = 1
   SQLCHAR                      = 2
   SQLWCHAR                     = 3
@@ -87,6 +89,8 @@ module RibyCli
   'SQLPrimaryKeysW'      => [ - 5, -11, - 3, -11, - 3, -11, - 3,                                 0].pack("s*"),
   'SQLForeignKeys'       => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3, -11, - 3, -11, - 3,   0].pack("s*"),
   'SQLForeignKeysW'      => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3, -11, - 3, -11, - 3,   0].pack("s*"),
+  'SQLStatistics'        => [ - 5, -11, - 3, -11, - 3, -11, - 3, - 3, - 3,                       0].pack("s*"),
+  'SQLStatisticsW'       => [ - 5, -11, - 3, -11, - 3, -11, - 3, - 3, - 3,                       0].pack("s*"),
   'SQLDisconnect'        => [ - 5,                                                               0].pack("s*"),
   'SQLReleaseEnv'        => [ - 5,                                                               0].pack("s*"),
   'SQLGetInfoW'          => [ - 5, - 3, -11, - 3, -11,                                           0].pack("s*"),
@@ -146,7 +150,6 @@ module RibyCli
   'SQLSetStmtOptionW'    => [ - 5, - 3, -11,                                                     0].pack("s*"),
   'SQLSpecialColumnsW'   => [ - 5, - 3, -11, - 3, -11, - 3, -11, - 3, - 3, - 3,                  0].pack("s*"),
   'SQLStartTran'         => [ - 3, - 5, - 5, - 5,                                                0].pack("s*"),
-  'SQLStatisticsW'       => [ - 5, -11, - 3, -11, - 3, -11, - 3, - 3, - 3,                       0].pack("s*"),
   'SQLTablePrivilegesW'  => [ - 5, -11, - 3, -11, - 3, -11, - 3,                                 0].pack("s*")
                }
   SQLApis = {}
@@ -645,6 +648,7 @@ class Stmt
   def tables(s,n,t)             SQLTablesW(s,n,t); end
   def primarykeys(s,n)          SQLPrimaryKeysW(s,n); end
   def foreignkeys(s1,n1,s2,n2)  SQLForeignKeysW(s1,n1,s2,n2); end
+  def indexes(s,n)              SQLStatisticsW(s, n); end 
   def attrs= hattrs
     hattrs.each { |k,v|
       lis = SQLAttrVals[:VALATTR_DECO][k]
@@ -883,6 +887,36 @@ class Stmt
     Ilecallx.call(SQLApis['SQLForeignKeys'], ileArguments, SQLApiList['SQLForeignKeys'], - 5, 0)
 #    Ilecallx.call(SQLApis['SQLForeignKeysW'], ileArguments, SQLApiList['SQLForeignKeysW'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
+    def SQLStatisticsW(schema, tablename, unique = SQL_INDEX_UNIQUE)
+    #  ls = [   schema.length * 2].pack("s*")
+    #  ln = [tablename.length * 2].pack("s*")
+    #  lt = [tabletype.length * 2].pack("s*")
+    #  sch = Fiddle::Pointer[   schema.encode('UTF-16BE')]
+    #  tnm = Fiddle::Pointer[tablename.encode('UTF-16BE')]
+    #  tty = Fiddle::Pointer[tabletype.encode('UTF-16BE')]
+      ls = [   schema.length].pack("s*")
+      ln = [tablename.length].pack("s*")
+      sch = Fiddle::Pointer[   schema.encode('IBM037')]
+      tnm = Fiddle::Pointer[tablename.encode('IBM037')]
+      ileArguments = ILEarglist.malloc
+      ileArguments[   0, 32] = PAD_32
+      ileArguments[  32,  4] = handle
+      ileArguments[  36, 12] = PAD_12
+      ileArguments[  48, 16] = [0, 0].pack("q*")
+      ileArguments[  64,  2] = [0].pack("s*")
+      ileArguments[  66, 14] = PAD_14
+      ileArguments[  80, 16] = [0, sch.to_i].pack("q*")
+      ileArguments[  96,  2] = ls
+      ileArguments[  98, 14] = PAD_14
+      ileArguments[ 112, 16] = [0, tnm.to_i].pack("q*")
+      ileArguments[ 128,  2] = ln
+      ileArguments[ 130,  2] = unique
+      ileArguments[ 132,  2] = PAD_02  ## accuracy ... not used
+      ileArguments[ 134, 10] = PAD_10
+      Ilecallx.call(SQLApis['SQLStatistics'], ileArguments, SQLApiList['SQLStatistics'], - 5, 0)
+  #   Ilecallx.call(SQLApis['SQLStatisticsW'], ileArguments, SQLApiList['SQLStatisticsW'], - 5, 0)
+      return ileArguments[ 16, 4].unpack('l')[0]
+    end
 
   end
 end
