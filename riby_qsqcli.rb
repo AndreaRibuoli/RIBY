@@ -85,6 +85,7 @@ module RibyCli
   'SQLTablesW'           => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3,                       0].pack("s*"),
   'SQLPrimaryKeys'       => [ - 5, -11, - 3, -11, - 3, -11, - 3,                                 0].pack("s*"),
   'SQLPrimaryKeysW'      => [ - 5, -11, - 3, -11, - 3, -11, - 3,                                 0].pack("s*"),
+  'SQLForeignKeys'       => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3, -11, - 3, -11, - 3,   0].pack("s*"),
   'SQLForeignKeysW'      => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3, -11, - 3, -11, - 3,   0].pack("s*"),
   'SQLDisconnect'        => [ - 5,                                                               0].pack("s*"),
   'SQLReleaseEnv'        => [ - 5,                                                               0].pack("s*"),
@@ -783,7 +784,6 @@ class Stmt
     return ileArguments[ 16, 4].unpack('l')[0]
   end
   def SQLTablesW(schema, tablename, tabletype)
-  # cat = Fiddle::Pointer[  catalog.encode('UTF-16BE')]
   #  ls = [   schema.length * 2].pack("s*")
   #  ln = [tablename.length * 2].pack("s*")
   #  lt = [tabletype.length * 2].pack("s*")
@@ -800,7 +800,6 @@ class Stmt
     ileArguments[   0, 32] = PAD_32
     ileArguments[  32,  4] = handle
     ileArguments[  36, 12] = PAD_12
-#    ileArguments[  48, 16] = [0, cat.to_i].pack("q*")
     ileArguments[  48, 16] = [0, 0].pack("q*")
     ileArguments[  64,  2] = [0].pack("s*")
     ileArguments[  66, 14] = PAD_14
@@ -818,20 +817,18 @@ class Stmt
     return ileArguments[ 16, 4].unpack('l')[0]
   end
   def SQLPrimaryKeysW(schema, tablename)
-  ###  cat = Fiddle::Pointer[  catalog.encode('UTF-16BE')]
-    ls = [   schema.length * 2].pack("s*")
-    ln = [tablename.length * 2].pack("s*")
-    sch = Fiddle::Pointer[   schema.encode('UTF-16BE')]
-    tnm = Fiddle::Pointer[tablename.encode('UTF-16BE')]
-  #  ls = [   schema.length].pack("s*")
-  #  ln = [tablename.length].pack("s*")
-  #  sch = Fiddle::Pointer[   schema.encode('IBM037')]
-  #  tnm = Fiddle::Pointer[tablename.encode('IBM037')]
+  #  ls = [   schema.length * 2].pack("s*")
+  #  ln = [tablename.length * 2].pack("s*")
+  #  sch = Fiddle::Pointer[   schema.encode('UTF-16BE')]
+  #  tnm = Fiddle::Pointer[tablename.encode('UTF-16BE')]
+    ls = [   schema.length].pack("s*")
+    ln = [tablename.length].pack("s*")
+    sch = Fiddle::Pointer[   schema.encode('IBM037')]
+    tnm = Fiddle::Pointer[tablename.encode('IBM037')]
     ileArguments = ILEarglist.malloc
     ileArguments[   0, 32] = PAD_32
     ileArguments[  32,  4] = handle
     ileArguments[  36, 12] = PAD_12
-  ### ileArguments[  48, 16] = [0, cat.to_i].pack("q*")
     ileArguments[  48, 16] = [0, 0].pack("q*")
     ileArguments[  64,  2] = [0].pack("s*")
     ileArguments[  66, 14] = PAD_14
@@ -840,26 +837,31 @@ class Stmt
     ileArguments[  98, 14] = PAD_14
     ileArguments[ 112, 16] = [0, tnm.to_i].pack("q*")
     ileArguments[ 128,  2] = ln
-  # Ilecallx.call(SQLApis['SQLPrimaryKeys'], ileArguments, SQLApiList['SQLPrimaryKeys'], - 5, 0)
-    Ilecallx.call(SQLApis['SQLPrimaryKeysW'], ileArguments, SQLApiList['SQLPrimaryKeysW'], - 5, 0)
+    Ilecallx.call(SQLApis['SQLPrimaryKeys'], ileArguments, SQLApiList['SQLPrimaryKeys'], - 5, 0)
+  # Ilecallx.call(SQLApis['SQLPrimaryKeysW'], ileArguments, SQLApiList['SQLPrimaryKeysW'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
   def SQLForeignKeysW(schema1, tablename1, schema2, tablename2)
-    ls1 = [   schema1.length * 2].pack("s*")
-    ln1 = [tablename1.length * 2].pack("s*")
-    ls2 = [   schema2.length * 2].pack("s*")
-    ln2 = [tablename2.length * 2].pack("s*")
-    ## cat1 = Fiddle::Pointer[  catalog1.encode('UTF-16BE')]
-    sch1 = Fiddle::Pointer[   schema1.encode('UTF-16BE')]
-    tnm1 = Fiddle::Pointer[tablename1.encode('UTF-16BE')]
-    ## cat2 = Fiddle::Pointer[  catalog2.encode('UTF-16BE')]
-    sch2 = Fiddle::Pointer[   schema2.encode('UTF-16BE')]
-    tnm2 = Fiddle::Pointer[tablename2.encode('UTF-16BE')]
+  #  ls1 = [   schema1.length * 2].pack("s*")
+  #  ln1 = [tablename1.length * 2].pack("s*")
+  #  ls2 = [   schema2.length * 2].pack("s*")
+  #  ln2 = [tablename2.length * 2].pack("s*")
+  #  sch1 = Fiddle::Pointer[   schema1.encode('UTF-16BE')]
+  #  tnm1 = Fiddle::Pointer[tablename1.encode('UTF-16BE')]
+  #  sch2 = Fiddle::Pointer[   schema2.encode('UTF-16BE')]
+  #  tnm2 = Fiddle::Pointer[tablename2.encode('UTF-16BE')]
+    ls1 = [   schema1.length].pack("s*")
+    ln1 = [tablename1.length].pack("s*")
+    ls2 = [   schema2.length].pack("s*")
+    ln2 = [tablename2.length].pack("s*")
+    sch1 = Fiddle::Pointer[   schema1.encode('IBM037')]
+    tnm1 = Fiddle::Pointer[tablename1.encode('IBM037')]
+    sch2 = Fiddle::Pointer[   schema2.encode('IBM037')]
+    tnm2 = Fiddle::Pointer[tablename2.encode('IBM037')]
     ileArguments = ILEarglist.malloc
     ileArguments[   0, 32] = PAD_32
     ileArguments[  32,  4] = handle
     ileArguments[  36, 12] = PAD_12
-#   ileArguments[  48, 16] = [0, cat1.to_i].pack("q*")
     ileArguments[  48, 16] = [0, 0].pack("q*")
     ileArguments[  64,  2] = [0].pack("s*")
     ileArguments[  66, 14] = PAD_14
@@ -869,7 +871,6 @@ class Stmt
     ileArguments[ 112, 16] = [0, tnm1.to_i].pack("q*")
     ileArguments[ 128,  2] = ln1
     ileArguments[ 130, 14] = PAD_14
-#   ileArguments[ 144, 16] = [0, cat2.to_i].pack("q*")
     ileArguments[ 144, 16] = [0, 0].pack("q*")
     ileArguments[ 160,  2] = [0].pack("s*")
     ileArguments[ 162, 14] = PAD_14
@@ -879,8 +880,8 @@ class Stmt
     ileArguments[ 208, 16] = [0, tnm2.to_i].pack("q*")
     ileArguments[ 224,  2] = ln2
     ileArguments[ 226, 14] = PAD_14
-#    Ilecallx.call(SQLApis['SQLTables'], ileArguments, SQLApiList['SQLTables'], - 5, 0)
-    Ilecallx.call(SQLApis['SQLForeignKeysW'], ileArguments, SQLApiList['SQLForeignKeysW'], - 5, 0)
+    Ilecallx.call(SQLApis['SQLForeignKeys'], ileArguments, SQLApiList['SQLForeignKeys'], - 5, 0)
+#    Ilecallx.call(SQLApis['SQLForeignKeysW'], ileArguments, SQLApiList['SQLForeignKeysW'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
 
   end
