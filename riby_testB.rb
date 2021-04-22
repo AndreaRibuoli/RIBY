@@ -15,3 +15,5 @@ s.prepare(ARGV[2])
 pp s.error
 pp s.numcols
 pp s.error
+pp s.numparams
+pp s.error

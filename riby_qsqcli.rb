@@ -646,6 +646,7 @@ class Stmt
   def foreignkeys(s1,n1,s2,n2)  SQLForeignKeysW(s1,n1,s2,n2); end
   def indexes(s,n,u=true)       SQLStatisticsW(s,n,(u==true) ? SQL_INDEX_UNIQUE : SQL_INDEX_ALL); end
   def numcols()                 SQLNumResultCols(); end
+  def numparams()               SQLNumParams(); end
   def attrs= hattrs
     hattrs.each { |k,v|
       lis = SQLAttrVals[:VALATTR_DECO][k]
@@ -943,6 +944,18 @@ class Stmt
     ileArguments[  36, 12] = PAD_12
     ileArguments[  48, 16] = [0, num.to_i].pack("q*")
     Ilecallx.call(SQLApis['SQLNumResultCols'], ileArguments, SQLApiList['SQLNumResultCols'], - 5, 0)
+    rc = ileArguments[ 16, 4].unpack('l')[0]
+    return nil if rc != 0
+    return num[0, 2].unpack('s')[0] if rc == 0
+  end
+  def SQLNumParams
+    num = SQLretsize.malloc
+    ileArguments = ILEarglist.malloc
+    ileArguments[   0, 32] = PAD_32
+    ileArguments[  32,  4] = handle
+    ileArguments[  36, 12] = PAD_12
+    ileArguments[  48, 16] = [0, num.to_i].pack("q*")
+    Ilecallx.call(SQLApis['SQLNumParams'], ileArguments, SQLApiList['SQLNumParams'], - 5, 0)
     rc = ileArguments[ 16, 4].unpack('l')[0]
     return nil if rc != 0
     return num[0, 2].unpack('s')[0] if rc == 0
