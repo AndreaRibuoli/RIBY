@@ -14,7 +14,7 @@ module RibyCli
   PAD_02                       = [ 0].pack("s*")
   PAD_04                       = [ 0].pack("l*")
   PAD_06                       = [ 0, 0, 0].pack("s*")
-  PAD_08                       = [ 0, 0].pack("l*")
+  PAD_08                       = [ 0].pack("q*")
   PAD_12                       = [ 0, 0, 0].pack("l*")
   PAD_32                       = [ 0, 0, 0, 0, 0, 0, 0, 0].pack("l*")
   SQL_NTS                      = [-3].pack("s*")
