@@ -887,36 +887,35 @@ class Stmt
     Ilecallx.call(SQLApis['SQLForeignKeys'], ileArguments, SQLApiList['SQLForeignKeys'], - 5, 0)
 #    Ilecallx.call(SQLApis['SQLForeignKeysW'], ileArguments, SQLApiList['SQLForeignKeysW'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
-    def SQLStatisticsW(schema, tablename, unique = SQL_INDEX_UNIQUE)
+  end
+  def SQLStatisticsW(schema, tablename, unique = SQL_INDEX_UNIQUE)
     #  ls = [   schema.length * 2].pack("s*")
     #  ln = [tablename.length * 2].pack("s*")
     #  lt = [tabletype.length * 2].pack("s*")
     #  sch = Fiddle::Pointer[   schema.encode('UTF-16BE')]
     #  tnm = Fiddle::Pointer[tablename.encode('UTF-16BE')]
     #  tty = Fiddle::Pointer[tabletype.encode('UTF-16BE')]
-      ls = [   schema.length].pack("s*")
-      ln = [tablename.length].pack("s*")
-      sch = Fiddle::Pointer[   schema.encode('IBM037')]
-      tnm = Fiddle::Pointer[tablename.encode('IBM037')]
-      ileArguments = ILEarglist.malloc
-      ileArguments[   0, 32] = PAD_32
-      ileArguments[  32,  4] = handle
-      ileArguments[  36, 12] = PAD_12
-      ileArguments[  48, 16] = [0, 0].pack("q*")
-      ileArguments[  64,  2] = [0].pack("s*")
-      ileArguments[  66, 14] = PAD_14
-      ileArguments[  80, 16] = [0, sch.to_i].pack("q*")
-      ileArguments[  96,  2] = ls
-      ileArguments[  98, 14] = PAD_14
-      ileArguments[ 112, 16] = [0, tnm.to_i].pack("q*")
-      ileArguments[ 128,  2] = ln
-      ileArguments[ 130,  2] = unique
-      ileArguments[ 132,  2] = PAD_02  ## accuracy ... not used
-      ileArguments[ 134, 10] = PAD_10
-      Ilecallx.call(SQLApis['SQLStatistics'], ileArguments, SQLApiList['SQLStatistics'], - 5, 0)
-  #   Ilecallx.call(SQLApis['SQLStatisticsW'], ileArguments, SQLApiList['SQLStatisticsW'], - 5, 0)
-      return ileArguments[ 16, 4].unpack('l')[0]
-    end
-
+    ls = [   schema.length].pack("s*")
+    ln = [tablename.length].pack("s*")
+    sch = Fiddle::Pointer[   schema.encode('IBM037')]
+    tnm = Fiddle::Pointer[tablename.encode('IBM037')]
+    ileArguments = ILEarglist.malloc
+    ileArguments[   0, 32] = PAD_32
+    ileArguments[  32,  4] = handle
+    ileArguments[  36, 12] = PAD_12
+    ileArguments[  48, 16] = [0, 0].pack("q*")
+    ileArguments[  64,  2] = [0].pack("s*")
+    ileArguments[  66, 14] = PAD_14
+    ileArguments[  80, 16] = [0, sch.to_i].pack("q*")
+    ileArguments[  96,  2] = ls
+    ileArguments[  98, 14] = PAD_14
+    ileArguments[ 112, 16] = [0, tnm.to_i].pack("q*")
+    ileArguments[ 128,  2] = ln
+    ileArguments[ 130,  2] = unique
+    ileArguments[ 132,  2] = PAD_02  ## accuracy ... not used
+    ileArguments[ 134, 10] = PAD_10
+    Ilecallx.call(SQLApis['SQLStatistics'], ileArguments, SQLApiList['SQLStatistics'], - 5, 0)
+  # Ilecallx.call(SQLApis['SQLStatisticsW'], ileArguments, SQLApiList['SQLStatisticsW'], - 5, 0)
+    return ileArguments[ 16, 4].unpack('l')[0]
   end
 end
