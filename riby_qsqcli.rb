@@ -639,7 +639,7 @@ class Stmt
   def handle()           @hstmt[0,4]; end
   def error(n = 1)       SQLGetDiagRecW(SQL_HANDLE_STMT, handle, n); end
   def cancel()           SQLCancel(); end
-  def tables(c,s,n,t)    SQLTablesW(c,s,n,t); end
+  def tables(s,n,t)      SQLTablesW(s,n,t); end
   def attrs= hattrs
     hattrs.each { |k,v|
       lis = SQLAttrVals[:VALATTR_DECO][k]
@@ -778,8 +778,8 @@ class Stmt
     Ilecallx.call(SQLApis['SQLCancel'], ileArguments, SQLApiList['SQLCancel'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
-  def SQLTablesW(catalog, schema, tablename, tabletype)
-    cat = Fiddle::Pointer[  catalog.encode('UTF-16BE')]
+  def SQLTablesW(schema, tablename, tabletype)
+  # cat = Fiddle::Pointer[  catalog.encode('UTF-16BE')]
     sch = Fiddle::Pointer[   schema.encode('UTF-16BE')]
     tnm = Fiddle::Pointer[tablename.encode('UTF-16BE')]
     tty = Fiddle::Pointer[tabletype.encode('UTF-16BE')]
@@ -787,8 +787,9 @@ class Stmt
     ileArguments[   0, 32] = PAD_32
     ileArguments[  32,  4] = handle
     ileArguments[  36, 12] = PAD_12
-    ileArguments[  48, 16] = [0, cat.to_i].pack("q*")
-    ileArguments[  64,  2] = SQL_NTS
+#    ileArguments[  48, 16] = [0, cat.to_i].pack("q*")
+    ileArguments[  48, 16] = [0, 0].pack("q*")
+    ileArguments[  64,  2] = [0].pack("s*")
     ileArguments[  66, 14] = PAD_14
     ileArguments[  80, 16] = [0, sch.to_i].pack("q*")
     ileArguments[  96,  2] = SQL_NTS
