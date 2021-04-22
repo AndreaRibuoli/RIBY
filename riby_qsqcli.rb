@@ -13,10 +13,10 @@ module RibyCli
   PAD_01                       = [ 0].pack("c*")
   PAD_02                       = [ 0].pack("s*")
   PAD_04                       = [ 0].pack("l*")
-  PAD_06                       = [ 0, 0, 0].pack("s*")
   PAD_08                       = [ 0].pack("q*")
+  PAD_06                       = [ 0, 0, 0].pack("s*")
   PAD_12                       = [ 0, 0, 0].pack("l*")
-  PAD_32                       = [ 0, 0, 0, 0, 0, 0, 0, 0].pack("l*")
+  PAD_32                       = [ 0, 0, 0, 0].pack("q*")
   SQL_NTS                      = [-3].pack("s*")
   SQL_NULL_HANDLE              = [ 0].pack("l*")
   SQL_HANDLE_ENV               = [ 1].pack("s*")
@@ -153,7 +153,8 @@ module RibyCli
     ileArguments[ 34,  2] = PAD_02
     ileArguments[ 36,  4] = ihandle
     ileArguments[ 40,  8] = PAD_08
-    ileArguments[ 48, 16] = [handle.to_i.to_s(16).rjust(32,'0')].pack("H*")
+#   ileArguments[ 48, 16] = [handle.to_i.to_s(16).rjust(32,'0')].pack("H*")
+    ileArguments[ 48, 16] = [0, handle.to_i].pack("q*")
     ileArguments[ 64, 80] = ['0'.rjust(160,'0')].pack("H*")  # padding
     Ilecallx.call(SQLApis['SQLAllocHandle'], ileArguments, SQLApiList['SQLAllocHandle'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
