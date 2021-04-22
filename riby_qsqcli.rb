@@ -818,14 +818,14 @@ class Stmt
   end
   def SQLPrimaryKeysW(schema, tablename)
   ###  cat = Fiddle::Pointer[  catalog.encode('UTF-16BE')]
-  #  ls = [   schema.length * 2].pack("s*")
-  #  ln = [tablename.length * 2].pack("s*")
-  #  sch = Fiddle::Pointer[   schema.encode('UTF-16BE')]
-  #  tnm = Fiddle::Pointer[tablename.encode('UTF-16BE')]
-    ls = [   schema.length].pack("s*")
-    ln = [tablename.length].pack("s*")
-    sch = Fiddle::Pointer[   schema.encode('IBM037')]
-    tnm = Fiddle::Pointer[tablename.encode('IBM037')]
+    ls = [   schema.length * 2].pack("s*")
+    ln = [tablename.length * 2].pack("s*")
+    sch = Fiddle::Pointer[   schema.encode('UTF-16BE')]
+    tnm = Fiddle::Pointer[tablename.encode('UTF-16BE')]
+  #  ls = [   schema.length].pack("s*")
+  #  ln = [tablename.length].pack("s*")
+  #  sch = Fiddle::Pointer[   schema.encode('IBM037')]
+  #  tnm = Fiddle::Pointer[tablename.encode('IBM037')]
     ileArguments = ILEarglist.malloc
     ileArguments[   0, 32] = PAD_32
     ileArguments[  32,  4] = handle
@@ -839,8 +839,8 @@ class Stmt
     ileArguments[  98, 14] = PAD_14
     ileArguments[ 112, 16] = [0, tnm.to_i].pack("q*")
     ileArguments[ 128,  2] = ln
-    Ilecallx.call(SQLApis['SQLPrimaryKeys'], ileArguments, SQLApiList['SQLPrimaryKeys'], - 5, 0)
-#   Ilecallx.call(SQLApis['SQLPrimaryKeysW'], ileArguments, SQLApiList['SQLPrimaryKeysW'], - 5, 0)
+  # Ilecallx.call(SQLApis['SQLPrimaryKeys'], ileArguments, SQLApiList['SQLPrimaryKeys'], - 5, 0)
+    Ilecallx.call(SQLApis['SQLPrimaryKeysW'], ileArguments, SQLApiList['SQLPrimaryKeysW'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
   
