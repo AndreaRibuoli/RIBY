@@ -10,12 +10,12 @@ module RibyCli
   extend Fiddle::Importer
 
   private
-  SQL_NTS                      = [ -3].pack("n*")
-  SQL_NULL_HANDLE              = [  0].pack("l*")
-  SQL_HANDLE_ENV               = 1
-  SQL_HANDLE_DBC               = 2
-  SQL_HANDLE_STMT              = 3
-  SQL_HANDLE_DESC              = 4
+  SQL_NTS                      = [-3].pack("n*")
+  SQL_NULL_HANDLE              = [ 0].pack("l*")
+  SQL_HANDLE_ENV               = [ 1].pack("n*")
+  SQL_HANDLE_DBC               = [ 2].pack("n*")
+  SQL_HANDLE_STMT              = [ 3].pack("n*")
+  SQL_HANDLE_DESC              = [ 4].pack("n*")
   SQLINTEGER                   = 1
   SQLCHAR                      = 2
   SQLWCHAR                     = 3
@@ -142,7 +142,7 @@ module RibyCli
   def SQLAllocHandle(htype, ihandle, handle)
     ileArguments = ILEarglist.malloc
     ileArguments[  0, 32] = ['0'.rjust(64,'0')].pack("H*")
-    ileArguments[ 32,  2] = [htype.to_s(16).rjust(4,'0')].pack("H*")
+    ileArguments[ 32,  2] = htype
     ileArguments[ 34,  2] = ['0000'].pack("H*")
     ileArguments[ 36,  4] = ihandle
     ileArguments[ 40,  8] = ['0'.rjust(16,'0')].pack("H*")
@@ -158,7 +158,7 @@ module RibyCli
     msglen = SQLmsglen.malloc
     ileArguments = ILEarglist.malloc
     ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
-    ileArguments[  32,  2] = [htype.to_s(16).rjust(4,'0')].pack("H*")
+    ileArguments[  32,  2] = htype
     ileArguments[  34,  2] = ['0000'].pack("H*")             # padding
     ileArguments[  36,  4] = handle
     ileArguments[  40,  2] = [recnum.to_s(16).rjust(4,'0')].pack("H*")
@@ -181,7 +181,7 @@ module RibyCli
   def self.SQLFreeHandle(htype, handle)
     ileArguments = ILEarglist.malloc
     ileArguments[  0,  32] = ['0'.rjust(64,'0')].pack("H*")
-    ileArguments[ 32,   2] = [htype.to_s(16).rjust(4,'0')].pack("H*")
+    ileArguments[ 32,   2] = htype
     ileArguments[ 34,   2] = ['0000'].pack("H*")
     ileArguments[ 36,   4] = handle
     ileArguments[ 40, 104] = ['0'.rjust(208,'0')].pack("H*")
@@ -191,7 +191,7 @@ module RibyCli
   def SQLEndTran(htype, handle, ftype)
     ileArguments = ILEarglist.malloc
     ileArguments[  0,  32] = ['0'.rjust(64,'0')].pack("H*")
-    ileArguments[ 32,   2] = [htype.to_s(16).rjust(4,'0')].pack("H*")
+    ileArguments[ 32,   2] = htype
     ileArguments[ 34,   2] = ['0000'].pack("H*")
     ileArguments[ 36,   4] = handle
     ileArguments[ 40,   2] = [ftype.to_s(16).rjust(4,'0')].pack("H*")
