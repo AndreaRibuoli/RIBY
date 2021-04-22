@@ -10,7 +10,8 @@ module RibyCli
   extend Fiddle::Importer
 
   private
-  SQL_NULL_HANDLE              = [ 0, 0, 0, 0].pack("C*")
+  SQL_NTS                      = [ -3].pack("n*")
+  SQL_NULL_HANDLE              = [ 0, 0].pack("n*")
   SQL_HANDLE_ENV               = 1
   SQL_HANDLE_DBC               = 2
   SQL_HANDLE_STMT              = 3
@@ -412,13 +413,13 @@ class Connect
     ileArguments[  32,  4] = handle                          # hdbc
     ileArguments[  36, 12] = ['0'.rjust(24,'0')].pack("H*")  # padding
     ileArguments[  48, 16] = [Fiddle::Pointer[dsnW].to_i.to_s(16).rjust(32,'0')].pack("H*")
-    ileArguments[  64,  2] = ['FFFD'].pack("H*")             # SQL_NTS
+    ileArguments[  64,  2] = SQL_NTS
     ileArguments[  66, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
     ileArguments[  80, 16] = [Fiddle::Pointer[userW].to_i.to_s(16).rjust(32,'0')].pack("H*")
-    ileArguments[  96,  2] = ['FFFD'].pack("H*")             # SQL_NTS
+    ileArguments[  96,  2] = SQL_NTS
     ileArguments[  98, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
     ileArguments[ 112, 16] = [Fiddle::Pointer[passW].to_i.to_s(16).rjust(32,'0')].pack("H*")
-    ileArguments[ 128,  2] = ['FFFD'].pack("H*")             # SQL_NTS
+    ileArguments[ 128,  2] = SQL_NTS
     ileArguments[ 130, 14] = ['0'.rjust(28,'0')].pack("H*")  # padding
     Ilecallx.call(SQLApis['SQLConnectW'], ileArguments, SQLApiList['SQLConnectW'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
