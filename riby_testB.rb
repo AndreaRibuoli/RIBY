@@ -13,7 +13,7 @@ s = Stmt.new(c)
 # pp s.error
 s.prepare(ARGV[2])
 pp s.error
-c.execute
+s.execute
 pp s.error
 c.commit
 pp s.error
