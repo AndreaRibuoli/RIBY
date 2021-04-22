@@ -83,6 +83,7 @@ module RibyCli
   'SQLConnectW'          => [ - 5, -11, - 3, -11, - 3, -11, - 3,                                 0].pack("s*"),
   'SQLTables'            => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3,                       0].pack("s*"),
   'SQLTablesW'           => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3,                       0].pack("s*"),
+  'SQLPrimaryKeysW'      => [ - 5, -11, - 3, -11, - 3, -11, - 3,                                 0].pack("s*"),
   'SQLDisconnect'        => [ - 5,                                                               0].pack("s*"),
   'SQLReleaseEnv'        => [ - 5,                                                               0].pack("s*"),
   'SQLGetInfoW'          => [ - 5, - 3, -11, - 3, -11,                                           0].pack("s*"),
@@ -131,7 +132,6 @@ module RibyCli
   'SQLParamData'         => [ - 5, -11,                                                          0].pack("s*"),
   'SQLParamOptions'      => [ - 5, - 5, -11,                                                     0].pack("s*"),
   'SQLPrepareW'          => [ - 5, -11, - 5,                                                     0].pack("s*"),
-  'SQLPrimaryKeysW'      => [ - 5, -11, - 3, -11, - 3, -11, - 3,                                 0].pack("s*"),
   'SQLProceduresW'       => [ - 5, -11, - 3, -11, - 3, -11, - 3,                                 0].pack("s*"),
   'SQLProcedureColumnsW' => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3,                       0].pack("s*"),
   'SQLPutData'           => [ - 5, -11, - 5,                                                     0].pack("s*"),
@@ -641,6 +641,7 @@ class Stmt
   def error(n = 1)       SQLGetDiagRecW(SQL_HANDLE_STMT, handle, n); end
   def cancel()           SQLCancel(); end
   def tables(s,n,t)      SQLTablesW(s,n,t); end
+  def primarykeys(s,n)   SQLPrimaryKeysW(s,n); end
   def attrs= hattrs
     hattrs.each { |k,v|
       lis = SQLAttrVals[:VALATTR_DECO][k]
@@ -814,4 +815,32 @@ class Stmt
 #   Ilecallx.call(SQLApis['SQLTablesW'], ileArguments, SQLApiList['SQLTablesW'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
+  def SQLPrimaryKeysW(schema, tablename)
+  ###  cat = Fiddle::Pointer[  catalog.encode('UTF-16BE')]
+  #  ls = [   schema.length * 2].pack("s*")
+  #  ln = [tablename.length * 2].pack("s*")
+  #  sch = Fiddle::Pointer[   schema.encode('UTF-16BE')]
+  #  tnm = Fiddle::Pointer[tablename.encode('UTF-16BE')]
+    ls = [   schema.length].pack("s*")
+    ln = [tablename.length].pack("s*")
+    sch = Fiddle::Pointer[   schema.encode('IBM037')]
+    tnm = Fiddle::Pointer[tablename.encode('IBM037')]
+    ileArguments = ILEarglist.malloc
+    ileArguments[   0, 32] = PAD_32
+    ileArguments[  32,  4] = handle
+    ileArguments[  36, 12] = PAD_12
+  ### ileArguments[  48, 16] = [0, cat.to_i].pack("q*")
+    ileArguments[  48, 16] = [0, 0].pack("q*")
+    ileArguments[  64,  2] = [0].pack("s*")
+    ileArguments[  66, 14] = PAD_14
+    ileArguments[  80, 16] = [0, sch.to_i].pack("q*")
+    ileArguments[  96,  2] = ls
+    ileArguments[  98, 14] = PAD_14
+    ileArguments[ 112, 16] = [0, tnm.to_i].pack("q*")
+    ileArguments[ 128,  2] = ln
+    Ilecallx.call(SQLApis['SQLPrimaryKeys'], ileArguments, SQLApiList['SQLPrimaryKeys'], - 5, 0)
+#   Ilecallx.call(SQLApis['SQLPrimaryKeysW'], ileArguments, SQLApiList['SQLPrimaryKeysW'], - 5, 0)
+    return ileArguments[ 16, 4].unpack('l')[0]
+  end
+  
 end
