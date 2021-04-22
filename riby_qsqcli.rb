@@ -216,7 +216,7 @@ class Env
   include RibyCli
   def initialize
     @henv = SQLhandle.malloc
-    @hdbcs = []  # array of handles to allow deallocation by GC
+    @hdbcs = []
     rc = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, @henv)
     temp = @henv[0,4]
     puts "#{temp.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Env (#{rc})" if $-W >= 2
@@ -384,7 +384,7 @@ class Connect
   include RibyCli
   def initialize(henv, dsn = '*LOCAL')
     @hdbc = SQLhandle.malloc
-    @hstmts = []  # array of handles to allow deallocation by GC
+    @hstmts = []
     @henv = henv
     @dsn  = dsn
     rc = SQLAllocHandle(SQL_HANDLE_DBC, henv.handle, @hdbc)
@@ -419,7 +419,7 @@ class Connect
     passW = pass.encode('UTF-16BE')
     ileArguments = ILEarglist.malloc
     ileArguments[   0, 32] = PAD_32
-    ileArguments[  32,  4] = handle                          # hdbc
+    ileArguments[  32,  4] = handle                       
     ileArguments[  36, 12] = PAD_12
     ileArguments[  48, 16] = [0, Fiddle::Pointer[dsnW].to_i].pack("q*")
     ileArguments[  64,  2] = SQL_NTS
@@ -563,7 +563,7 @@ class Connect
     ileArguments[  68, 12] = PAD_12
     ileArguments[  80, 16] = [0, sizeint.to_i].pack("q*")
     Ilecallx.call(SQLApis['SQLGetConnectAttrW'], ileArguments, SQLApiList['SQLGetConnectAttrW'], - 5, 0)
-    len = sizeint[0, 4].unpack("l")[0]  # remove null
+    len = sizeint[0, 4].unpack("l")[0]
     return buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
     return buffer[0, len].force_encoding('UTF-16BE').encode('utf-8')  if kind == SQLWCHAR
   end
@@ -606,7 +606,7 @@ class Connect
   def SQLDisconnect
     ileArguments = ILEarglist.malloc
     ileArguments[   0,  32] = PAD_32
-    ileArguments[  32,   4] = handle                          # hdbc
+    ileArguments[  32,   4] = handle
     ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
     Ilecallx.call(SQLApis['SQLDisconnect'], ileArguments, SQLApiList['SQLDisconnect'], - 5, 0)
     rc = ileArguments[ 16, 4].unpack('l')[0]
