@@ -19,13 +19,13 @@ module RibyCli
   SQLINTEGER                   = 1
   SQLCHAR                      = 2
   SQLWCHAR                     = 3
-  SQL_COMMIT                   = 0
-  SQL_ROLLBACK                 = 1
-  SQL_COMMIT_HOLD              = 2
-  SQL_ROLLBACK_HOLD            = 3
-  SQL_SAVEPOINT_NAME_RELEASE   = 4
-  SQL_SAVEPOINT_NAME_ROLLBACK  = 5
-  
+  SQL_COMMIT                   = [ 0].pack("l*")
+  SQL_ROLLBACK                 = [ 1].pack("l*")
+  SQL_COMMIT_HOLD              = [ 2].pack("l*")
+  SQL_ROLLBACK_HOLD            = [ 3].pack("l*")
+  SQL_SAVEPOINT_NAME_RELEASE   = [ 4].pack("l*")
+  SQL_SAVEPOINT_NAME_ROLLBACK  = [ 5].pack("l*")
+
   SQLAttrVals = YAML.load_file('sqlattrvals.yaml')
   ILEpointer  = struct [ 'char b[16]' ]
   SQLhandle   = struct [ 'char a[4]' ]
@@ -194,7 +194,7 @@ module RibyCli
     ileArguments[ 32,   2] = htype
     ileArguments[ 34,   2] = ['0000'].pack("H*")
     ileArguments[ 36,   4] = handle
-    ileArguments[ 40,   2] = [ftype.to_s(16).rjust(4,'0')].pack("H*")
+    ileArguments[ 40,   2] = ftype
     ileArguments[ 42, 102] = ['0'.rjust(204,'0')].pack("H*")
     Ilecallx.call(SQLApis['SQLEndTran'], ileArguments, SQLApiList['SQLEndTran'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
