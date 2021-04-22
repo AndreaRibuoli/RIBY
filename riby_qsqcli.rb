@@ -780,12 +780,18 @@ class Stmt
   end
   def SQLTablesW(schema, tablename, tabletype)
   # cat = Fiddle::Pointer[  catalog.encode('UTF-16BE')]
-    ls = [   schema.length * 2].pack("s*")
-    ln = [tablename.length * 2].pack("s*")
-    lt = [tabletype.length * 2].pack("s*")
-    sch = Fiddle::Pointer[   schema.encode('UTF-16BE')]
-    tnm = Fiddle::Pointer[tablename.encode('UTF-16BE')]
-    tty = Fiddle::Pointer[tabletype.encode('UTF-16BE')]
+  #  ls = [   schema.length * 2].pack("s*")
+  #  ln = [tablename.length * 2].pack("s*")
+  #  lt = [tabletype.length * 2].pack("s*")
+  #  sch = Fiddle::Pointer[   schema.encode('UTF-16BE')]
+  #  tnm = Fiddle::Pointer[tablename.encode('UTF-16BE')]
+  #  tty = Fiddle::Pointer[tabletype.encode('UTF-16BE')]
+    ls = [   schema.length].pack("s*")
+    ln = [tablename.length].pack("s*")
+    lt = [tabletype.length].pack("s*")
+    sch = Fiddle::Pointer[   schema.encode('IBM037')]
+    tnm = Fiddle::Pointer[tablename.encode('IBM037')]
+    tty = Fiddle::Pointer[tabletype.encode('IBM037')]
     ileArguments = ILEarglist.malloc
     ileArguments[   0, 32] = PAD_32
     ileArguments[  32,  4] = handle
@@ -803,7 +809,8 @@ class Stmt
     ileArguments[ 144, 16] = [0, tty.to_i].pack("q*")
     ileArguments[ 160,  2] = lt
     ileArguments[ 162, 14] = PAD_14
-    Ilecallx.call(SQLApis['SQLTablesW'], ileArguments, SQLApiList['SQLTablesW'], - 5, 0)
+    Ilecallx.call(SQLApis['SQLTables'], ileArguments, SQLApiList['SQLTables'], - 5, 0)
+#   Ilecallx.call(SQLApis['SQLTablesW'], ileArguments, SQLApiList['SQLTablesW'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
 end
