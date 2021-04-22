@@ -1,5 +1,6 @@
 #
-#   Author: Andrea Ribuoli (andrea.ribuoli@yahoo.com)
+#   Author: Andrea Ribuoli
+#   (andrea.ribuoli@yahoo.com)
 #   Andrea Ribuoli (c) 2021
 #
 require 'yaml'
@@ -95,6 +96,8 @@ module RibyCli
   'SQLReleaseEnv'        => [ - 5,                                                               0].pack("s*"),
   'SQLGetInfoW'          => [ - 5, - 3, -11, - 3, -11,                                           0].pack("s*"),
   'SQLExecDirectW'       => [ - 5, -11, - 5,                                                     0].pack("s*"),
+  'SQLPrepareW'          => [ - 5, -11, - 5,                                                     0].pack("s*"),
+  'SQLExecute'           => [ - 5,                                                               0].pack("s*"),
   'SQLEndTran'           => [ - 3, - 5, - 3,                                                     0].pack("s*"),
   'SQLCancel'            => [ - 5,                                                               0].pack("s*"),
   'SQLBindCol'           => [ - 5, - 5, - 5, -11, - 5, -11,                                      0].pack("s*"),
@@ -112,7 +115,6 @@ module RibyCli
   'SQLDescribeColW'      => [ - 5, - 3, -11, - 3, -11, -11, -11, -11, -11,                       0].pack("s*"),
   'SQLDescribeParam'     => [ - 5, - 3, -11, -11, -11, -11,                                      0].pack("s*"),
   'SQLDriverConnectW'    => [ - 5, -11, -11, - 3, -11, - 3, -11, - 3,                            0].pack("s*"),
-  'SQLExecute'           => [ - 5,                                                               0].pack("s*"),
   'SQLExtendedFetch'     => [ - 5, - 3, - 5, -11, -11,                                           0].pack("s*"),
   'SQLFetch'             => [ - 5,                                                               0].pack("s*"),
   'SQLFetchScroll'       => [ - 5, - 3, - 5,                                                     0].pack("s*"),
@@ -137,7 +139,6 @@ module RibyCli
   'SQLNumResultCols'     => [ - 5, -11,                                                          0].pack("s*"),
   'SQLParamData'         => [ - 5, -11,                                                          0].pack("s*"),
   'SQLParamOptions'      => [ - 5, - 5, -11,                                                     0].pack("s*"),
-  'SQLPrepareW'          => [ - 5, -11, - 5,                                                     0].pack("s*"),
   'SQLProceduresW'       => [ - 5, -11, - 3, -11, - 3, -11, - 3,                                 0].pack("s*"),
   'SQLProcedureColumnsW' => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3,                       0].pack("s*"),
   'SQLPutData'           => [ - 5, -11, - 5,                                                     0].pack("s*"),
@@ -641,9 +642,11 @@ class Stmt
       hdbc.delete(h)
     }
   end
-  def execdirect(sql)           SQLExecDirectW(sql); end
   def handle()                  @hstmt[0,4]; end
   def error(n = 1)              SQLGetDiagRecW(SQL_HANDLE_STMT, handle, n); end
+  def execdirect(sql)           SQLExecDirectW(sql); end
+  def prepare(sql)              SQLPrepareW(sql); end
+  def execute()                 SQLExecute(); end
   def cancel()                  SQLCancel(); end
   def tables(s,n,t)             SQLTablesW(s,n,t); end
   def primarykeys(s,n)          SQLPrimaryKeysW(s,n); end
@@ -767,6 +770,19 @@ class Stmt
     Ilecallx.call(SQLApis['SQLSetStmtAttrW'], ileArguments, SQLApiList['SQLSetStmtAttrW'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
+  def SQLPrepareW(sql)
+    len = sql.length
+    buffer  = INFObuffer.malloc
+    buffer[0, len*2] = sql.encode('UTF-16BE')
+    ileArguments = ILEarglist.malloc
+    ileArguments[  0, 32] = PAD_32
+    ileArguments[ 32,  4] = handle
+    ileArguments[ 36, 12] = PAD_12
+    ileArguments[ 48, 16] = [0, buffer.to_i].pack("q*")
+    ileArguments[ 64,  4] = [len.to_s(16).rjust(8,'0')].pack("H*")
+    Ilecallx.call(SQLApis['SQLPrepareW'], ileArguments, SQLApiList['SQLPrepareW'], - 5, 0)
+    return ileArguments[ 16, 4].unpack('l')[0]
+  end
   def SQLExecDirectW(sql)
     len = sql.length
     buffer  = INFObuffer.malloc
@@ -778,6 +794,13 @@ class Stmt
     ileArguments[ 48, 16] = [0, buffer.to_i].pack("q*")
     ileArguments[ 64,  4] = [len.to_s(16).rjust(8,'0')].pack("H*")
     Ilecallx.call(SQLApis['SQLExecDirectW'], ileArguments, SQLApiList['SQLExecDirectW'], - 5, 0)
+    return ileArguments[ 16, 4].unpack('l')[0]
+  end
+  def SQLExecute()
+    ileArguments = ILEarglist.malloc
+    ileArguments[  0,  32] = PAD_32
+    ileArguments[ 32,   4] = handle
+    Ilecallx.call(SQLApis['SQLExecute'], ileArguments, SQLApiList['SQLExecute'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
   def SQLCancel()
