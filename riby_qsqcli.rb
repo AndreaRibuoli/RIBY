@@ -10,6 +10,10 @@ module RibyCli
   extend Fiddle::Importer
 
   private
+  PAD_01                       = [ 0].pack("C*")
+  PAD_02                       = [ 0].pack("n*")
+  PAD_04                       = [ 0].pack("l*")
+  PAD_06                       = [ 0, 0, 0].pack("n*")
   SQL_NTS                      = [-3].pack("n*")
   SQL_NULL_HANDLE              = [ 0].pack("l*")
   SQL_HANDLE_ENV               = [ 1].pack("n*")
@@ -143,7 +147,7 @@ module RibyCli
     ileArguments = ILEarglist.malloc
     ileArguments[  0, 32] = ['0'.rjust(64,'0')].pack("H*")
     ileArguments[ 32,  2] = htype
-    ileArguments[ 34,  2] = ['0000'].pack("H*")
+    ileArguments[ 34,  2] = PAD_02
     ileArguments[ 36,  4] = ihandle
     ileArguments[ 40,  8] = ['0'.rjust(16,'0')].pack("H*")
     ileArguments[ 48, 16] = [handle.to_i.to_s(16).rjust(32,'0')].pack("H*")
@@ -159,7 +163,7 @@ module RibyCli
     ileArguments = ILEarglist.malloc
     ileArguments[   0, 32] = ['0'.rjust(64,'0')].pack("H*")
     ileArguments[  32,  2] = htype
-    ileArguments[  34,  2] = ['0000'].pack("H*")             # padding
+    ileArguments[  34,  2] = PAD_02             # padding
     ileArguments[  36,  4] = handle
     ileArguments[  40,  2] = [recnum.to_s(16).rjust(4,'0')].pack("H*")
     ileArguments[  42,  6] = ['0'.rjust(12,'0')].pack("H*")  # padding
@@ -182,7 +186,7 @@ module RibyCli
     ileArguments = ILEarglist.malloc
     ileArguments[  0,  32] = ['0'.rjust(64,'0')].pack("H*")
     ileArguments[ 32,   2] = htype
-    ileArguments[ 34,   2] = ['0000'].pack("H*")
+    ileArguments[ 34,   2] = PAD_02
     ileArguments[ 36,   4] = handle
     ileArguments[ 40, 104] = ['0'.rjust(208,'0')].pack("H*")
     Ilecallx.call(SQLApis['SQLFreeHandle'], ileArguments, SQLApiList['SQLFreeHandle'], - 5, 0)
@@ -192,7 +196,7 @@ module RibyCli
     ileArguments = ILEarglist.malloc
     ileArguments[  0,  32] = ['0'.rjust(64,'0')].pack("H*")
     ileArguments[ 32,   2] = htype
-    ileArguments[ 34,   2] = ['0000'].pack("H*")
+    ileArguments[ 34,   2] = PAD_02
     ileArguments[ 36,   4] = handle
     ileArguments[ 40,   2] = ftype
     ileArguments[ 42, 102] = ['0'.rjust(204,'0')].pack("H*")
