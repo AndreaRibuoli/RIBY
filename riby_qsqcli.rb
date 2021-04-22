@@ -202,7 +202,6 @@ module RibyCli
     ileArguments[ 32,   2] = htype
     ileArguments[ 34,   2] = PAD_02
     ileArguments[ 36,   4] = handle
-#    ileArguments[ 40, 104] = ['0'.rjust(208,'0')].pack("H*")
     Ilecallx.call(SQLApis['SQLFreeHandle'], ileArguments, SQLApiList['SQLFreeHandle'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
@@ -213,7 +212,6 @@ module RibyCli
     ileArguments[ 34,   2] = PAD_02
     ileArguments[ 36,   4] = handle
     ileArguments[ 40,   2] = ftype
-#    ileArguments[ 42, 102] = ['0'.rjust(204,'0')].pack("H*")
     Ilecallx.call(SQLApis['SQLEndTran'], ileArguments, SQLApiList['SQLEndTran'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
@@ -315,7 +313,6 @@ class Env
     ileArguments = ILEarglist.malloc
     ileArguments[   0,  32] = PAD_32
     ileArguments[  32,   4] = henv
-  #  ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
     Ilecallx.call(SQLApis['SQLReleaseEnv'], ileArguments, SQLApiList['SQLReleaseEnv'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
@@ -381,7 +378,6 @@ class Env
     ileArguments = ILEarglist.malloc
     ileArguments[   0,  32] = PAD_32
     ileArguments[  32,   4] = handle
- #   ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
     Ilecallx.call(SQLApis['SQLReleaseEnv'], ileArguments, SQLApiList['SQLReleaseEnv'], - 5, 0)
     rc = ileArguments[ 16, 4].unpack('l')[0]
     puts " ReleaseEnv #{handle.unpack('l')[0]} (#{rc}) SYNCHRONOUS"  if $-W >= 2
@@ -507,7 +503,6 @@ class Connect
     ileArguments = ILEarglist.malloc
     ileArguments[   0,  32] = PAD_32
     ileArguments[  32,   4] = hdbc
-  #  ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
     Ilecallx.call(SQLApis['SQLDisconnect'], ileArguments, SQLApiList['SQLDisconnect'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
@@ -607,7 +602,6 @@ class Connect
     ileArguments[  64,  2] = [SQL_MAX_INFO_LENGTH].pack("s*")
     ileArguments[  66, 14] = PAD_14
     ileArguments[  80, 16] = [0, size.to_i].pack("q*")
-   # ileArguments[  96, 48] = ['0'.rjust(96,'0')].pack("H*")
     Ilecallx.call(SQLApis['SQLGetInfoW'], ileArguments, SQLApiList['SQLGetInfoW'], - 5, 0)
     len = ('0000' + size[ 0, 2].unpack("H*")[0]).to_i(16)
     return buffer[ 0, len].force_encoding('UTF-16BE').encode('utf-8') if kind == SQLWCHAR
@@ -616,7 +610,6 @@ class Connect
     ileArguments = ILEarglist.malloc
     ileArguments[   0,  32] = PAD_32
     ileArguments[  32,   4] = handle
-   # ileArguments[  36, 108] = ['0'.rjust(216,'0')].pack("H*")
     Ilecallx.call(SQLApis['SQLDisconnect'], ileArguments, SQLApiList['SQLDisconnect'], - 5, 0)
     rc = ileArguments[ 16, 4].unpack('l')[0]
     puts " Disconnect #{handle.unpack('l')[0]} (#{rc}) SYNCHRONOUS"  if $-W >= 2
@@ -652,6 +645,7 @@ class Stmt
   def primarykeys(s,n)          SQLPrimaryKeysW(s,n); end
   def foreignkeys(s1,n1,s2,n2)  SQLForeignKeysW(s1,n1,s2,n2); end
   def indexes(s,n,u=true)       SQLStatisticsW(s,n,(u==true) ? SQL_INDEX_UNIQUE : SQL_INDEX_ALL); end
+  def numcols                   SQLNumResultCols(); end
   def attrs= hattrs
     hattrs.each { |k,v|
       lis = SQLAttrVals[:VALATTR_DECO][k]
@@ -942,5 +936,15 @@ class Stmt
     return ileArguments[ 16, 4].unpack('l')[0]
   end
   def SQLNumResultCols
+    num = SQLretsize.malloc
+    ileArguments = ILEarglist.malloc
+    ileArguments[   0, 32] = PAD_32
+    ileArguments[  32,  4] = handle
+    ileArguments[  36, 12] = PAD_12
+    ileArguments[  48, 16] = [0, num.to_i].pack("q*")
+    Ilecallx.call(SQLApis['SQLNumResultCols'], ileArguments, SQLApiList['SQLNumResultCols'], - 5, 0)
+    rc = ileArguments[ 16, 4].unpack('l')[0]
+    return nil if rc != 0
+    return num[0, 2].unpack('s')[0] if rc == 0
   end
 end
