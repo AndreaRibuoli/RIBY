@@ -17,3 +17,5 @@ pp s.numcols
 pp s.error
 pp s.numparams
 pp s.error
+pp s.columns_count
+pp s.error
