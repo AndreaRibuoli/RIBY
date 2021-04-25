@@ -39,6 +39,7 @@ module RibyCli
   SQL_SAVEPOINT_NAME_ROLLBACK  = [ 5].pack("l*")
 
   SQLAttrVals = YAML.load_file('sqlattrvals.yaml')
+  SQLDescVals = YAML.load_file('sqldescvals.yaml')
   ILEpointer  = struct [ 'char b[16]' ]
   SQLhandle   = struct [ 'char a[4]' ]
   ILEarglist  = struct [ 'char c[240]' ]
@@ -72,6 +73,9 @@ module RibyCli
  ##
  ## DB2 for i CLI does not support asynchronous statement processing (SQLCancel).
  ##
+ ## SQLColAttributesW() has been deprecated and replaced by SQLColAttributeW().
+ ## SQLColAttributeW() is a more extensible alternative to the SQLDescribeColW() function
+ ## SQLGetDescFieldW() is a more extensible alternative to the SQLGetDescRecW() function.
  
   SQLApiList = {            #----#----#----#----#----#----#----#----#----#----#----#----#----#----#
   'SQLGetDiagRecW'       => [ - 3, - 5, - 3, -11, -11, -11, - 3, -11,                            0].pack("s*"),
@@ -102,6 +106,7 @@ module RibyCli
   'SQLCancel'            => [ - 5,                                                               0].pack("s*"),
   'SQLNumResultCols'     => [ - 5, -11,                                                          0].pack("s*"),
   'SQLNumParams'         => [ - 5, -11,                                                          0].pack("s*"),
+  'SQLColAttributeW'     => [ - 5, - 3, - 3, -11, - 3, -11, -11,                                 0].pack("s*"),
   'SQLBindCol'           => [ - 5, - 5, - 5, -11, - 5, -11,                                      0].pack("s*"),
   'SQLBindFileToCol'     => [ - 5, - 3, -11, -11, -11, - 3, -11, -11,                            0].pack("s*"),
   'SQLBindFileToParam'   => [ - 5, - 3, - 3, -11, -11, -11, - 3, -11,                            0].pack("s*"),
@@ -110,11 +115,8 @@ module RibyCli
   'SQLCloseCursor'       => [ - 5,                                                               0].pack("s*"),
   'SQLColumnsW'          => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3,                       0].pack("s*"),
   'SQLColumnPrivilegesW' => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3,                       0].pack("s*"),
-  'SQLColAttributesW'    => [ - 5, - 3, - 3, -11, - 5, -11, -11,                                 0].pack("s*"),
-  'SQLColAttributeW'     => [ - 5, - 3, - 3, -11, - 3, -11, -11,                                 0].pack("s*"),
   'SQLCopyDesc'          => [ - 5, - 5,                                                          0].pack("s*"),
   'SQLDataSourcesW'      => [ - 5, - 3, -11, - 3, -11, -11, - 3, -11,                            0].pack("s*"),
-  'SQLDescribeColW'      => [ - 5, - 3, -11, - 3, -11, -11, -11, -11, -11,                       0].pack("s*"),
   'SQLDescribeParam'     => [ - 5, - 3, -11, -11, -11, -11,                                      0].pack("s*"),
   'SQLDriverConnectW'    => [ - 5, -11, -11, - 3, -11, - 3, -11, - 3,                            0].pack("s*"),
   'SQLExtendedFetch'     => [ - 5, - 3, - 5, -11, -11,                                           0].pack("s*"),
@@ -125,7 +127,6 @@ module RibyCli
   'SQLGetCursorNameW'    => [ - 5, -11, - 3, -11,                                                0].pack("s*"),
   'SQLGetData'           => [ - 5, - 3, - 3, -11, - 5, -11,                                      0].pack("s*"),
   'SQLGetDescFieldW'     => [ - 5, - 3, - 3, -11, - 5, -11,                                      0].pack("s*"),
-  'SQLGetDescRecW'       => [ - 5, - 3, -11, - 3, -11, -11, -11, -11, -11, -11, -11,             0].pack("s*"),
   'SQLGetDiagFieldW'     => [ - 3, - 5, - 3, - 3, -11, - 3, -11,                                 0].pack("s*"),
   'SQLGetFunctions'      => [ - 5, - 3, -11,                                                     0].pack("s*"),
   'SQLGetLength'         => [ - 5, - 5, - 5, -11, -11,                                           0].pack("s*"),
@@ -647,6 +648,7 @@ class Stmt
   def indexes(s,n,u=true)       SQLStatisticsW(s,n,(u==true) ? SQL_INDEX_UNIQUE : SQL_INDEX_ALL); end
   def numcols()                 SQLNumResultCols(); end
   def numparams()               SQLNumParams(); end
+  def columns_count()           SQLColAttributeW(seq, :SQL_DESC_COUNT); end
   def attrs= hattrs
     hattrs.each { |k,v|
       lis = SQLAttrVals[:VALATTR_DECO][k]
@@ -704,6 +706,32 @@ class Stmt
     }
     attrs_setting
   end
+  DESCS = {
+    SQL_DESC_ALLOC_TYPE:             99,
+    SQL_DESC_AUTO_INCREMENT:         14,
+    SQL_DESC_BASE_COLUMN:            17,
+    SQL_DESC_BASE_SCHEMA:            19,
+    SQL_DESC_BASE_TABLE:             18,
+    SQL_DESC_COLUMN_CCSID:           24,
+    SQL_DESC_COUNT:                   1,
+    SQL_DESC_DATA_PTR:               10,
+    SQL_DESC_DATETIME_INTERVAL_CODE:  7,
+    SQL_DESC_DISPLAY_SIZE:           13,
+    SQL_DESC_INDICATOR_PTR:           9,
+    SQL_DESC_LABEL:                  20,
+    SQL_DESC_LENGTH:                  3,
+    SQL_DESC_LENGTH_PTR:              4,
+    SQL_DESC_MONEY:                  21,
+    SQL_DESC_NAME:                   11,
+    SQL_DESC_NULLABLE:                8,
+    SQL_DESC_PRECISION:               5,
+    SQL_DESC_SCALE:                   6,
+    SQL_DESC_SEARCHABLE:             15,
+    SQL_DESC_TYPE_NAME:              23,
+    SQL_DESC_TYPE:                    2,
+    SQL_DESC_UNNAMED:                12,
+    SQL_DESC_UPDATABLE:              16,
+  }
   
   private
   ATTRS = {
@@ -959,5 +987,26 @@ class Stmt
     rc = ileArguments[ 16, 4].unpack('l')[0]
     return nil if rc != 0
     return num[0, 2].unpack('s')[0] if rc == 0
+  end
+  
+  def SQLColAttributeW(seq, fldi)
+    buffer  = INFObuffer.malloc
+    strlen  = SQLretsize.malloc
+    numeric = SQLintsize.malloc
+    ileArguments = ILEarglist.malloc
+    ileArguments[   0, 32] = PAD_32
+    ileArguments[  32,  4] = handle
+    ileArguments[  36,  2] = [seq].pack("s*")
+    ileArguments[  38,  2] = [DESCS[fldi]].pack("s*")
+    ileArguments[  40,  8] = PAD_08
+    ileArguments[  48, 16] = [0, buffer.to_i].pack("q*")
+    ileArguments[  64,  2] = [SQL_MAX_INFO_LENGTH].pack("s*")
+    ileArguments[  66, 14] = PAD_14
+    ileArguments[  80, 16] = [0, strlen.to_i].pack("q*")
+    ileArguments[  96, 16] = [0, numeric.to_i].pack("q*")
+    Ilecallx.call(SQLApis['SQLColAttributeW'], ileArguments, SQLApiList['SQLColAttributeW'], - 5, 0)
+    rc = ileArguments[ 16, 4].unpack('l')[0]
+    return nil if rc != 0
+    return numeric[0, 4].unpack('l')[0] if rc == 0
   end
 end
