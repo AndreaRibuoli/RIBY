@@ -653,7 +653,7 @@ class Stmt
   def column_data(n)
     h = {}
     DESCS.each { |k,v|
-      h.merge!(SQLColAttributeW(n, k))
+      h.merge!(SQLColAttributeW(n, k)) if k != :SQL_DESC_COUNT
     }
     return h
   end
