@@ -1020,7 +1020,7 @@ class Stmt
       when (t = SQLDescVals[:VALDESC_DECO][fldi]) != nil
         return { fldi => t.key(numeric[0, 2].unpack("s")[0]) }
       when (t = SQLDescVals[:VALDESC_SMALLINT][fldi]) != nil
-        return { fldi => 'still unsupported!'}
+      return { fldi => numeric[0, 2].unpack("s")[0] }
       when (t = SQLDescVals[:VALDESC_POINTER][fldi]) != nil
         return { fldi => 'still unsupported!'}
       when (t = SQLDescVals[:VALDESC_NUM][fldi]) != nil
