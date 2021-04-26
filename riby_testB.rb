@@ -20,5 +20,7 @@ n.times {|i|
   seq = i+1
    cols << Column.new(s, seq, s.column_data(seq))
 }
+cols.each { |c|
+  c.bind
+}
 pp cols
-
