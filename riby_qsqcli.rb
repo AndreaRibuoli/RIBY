@@ -650,6 +650,13 @@ class Stmt
   def numparams()               SQLNumParams(); end
   def columns_count()           SQLColAttributeW(0, :SQL_DESC_COUNT); end
   def column(n)                 SQLColAttributeW(n, :SQL_DESC_BASE_COLUMN); end
+  def column_data(n)
+    h = {}
+    DESCS.each { |k,v|
+      h.merge!(SQLColAttributeW(n, k))
+    }
+    return h
+  end
   def attrs= hattrs
     hattrs.each { |k,v|
       lis = SQLAttrVals[:VALATTR_DECO][k]

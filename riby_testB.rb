@@ -20,7 +20,7 @@ pp s.numparams
 pp s.error
 n = s.columns_count[:SQL_DESC_COUNT]
 n.times {|i|
-  pp s.column(i+1)
+  pp s.column_data(i+1)
 }
 
 
