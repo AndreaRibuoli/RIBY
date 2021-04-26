@@ -1078,9 +1078,7 @@ class Column
   end
   private
   def SQLBindCol()
-    specificLen = 512
-    structBuffer  = struct [ "char i[#{specificLen}]" ]
-    @buffer     = structBuffer.malloc
+    @buffer     = INFObuffer.malloc
     @pcbValue   = SQLintsize.malloc
     ileArguments = ILEarglist.malloc
     ileArguments[   0, 32] = PAD_32
@@ -1089,7 +1087,7 @@ class Column
     ileArguments[  38,  2] = [17].pack("s*")    ## SQL_WVARCHAR
     ileArguments[  40,  8] = PAD_08
     ileArguments[  48, 16] = [0, @buffer.to_i].pack("q*")
-    ileArguments[  64,  4] = [specificLen].pack("l*")
+    ileArguments[  64,  4] = [@buffer.instance_variable_get(:@entity).size].pack("l*")
     ileArguments[  68, 12] = PAD_12
     ileArguments[  80, 16] = [0, @pcbValue.to_i].pack("q*")
     Ilecallx.call(SQLApis['SQLBindCol'], ileArguments, SQLApiList['SQLBindCol'], - 5, 0)
