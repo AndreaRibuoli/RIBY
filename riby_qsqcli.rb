@@ -1070,7 +1070,7 @@ class Column
       when @pcbValue[0, 4].unpack("l*")[0] == 0
         return nil
       else
-        return 'error'
+        return "error: pcbValue #{@pcbValue[0, 4].unpack("l*")[0]}"
     end
   end
   private
