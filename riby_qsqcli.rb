@@ -1039,7 +1039,7 @@ class Stmt
 end
 
 class Column
-# include RibyCli
+  include RibyCli
   def initialize(hstmt, seq, desc)
     @hstmt = hstmt
     @icol = seq
