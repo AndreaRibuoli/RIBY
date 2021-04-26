@@ -23,6 +23,7 @@ n.times {|i|
 cols.each { |f|
   puts 'Bind'
   pp f.bind
+  pp s.error
 }
 puts 'Execute'
 pp s.execute
