@@ -106,7 +106,6 @@ module RibyCli
   'SQLCancel'            => [ - 5,                                                               0].pack("s*"),
   'SQLNumResultCols'     => [ - 5, -11,                                                          0].pack("s*"),
   'SQLNumParams'         => [ - 5, -11,                                                          0].pack("s*"),
-  'SQLColAttribute'      => [ - 5, - 3, - 3, -11, - 3, -11, -11,                                 0].pack("s*"),
   'SQLColAttributeW'     => [ - 5, - 3, - 3, -11, - 3, -11, -11,                                 0].pack("s*"),
   'SQLBindCol'           => [ - 5, - 5, - 5, -11, - 5, -11,                                      0].pack("s*"),
   'SQLBindFileToCol'     => [ - 5, - 3, -11, -11, -11, - 3, -11, -11,                            0].pack("s*"),
@@ -1019,9 +1018,7 @@ class Stmt
         return { fldi => numeric[0, 4].unpack("l")[0] }
       when (t = SQLDescVals[:VALDESC_WCHAR][fldi]) != nil
         len = strlen[0, 2].unpack("s")[0]
-        puts "Lunghezza: #{len}"
         return { fldi => buffer[0, len].force_encoding('UTF-16BE').encode('utf-8') }
-#       return { fldi => buffer[0, len].force_encoding('IBM037').encode('utf-8') }
       else
         return nil
     end
