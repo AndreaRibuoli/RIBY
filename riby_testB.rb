@@ -27,9 +27,8 @@ cols.each { |f|
 }
 s.execute
 
-10.times {|r|
-  pp s.fetch
+while s.fetch == 0
   cols.each { |f|
     pp f.buffer
   }
-}
+end
