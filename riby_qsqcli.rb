@@ -106,6 +106,7 @@ module RibyCli
   'SQLCancel'            => [ - 5,                                                               0].pack("s*"),
   'SQLNumResultCols'     => [ - 5, -11,                                                          0].pack("s*"),
   'SQLNumParams'         => [ - 5, -11,                                                          0].pack("s*"),
+  'SQLColAttribute'      => [ - 5, - 3, - 3, -11, - 3, -11, -11,                                 0].pack("s*"),
   'SQLColAttributeW'     => [ - 5, - 3, - 3, -11, - 3, -11, -11,                                 0].pack("s*"),
   'SQLBindCol'           => [ - 5, - 5, - 5, -11, - 5, -11,                                      0].pack("s*"),
   'SQLBindFileToCol'     => [ - 5, - 3, -11, -11, -11, - 3, -11, -11,                            0].pack("s*"),
