@@ -1015,7 +1015,7 @@ class Stmt
       when (t = SQLDescVals[:VALDESC_SMALLINT][fldi]) != nil
       when (t = SQLDescVals[:VALDESC_POINTER][fldi]) != nil
       when (t = SQLDescVals[:VALATTR_NUM][fldi]) != nil
-        return { fldi => (numeric[0, 4].unpack("l")[0] }
+        return { fldi => numeric[0, 4].unpack("l")[0] }
       when (t = SQLDescVals[:VALATTR_WCHAR][fldi]) != nil
         len = strlen[0, 2].unpack("s")[0]
         return { fldi => buffer[0, len].force_encoding('UTF-16BE').encode('utf-8') }
