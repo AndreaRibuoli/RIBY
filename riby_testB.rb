@@ -20,12 +20,12 @@ n.times {|i|
   seq = i+1
    cols << Column.new(s, seq, s.column_data(seq))
 }
-cols.each { |c|
-  c.bind
+cols.each { |f|
+  f.bind
 }
 s.execute
 pp s.error
 s.fetch
-cols.each { |c|
-  pp c.buffer
+cols.each { |f|
+  pp f.buffer
 }
