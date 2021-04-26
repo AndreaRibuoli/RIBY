@@ -12,7 +12,6 @@ s = Stmt.new(c)
 s.attrs = { :SQL_ATTR_EXTENDED_COL_INFO => :SQL_TRUE }
 # s.execdirect(ARGV[2])
 # pp s.error
-puts 'Prepare'
 pp s.prepare(ARGV[2])
 pp s.error
 n = s.columns_count[:SQL_DESC_COUNT]
@@ -23,13 +22,13 @@ n.times {|i|
 }
 cols.each { |f|
   puts 'Bind'
-  pp f.bind
-  pp s.error
+  f.bind
+#  pp s.error
 }
-puts 'Execute'
-pp s.execute
-puts 'Fetch'
-pp s.fetch
-cols.each { |f|
-  pp f.buffer
+s.execute
+
+while s.fetch == 0 {
+  cols.each { |f|
+    pp f.buffer
+  }
 }
