@@ -1078,7 +1078,7 @@ class Column
     case
       when @pcbValue[0, 4] == SQL_NTS
         puts @buffer.entity
-        return @buffer[0, SQL_MAX_INFO_LENGTH].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
+        return @buffer[0, @buffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
       when @pcbValue[0, 4] == SQL_NULL_DATA
         return nil
       else
