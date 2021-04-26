@@ -715,7 +715,7 @@ class Stmt
     attrs_setting
   end
   DESCS = {
-    SQL_DESC_ALLOC_TYPE:             99,
+#   SQL_DESC_ALLOC_TYPE:             99,
     SQL_DESC_AUTO_INCREMENT:         14,
     SQL_DESC_BASE_COLUMN:            17,
     SQL_DESC_BASE_SCHEMA:            19,
