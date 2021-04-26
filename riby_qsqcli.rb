@@ -1005,7 +1005,7 @@ class Stmt
     ileArguments[  66, 14] = PAD_14
     ileArguments[  80, 16] = [0, strlen.to_i].pack("q*")
     ileArguments[  96, 16] = [0, numeric.to_i].pack("q*")
-    Ilecallx.call(SQLApis['SQLColAttributeW'], ileArguments, SQLApiList['SQLColAttributeW'], - 5, 0)
+    Ilecallx.call(SQLApis['SQLColAttribute'], ileArguments, SQLApiList['SQLColAttribute'], - 5, 0)
     rc = ileArguments[ 16, 4].unpack('l')[0]
     return nil if rc != 0
     case
@@ -1018,7 +1018,9 @@ class Stmt
         return { fldi => numeric[0, 4].unpack("l")[0] }
       when (t = SQLDescVals[:VALDESC_WCHAR][fldi]) != nil
         len = strlen[0, 2].unpack("s")[0]
-        return { fldi => buffer[0, len].force_encoding('UTF-16BE').encode('utf-8') }
+        puts "Lunghezza: #{len}"
+#       return { fldi => buffer[0, len].force_encoding('UTF-16BE').encode('utf-8') }
+        return { fldi => buffer[0, len].force_encoding('IBM037').encode('utf-8') }
       else
         return nil
     end
