@@ -108,6 +108,7 @@ module RibyCli
   'SQLNumParams'         => [ - 5, -11,                                                          0].pack("s*"),
   'SQLColAttributeW'     => [ - 5, - 3, - 3, -11, - 3, -11, -11,                                 0].pack("s*"),
   'SQLBindCol'           => [ - 5, - 5, - 5, -11, - 5, -11,                                      0].pack("s*"),
+  'SQLFetch'             => [ - 5,                                                               0].pack("s*"),
   'SQLBindFileToCol'     => [ - 5, - 3, -11, -11, -11, - 3, -11, -11,                            0].pack("s*"),
   'SQLBindFileToParam'   => [ - 5, - 3, - 3, -11, -11, -11, - 3, -11,                            0].pack("s*"),
   'SQLBindParam'         => [ - 5, - 3, - 3, - 3, - 5, - 3, -11, -11,                            0].pack("s*"),
@@ -120,7 +121,6 @@ module RibyCli
   'SQLDescribeParam'     => [ - 5, - 3, -11, -11, -11, -11,                                      0].pack("s*"),
   'SQLDriverConnectW'    => [ - 5, -11, -11, - 3, -11, - 3, -11, - 3,                            0].pack("s*"),
   'SQLExtendedFetch'     => [ - 5, - 3, - 5, -11, -11,                                           0].pack("s*"),
-  'SQLFetch'             => [ - 5,                                                               0].pack("s*"),
   'SQLFetchScroll'       => [ - 5, - 3, - 5,                                                     0].pack("s*"),
   'SQLGetCol'            => [ - 5, - 3, - 3, -11, - 5, -11,                                      0].pack("s*"),
   'SQLGetConnectOptionW' => [ - 5, - 3, -11,                                                     0].pack("s*"),
@@ -644,6 +644,7 @@ class Stmt
   def execdirect(sql)           SQLExecDirectW(sql); end
   def prepare(sql)              SQLPrepareW(sql); end
   def execute()                 SQLExecute(); end
+  def fetch()                   SQLFetch(); end
   def cancel()                  SQLCancel(); end
   def tables(s,n,t)             SQLTablesW(s,n,t); end
   def primarykeys(s,n)          SQLPrimaryKeysW(s,n); end
@@ -841,6 +842,13 @@ class Stmt
     ileArguments[  0,  32] = PAD_32
     ileArguments[ 32,   4] = handle
     Ilecallx.call(SQLApis['SQLCancel'], ileArguments, SQLApiList['SQLCancel'], - 5, 0)
+    return ileArguments[ 16, 4].unpack('l')[0]
+  end
+  def SQLFetch()
+    ileArguments = ILEarglist.malloc
+    ileArguments[  0,  32] = PAD_32
+    ileArguments[ 32,   4] = handle
+    Ilecallx.call(SQLApis['SQLFetch'], ileArguments, SQLApiList['SQLFetch'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
   def SQLTablesW(schema, tablename, tabletype)
