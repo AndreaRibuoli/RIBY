@@ -1042,15 +1042,37 @@ class Column
 # include RibyCli
   def initialize(hstmt, seq, desc)
     @hstmt = hstmt
-    @seq = seq
+    @icol = seq
     @desc = desc
     hstmt.add(seq)
     ObjectSpace.define_finalizer(self, Stmt.finalizer_proc(seq,hstmt))
   end
-  def self.finalizer_proc(h,hstmt)
+  def self.finalizer_proc(icol,hstmt)
     proc {
-      hstmt.delete(h)
+      hstmt.delete(icol)
     }
   end
-
+  def bind
+    SQLBindCol
+  end
+  def buffer
+    @buffer 
+  end
+  private
+  def SQLBindCol
+    @buffer    = INFObuffer.malloc
+    pcbValue   = SQLintsize.malloc
+    ileArguments = ILEarglist.malloc
+    ileArguments[   0, 32] = PAD_32
+    ileArguments[  32,  4] = @hstmt.handle
+    ileArguments[  36,  2] = [@icol].pack("s*")
+    ileArguments[  38,  2] = [18].pack("s*")  ## SQL_WVARCHAR
+    ileArguments[  40,  8] = PAD_08
+    ileArguments[  48, 16] = [0, buffer.to_i].pack("q*")
+    ileArguments[  64,  4] = [SQL_MAX_INFO_LENGTH].pack("l*")
+    ileArguments[  68, 12] = PAD_12
+    ileArguments[  80, 16] = [0, pcbValue.to_i].pack("q*")
+    Ilecallx.call(SQLApis['SQLBindCol'], ileArguments, SQLApiList['SQLBindCol'], - 5, 0)
+    rc = ileArguments[ 16, 4].unpack('l')[0]
+  end
 end
