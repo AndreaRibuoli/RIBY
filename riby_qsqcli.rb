@@ -860,7 +860,7 @@ class Stmt
     puts ileArguments[  80, 16].unpack("H*")
     puts ileArguments[  96, 16].unpack("H*")
     puts ileArguments[ 112, 16].unpack("H*")
-    return ileArguments[ 16, 4].unpack('l')[0]
+    return ileArguments[ 16, 8].unpack('q')[0]
   end
   def SQLTablesW(schema, tablename, tabletype)
   #  ls = [   schema.length * 2].pack("s*")
