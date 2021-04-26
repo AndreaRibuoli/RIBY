@@ -18,7 +18,7 @@ pp s.numcols
 pp s.error
 pp s.numparams
 pp s.error
-n = s.columns_count
+n = s.columns_count[:SQL_DESC_COUNT]
 n.times {|i|
   pp s.column(i+1)
 }
