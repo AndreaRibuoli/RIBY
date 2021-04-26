@@ -1007,6 +1007,19 @@ class Stmt
     Ilecallx.call(SQLApis['SQLColAttributeW'], ileArguments, SQLApiList['SQLColAttributeW'], - 5, 0)
     rc = ileArguments[ 16, 4].unpack('l')[0]
     return nil if rc != 0
-    return numeric[0, 4].unpack('l')[0] if rc == 0
+    case
+      when (t = SQLDescVals[:VALDESC_ORED][fldi]) != nil
+      when (t = SQLDescVals[:VALDESC_DECO][fldi]) != nil
+        return { fldi => t.key(numeric[0, 2].unpack("s")[0]) }
+      when (t = SQLDescVals[:VALDESC_SMALLINT][fldi]) != nil
+      when (t = SQLDescVals[:VALDESC_POINTER][fldi]) != nil
+      when (t = SQLDescVals[:VALATTR_NUM][fldi]) != nil
+        return { fldi => (numeric[0, 4].unpack("l")[0] }
+      when (t = SQLDescVals[:VALATTR_WCHAR][fldi]) != nil
+        len = strlen[0, 2].unpack("s")[0]
+        return { fldi => buffer[0, len].force_encoding('UTF-16BE').encode('utf-8') }
+      else
+        return nil
+    end
   end
 end
