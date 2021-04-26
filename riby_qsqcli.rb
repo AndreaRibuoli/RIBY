@@ -20,7 +20,10 @@ module RibyCli
   PAD_12                       = [ 0, 0, 0].pack("l*")
   PAD_14                       = [ 0, 0, 0, 0, 0, 0, 0].pack("s*")
   PAD_32                       = [ 0, 0, 0, 0].pack("q*")
-  SQL_NTS                      = [-3].pack("s*")
+  SQL_NULL_DATA                = [-1].pack("l*")
+  SQL_DATA_AT_EXEC             = [-2].pack("l*")
+  SQL_NTS                      = [-3].pack("l*")
+  SQL_NO_TOTAL                 = [-4].pack("l*")
   SQL_NULL_HANDLE              = [ 0].pack("l*")
   SQL_HANDLE_ENV               = [ 1].pack("s*")
   SQL_HANDLE_DBC               = [ 2].pack("s*")
@@ -428,13 +431,13 @@ class Connect
     ileArguments[  32,  4] = handle
     ileArguments[  36, 12] = PAD_12
     ileArguments[  48, 16] = [0, Fiddle::Pointer[dsnW].to_i].pack("q*")
-    ileArguments[  64,  2] = SQL_NTS
+    ileArguments[  64,  2] = SQL_NTS[2, 2]
     ileArguments[  66, 14] = PAD_14
     ileArguments[  80, 16] = [0, Fiddle::Pointer[userW].to_i].pack("q*")
-    ileArguments[  96,  2] = SQL_NTS
+    ileArguments[  96,  2] = SQL_NTS[2, 2]
     ileArguments[  98, 14] = PAD_14
     ileArguments[ 112, 16] = [0, Fiddle::Pointer[passW].to_i].pack("q*")
-    ileArguments[ 128,  2] = SQL_NTS
+    ileArguments[ 128,  2] = SQL_NTS[2, 2]
     ileArguments[ 130, 14] = PAD_14
     Ilecallx.call(SQLApis['SQLConnectW'], ileArguments, SQLApiList['SQLConnectW'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
@@ -1065,9 +1068,9 @@ class Column
   end
   def buffer
     case
-      when @pcbValue[0, 4].unpack("l*")[0] == -3
+      when @pcbValue[0, 4] == SQL_NTS
         return @buffer[0, SQL_MAX_INFO_LENGTH].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
-      when @pcbValue[0, 4].unpack("l*")[0] == 0
+      when @pcbValue[0, 4] == SQL_NULL_DATA
         return nil
       else
         return "error: pcbValue #{@pcbValue[0, 4].unpack("l*")[0]}"
