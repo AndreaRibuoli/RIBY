@@ -1009,7 +1009,7 @@ class Stmt
     rc = ileArguments[ 16, 4].unpack('l')[0]
     return nil if rc != 0
     case
-      when (t = SQLDescVals[:VALDESC_ORED][fldi]) != nil
+#     when (t = SQLDescVals[:VALDESC_ORED][fldi]) != nil
       when (t = SQLDescVals[:VALDESC_DECO][fldi]) != nil
         return { fldi => t.key(numeric[0, 2].unpack("s")[0]) }
       when (t = SQLDescVals[:VALDESC_SMALLINT][fldi]) != nil
