@@ -852,14 +852,6 @@ class Stmt
     ileArguments[  0,  32] = PAD_32
     ileArguments[ 32,   4] = handle
     Ilecallx.call(SQLApis['SQLFetch'], ileArguments, SQLApiList['SQLFetch'], - 5, 0)
-    puts ileArguments[   0, 16].unpack("H*")
-    puts ileArguments[  16, 16].unpack("H*")
-    puts ileArguments[  32, 16].unpack("H*")
-    puts ileArguments[  48, 16].unpack("H*")
-    puts ileArguments[  64, 16].unpack("H*")
-    puts ileArguments[  80, 16].unpack("H*")
-    puts ileArguments[  96, 16].unpack("H*")
-    puts ileArguments[ 112, 16].unpack("H*")
     return ileArguments[ 16, 8].unpack('q')[0]
   end
   def SQLTablesW(schema, tablename, tabletype)
