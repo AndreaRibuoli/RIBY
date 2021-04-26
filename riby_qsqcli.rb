@@ -1065,9 +1065,9 @@ class Column
   end
   def buffer
     case
-      when @pcbValue[0, 4].unpack("l*") == -3
+      when @pcbValue[0, 4].unpack("l") == -3
         return @buffer[0, SQL_MAX_INFO_LENGTH].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
-      when @pcbValue[0, 4].unpack("l*") == 0
+      when @pcbValue[0, 4].unpack("l") == 0
         return nil
       else
         return 'error'
