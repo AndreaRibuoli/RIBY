@@ -1027,7 +1027,7 @@ class Stmt
         len = strlen[0, 2].unpack("s")[0]
         return { fldi => buffer[0, len].force_encoding('UTF-16BE').encode('utf-8') }
       else
-        return nil
+        return { fldi => 'not found!'}
     end
   end
 end
