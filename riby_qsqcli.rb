@@ -649,6 +649,7 @@ class Stmt
   def numcols()                 SQLNumResultCols(); end
   def numparams()               SQLNumParams(); end
   def columns_count()           SQLColAttributeW(0, :SQL_DESC_COUNT); end
+  def column(n)                 SQLColAttributeW(n, :SQL_DESC_BASE_COLUMN); end
   def attrs= hattrs
     hattrs.each { |k,v|
       lis = SQLAttrVals[:VALATTR_DECO][k]
