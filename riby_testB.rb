@@ -12,7 +12,8 @@ s = Stmt.new(c)
 s.attrs = { :SQL_ATTR_EXTENDED_COL_INFO => :SQL_TRUE }
 # s.execdirect(ARGV[2])
 # pp s.error
-s.prepare(ARGV[2])
+puts 'Prepare'
+pp s.prepare(ARGV[2])
 pp s.error
 n = s.columns_count[:SQL_DESC_COUNT]
 cols = []
