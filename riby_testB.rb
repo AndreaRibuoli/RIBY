@@ -19,8 +19,10 @@ pp s.error
 pp s.numparams
 pp s.error
 n = s.columns_count[:SQL_DESC_COUNT]
+cols = []
 n.times {|i|
-  pp s.column_data(i+1)
+  seq = i+1
+   cols << Column.new(s, seq, s.column_data(seq))
 }
 
 

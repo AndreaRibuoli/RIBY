@@ -623,6 +623,7 @@ class Stmt
   def initialize(hdbc)
     @hstmt = SQLhandle.malloc
     @hdbc = hdbc
+    @hcols = []
     rc = SQLAllocHandle(SQL_HANDLE_STMT, hdbc.handle, @hstmt)
     temp = @hstmt[0,4]
     hdbc.add(temp)
@@ -637,6 +638,8 @@ class Stmt
     }
   end
   def handle()                  @hstmt[0,4]; end
+  def add(handle)               @hcols << handle; end
+  def delete(handle)            @hcols.delete(handle); end
   def error(n = 1)              SQLGetDiagRecW(SQL_HANDLE_STMT, handle, n); end
   def execdirect(sql)           SQLExecDirectW(sql); end
   def prepare(sql)              SQLPrepareW(sql); end
@@ -649,7 +652,6 @@ class Stmt
   def numcols()                 SQLNumResultCols(); end
   def numparams()               SQLNumParams(); end
   def columns_count()           SQLColAttributeW(0, :SQL_DESC_COUNT); end
-  def column(n)                 SQLColAttributeW(n, :SQL_DESC_BASE_COLUMN); end
   def column_data(n)
     h = {}
     DESCS.each { |k,v|
@@ -1034,4 +1036,21 @@ class Stmt
         return { fldi => 'not found!'}
     end
   end
+end
+
+class Column
+# include RibyCli
+  def initialize(hstmt, seq, desc)
+    @hstmt = hstmt
+    @seq = seq
+    @desc = desc
+    hstmt.add(seq)
+    ObjectSpace.define_finalizer(self, Stmt.finalizer_proc(seq,hstmt))
+  end
+  def self.finalizer_proc(h,hstmt)
+    proc {
+      hstmt.delete(h)
+    }
+  end
+
 end
