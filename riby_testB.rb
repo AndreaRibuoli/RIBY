@@ -14,15 +14,11 @@ s.attrs = { :SQL_ATTR_EXTENDED_COL_INFO => :SQL_TRUE }
 # pp s.error
 s.prepare(ARGV[2])
 pp s.error
-pp s.numcols
-pp s.error
-pp s.numparams
-pp s.error
 n = s.columns_count[:SQL_DESC_COUNT]
 cols = []
 n.times {|i|
   seq = i+1
    cols << Column.new(s, seq, s.column_data(seq))
 }
-
+pp cols
 
