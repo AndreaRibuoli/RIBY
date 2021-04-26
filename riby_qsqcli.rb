@@ -1065,7 +1065,7 @@ class Column
   end
   def buffer
     puts @pcbValue[0, 4].unpack("l*")
-    @buffer[0, SQL_MAX_INFO_LENGTH].force_encoding('UTF-16BE').encode('utf-8')
+    @buffer[0, SQL_MAX_INFO_LENGTH].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
   end
   private
   def SQLBindCol()
