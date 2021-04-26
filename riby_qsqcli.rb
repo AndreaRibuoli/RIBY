@@ -1064,8 +1064,14 @@ class Column
     SQLBindCol()
   end
   def buffer
-    puts @pcbValue[0, 4].unpack("l*")
-    @buffer[0, SQL_MAX_INFO_LENGTH].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
+    case
+      when @pcbValue[0, 4].unpack("l*") == -3
+        return @buffer[0, SQL_MAX_INFO_LENGTH].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
+      when @pcbValue[0, 4].unpack("l*") == 0
+        return nil
+      else
+        return 'error'
+    end
   end
   private
   def SQLBindCol()
