@@ -1077,7 +1077,8 @@ class Column
   def buffer
     case
       when @pcbValue[0, 4] == SQL_NTS
-        return @buffer[0, @buffer.entity.size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
+        puts @buffer.entity
+        return @buffer[0, SQL_MAX_INFO_LENGTH].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
       when @pcbValue[0, 4] == SQL_NULL_DATA
         return nil
       else
