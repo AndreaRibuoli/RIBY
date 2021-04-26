@@ -25,6 +25,7 @@ cols.each { |c|
 }
 s.execute
 pp s.error
-pp cols
 s.fetch
-pp s.error
+cols.each { |c|
+  pp c.buffer
+}
