@@ -48,6 +48,7 @@ module RibyCli
   ILEarglist  = struct [ 'char c[240]' ]
   SQL_MAX_INFO_LENGTH       = 4096
   INFObuffer  = struct [ "char i[#{SQL_MAX_INFO_LENGTH}]" ]
+  ZEROED      = INFObuffer.malloc
   SQLintsize  = struct [ 'char s[4]' ]
   SQLretsize  = struct [ 'char s[2]' ]
   SQLerror    = struct [ 'char e[4]' ]
@@ -1069,7 +1070,10 @@ class Column
   def buffer
     case
       when @pcbValue[0, 4] == SQL_NTS
-        return @buffer[0, @buffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
+        tbr = @buffer[0, @buffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
+        @buffer[0, @buffer.instance_variable_get(:@entity).size] =
+           ZEROED[0, @buffer.instance_variable_get(:@entity).size]
+        return tbr
       when @pcbValue[0, 4] == SQL_NULL_DATA
         return nil
       else
@@ -1078,8 +1082,8 @@ class Column
   end
   private
   def SQLBindCol()
-    @buffer     = INFObuffer.malloc
-    @pcbValue   = SQLintsize.malloc
+    @buffer      = INFObuffer.malloc
+    @pcbValue    = SQLintsize.malloc
     ileArguments = ILEarglist.malloc
     ileArguments[   0, 32] = PAD_32
     ileArguments[  32,  4] = @hstmt.handle
