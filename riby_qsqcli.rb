@@ -1053,13 +1053,13 @@ class Column
     }
   end
   def bind
-    SQLBindCol
+    SQLBindCol()
   end
   def buffer
     @buffer 
   end
   private
-  def SQLBindCol
+  def SQLBindCol()
     @buffer    = INFObuffer.malloc
     pcbValue   = SQLintsize.malloc
     ileArguments = ILEarglist.malloc
