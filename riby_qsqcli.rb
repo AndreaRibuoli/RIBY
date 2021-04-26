@@ -1014,7 +1014,7 @@ class Stmt
     ileArguments[  96, 16] = [0, numeric.to_i].pack("q*")
     Ilecallx.call(SQLApis['SQLColAttributeW'], ileArguments, SQLApiList['SQLColAttributeW'], - 5, 0)
     rc = ileArguments[ 16, 4].unpack('l')[0]
-    return nil if rc != 0
+    return { fldi => "return code = #{rc}"} if rc != 0
     case
 #     when (t = SQLDescVals[:VALDESC_ORED][fldi]) != nil
       when (t = SQLDescVals[:VALDESC_DECO][fldi]) != nil
