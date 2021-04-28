@@ -31,9 +31,33 @@ module RibyCli
   SQL_HANDLE_DESC              = [ 4].pack("s*")
   SQL_INDEX_UNIQUE             = [ 0].pack("s*")
   SQL_INDEX_ALL                = [ 1].pack("s*")
-  SQLINTEGER                   = 1
-  SQLCHAR                      = 2
-  SQLWCHAR                     = 3
+  
+  SQL_CHAR            =    1
+  SQL_NUMERIC         =    2
+  SQL_DECIMAL         =    3
+  SQL_INTEGER         =    4
+  SQL_SMALLINT        =    5
+  SQL_FLOAT           =    6
+  SQL_REAL            =    7
+  SQL_DOUBLE          =    8
+  SQL_DATETIME        =    9
+  SQL_VARCHAR         =   12
+  SQL_BLOB            =   13
+  SQL_CLOB            =   14
+  SQL_DBCLOB          =   15
+  SQL_DATALINK        =   16
+  SQL_WCHAR           =   17
+  SQL_WVARCHAR        =   18
+  SQL_BIGINT          =   19
+  SQL_BLOB_LOCATOR    =   20
+  SQL_CLOB_LOCATOR    =   21
+  SQL_DBCLOB_LOCATOR  =   22
+  SQL_UTF8_CHAR       =   23
+  SQL_GRAPHIC         =   95
+  SQL_VARGRAPHIC      =   96
+  SQL_BINARY          =   -2
+  SQL_VARBINARY       =   -3
+  
   SQL_COMMIT                   = [ 0].pack("l*")
   SQL_ROLLBACK                 = [ 1].pack("l*")
   SQL_COMMIT_HOLD              = [ 2].pack("l*")
@@ -274,7 +298,7 @@ class Env
           else
             lis = SQLAttrVals[:VALATTR_CHAR][k]
             if lis != nil then
-              SQLSetEnvAttr(ATTRS[k], v, SQLCHAR)
+              SQLSetEnvAttr(ATTRS[k], v, :sqlchar)
             end
           end
         end
@@ -303,7 +327,7 @@ class Env
           else
             lis = SQLAttrVals[:VALATTR_CHAR][k]
             if lis != nil then
-              attrs_setting[k] = SQLGetEnvAttr(v, SQLCHAR)
+              attrs_setting[k] = SQLGetEnvAttr(v, :sqlchar)
             end
           end
         end
@@ -340,7 +364,7 @@ class Env
     SQL_ATTR_INCLUDE_NULL_IN_LEN: 10031,
     SQL_ATTR_UTF8: 10032
   }
-  def SQLGetEnvAttr(key, kind = SQLINTEGER)
+  def SQLGetEnvAttr(key, kind = :sqlinteger)
     buffer  = INFObuffer.malloc
     sizeint = SQLintsize.malloc
     ileArguments = ILEarglist.malloc
@@ -357,17 +381,17 @@ class Env
     return nil if rc != 0
     len = sizeint[0, 4].unpack("l")[0]
     len -= 1 if (key == ATTRS[:SQL_ATTR_DEFAULT_LIB] && len>1)
-    return buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
-    return buffer[0, len].force_encoding('IBM037').encode('utf-8')  if kind == SQLCHAR
+    return buffer[0, 4].unpack("l")[0] if kind == :sqlinteger
+    return buffer[0, len].force_encoding('IBM037').encode('utf-8')  if kind == :sqlchar
   end
-  def SQLSetEnvAttr(key, value, kind = SQLINTEGER)
+  def SQLSetEnvAttr(key, value, kind = :sqlinteger)
     ileArguments = ILEarglist.malloc
-    if kind == SQLINTEGER then
+    if kind == :sqlinteger then
       sizeint = SQLintsize.malloc
       sizeint[0, 4] = [value].pack("l*")
       ileArguments[  48, 16] = [0, sizeint.to_i].pack("q*")
     end
-    if kind == SQLCHAR then
+    if kind == :sqlchar then
       len = value.length
       len += 1 if key == ATTRS[:SQL_ATTR_DEFAULT_LIB]
       ileArguments[  48, 16] = [0, Fiddle::Pointer[value.encode('IBM037')].to_i].pack("q*")
@@ -423,7 +447,7 @@ class Connect
   def savptn_release()  SQLEndTran(SQL_HANDLE_DBC, handle, SQL_SAVEPOINT_NAME_RELEASE); end
   def savptn_rollback() SQLEndTran(SQL_HANDLE_DBC, handle, SQL_SAVEPOINT_NAME_ROLLBACK); end
   def error(n = 1)      SQLGetDiagRecW(SQL_HANDLE_DBC, handle, n); end
-  def jobname()         SQLGetInfoW(INFO[:SQL_CONNECTION_JOB_NAME], SQLWCHAR); end
+  def jobname()         SQLGetInfoW(INFO[:SQL_CONNECTION_JOB_NAME], :sqlwchar); end
   def empower(user, pass)
     dsnW  = @dsn.encode('UTF-16BE')
     userW = user.encode('UTF-16BE')
@@ -464,7 +488,7 @@ class Connect
           else
             lis = SQLAttrVals[:VALATTR_WCHAR][k]
             if lis != nil then
-              SQLSetConnectAttrW(ATTRS[k], v, SQLWCHAR)
+              SQLSetConnectAttrW(ATTRS[k], v, :sqlwchar)
             end
           end
         end
@@ -493,7 +517,7 @@ class Connect
           else
             lis = SQLAttrVals[:VALATTR_WCHAR][k]
             if lis != nil then
-              attrs_setting[k] = SQLGetConnectAttrW(v, SQLWCHAR)
+              attrs_setting[k] = SQLGetConnectAttrW(v, :sqlwchar)
             end
           end
         end
@@ -560,7 +584,7 @@ class Connect
   INFO = {
     SQL_CONNECTION_JOB_NAME: 202
   }
-  def SQLGetConnectAttrW(key, kind = SQLINTEGER)
+  def SQLGetConnectAttrW(key, kind = :sqlinteger)
     buffer  = INFObuffer.malloc
     sizeint = SQLintsize.malloc
     ileArguments = ILEarglist.malloc
@@ -574,17 +598,17 @@ class Connect
     ileArguments[  80, 16] = [0, sizeint.to_i].pack("q*")
     Ilecallx.call(SQLApis['SQLGetConnectAttrW'], ileArguments, SQLApiList['SQLGetConnectAttrW'], - 5, 0)
     len = sizeint[0, 4].unpack("l")[0]
-    return buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
-    return buffer[0, len].force_encoding('UTF-16BE').encode('utf-8')  if kind == SQLWCHAR
+    return buffer[0, 4].unpack("l")[0] if kind == :sqlinteger
+    return buffer[0, len].force_encoding('UTF-16BE').encode('utf-8')  if kind == :sqlwchar
   end
-  def SQLSetConnectAttrW(key, value, kind = SQLINTEGER)
+  def SQLSetConnectAttrW(key, value, kind = :sqlinteger)
     ileArguments = ILEarglist.malloc
-    if kind == SQLINTEGER then
+    if kind == :sqlinteger then
       sizeint = SQLintsize.malloc
       sizeint[0, 4] = [value].pack("l*")
       ileArguments[  48, 16] = [0, sizeint.to_i].pack("q*")
     end
-    if kind == SQLWCHAR then
+    if kind == :sqlwchar then
       len = value.length * 2
       ileArguments[  48, 16] = [0, Fiddle::Pointer[value.encode('UTF-16BE')].to_i].pack("q*")
       ileArguments[  64,  4] = [len].pack("l*")
@@ -596,7 +620,7 @@ class Connect
     Ilecallx.call(SQLApis['SQLSetConnectAttrW'], ileArguments, SQLApiList['SQLSetConnectAttrW'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
-  def SQLGetInfoW(key, kind = SQLINTEGER)
+  def SQLGetInfoW(key, kind = :sqlinteger)
     size   = SQLretsize.malloc
     buffer = INFObuffer.malloc
     ileArguments = ILEarglist.malloc
@@ -610,7 +634,7 @@ class Connect
     ileArguments[  80, 16] = [0, size.to_i].pack("q*")
     Ilecallx.call(SQLApis['SQLGetInfoW'], ileArguments, SQLApiList['SQLGetInfoW'], - 5, 0)
     len = ('0000' + size[ 0, 2].unpack("H*")[0]).to_i(16)
-    return buffer[ 0, len].force_encoding('UTF-16BE').encode('utf-8') if kind == SQLWCHAR
+    return buffer[ 0, len].force_encoding('UTF-16BE').encode('utf-8') if kind == :sqlwchar
   end
   def SQLDisconnect
     ileArguments = ILEarglist.malloc
@@ -685,7 +709,7 @@ class Stmt
           else
             lis = SQLAttrVals[:VALATTR_WCHAR][k]
             if lis != nil then
-              SQLSetStmtAttrW(ATTRS[k], v, SQLWCHAR)
+              SQLSetStmtAttrW(ATTRS[k], v, :sqlwchar)
             end
           end
         end
@@ -714,7 +738,7 @@ class Stmt
           else
             lis = SQLAttrVals[:VALATTR_WCHAR][k]
             if lis != nil then
-              attrs_setting[k] = SQLGetStmtAttrW(v, SQLWCHAR)
+              attrs_setting[k] = SQLGetStmtAttrW(v, :sqlwchar)
             end
           end
         end
@@ -773,7 +797,7 @@ class Stmt
     SQL_ATTR_UNKNOWN_10065:      10065,
     SQL_ATTR_UNKNOWN_10066:      10066
   }
-  def SQLGetStmtAttrW(key, kind = SQLINTEGER)
+  def SQLGetStmtAttrW(key, kind = :sqlinteger)
     buffer  = INFObuffer.malloc
     sizeint = SQLintsize.malloc
     ileArguments = ILEarglist.malloc
@@ -787,17 +811,17 @@ class Stmt
     ileArguments[  80, 16] = [0, sizeint.to_i].pack("q*")
     Ilecallx.call(SQLApis['SQLGetStmtAttrW'], ileArguments, SQLApiList['SQLGetStmtAttrW'], - 5, 0)
     len = sizeint[0, 4].unpack("l")[0]
-    return buffer[0, 4].unpack("l")[0] if kind == SQLINTEGER
-    return buffer[0, len].force_encoding('UTF-16BE').encode('utf-8')  if kind == SQLWCHAR
+    return buffer[0, 4].unpack("l")[0] if kind == :sqlinteger
+    return buffer[0, len].force_encoding('UTF-16BE').encode('utf-8')  if kind == :sqlwchar
   end
-  def SQLSetStmtAttrW(key, value, kind = SQLINTEGER)
+  def SQLSetStmtAttrW(key, value, kind = :sqlinteger)
     ileArguments = ILEarglist.malloc
-    if kind == SQLINTEGER then
+    if kind == :sqlinteger then
       sizeint = SQLintsize.malloc
       sizeint[0, 4] = [value].pack("l*")
       ileArguments[  48, 16] = [0, sizeint.to_i].pack("q*")
     end
-    if kind == SQLWCHAR then
+    if kind == :sqlwchar then
       len = value.length * 2
       ileArguments[  48, 16] = [0, Fiddle::Pointer[value.encode('UTF-16BE')].to_i].pack("q*")
       ileArguments[  64,  4] = [len].pack("l*")
@@ -1089,7 +1113,7 @@ class Column
     ileArguments[   0, 32] = PAD_32
     ileArguments[  32,  4] = @hstmt.handle
     ileArguments[  36,  2] = [@icol].pack("s*")
-    ileArguments[  38,  2] = [17].pack("s*")
+    ileArguments[  38,  2] = [SQL_WCHAR].pack("s*")
     ileArguments[  40,  8] = PAD_08
     ileArguments[  48, 16] = [0, @buffer.to_i].pack("q*")
     ileArguments[  64,  4] = [@buffer.instance_variable_get(:@entity).size].pack("l*")
