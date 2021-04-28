@@ -676,8 +676,9 @@ class Stmt
   def fetch()                   SQLFetch(); end
   def cancel()                  SQLCancel(); end
   def tables(s,n,t)             SQLTablesW(s,n,t); end
-  def primarykeys(s,n)          SQLPrimaryKeysW(s,n); end
-  def foreignkeys(s1,n1,s2,n2)  SQLForeignKeysW(s1,n1,s2,n2); end
+  def pkeys(s,n)                SQLPrimaryKeysW(s,n); end
+  def fkeys_using(s,n)          SQLForeignKeysW(s,n,'',''); end
+  def fkeys_used_by(s,n)        SQLForeignKeysW('','',s,n); end
   def indexes(s,n,u=true)       SQLStatisticsW(s,n,(u==true) ? SQL_INDEX_UNIQUE : SQL_INDEX_ALL); end
   def numcols()                 SQLNumResultCols(); end
   def numparams()               SQLNumParams(); end
@@ -1107,7 +1108,7 @@ class Column
       when @pcbValue[0, 4] == SQL_NULL_DATA
         return nil
       when @pcbValue[0, 4] == SQL_NULL_HANDLE
-        return @buffer[2, @desc[:SQL_DESC_LENGTH]-2].force_encoding('IBM037').encode('utf-8').strip 
+        return @buffer[2, @desc[:SQL_DESC_LENGTH]-2].force_encoding('IBM037').encode('utf-8').strip
       else
         return "error: pcbValue #{@pcbValue[0, 4].unpack("l*")[0]}"
     end
