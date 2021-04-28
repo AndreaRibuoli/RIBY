@@ -18,7 +18,9 @@ cols = []
 n.times {|i| seq = i+1; cols << Column.new(s, seq, s.column_data(seq)) }
 cols.each { |f| f.bind }
 while s.fetch == 0
-  cols.each { |f| pp f.buffer }
+  row = ''
+  cols.each { |f| row << f.buffer << ', ' }
+  pp row
 end
 s = Stmt.new(c)
 s.fkeys_used_by(ARGV[2], ARGV[3])
@@ -28,5 +30,7 @@ cols = []
 n.times {|i| seq = i+1; cols << Column.new(s, seq, s.column_data(seq)) }
 cols.each { |f| f.bind }
 while s.fetch == 0
-  cols.each { |f| pp f.buffer }
+  row = ''
+  cols.each { |f| row << f.buffer << ', ' }
+  pp row
 end
