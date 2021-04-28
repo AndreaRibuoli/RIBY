@@ -18,9 +18,8 @@ puts n
 cols = []
 n.times {|i| seq = i+1; cols << Column.new(s, seq, s.column_data(seq)) }
 cols.each { |f| f.bind }
-pp cols
 while s.fetch == 0
-  cols.each { |f| pp f.buffer }
+  cols.each { |f| pp s.error; pp f.buffer }
 end
 
 #s3 = Stmt.new(c)
