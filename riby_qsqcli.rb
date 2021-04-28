@@ -1122,7 +1122,7 @@ class Column
   end
   private
   def SQLBindCol()
-    puts "Binding a #{@desc[:SQL_DESC_TYPE_NAME]} with CCSID #{@desc[:SQL_DESC_COLUMN_CCSID]}"
+    puts "Binding a #{@desc[:SQL_DESC_TYPE_NAME]} with CCSID #{@desc[:SQL_DESC_COLUMN_CCSID]}"  if $-W >= 2
     @buffer      = INFObuffer.malloc
     @pcbValue    = SQLintsize.malloc
     ileArguments = ILEarglist.malloc
