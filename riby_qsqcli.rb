@@ -952,6 +952,7 @@ class Stmt
     ln1 = [tablename1.length].pack("s*")
     ls2 = [   schema2.length].pack("s*")
     ln2 = [tablename2.length].pack("s*")
+    puts "#{ls1}, #{ln1}, #{ls2}, #{ln2}"
     sch1 = Fiddle::Pointer[   schema1.encode('IBM037')]
     tnm1 = Fiddle::Pointer[tablename1.encode('IBM037')]
     sch2 = Fiddle::Pointer[   schema2.encode('IBM037')]
