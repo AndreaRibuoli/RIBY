@@ -20,7 +20,7 @@ cols.each { |f| f.bind }
 while s.fetch == 0
   cols.each { |f| pp f.buffer }
 end
-
+c.commit
 s1 = Stmt.new(c)
 s1.fkeys_used_by(ARGV[2], ARGV[3])
 n = s1.columns_count[:SQL_DESC_COUNT]
