@@ -32,31 +32,31 @@ module RibyCli
   SQL_INDEX_UNIQUE             = [ 0].pack("s*")
   SQL_INDEX_ALL                = [ 1].pack("s*")
   
-  SQL_CHAR            =    1
-  SQL_NUMERIC         =    2
-  SQL_DECIMAL         =    3
-  SQL_INTEGER         =    4
-  SQL_SMALLINT        =    5
-  SQL_FLOAT           =    6
-  SQL_REAL            =    7
-  SQL_DOUBLE          =    8
-  SQL_DATETIME        =    9
-  SQL_VARCHAR         =   12
-  SQL_BLOB            =   13
-  SQL_CLOB            =   14
-  SQL_DBCLOB          =   15
-  SQL_DATALINK        =   16
-  SQL_WCHAR           =   17
-  SQL_WVARCHAR        =   18
-  SQL_BIGINT          =   19
-  SQL_BLOB_LOCATOR    =   20
-  SQL_CLOB_LOCATOR    =   21
-  SQL_DBCLOB_LOCATOR  =   22
-  SQL_UTF8_CHAR       =   23
-  SQL_GRAPHIC         =   95
-  SQL_VARGRAPHIC      =   96
-  SQL_BINARY          =   -2
-  SQL_VARBINARY       =   -3
+  SQL_VARBINARY                = [-3].pack("s*")
+  SQL_BINARY                   = [-2].pack("s*")
+  SQL_CHAR                     = [ 1].pack("s*")
+  SQL_NUMERIC                  = [ 2].pack("s*")
+  SQL_DECIMAL                  = [ 3].pack("s*")
+  SQL_INTEGER                  = [ 4].pack("s*")
+  SQL_SMALLINT                 = [ 5].pack("s*")
+  SQL_FLOAT                    = [ 6].pack("s*")
+  SQL_REAL                     = [ 7].pack("s*")
+  SQL_DOUBLE                   = [ 8].pack("s*")
+  SQL_DATETIME                 = [ 9].pack("s*")
+  SQL_VARCHAR                  = [12].pack("s*")
+  SQL_BLOB                     = [13].pack("s*")
+  SQL_CLOB                     = [14].pack("s*")
+  SQL_DBCLOB                   = [15].pack("s*")
+  SQL_DATALINK                 = [16].pack("s*")
+  SQL_WCHAR                    = [17].pack("s*")
+  SQL_WVARCHAR                 = [18].pack("s*")
+  SQL_BIGINT                   = [19].pack("s*")
+  SQL_BLOB_LOCATOR             = [20].pack("s*")
+  SQL_CLOB_LOCATOR             = [21].pack("s*")
+  SQL_DBCLOB_LOCATOR           = [22].pack("s*")
+  SQL_UTF8_CHAR                = [23].pack("s*")
+  SQL_GRAPHIC                  = [95].pack("s*")
+  SQL_VARGRAPHIC               = [96].pack("s*")
   
   SQL_COMMIT                   = [ 0].pack("l*")
   SQL_ROLLBACK                 = [ 1].pack("l*")
@@ -1081,6 +1081,7 @@ class Column
     @hstmt = hstmt
     @icol = seq
     @desc = desc
+    @desc[:SQL_BIND_TYPE] = SQL_WCHAR
     hstmt.add(seq)
     ObjectSpace.define_finalizer(self, Stmt.finalizer_proc(seq,hstmt))
   end
@@ -1113,7 +1114,7 @@ class Column
     ileArguments[   0, 32] = PAD_32
     ileArguments[  32,  4] = @hstmt.handle
     ileArguments[  36,  2] = [@icol].pack("s*")
-    ileArguments[  38,  2] = [SQL_WCHAR].pack("s*")
+    ileArguments[  38,  2] = @desc[:SQL_BIND_TYPE]
     ileArguments[  40,  8] = PAD_08
     ileArguments[  48, 16] = [0, @buffer.to_i].pack("q*")
     ileArguments[  64,  4] = [@buffer.instance_variable_get(:@entity).size].pack("l*")
