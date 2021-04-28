@@ -9,9 +9,9 @@ e.attrs = { :SQL_ATTR_SERVER_MODE => :SQL_TRUE }
 c = Connect.new(e)
 pp c.empower(ARGV[0], ARGV[1])
 s = Stmt.new(c)
-s.primarykeys(ARGV[2], ARGV[3])
 #s.tables(ARGV[2], ARGV[3], ARGV[4])
-#s.foreignkeys(ARGV[2], ARGV[3], '', '')
+#s.primarykeys(ARGV[2], ARGV[3])
+s.foreignkeys(ARGV[2], ARGV[3], '', '')
 n = s.columns_count[:SQL_DESC_COUNT]
 puts n 
 cols = []
