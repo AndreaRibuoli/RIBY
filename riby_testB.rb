@@ -22,13 +22,11 @@ n.times {|i|
 }
 cols.each { |f|
   f.bind
-  pp s.error
 }
 s.execute
 
 while s.fetch == 0
   cols.each { |f|
     pp f.buffer
-    pp s.error
   }
 end
