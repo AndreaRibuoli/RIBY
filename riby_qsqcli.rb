@@ -113,6 +113,7 @@ module RibyCli
   'SQLColAttributeW'     => [ - 5, - 3, - 3, -11, - 3, -11, -11,                                 0].pack("s*"),
   'SQLBindCol'           => [ - 5, - 3, - 3, -11, - 5, -11,                                      0].pack("s*"),
   'SQLFetch'             => [ - 5,                                                               0].pack("s*"),
+
   'SQLBindFileToCol'     => [ - 5, - 3, -11, -11, -11, - 3, -11, -11,                            0].pack("s*"),
   'SQLBindFileToParam'   => [ - 5, - 3, - 3, -11, -11, -11, - 3, -11,                            0].pack("s*"),
   'SQLBindParam'         => [ - 5, - 3, - 3, - 3, - 5, - 3, -11, -11,                            0].pack("s*"),

@@ -13,7 +13,14 @@ s2.primarykeys(ARGV[2], ARGV[3])
 pp s2.error(1)
 s = Stmt.new(c)
 s.tables(ARGV[2], ARGV[3], ARGV[4])
-pp s.error(1)
+n = s.columns_count[:SQL_DESC_COUNT]
+cols = []
+n.times {|i| seq = i+1; cols << Column.new(s, seq, s.column_data(seq)) }
+cols.each { |f| f.bind }
+while s.fetch == 0
+  cols.each { |f| pp f.buffer }
+end
+
 s3 = Stmt.new(c)
 s3.foreignkeys(ARGV[2], ARGV[3], '', '')
 pp s3.error(1)
