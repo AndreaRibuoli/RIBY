@@ -1117,7 +1117,7 @@ class Column
     ileArguments[  36,  2] = [@icol].pack("s*")
     ileArguments[  38,  2] = @desc[:SQL_BIND_TYPE]
     ileArguments[  40,  8] = PAD_08
-    if @desc[:SQL_DESC_TYPE_NAME] == 'WVARCHAR'
+    if @desc[:SQL_DESC_TYPE_NAME] == 'VARCHAR'
       ileArguments[  48, 16] = [0, @buffer.to_i].pack("q*")
     else
       ileArguments[  48, 16] = [0, 0].pack("q*")
