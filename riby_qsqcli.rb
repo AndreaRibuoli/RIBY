@@ -909,8 +909,8 @@ class Stmt
     ileArguments[ 144, 16] = [0, tty.to_i].pack("q*")
     ileArguments[ 160,  2] = lt
     ileArguments[ 162, 14] = PAD_14
-#    Ilecallx.call(SQLApis['SQLTables'], ileArguments, SQLApiList['SQLTables'], - 5, 0)
-    Ilecallx.call(SQLApis['SQLTablesW'], ileArguments, SQLApiList['SQLTablesW'], - 5, 0)
+    Ilecallx.call(SQLApis['SQLTables'], ileArguments, SQLApiList['SQLTables'], - 5, 0)
+#   Ilecallx.call(SQLApis['SQLTablesW'], ileArguments, SQLApiList['SQLTablesW'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
   def SQLPrimaryKeysW(schema, tablename)
