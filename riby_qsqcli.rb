@@ -950,14 +950,14 @@ class Stmt
   #  tnm2 = Fiddle::Pointer[tablename2.encode('UTF-16BE')]
     ls1 = [   schema1.length].pack("s*")
     ln1 = [tablename1.length].pack("s*")
-    ls2 = [   schema2.length].pack("s*")
-    ln2 = [tablename2.length].pack("s*")
     if schema2.length > 0
-      ls2 = ls2 +1
-      ln2 = ln2 +1
+      ls2 = [   schema2.length + 1].pack("s*")
+      ln2 = [tablename2.length + 1].pack("s*")
       sch2 = Fiddle::Pointer[    schema2.encode('IBM037') << 0 ]
       tnm2 = Fiddle::Pointer[ tablename2.encode('IBM037') << 0 ]
     else
+    ls2 = [   schema2.length].pack("s*")
+    ln2 = [tablename2.length].pack("s*")
       sch2 = Fiddle::Pointer[   schema2.encode('IBM037')]
       tnm2 = Fiddle::Pointer[tablename2.encode('IBM037')]
     end
