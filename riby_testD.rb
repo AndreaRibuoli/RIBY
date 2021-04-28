@@ -14,6 +14,7 @@ pp s2.error(1)
 s = Stmt.new(c)
 s.tables(ARGV[2], ARGV[3], ARGV[4])
 n = s.columns_count[:SQL_DESC_COUNT]
+puts n 
 cols = []
 n.times {|i| seq = i+1; cols << Column.new(s, seq, s.column_data(seq)) }
 cols.each { |f| f.bind }
