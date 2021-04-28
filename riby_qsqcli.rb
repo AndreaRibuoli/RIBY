@@ -1108,7 +1108,7 @@ class Column
   end
   private
   def SQLBindCol()
-    puts 'Binding a #{@desc[:SQL_DESC_TYPE_NAME]} type"
+    puts "Binding a #{@desc[:SQL_DESC_TYPE_NAME]} type"
     @buffer      = INFObuffer.malloc
     @pcbValue    = SQLintsize.malloc
     ileArguments = ILEarglist.malloc
