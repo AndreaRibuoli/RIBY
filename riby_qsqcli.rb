@@ -1118,11 +1118,10 @@ class Column
     ileArguments[  38,  2] = @desc[:SQL_BIND_TYPE]
     ileArguments[  40,  8] = PAD_08
     if @desc[:SQL_DESC_TYPE_NAME] == 'VARCHAR' && @desc[:SQL_DESC_COLUMN_CCSID] == 65535
-      ileArguments[  48, 16] = [0, 0].pack("q*")
+      ileArguments[  48, 16] = [ 0, 0].pack("q*")
     else
-      ileArguments[  48, 16] = [0, @buffer.to_i].pack("q*")
+      ileArguments[  48, 16] = [ 0, @buffer.to_i].pack("q*")
     end
-    ileArguments[  48, 16] = [0, 0].pack("q*")
     ileArguments[  64,  4] = [@buffer.instance_variable_get(:@entity).size].pack("l*")
     ileArguments[  68, 12] = PAD_12
     ileArguments[  80, 16] = [0, @pcbValue.to_i].pack("q*")
