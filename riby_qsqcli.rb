@@ -677,8 +677,8 @@ class Stmt
   def cancel()                  SQLCancel(); end
   def tables(s,n,t)             SQLTablesW(s,n,t); end
   def pkeys(s,n)                SQLPrimaryKeysW(s,n); end
-  def fkeys_using(s,n)          SQLForeignKeysW(s,n,'',''); end
-  def fkeys_used_by(s,n)        SQLForeignKeysW('','',s,n); end
+  def fkeys_using(s,n)          SQLForeignKeysW(s,n,nil,nil); end
+  def fkeys_used_by(s,n)        SQLForeignKeysW(nil,nil,s,n); end
   def indexes(s,n,u=true)       SQLStatisticsW(s,n,(u==true) ? SQL_INDEX_UNIQUE : SQL_INDEX_ALL); end
   def numcols()                 SQLNumResultCols(); end
   def numparams()               SQLNumParams(); end
@@ -940,22 +940,6 @@ class Stmt
     return ileArguments[ 16, 4].unpack('l')[0]
   end
   def SQLForeignKeysW(schema1, tablename1, schema2, tablename2)
-  #  ls1 = [   schema1.length * 2].pack("s*")
-  #  ln1 = [tablename1.length * 2].pack("s*")
-  #  ls2 = [   schema2.length * 2].pack("s*")
-  #  ln2 = [tablename2.length * 2].pack("s*")
-  #  sch1 = Fiddle::Pointer[   schema1.encode('UTF-16BE')]
-  #  tnm1 = Fiddle::Pointer[tablename1.encode('UTF-16BE')]
-  #  sch2 = Fiddle::Pointer[   schema2.encode('UTF-16BE')]
-  #  tnm2 = Fiddle::Pointer[tablename2.encode('UTF-16BE')]
-    ls1 = [   schema1.length].pack("s*")
-    ln1 = [tablename1.length].pack("s*")
-    ls2 = [   schema2.length].pack("s*")
-    ln2 = [tablename2.length].pack("s*")
-    sch1 = Fiddle::Pointer[   schema1.encode('IBM037')]
-    tnm1 = Fiddle::Pointer[tablename1.encode('IBM037')]
-    sch2 = Fiddle::Pointer[   schema2.encode('IBM037')]
-    tnm2 = Fiddle::Pointer[tablename2.encode('IBM037')]
     ileArguments = ILEarglist.malloc
     ileArguments[   0, 32] = PAD_32
     ileArguments[  32,  4] = handle
@@ -963,25 +947,46 @@ class Stmt
     ileArguments[  48, 16] = [0, 0].pack("q*")
     ileArguments[  64,  2] = [0].pack("s*")
     ileArguments[  66, 14] = PAD_14
-#   ileArguments[  80, 16] = [0, sch1.to_i].pack("q*")
-    ileArguments[  80, 16] = [0, 0].pack("q*")
-    ileArguments[  96,  2] = ls1
+    if schema1.nil?
+      ileArguments[  80, 16] = [0, 0].pack("q*")
+      ileArguments[  96,  2] = [0].pack("s*")
+    else
+      sch1 = Fiddle::Pointer[schema1.encode('IBM037')]
+      ileArguments[  80, 16] = [0, sch1.to_i].pack("q*")
+      ileArguments[  96,  2] = [schema1.length].pack("s*")
+    end
     ileArguments[  98, 14] = PAD_14
-  #ileArguments[ 112, 16] = [0, tnm1.to_i].pack("q*")
-    ileArguments[ 112, 16] = [0, 0].pack("q*")
-    ileArguments[ 128,  2] = ln1
+    if tablename1.nil?
+      ileArguments[ 112, 16] = [0, 0].pack("q*")
+      ileArguments[ 128,  2] = [0].pack("s*")
+    else
+      tnm1 = Fiddle::Pointer[tablename1.encode('IBM037')]
+      ileArguments[ 112, 16] = [0, tnm1.to_i].pack("q*")
+      ileArguments[ 128,  2] = [tablename1.length].pack("s*")
+    end
     ileArguments[ 130, 14] = PAD_14
     ileArguments[ 144, 16] = [0, 0].pack("q*")
     ileArguments[ 160,  2] = [0].pack("s*")
     ileArguments[ 162, 14] = PAD_14
-    ileArguments[ 176, 16] = [0, sch2.to_i].pack("q*")
-    ileArguments[ 192,  2] = ls2
+    if schema2.nil?
+      ileArguments[ 176, 16] = [0, 0].pack("q*")
+      ileArguments[ 192,  2] = [0].pack("s*")
+    else
+      sch2 = Fiddle::Pointer[schema2.encode('IBM037')]
+      ileArguments[ 176, 16] = [0, sch2.to_i].pack("q*")
+      ileArguments[ 192,  2] = [schema2.length].pack("s*")
+    end
     ileArguments[ 194, 14] = PAD_14
-    ileArguments[ 208, 16] = [0, tnm2.to_i].pack("q*")
-    ileArguments[ 224,  2] = ln2
+    if tablename2.nil?
+      ileArguments[ 208, 16] = [0, 0].pack("q*")
+      ileArguments[ 224,  2] = [0].pack("s*")
+    else
+      tnm2 = Fiddle::Pointer[tablename2.encode('IBM037')]
+      ileArguments[ 208, 16] = [0, tnm2.to_i].pack("q*")
+      ileArguments[ 224,  2] = [tablename2.length].pack("s*")
+    end
     ileArguments[ 226, 14] = PAD_14
     Ilecallx.call(SQLApis['SQLForeignKeys'], ileArguments, SQLApiList['SQLForeignKeys'], - 5, 0)
-#    Ilecallx.call(SQLApis['SQLForeignKeysW'], ileArguments, SQLApiList['SQLForeignKeysW'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
   def SQLStatisticsW(schema, tablename, unique)
