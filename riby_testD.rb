@@ -19,9 +19,8 @@ cols = []
 n.times {|i| seq = i+1; cols << Column.new(s, seq, s.column_data(seq)) }
 cols.each { |f| f.bind }
 while s.fetch == 0
-  cols.each { |f| pp s.error; pp f.buffer }
+  cols.each { |f| pp f.buffer }
 end
-pp s.error
 
 #s3 = Stmt.new(c)
 #s3.foreignkeys(ARGV[2], ARGV[3], '', '')
