@@ -971,10 +971,12 @@ class Stmt
     ileArguments[  48, 16] = [0, 0].pack("q*")
     ileArguments[  64,  2] = [0].pack("s*")
     ileArguments[  66, 14] = PAD_14
-    ileArguments[  80, 16] = [0, sch1.to_i].pack("q*")
+#   ileArguments[  80, 16] = [0, sch1.to_i].pack("q*")
+    ileArguments[  80, 16] = [0, 0].pack("q*")
     ileArguments[  96,  2] = ls1
     ileArguments[  98, 14] = PAD_14
-    ileArguments[ 112, 16] = [0, tnm1.to_i].pack("q*")
+  #ileArguments[ 112, 16] = [0, tnm1.to_i].pack("q*")
+    ileArguments[ 112, 16] = [0, 0].pack("q*")
     ileArguments[ 128,  2] = ln1
     ileArguments[ 130, 14] = PAD_14
     ileArguments[ 144, 16] = [0, 0].pack("q*")
