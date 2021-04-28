@@ -69,7 +69,7 @@ module RibyCli
   SQLDescVals = YAML.load_file('sqldescvals.yaml')
   ILEpointer  = struct [ 'char b[16]' ]
   SQLhandle   = struct [ 'char a[4]' ]
-  ILEarglist  = struct [ 'char c[240]' ]
+  ILEarglist  = struct [ 'char c[256]' ]
   SQL_MAX_INFO_LENGTH       = 4096
   INFObuffer  = struct [ "char i[#{SQL_MAX_INFO_LENGTH}]" ]
   ZEROED      = INFObuffer.malloc
