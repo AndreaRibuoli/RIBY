@@ -21,4 +21,4 @@ cols.each { |f| f.bind }
 while s.fetch == 0
   cols.each { |f| pp f.buffer }
 end
-pp s1.error
+pp s.error
