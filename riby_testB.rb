@@ -21,14 +21,14 @@ n.times {|i|
    cols << Column.new(s, seq, s.column_data(seq))
 }
 cols.each { |f|
-  puts 'Bind'
   f.bind
-#  pp s.error
+  pp s.error
 }
 s.execute
 
 while s.fetch == 0
   cols.each { |f|
     pp f.buffer
+    pp s.error
   }
 end
