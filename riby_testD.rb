@@ -31,3 +31,4 @@ cols1.each { |f| f.bind }
 while s1.fetch == 0
   cols1.each { |f| pp f.buffer }
 end
+pp s1.error
