@@ -1089,7 +1089,7 @@ class Column
     ileArguments[   0, 32] = PAD_32
     ileArguments[  32,  4] = @hstmt.handle
     ileArguments[  36,  2] = [@icol].pack("s*")
-    ileArguments[  38,  2] = [-3].pack("s*")    ## SQL_VARBINARY
+    ileArguments[  38,  2] = [-2].pack("s*")    ## SQL_VARBINARY
     ileArguments[  40,  8] = PAD_08
     ileArguments[  48, 16] = [0, @buffer.to_i].pack("q*")
     ileArguments[  64,  4] = [@buffer.instance_variable_get(:@entity).size].pack("l*")
