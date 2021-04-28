@@ -952,11 +952,18 @@ class Stmt
     ln1 = [tablename1.length].pack("s*")
     ls2 = [   schema2.length].pack("s*")
     ln2 = [tablename2.length].pack("s*")
+    if schema2.length > 0
+      ls2 = ls2 +1
+      ln2 = ln2 +1
+      sch2 = Fiddle::Pointer[    schema2.encode('IBM037') << 0 ]
+      tnm2 = Fiddle::Pointer[ tablename2.encode('IBM037') << 0 ]
+    else
+      sch2 = Fiddle::Pointer[   schema2.encode('IBM037')]
+      tnm2 = Fiddle::Pointer[tablename2.encode('IBM037')]
+    end
     puts "#{ls1.unpack('H*')}, #{ln1.unpack('H*')}, #{ls2.unpack('H*')}, #{ln2.unpack('H*')}"
     sch1 = Fiddle::Pointer[   schema1.encode('IBM037')]
     tnm1 = Fiddle::Pointer[tablename1.encode('IBM037')]
-    sch2 = Fiddle::Pointer[   schema2.encode('IBM037')]
-    tnm2 = Fiddle::Pointer[tablename2.encode('IBM037')]
     ileArguments = ILEarglist.malloc
     ileArguments[   0, 32] = PAD_32
     ileArguments[  32,  4] = handle
