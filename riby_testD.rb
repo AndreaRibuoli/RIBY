@@ -9,7 +9,7 @@ e.attrs = { :SQL_ATTR_SERVER_MODE => :SQL_TRUE }
 c = Connect.new(e)
 c.empower(ARGV[0], ARGV[1])
 s = Stmt.new(c)
-puts "==== s.tables('#{ARGV[2]}', '#{ARGV[3]}', '#{ARGV[4]}') ======================================"
+puts "==== s.tables('#{ARGV[2]}', '#{ARGV[3]}', '#{ARGV[4]}') ==========================================="
 s.tables(ARGV[2], ARGV[3], ARGV[4])
 n = s.columns_count[:SQL_DESC_COUNT]
 cols = []
