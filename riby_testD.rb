@@ -70,7 +70,7 @@ while s.fetch == 0
 end
 s = Stmt.new(c)
 puts "==== s.languages() =========================================================================="
-s.languages()
+pp s.languages()
 pp s.error
 n = s.columns_count[:SQL_DESC_COUNT]
 cols = []
