@@ -17,7 +17,7 @@ n.times {|i| seq = i+1; cols << Column.new(s, seq, s.column_data(seq)) }
 cols.each { |f| f.bind }
 while s.fetch == 0
   row = ''
-  cols.each { |f| row << f.buffer << ', ' }
+  cols.each { |f| row << f.buffer.to_s << ', ' }
   pp row
 end
 s.pkeys(ARGV[2], ARGV[3])
