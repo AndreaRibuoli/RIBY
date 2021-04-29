@@ -20,6 +20,7 @@ while s.fetch == 0
   cols.each { |f| row << f.buffer.to_s << ', ' }
   pp row
 end
+s = Stmt.new(c)
 puts "s.pkeys('#{ARGV[2]}', '#{ARGV[3]}')"
 s.pkeys(ARGV[2], ARGV[3])
 n = s.columns_count[:SQL_DESC_COUNT]
@@ -31,6 +32,7 @@ while s.fetch == 0
   cols.each { |f| row << f.buffer << ', ' }
   pp row
 end
+s = Stmt.new(c)
 puts "s.fkeys_using('#{ARGV[2]}', '#{ARGV[3]}')"
 s.fkeys_using(ARGV[2], ARGV[3])
 n = s.columns_count[:SQL_DESC_COUNT]
