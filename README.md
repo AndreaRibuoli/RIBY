@@ -90,6 +90,106 @@ Let us use an *ever-green* utility: [DB2 for i sample tables](https://www.ibm.co
 
 We will use **irb** (**i**nteractive **r**u**b**y).
 
+``` ruby
+bash-4.4$ irb
+irb(main):001:0> require './riby_qsqcli_01'
+=> true
+irb(main):002:0> e = Env.new
+=> #<Env:0x0000000182eb9488 @henv=#<RibyCli::SQLhandle:0x0000000182eb9348 @...
+irb(main):003:0> c = Connect.new e
+=> #<Connect:0x0000000182d9ea80 @hdbc=#<RibyCli::SQLhandle:0x0000000182d9e9...
+irb(main):004:0> c.empower('*CURRENT','')
+=> 0
+irb(main):005:0> s = Stmt.new c
+=> #<Stmt:0x0000000182a64540 @hstmt=#<RibyCli::SQLhandle:0x0000000182a64338...
+irb(main):006:0> s.execdirect "CALL QSYS.CREATE_SQL_SAMPLE ('SAMPLE')"
+=> 0
+```
+
+We have created the **SAMPLE** collection and we can soon collect useful informations.
+
+If we cut&paste the following instructions in a new irb session 
+
+
+``` ruby
+require './riby_qsqcli_01'
+e = Env.new
+c = Connect.new e
+c.empower('*CURRENT','')
+s = Stmt.new c
+s.tables('SAMPLE', 'E%', 'ALL')
+n = s.columns_count[:SQL_DESC_COUNT]
+cols = []
+n.times {|i| seq = i+1; cols << Column.new(s, seq, s.column_data(seq)) }
+cols.each { |f| f.bind }
+while s.fetch == 0
+  row = ''
+  cols.each { |f| row << f.buffer.to_s << ', ' }
+  pp row
+end
+```
+
+we get:
+
+```
+. . .
+irb(main):011:1* while s.fetch == 0
+irb(main):012:1*   row = ''
+irb(main):013:1*   cols.each { |f| row << f.buffer.to_s << ', ' }
+irb(main):014:1*   pp row
+irb(main):015:0> end
+"S78xxxxx, SAMPLE, EMP, ALIAS, , "
+"S78xxxxx, SAMPLE, EMP_ACT, ALIAS, , "
+"S78xxxxx, SAMPLE, EMPACT, ALIAS, , "
+"S78xxxxx, SAMPLE, EMP_PHOTO, TABLE, , "
+"S78xxxxx, SAMPLE, EMP_RESUME, TABLE, , "
+"S78xxxxx, SAMPLE, EMPLOYEE, TABLE, , "
+"S78xxxxx, SAMPLE, EMPPROJACT, TABLE, , "
+"S78xxxxx, SAMPLE, EMP_PHOTO_RESUME, VIEW, , "
+=> nil
+```
+
+If we cut&paste the following instructions in a new irb session 
+
+
+``` ruby
+require './riby_qsqcli_01'
+e = Env.new
+c = Connect.new e
+c.empower('*CURRENT','')
+s = Stmt.new c
+s.columns('SAMPLE', 'EMP_P%', '%')
+n = s.columns_count[:SQL_DESC_COUNT]
+cols = []
+n.times {|i| seq = i+1; cols << Column.new(s, seq, s.column_data(seq)) }
+cols.each { |f| f.bind }
+while s.fetch == 0
+  row = ''
+  cols.each { |f| row << f.buffer.to_s << ', ' }
+  pp row
+end
+```
+
+we get:
+
+```
+irb(main):011:1* while s.fetch == 0
+irb(main):012:1*   row = ''
+irb(main):013:1*   cols.each { |f| row << f.buffer.to_s << ', ' }
+irb(main):014:1*   pp row
+irb(main):015:0> end
+"S78xxxxx, SAMPLE, EMP_PHOTO, EMPNO, 1, CHAR, 6, 6, , , 0, , , 1, , 6, 1, NO, "
+"S78xxxxx, SAMPLE, EMP_PHOTO, PHOTO_FORMAT, 12, VARCHAR, 10, 10, , , 0, , , 12, , 10, 2, NO, "
+"S78xxxxx, SAMPLE, EMP_PHOTO, PICTURE, 13, BLOB, 102400, 102400, , , 1, , , -98, , 102400, 3, YES, "
+"S78xxxxx, SAMPLE, EMP_PHOTO, EMP_ROWID, 1, CHAR, 40, 40, , , 0, , '', 1, , 40, 4, NO, "
+"S78xxxxx, SAMPLE, EMP_PHOTO, DL_PICTURE, 16, DATALINK, 1000, 1000, , , 1, , , 70, , 1000, 5, YES, "
+"S78xxxxx, SAMPLE, EMP_PHOTO_RESUME, EMPNO, 1, CHAR, 6, 6, , , 0, , , 1, , 6, 1, NO, "
+"S78xxxxx, SAMPLE, EMP_PHOTO_RESUME, EMP_ROWID, 1, CHAR, 40, 40, , , 0, , , 1, , 40, 2, NO, "
+"S78xxxxx, SAMPLE, EMP_PHOTO_RESUME, DL_PICTURE, 16, DATALINK, 1000, 1000, , , 1, , , 70, , 1000, 3, YES, "
+"S78xxxxx, SAMPLE, EMP_PHOTO_RESUME, DL_RESUME, 16, DATALINK, 1000, 1000, , , 1, , , 70, , 1000, 4, YES, "
+=> nil
+irb(main):016:0>
+```
 
 
 ### 32. to work hard for a fix
