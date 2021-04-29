@@ -122,6 +122,7 @@ module RibyCli
   'SQLPrimaryKeysW'      => [ - 5, -11, - 3, -11, - 3, -11, - 3,                                 0].pack("s*"),
   'SQLForeignKeys'       => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3, -11, - 3, -11, - 3,   0].pack("s*"),
   'SQLForeignKeysW'      => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3, -11, - 3, -11, - 3,   0].pack("s*"),
+  'SQLColumnsW'          => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3,                       0].pack("s*"),
   'SQLStatistics'        => [ - 5, -11, - 3, -11, - 3, -11, - 3, - 3, - 3,                       0].pack("s*"),
   'SQLStatisticsW'       => [ - 5, -11, - 3, -11, - 3, -11, - 3, - 3, - 3,                       0].pack("s*"),
   'SQLDisconnect'        => [ - 5,                                                               0].pack("s*"),
@@ -143,7 +144,6 @@ module RibyCli
   'SQLBindParam'         => [ - 5, - 3, - 3, - 3, - 5, - 3, -11, -11,                            0].pack("s*"),
   'SQLBindParameter'     => [ - 5, - 5, - 5, - 5, - 5, - 5, - 5, -11, - 5, -11,                  0].pack("s*"),
   'SQLCloseCursor'       => [ - 5,                                                               0].pack("s*"),
-  'SQLColumnsW'          => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3,                       0].pack("s*"),
   'SQLColumnPrivilegesW' => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3,                       0].pack("s*"),
   'SQLCopyDesc'          => [ - 5, - 5,                                                          0].pack("s*"),
   'SQLDataSourcesW'      => [ - 5, - 3, -11, - 3, -11, -11, - 3, -11,                            0].pack("s*"),
@@ -676,6 +676,7 @@ class Stmt
   def fetch()                   SQLFetch(); end
   def cancel()                  SQLCancel(); end
   def tables(s,n,t)             SQLTablesW(s,n,t); end
+  def columns()                 SQLColumnsW(s,t,c); end
   def pkeys(s,n)                SQLPrimaryKeysW(s,n); end
   def fkeys_using(s,n)          SQLForeignKeysW(s,n,nil,nil); end
   def fkeys_used_by(s,n)        SQLForeignKeysW(nil,nil,s,n); end
@@ -912,6 +913,29 @@ class Stmt
     ileArguments[ 162, 14] = PAD_14
     Ilecallx.call(SQLApis['SQLTables'], ileArguments, SQLApiList['SQLTables'], - 5, 0)
 #   Ilecallx.call(SQLApis['SQLTablesW'], ileArguments, SQLApiList['SQLTablesW'], - 5, 0)
+    return ileArguments[ 16, 4].unpack('l')[0]
+  end
+  def SQLColumnsW(schema, tablename, columnname)
+    ileArguments = ILEarglist.malloc
+    ileArguments[   0, 32] = PAD_32
+    ileArguments[  32,  4] = handle
+    ileArguments[  36, 12] = PAD_12
+    ileArguments[  48, 16] = [0, 0].pack("q*")
+    ileArguments[  64,  2] = [0].pack("s*")
+    ileArguments[  66, 14] = PAD_14
+    sch = Fiddle::Pointer[schema.encode('IBM037')]
+    ileArguments[  80, 16] = [0, sch.to_i].pack("q*")
+    ileArguments[  96,  2] = [schema.length].pack("s*")
+    ileArguments[  98, 14] = PAD_14
+    tnm = Fiddle::Pointer[tablename.encode('IBM037')]
+    ileArguments[ 112, 16] = [0, tnm.to_i].pack("q*")
+    ileArguments[ 128,  2] = [tablename.length].pack("s*")
+    ileArguments[ 130, 14] = PAD_14
+    cnm = Fiddle::Pointer[columnname.encode('IBM037')]
+    ileArguments[ 144, 16] = [0, cnm.to_i].pack("q*")
+    ileArguments[ 160,  2] = [columnname.length].pack("s*")
+    ileArguments[ 162, 14] = PAD_14
+    Ilecallx.call(SQLApis['SQLColumns'], ileArguments, SQLApiList['SQLColumns'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
   def SQLPrimaryKeysW(schema, tablename)
