@@ -5,7 +5,6 @@ require 'pp'
 raise "Usage: #{__FILE__} <user> <password> <sch> <nam> <typ>" if ARGV.length != 5
                                                                        
 e = Env.new
-e.attrs = { :SQL_ATTR_SERVER_MODE => :SQL_TRUE }
 c = Connect.new(e)
 c.empower(ARGV[0], ARGV[1])
 s = Stmt.new(c)
