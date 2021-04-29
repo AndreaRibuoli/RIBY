@@ -880,7 +880,7 @@ class Stmt
   def SQLLanguages()
     ileArguments = ILEarglist.malloc
     ileArguments[  0,  32] = PAD_32
-    ileArguments[ 32,   4] = handle
+    ileArguments[ 36,   4] = handle
     Ilecallx.call(SQLApis['SQLLanguages'], ileArguments, SQLApiList['SQLLanguages'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
