@@ -9,7 +9,7 @@ e.attrs = { :SQL_ATTR_SERVER_MODE => :SQL_TRUE }
 c = Connect.new(e)
 c.empower(ARGV[0], ARGV[1])
 s = Stmt.new(c)
-puts "s.tables('#{ARGV[2]}', '#{ARGV[3]}', '#{ARGV[4]}')"
+puts "==== s.tables('#{ARGV[2]}', '#{ARGV[3]}', '#{ARGV[4]}') ======================================"
 s.tables(ARGV[2], ARGV[3], ARGV[4])
 n = s.columns_count[:SQL_DESC_COUNT]
 cols = []
@@ -21,7 +21,7 @@ while s.fetch == 0
   pp row
 end
 s = Stmt.new(c)
-puts "s.pkeys('#{ARGV[2]}', '#{ARGV[3]}')"
+puts "==== s.pkeys('#{ARGV[2]}', '#{ARGV[3]}') ====================================================="
 s.pkeys(ARGV[2], ARGV[3])
 n = s.columns_count[:SQL_DESC_COUNT]
 cols = []
@@ -33,7 +33,7 @@ while s.fetch == 0
   pp row
 end
 s = Stmt.new(c)
-puts "s.fkeys_using('#{ARGV[2]}', '#{ARGV[3]}')"
+puts "==== s.fkeys_using('#{ARGV[2]}', '#{ARGV[3]}') ==============================================="
 s.fkeys_using(ARGV[2], ARGV[3])
 n = s.columns_count[:SQL_DESC_COUNT]
 cols = []
@@ -45,7 +45,7 @@ while s.fetch == 0
   pp row
 end
 s = Stmt.new(c)
-puts "s.fkeys_used('#{ARGV[2]}', '#{ARGV[3]}')"
+puts "==== s.fkeys_used('#{ARGV[2]}', '#{ARGV[3]}') ================================================"
 s.fkeys_used_by(ARGV[2], ARGV[3])
 n = s.columns_count[:SQL_DESC_COUNT]
 cols = []
