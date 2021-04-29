@@ -74,7 +74,7 @@ s.languages()
 n = s.columns_count[:SQL_DESC_COUNT]
 cols = []
 n.times {|i| seq = i+1; cols << Column.new(s, seq, s.column_data(seq)) }
-cols.each { |f| f.bind }
+cols.each { |f| f.bind; s.error }
 while s.fetch == 0
   row = ''
   cols.each { |f| row << f.buffer.to_s << ', ' }
