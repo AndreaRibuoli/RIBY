@@ -676,7 +676,7 @@ class Stmt
   def fetch()                   SQLFetch(); end
   def cancel()                  SQLCancel(); end
   def tables(s,n,t)             SQLTablesW(s,n,t); end
-  def columns()                 SQLColumnsW(s,t,c); end
+  def columns(s,t,c)            SQLColumnsW(s,t,c); end
   def pkeys(s,n)                SQLPrimaryKeysW(s,n); end
   def fkeys_using(s,n)          SQLForeignKeysW(s,n,nil,nil); end
   def fkeys_used_by(s,n)        SQLForeignKeysW(nil,nil,s,n); end
