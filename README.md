@@ -52,6 +52,7 @@ Let's go!
 30. [to set attributes](#30-to-set-attributes)
 31. [to let Ruby free handles](#31-to-let-ruby-free-handles)
 32. [to work hard for a fix](#32-to-work-hard-for-a-fix)
+33. [to find a role for columns](#33-to-find-a-role-for-columns)
 
 <!---
 3X. [to lto customize subsystem](#3X-to-customize-subsystem)
@@ -67,6 +68,29 @@ There is a corresponding Environment attribute named **SQL\_ATTR\_SERVERMODE\_SU
 in previous requests.
 
 --->
+
+----
+### 33. to find a role for columns
+
+The development of a **pure-Ruby DB2 for i driver** is proceeding. 
+It is still open to changes but I have introduced initial support for handling result sets returned by queries (or more specific requests like SQLColumns).
+
+Let us first demonstrate where we are now. 
+
+**Note**. For the sake of future consistency I will freeze a version of 3 files that will freely evolve in future development so that this documentation will remain consistent with the current stage. 
+
+The files are:
+
+* **[sqlattrvals\_01.yaml](sqlattrvals\_01.yaml)** 
+* **[sqldescvals\_01.yaml](sqldescvals\_01.yaml)**
+* **[riby\_qsqcli\_01.rb](riby\_qsqcli\_01.rb)**
+
+
+Let us use an *ever-green* utility: [DB2 for i sample tables](https://www.ibm.com/docs/en/i/7.4?topic=reference-db2-i-sample-tables).
+
+We will use **irb** (**i**nteractive **r**u**b**y).
+
+
 
 ### 32. to work hard for a fix
 
