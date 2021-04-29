@@ -122,6 +122,7 @@ module RibyCli
   'SQLPrimaryKeysW'      => [ - 5, -11, - 3, -11, - 3, -11, - 3,                                 0].pack("s*"),
   'SQLForeignKeys'       => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3, -11, - 3, -11, - 3,   0].pack("s*"),
   'SQLForeignKeysW'      => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3, -11, - 3, -11, - 3,   0].pack("s*"),
+  'SQLColumns'           => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3,                       0].pack("s*"),
   'SQLColumnsW'          => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3,                       0].pack("s*"),
   'SQLStatistics'        => [ - 5, -11, - 3, -11, - 3, -11, - 3, - 3, - 3,                       0].pack("s*"),
   'SQLStatisticsW'       => [ - 5, -11, - 3, -11, - 3, -11, - 3, - 3, - 3,                       0].pack("s*"),
@@ -935,7 +936,8 @@ class Stmt
     ileArguments[ 144, 16] = [0, cnm.to_i].pack("q*")
     ileArguments[ 160,  2] = [columnname.length].pack("s*")
     ileArguments[ 162, 14] = PAD_14
-    Ilecallx.call(SQLApis['SQLColumnsW'], ileArguments, SQLApiList['SQLColumnsW'], - 5, 0)
+#   Ilecallx.call(SQLApis['SQLColumnsW'], ileArguments, SQLApiList['SQLColumnsW'], - 5, 0)
+    Ilecallx.call(SQLApis['SQLColumns'], ileArguments, SQLApiList['SQLColumns'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
   def SQLPrimaryKeysW(schema, tablename)
