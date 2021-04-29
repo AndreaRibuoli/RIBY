@@ -73,11 +73,28 @@ in previous requests.
 ### 33. to find a role for columns
 
 The development of a **pure-Ruby DB2 for i driver** is proceeding. 
-It is still open to changes but I have introduced initial support for handling result sets returned by queries (or more specific requests like SQLColumns).
+It is still open to radical changes but I have introduced initial support for handling result sets returned by queries (or more specific requests like SQLColumns). 
+Practically this meant introducing a `Column` class.
+The initializer requires three arguments:
 
-Let us first demonstrate where we are now. 
+* the `Stmt` instance
+* the sequence number of the column in the result set (starting from 1)
+* the *Hash* with all the **SQL\_DESC\_xxx** attributes
+ 
+``` ruby
+Column.new(s, seq, s.column_data(seq))
+```
 
-**Note**. For the sake of future consistency I will freeze a version of 3 files that will freely evolve in future development so that this documentation will remain consistent with the current stage. 
+The `bind` method allocates and bind the data areas required for `fetch` to retrieve records.
+A `buffer` method returns the content.
+
+The `SQLBindCol` is performed internally specifying a default conversion to UTF-16 strings: this way simplyfing the logic (we will have the time to rework this implementation). 
+
+
+But Let us first demonstrate what we have accomplished right now. 
+
+**Note**. For the sake of future consistency I have frozen a version of 3 files (the current sources will be free to evolve in future development). 
+This documentation will remain consistent with the current phase in the development. 
 
 The files are:
 
@@ -86,9 +103,7 @@ The files are:
 * **[riby\_qsqcli\_01.rb](riby\_qsqcli\_01.rb)**
 
 
-Let us use an *ever-green* utility: [DB2 for i sample tables](https://www.ibm.com/docs/en/i/7.4?topic=reference-db2-i-sample-tables).
-
-We will use **irb** (**i**nteractive **r**u**b**y).
+Let us use an *ever-green* utility: [DB2 for i sample tables](https://www.ibm.com/docs/en/i/7.4?topic=reference-db2-i-sample-tables). We will play with **irb** (**i**nteractive **r**u**b**y):
 
 ``` ruby
 bash-4.4$ irb
