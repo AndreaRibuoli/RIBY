@@ -139,6 +139,7 @@ module RibyCli
   'SQLColAttributeW'     => [ - 5, - 3, - 3, -11, - 3, -11, -11,                                 0].pack("s*"),
   'SQLBindCol'           => [ - 5, - 3, - 3, -11, - 5, -11,                                      0].pack("s*"),
   'SQLFetch'             => [ - 5,                                                               0].pack("s*"),
+  'SQLLanguages'         => [ - 5,                                                               0].pack("s*"),
 
   'SQLBindFileToCol'     => [ - 5, - 3, -11, -11, -11, - 3, -11, -11,                            0].pack("s*"),
   'SQLBindFileToParam'   => [ - 5, - 3, - 3, -11, -11, -11, - 3, -11,                            0].pack("s*"),
@@ -164,7 +165,6 @@ module RibyCli
   'SQLGetStmtOptionW'    => [ - 5, - 3, -11,                                                     0].pack("s*"),
   'SQLGetSubStringW'     => [ - 5, - 5, - 5, - 5, - 5, - 5, -11, - 5, -11, -11,                  0].pack("s*"),
   'SQLGetTypeInfoW'      => [ - 5, - 3,                                                          0].pack("s*"),
-  'SQLLanguages'         => [ - 5,                                                               0].pack("s*"),
   'SQLMoreResults'       => [ - 5,                                                               0].pack("s*"),
   'SQLNativeSQLW'        => [ - 5, -11, - 5, -11, - 5, -11,                                      0].pack("s*"),
   'SQLNextResult'        => [ - 5, - 5,                                                          0].pack("s*"),
@@ -676,6 +676,7 @@ class Stmt
   def execute()                 SQLExecute(); end
   def fetch()                   SQLFetch(); end
   def cancel()                  SQLCancel(); end
+  def languages()               SQLLanguages(); end
   def tables(s,n,t)             SQLTablesW(s,n,t); end
   def columns(s,t,c)            SQLColumnsW(s,t,c); end
   def pkeys(s,n)                SQLPrimaryKeysW(s,n); end
@@ -874,6 +875,13 @@ class Stmt
     ileArguments[  0,  32] = PAD_32
     ileArguments[ 32,   4] = handle
     Ilecallx.call(SQLApis['SQLCancel'], ileArguments, SQLApiList['SQLCancel'], - 5, 0)
+    return ileArguments[ 16, 4].unpack('l')[0]
+  end
+  def SQLLanguages()
+    ileArguments = ILEarglist.malloc
+    ileArguments[  0,  32] = PAD_32
+    ileArguments[ 32,   4] = handle
+    Ilecallx.call(SQLApis['SQLLanguages'], ileArguments, SQLApiList['SQLLanguages'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
   def SQLFetch()
