@@ -91,7 +91,7 @@ A `buffer` method returns the content.
 The `SQLBindCol` is performed internally specifying a default conversion to UTF-16 strings: this way simplyfing the logic (we will have the time to rework this implementation). 
 
 
-But Let us first demonstrate what we have accomplished right now. 
+Let us demonstrate what we have accomplished right now. 
 
 **Note**. For the sake of future consistency I have frozen a version of 3 files (the current sources will be free to evolve in future development). 
 This documentation will remain consistent with the current phase in the development. 
