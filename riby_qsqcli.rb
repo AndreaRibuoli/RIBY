@@ -1220,7 +1220,7 @@ class Column
       when @desc[:SQL_BIND_TYPE] == SQL_DECIMAL
         l = @desc[:SQL_DESC_LENGTH] / 256
         d = @desc[:SQL_DESC_LENGTH] % 256
-        z = tmpbuffer[0, l+1].unpack("H*")
+        z = tmpbuffer[0, l+1].unpack("H*")[0]
         dec = ''
         dec << '-' if z[-1] == 'f'
         dec << z[0, l-d] << '.' << z[l-d, d]
