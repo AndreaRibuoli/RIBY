@@ -888,6 +888,7 @@ class Stmt
     ileArguments = ILEarglist.malloc
     ileArguments[  0,  32] = PAD_32
     ileArguments[ 32,   4] = handle
+    @hcols = []
     Ilecallx.call(SQLApis['SQLCloseCursor'], ileArguments, SQLApiList['SQLCloseCursor'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
