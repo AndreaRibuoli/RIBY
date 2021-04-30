@@ -1191,12 +1191,12 @@ SQL_VARGRAPHIC               = [96].pack("s*")
     end
     hstmt.add(seq)
     ObjectSpace.define_finalizer(self, Column.finalizer_proc(seq,hstmt,hstmt.elab))
-    puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Column #{seq}(#{elab})"  if $-W >= 2
+    puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Column #{seq}(#{hstmt.elab})" if $-W >= 2
   end
   def self.finalizer_proc(i,hstmt,e)
     proc {
       hstmt.delete(i,e)
-      puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Free Column #{i}(#{e})"  if $-W >= 2
+      puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Free Column #{i}(#{e})" if $-W >= 2
     }
   end
   def icol
