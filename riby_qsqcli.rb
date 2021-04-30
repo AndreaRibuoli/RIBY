@@ -140,6 +140,7 @@ module RibyCli
   'SQLExecute'           => [ - 5,                                                               0].pack("s*"),
   'SQLEndTran'           => [ - 3, - 5, - 3,                                                     0].pack("s*"),
   'SQLCancel'            => [ - 5,                                                               0].pack("s*"),
+  'SQLCloseCursor'       => [ - 5,                                                               0].pack("s*"),
   'SQLNumResultCols'     => [ - 5, -11,                                                          0].pack("s*"),
   'SQLNumParams'         => [ - 5, -11,                                                          0].pack("s*"),
   'SQLColAttributeW'     => [ - 5, - 3, - 3, -11, - 3, -11, -11,                                 0].pack("s*"),
@@ -152,7 +153,6 @@ module RibyCli
   'SQLBindFileToParam'   => [ - 5, - 3, - 3, -11, -11, -11, - 3, -11,                            0].pack("s*"),
   'SQLBindParam'         => [ - 5, - 3, - 3, - 3, - 5, - 3, -11, -11,                            0].pack("s*"),
   'SQLBindParameter'     => [ - 5, - 5, - 5, - 5, - 5, - 5, - 5, -11, - 5, -11,                  0].pack("s*"),
-  'SQLCloseCursor'       => [ - 5,                                                               0].pack("s*"),
   'SQLColumnPrivilegesW' => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3,                       0].pack("s*"),
   'SQLCopyDesc'          => [ - 5, - 5,                                                          0].pack("s*"),
   'SQLDataSourcesW'      => [ - 5, - 3, -11, - 3, -11, -11, - 3, -11,                            0].pack("s*"),
@@ -682,6 +682,7 @@ class Stmt
   def execute()                 SQLExecute(); end
   def fetch()                   SQLFetch(); end
   def cancel()                  SQLCancel(); end
+  def close()                   SQLCloseCursor(); end
   def languages()               SQLLanguages(); end
   def tables(s,n,t)             SQLTablesW(s,n,t); end
   def columns(s,t,c)            SQLColumnsW(s,t,c); end
@@ -881,6 +882,13 @@ class Stmt
     ileArguments[  0,  32] = PAD_32
     ileArguments[ 32,   4] = handle
     Ilecallx.call(SQLApis['SQLCancel'], ileArguments, SQLApiList['SQLCancel'], - 5, 0)
+    return ileArguments[ 16, 4].unpack('l')[0]
+  end
+  def SQLCloseCursor()
+    ileArguments = ILEarglist.malloc
+    ileArguments[  0,  32] = PAD_32
+    ileArguments[ 32,   4] = handle
+    Ilecallx.call(SQLApis['SQLCloseCursor'], ileArguments, SQLApiList['SQLCloseCursor'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
   def SQLLanguages()
@@ -1137,7 +1145,6 @@ SQL_DATALINK                 = [16].pack("s*")
 SQL_BLOB_LOCATOR             = [20].pack("s*")
 SQL_CLOB_LOCATOR             = [21].pack("s*")
 SQL_DBCLOB_LOCATOR           = [22].pack("s*")
-SQL_UTF8_CHAR                = [23].pack("s*")
 SQL_GRAPHIC                  = [95].pack("s*")
 SQL_VARGRAPHIC               = [96].pack("s*")
 
