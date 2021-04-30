@@ -1135,6 +1135,8 @@ class Column
         @desc[:SQL_BIND_TYPE] = SQL_DATETIME
       when @desc[:SQL_DESC_TYPE_NAME] == 'DECIMAL'
         @desc[:SQL_BIND_TYPE] = SQL_DECIMAL
+      when @desc[:SQL_DESC_TYPE_NAME] == 'SMALLINT'
+          @desc[:SQL_BIND_TYPE] = SQL_SMALLINT
       when @desc[:SQL_DESC_TYPE_NAME] == 'VARCHAR'
         @desc[:SQL_BIND_TYPE] = SQL_VARCHAR
       when @desc[:SQL_DESC_TYPE_NAME] == 'INTEGER'
@@ -1212,7 +1214,11 @@ class Column
     rc = ileArguments[ 16, 4].unpack('l')[0]
     case
       when @desc[:SQL_BIND_TYPE] == SQL_DECIMAL
-        return tmpbuffer[0, 20].unpack("H*")
+        len = @desc[:SQL_DESC_LENGTH]/256
+        dec = @desc[:SQL_DESC_LENGTH]%256
+        return tmpbuffer[0, 40].unpack("H*")
+      when @desc[:SQL_BIND_TYPE] == SQL_SMALLINT
+        return tmpbuffer[0, 2].unpack("s*")[0]
       when @desc[:SQL_BIND_TYPE] == SQL_INTEGER
         return tmpbuffer[0, 4].unpack("l*")[0]
       when @desc[:SQL_BIND_TYPE] == SQL_CHAR || @desc[:SQL_BIND_TYPE] == SQL_DATETIME
