@@ -104,6 +104,9 @@ module RibyCli
  ## SQLColAttributesW() has been deprecated and replaced by SQLColAttributeW().
  ## SQLColAttributeW() is a more extensible alternative to the SQLDescribeColW() function
  ## SQLGetDescFieldW() is a more extensible alternative to the SQLGetDescRecW() function.
+ ##
+ ## SQLGetColW does not exist!
+ ##
  
   SQLApiList = {            #----#----#----#----#----#----#----#----#----#----#----#----#----#----#
   'SQLGetDiagRecW'       => [ - 3, - 5, - 3, -11, -11, -11, - 3, -11,                            0].pack("s*"),
@@ -141,7 +144,6 @@ module RibyCli
   'SQLFetch'             => [ - 5,                                                               0].pack("s*"),
   'SQLLanguages'         => [ - 5,                                                               0].pack("s*"),
   'SQLGetCol'            => [ - 5, - 3, - 3, -11, - 5, -11,                                      0].pack("s*"),
-  'SQLGetColW'           => [ - 5, - 3, - 3, -11, - 5, -11,                                      0].pack("s*"),
 
   'SQLBindFileToCol'     => [ - 5, - 3, -11, -11, -11, - 3, -11, -11,                            0].pack("s*"),
   'SQLBindFileToParam'   => [ - 5, - 3, - 3, -11, -11, -11, - 3, -11,                            0].pack("s*"),
@@ -1124,10 +1126,13 @@ class Column
     @hstmt = hstmt
     @icol = seq
     @desc = desc
-    if @desc[:SQL_DESC_TYPE_NAME] == 'VARCHAR' && @desc[:SQL_DESC_COLUMN_CCSID] == 65535
-      @desc[:SQL_BIND_TYPE] = SQL_VARBINARY
-    else
-      @desc[:SQL_BIND_TYPE] = SQL_WCHAR
+    case
+      when @desc[:SQL_DESC_TYPE_NAME] == 'INTEGER'
+        @desc[:SQL_BIND_TYPE] = SQL_INTEGER
+      when @desc[:SQL_DESC_TYPE_NAME] == 'VARCHAR' && @desc[:SQL_DESC_COLUMN_CCSID] == 65535
+        @desc[:SQL_BIND_TYPE] = SQL_VARBINARY
+      else
+        @desc[:SQL_BIND_TYPE] = SQL_WCHAR
     end
     hstmt.add(seq)
     ObjectSpace.define_finalizer(self, Stmt.finalizer_proc(seq,hstmt))
@@ -1148,6 +1153,8 @@ class Column
   end
   def buffer
     case
+      when @desc[:SQL_BIND_TYPE] == SQL_INTEGER
+        return @buffer[0, 4].unpack("l*")[0]
       when @pcbValue[0, 4] == SQL_NTS
         tbr = @buffer[0, @buffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
         @buffer[0, @buffer.instance_variable_get(:@entity).size] =
@@ -1187,17 +1194,16 @@ class Column
     ileArguments[   0, 32] = PAD_32
     ileArguments[  32,  4] = @hstmt.handle
     ileArguments[  36,  2] = [@icol].pack("s*")
-    ileArguments[  38,  2] = SQL_INTEGER
+    ileArguments[  38,  2] = @desc[:SQL_BIND_TYPE]
     ileArguments[  40,  8] = PAD_08
     ileArguments[  48, 16] = [ 0, tmpbuffer.to_i].pack("q*")
     ileArguments[  64,  4] = [tmpbuffer.instance_variable_get(:@entity).size].pack("l*")
     ileArguments[  68, 12] = PAD_12
     ileArguments[  80, 16] = [0, pcbValue.to_i].pack("q*")
- #  Ilecallx.call(SQLApis['SQLGetColW'], ileArguments, SQLApiList['SQLGetColW'], - 5, 0)
     Ilecallx.call(SQLApis['SQLGetCol'], ileArguments, SQLApiList['SQLGetCol'], - 5, 0)
     rc = ileArguments[ 16, 4].unpack('l')[0]
     case
-      when @desc[:SQL_DESC_TYPE_NAME] == 'INTEGER'
+      when @desc[:SQL_BIND_TYPE] == SQL_INTEGER
         return tmpbuffer[0, 4].unpack("l*")[0]
       when pcbValue[0, 4] == SQL_NTS
         tbr = tmpbuffer[0,  tmpbuffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
