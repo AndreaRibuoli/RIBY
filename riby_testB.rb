@@ -28,7 +28,7 @@ s.execute
 
 while s.fetch == 0
   row = ''
-  cols.each { |f| row << f.get.to_s << ', ' }
+  cols.each { |f| row << f.get.to_s << ', '; pp s.error }
   pp row
   return
 end
