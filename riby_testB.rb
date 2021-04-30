@@ -14,7 +14,6 @@ c.empower(ARGV[0], ARGV[1])
   s.attrs = { :SQL_ATTR_EXTENDED_COL_INFO => :SQL_TRUE }
   s.prepare(ARGV[2])
   n = s.columns_count[:SQL_DESC_COUNT]
-
   cols = []
   n.times {|i|
     seq = i+1
@@ -28,7 +27,6 @@ c.empower(ARGV[0], ARGV[1])
     pp row
   end
 }
-return
 cols = []
 s.close
 s.prepare(ARGV[2])

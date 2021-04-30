@@ -659,7 +659,8 @@ class Stmt
   def initialize(hdbc)
     @hstmt = SQLhandle.malloc
     @hdbc = hdbc
-    @hcols = []
+    @elab = 1
+    @hcols = {}
     rc = SQLAllocHandle(SQL_HANDLE_STMT, hdbc.handle, @hstmt)
     temp = @hstmt[0,4]
     hdbc.add(temp)
@@ -674,8 +675,8 @@ class Stmt
     }
   end
   def handle()                  @hstmt[0,4]; end
-  def add(h)                    @hcols << h; end
-  def delete(h)                 @hcols.delete(h); end
+  def add(h)                    @hcols << {h => @elab}; end
+  def delete(h,e)               @hcols.delete(h) if @hcols[h] == e; end
   def error(n = 1)              SQLGetDiagRecW(SQL_HANDLE_STMT, handle, n); end
   def execdirect(sql)           SQLExecDirectW(sql); end
   def prepare(sql)              SQLPrepareW(sql); end
@@ -888,7 +889,8 @@ class Stmt
     ileArguments = ILEarglist.malloc
     ileArguments[  0,  32] = PAD_32
     ileArguments[ 32,   4] = handle
-    @hcols = []
+    @hcols = {}
+    @elab = @elab.next
     Ilecallx.call(SQLApis['SQLCloseCursor'], ileArguments, SQLApiList['SQLCloseCursor'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
@@ -1134,7 +1136,7 @@ end
 
 class Column
   include RibyCli
-  def initialize(hstmt, seq, desc)
+  def initialize(hstmt, seq, desc, elab = 1)
     @hstmt = hstmt
     @icol = seq
     @desc = desc
@@ -1186,13 +1188,13 @@ SQL_VARGRAPHIC               = [96].pack("s*")
         @desc[:SQL_BIND_TYPE] = SQL_WCHAR
     end
     hstmt.add(seq)
-    ObjectSpace.define_finalizer(self, Column.finalizer_proc(seq,hstmt))
-    puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Column #{seq}"  if $-W >= 2
+    ObjectSpace.define_finalizer(self, Column.finalizer_proc(seq,hstmt,elab))
+    puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Column #{seq}(#{elab})"  if $-W >= 2
   end
-  def self.finalizer_proc(i,hstmt)
+  def self.finalizer_proc(i,hstmt,elab)
     proc {
-      hstmt.delete(i)
-      puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Free Column #{i}"  if $-W >= 2
+      hstmt.delete(i,elab)
+      puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Free Column #{i}(#{elab})"  if $-W >= 2
     }
   end
   def icol
