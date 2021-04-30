@@ -20,9 +20,9 @@ n.times {|i|
   seq = i+1
    cols << Column.new(s, seq, s.column_data(seq))
 }
-cols.each { |f|
-  f.bind  if f.seq > 8
-}
+#cols.each { |f|
+#  f.bind  if f.seq > 8
+#}
 s.execute
 pp s.error
 
@@ -31,12 +31,12 @@ pp s.error
 
 while s.fetch == 0
   cols.each { |f|
-   if f.seq > 8
-     pp f.buffer
-   else
+#   if f.seq > 8
+#     pp f.buffer
+#   else
      pp f.get
      pp s.error
-   end
+#   end
   }
 end
 pp s.error
