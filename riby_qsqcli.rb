@@ -1130,15 +1130,10 @@ class Column
     @icol = seq
     @desc = desc
 =begin
-SQL_DATETIME                 = [ 9].pack("s*")
-SQL_VARCHAR                  = [12].pack("s*")
 SQL_BLOB                     = [13].pack("s*")
 SQL_CLOB                     = [14].pack("s*")
 SQL_DBCLOB                   = [15].pack("s*")
 SQL_DATALINK                 = [16].pack("s*")
-SQL_WCHAR                    = [17].pack("s*")
-SQL_WVARCHAR                 = [18].pack("s*")
-SQL_BIGINT                   = [19].pack("s*")
 SQL_BLOB_LOCATOR             = [20].pack("s*")
 SQL_CLOB_LOCATOR             = [21].pack("s*")
 SQL_DBCLOB_LOCATOR           = [22].pack("s*")
@@ -1157,7 +1152,7 @@ SQL_VARGRAPHIC               = [96].pack("s*")
         ( @desc[:SQL_DESC_TYPE_NAME] == 'CHAR' && @desc[:SQL_DESC_COLUMN_CCSID] == 65535 )
         @desc[:SQL_BIND_TYPE] = SQL_BINARY
       when @desc[:SQL_DESC_TYPE_NAME] == 'CHAR'
-        @desc[:SQL_BIND_TYPE] = SQL_CHAR
+        @desc[:SQL_BIND_TYPE] = SQL_UTF8_CHAR
       when @desc[:SQL_DESC_TYPE_NAME] == 'NUMERIC'
         @desc[:SQL_BIND_TYPE] = SQL_NUMERIC
       when @desc[:SQL_DESC_TYPE_NAME] == 'DECIMAL'
@@ -1166,6 +1161,8 @@ SQL_VARGRAPHIC               = [96].pack("s*")
         @desc[:SQL_BIND_TYPE] = SQL_INTEGER
       when @desc[:SQL_DESC_TYPE_NAME] == 'SMALLINT'
         @desc[:SQL_BIND_TYPE] = SQL_SMALLINT
+      when @desc[:SQL_DESC_TYPE_NAME] == 'BIGINT'
+        @desc[:SQL_BIND_TYPE] = SQL_BIGINT
       when @desc[:SQL_DESC_TYPE_NAME] == 'FLOAT'
         @desc[:SQL_BIND_TYPE] = SQL_FLOAT
       when @desc[:SQL_DESC_TYPE_NAME] == 'REAL'
@@ -1276,11 +1273,13 @@ SQL_VARGRAPHIC               = [96].pack("s*")
         return tmpbuffer[0, @desc[:SQL_DESC_LENGTH]].force_encoding(enc).encode('utf-8')
       when @desc[:SQL_BIND_TYPE] == SQL_WCHAR
         return tmpbuffer[0, 2*@desc[:SQL_DESC_LENGTH]].force_encoding('UTF-16BE').encode('utf-8')
+      when @desc[:SQL_BIND_TYPE] == SQL_UTF8_CHAR
+        return tmpbuffer[0, 2*@desc[:SQL_DESC_LENGTH]].force_encoding('utf-8').strip
       when @desc[:SQL_BIND_TYPE] == SQL_VARCHAR
-          enc = 'IBM037' if @desc[:SQL_DESC_COLUMN_CCSID] == 37
-          enc = 'IBM280' if @desc[:SQL_DESC_COLUMN_CCSID] == 280
-          enc = 'IBM1144' if @desc[:SQL_DESC_COLUMN_CCSID] == 1144
-          return tmpbuffer[2, tmpbuffer[0, 2].unpack("s*")[0]].force_encoding(enc).encode('utf-8')
+        enc = 'IBM037' if @desc[:SQL_DESC_COLUMN_CCSID] == 37
+        enc = 'IBM280' if @desc[:SQL_DESC_COLUMN_CCSID] == 280
+        enc = 'IBM1144' if @desc[:SQL_DESC_COLUMN_CCSID] == 1144
+        return tmpbuffer[2, tmpbuffer[0, 2].unpack("s*")[0]].force_encoding(enc).encode('utf-8')
       when pcbValue[0, 4] == SQL_NTS
         tbr = tmpbuffer[0,  tmpbuffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
         tmpbuffer[0, tmpbuffer.instance_variable_get(:@entity).size] =
