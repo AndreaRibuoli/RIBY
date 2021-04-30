@@ -1233,7 +1233,7 @@ class Column
         enc = 'IBM037' if @desc[:SQL_DESC_COLUMN_CCSID] == 37
         enc = 'IBM280' if @desc[:SQL_DESC_COLUMN_CCSID] == 280
         enc = 'IBM1144' if @desc[:SQL_DESC_COLUMN_CCSID] == 1144
-        return tmpbuffer[0, pcbValue[0, 4].unpack("l*")[0]].force_encoding(enc).encode('utf-8')
+        return tmpbuffer[0, @desc[:SQL_DESC_LENGTH]].force_encoding(enc).encode('utf-8')
       when @desc[:SQL_BIND_TYPE] == SQL_VARCHAR
           enc = 'IBM037' if @desc[:SQL_DESC_COLUMN_CCSID] == 37
           enc = 'IBM280' if @desc[:SQL_DESC_COLUMN_CCSID] == 280
