@@ -1193,8 +1193,8 @@ class Column
     ileArguments[  64,  4] = [tmpbuffer.instance_variable_get(:@entity).size].pack("l*")
     ileArguments[  68, 12] = PAD_12
     ileArguments[  80, 16] = [0, pcbValue.to_i].pack("q*")
-    Ilecallx.call(SQLApis['SQLGetColW'], ileArguments, SQLApiList['SQLGetColW'], - 5, 0)
- #  Ilecallx.call(SQLApis['SQLGetCol'], ileArguments, SQLApiList['SQLGetCol'], - 5, 0)
+ #  Ilecallx.call(SQLApis['SQLGetColW'], ileArguments, SQLApiList['SQLGetColW'], - 5, 0)
+    Ilecallx.call(SQLApis['SQLGetCol'], ileArguments, SQLApiList['SQLGetCol'], - 5, 0)
     rc = ileArguments[ 16, 4].unpack('l')[0]
     case
       when pcbValue[0, 4] == SQL_NTS
