@@ -1208,7 +1208,10 @@ class Column
       when @desc[:SQL_BIND_TYPE] == SQL_INTEGER
         return tmpbuffer[0, 4].unpack("l*")[0]
       when @desc[:SQL_BIND_TYPE] == SQL_CHAR
-          return tmpbuffer[0, pcbValue[0, 4].unpack("l*")[0]].force_encoding('IBM037').encode('utf-8')
+        enc = 'IBM037' if @desc[:SQL_DESC_COLUMN_CCSID] == 37
+        enc = 'IBM280' if @desc[:SQL_DESC_COLUMN_CCSID] == 280
+        enc = 'IBM1144' if @desc[:SQL_DESC_COLUMN_CCSID] == 1144
+        return tmpbuffer[0, pcbValue[0, 4].unpack("l*")[0]].force_encoding(enc).encode('utf-8')
       when pcbValue[0, 4] == SQL_NTS
         tbr = tmpbuffer[0,  tmpbuffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
         tmpbuffer[0, tmpbuffer.instance_variable_get(:@entity).size] =
