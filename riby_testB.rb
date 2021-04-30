@@ -2,7 +2,7 @@
 require_relative 'riby_qsqcli'
 require 'pp'
                                                                        
-raise "Usage: #{__FILE__} <user> <password> <sql>" if ARGV.length != 3
+raise "Usage: #{__FILE__} <user> <password> <sql> <GET/BIND>" if ARGV.length != 4
                                                                        
 e = Env.new
 e.attrs = { :SQL_ATTR_SERVER_MODE => :SQL_TRUE }
@@ -11,7 +11,7 @@ c.empower(ARGV[0], ARGV[1])
 # GC.stress = true
 s = Stmt.new(c)
 s.attrs = { :SQL_ATTR_EXTENDED_COL_INFO => :SQL_TRUE }
-# 20.times {
+if ARGV[3] == 'GET'
   s.prepare(ARGV[2])
   n = s.columns_count[:SQL_DESC_COUNT]
   cols = []
@@ -23,8 +23,8 @@ s.attrs = { :SQL_ATTR_EXTENDED_COL_INFO => :SQL_TRUE }
     cols.each { |f| row << f.get.to_s << ', '}
     pp row
   end
-  s.close
-  return
+end
+if ARGV[3] == 'BIND'
   s.prepare(ARGV[2])
   n = s.columns_count[:SQL_DESC_COUNT]
   cols = []
@@ -37,5 +37,4 @@ s.attrs = { :SQL_ATTR_EXTENDED_COL_INFO => :SQL_TRUE }
     cols.each { |f| row << f.buffer.to_s << ', '}
     pp row
   end
-  s.close
-# }
+end
