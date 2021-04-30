@@ -1208,8 +1208,8 @@ class Column
     ileArguments[  40,  8] = PAD_08
     ileArguments[  48, 16] = [ 0, tmpbuffer.to_i].pack("q*")
     if @desc[:SQL_BIND_TYPE] == SQL_DECIMAL
-      ileArguments[  64,  4] = [@desc[:SQL_DESC_LENGTH]/256,
-                                @desc[:SQL_DESC_LENGTH]%256].pack("s*")
+      ileArguments[  64,  4] = [0, 0, @desc[:SQL_DESC_LENGTH]/256,
+                                @desc[:SQL_DESC_LENGTH]%256].pack("c*")
     else
       ileArguments[  64,  4] = [tmpbuffer.instance_variable_get(:@entity).size].pack("l*")
     end
