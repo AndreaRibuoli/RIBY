@@ -21,7 +21,7 @@ n.times {|i|
    cols << Column.new(s, seq, s.column_data(seq))
 }
 cols.each { |f|
-  f.bind     # if f.seq != 20
+  f.bind  if f.seq != 1
 }
 s.execute
 pp s.error
@@ -31,11 +31,11 @@ pp s.error
 
 while s.fetch == 0
   cols.each { |f|
-   # if f.seq != 20
-      pp f.buffer
-   #  else
-   #   pp f.get
-   # end
+   if f.seq != 1
+     pp f.buffer
+   else
+     pp f.get
+   end
   }
 end
 pp s.error
