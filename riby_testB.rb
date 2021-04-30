@@ -29,7 +29,7 @@ pp s.error
 pp s.fetch
 pp s.error
 
-while s.fetch != 0
+while s.fetch == 0
   cols.each { |f|
    # if f.seq != 20
       pp f.buffer
