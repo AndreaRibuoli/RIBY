@@ -11,7 +11,7 @@ c.empower(ARGV[0], ARGV[1])
 # GC.stress = true
 s = Stmt.new(c)
 s.attrs = { :SQL_ATTR_EXTENDED_COL_INFO => :SQL_TRUE }
-20.times {
+# 20.times {
   s.prepare(ARGV[2])
   n = s.columns_count[:SQL_DESC_COUNT]
   cols = []
@@ -24,6 +24,7 @@ s.attrs = { :SQL_ATTR_EXTENDED_COL_INFO => :SQL_TRUE }
     pp row
   end
   s.close
+  return
   s.prepare(ARGV[2])
   n = s.columns_count[:SQL_DESC_COUNT]
   cols = []
@@ -37,4 +38,4 @@ s.attrs = { :SQL_ATTR_EXTENDED_COL_INFO => :SQL_TRUE }
     pp row
   end
   s.close
-}
+# }
