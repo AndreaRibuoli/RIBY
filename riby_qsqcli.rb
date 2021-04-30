@@ -1142,17 +1142,6 @@ class Column
     @hstmt = hstmt
     @icol = seq
     @desc = desc
-=begin
-SQL_BLOB                     = [13].pack("s*")
-SQL_CLOB                     = [14].pack("s*")
-SQL_DBCLOB                   = [15].pack("s*")
-SQL_DATALINK                 = [16].pack("s*")
-SQL_BLOB_LOCATOR             = [20].pack("s*")
-SQL_CLOB_LOCATOR             = [21].pack("s*")
-SQL_DBCLOB_LOCATOR           = [22].pack("s*")
-SQL_GRAPHIC                  = [95].pack("s*")
-SQL_VARGRAPHIC               = [96].pack("s*")
-=end
     case
       when @desc[:SQL_DESC_TYPE_NAME] == 'VARBINARY' ||
         ( @desc[:SQL_DESC_TYPE_NAME] == 'VARCHAR' && @desc[:SQL_DESC_COLUMN_CCSID] == 65535 )
@@ -1189,6 +1178,8 @@ SQL_VARGRAPHIC               = [96].pack("s*")
       else
         @desc[:SQL_BIND_TYPE] = SQL_WCHAR
     end
+    @desc[:SQL_BIND_TYPE] = SQL_WCHAR    if @desc[:SQL_BIND_TYPE] = SQL_CHAR
+    @desc[:SQL_BIND_TYPE] = SQL_WVARCHAR if @desc[:SQL_BIND_TYPE] = SQL_VARCHAR
     hstmt.add(seq)
     ObjectSpace.define_finalizer(self, Column.finalizer_proc(seq,hstmt,hstmt.elab))
     puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Column #{seq}(#{hstmt.elab})" if $-W >= 2
