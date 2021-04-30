@@ -1178,8 +1178,6 @@ class Column
       else
         @desc[:SQL_BIND_TYPE] = SQL_WCHAR
     end
-    @desc[:SQL_BIND_TYPE] = SQL_WCHAR    if @desc[:SQL_BIND_TYPE] = SQL_CHAR
-    @desc[:SQL_BIND_TYPE] = SQL_WVARCHAR if @desc[:SQL_BIND_TYPE] = SQL_VARCHAR
     hstmt.add(seq)
     ObjectSpace.define_finalizer(self, Column.finalizer_proc(seq,hstmt,hstmt.elab))
     puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Column #{seq}(#{hstmt.elab})" if $-W >= 2
