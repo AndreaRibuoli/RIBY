@@ -34,6 +34,7 @@ end
 s.close
 s.prepare(ARGV[2])
 pp s.error
+return
 n = s.columns_count[:SQL_DESC_COUNT]
 cols = []
 n.times {|i|
