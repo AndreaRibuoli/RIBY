@@ -26,7 +26,7 @@ cols.each { |f|
 s.execute
 pp s.error
 
-s.fetch
+pp s.fetch
 pp s.error
 
 while s.fetch != 0
