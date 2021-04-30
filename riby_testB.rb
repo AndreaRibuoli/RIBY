@@ -31,7 +31,7 @@ pp s.fetch
 
 while s.fetch == 0
   row = ''
-  cols.each { |f| row << f.get << ', ' }
+  cols.each { |f| row << f.get.to_s << ', ' }
   pp row
 end
 # pp s.error
