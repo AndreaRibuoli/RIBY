@@ -1207,15 +1207,25 @@ class Column
     ileArguments[  38,  2] = @desc[:SQL_BIND_TYPE]
     ileArguments[  40,  8] = PAD_08
     ileArguments[  48, 16] = [ 0, tmpbuffer.to_i].pack("q*")
-    ileArguments[  64,  4] = [tmpbuffer.instance_variable_get(:@entity).size].pack("l*")
+    if @desc[:SQL_BIND_TYPE] == SQL_DECIMAL
+      ileArguments[  64,  4] = [@desc[:SQL_DESC_LENGTH]/256,
+                                @desc[:SQL_DESC_LENGTH]%256].pack("s*")
+    else
+      ileArguments[  64,  4] = [tmpbuffer.instance_variable_get(:@entity).size].pack("l*")
+    end
     ileArguments[  68, 12] = PAD_12
     ileArguments[  80, 16] = [0, pcbValue.to_i].pack("q*")
     Ilecallx.call(SQLApis['SQLGetCol'], ileArguments, SQLApiList['SQLGetCol'], - 5, 0)
     rc = ileArguments[ 16, 4].unpack('l')[0]
     case
       when @desc[:SQL_BIND_TYPE] == SQL_DECIMAL
-        len = @desc[:SQL_DESC_LENGTH]/256
-        dec = @desc[:SQL_DESC_LENGTH]%256
+      #
+      # If fCType is either SQL_DECIMAL or SQL_NUMERIC,
+      # cbValueMax must actually be a precision and scale.
+      # The method to specify both values is to use (precision * 256) + scale.
+      # This is also the value returned as the LENGTH of these data types
+      # when using SQLColAttribute().
+      #
         return tmpbuffer[0, 40].unpack("H*")
       when @desc[:SQL_BIND_TYPE] == SQL_SMALLINT
         return tmpbuffer[0, 2].unpack("s*")[0]
