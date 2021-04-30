@@ -1187,7 +1187,7 @@ class Column
     rc = ileArguments[ 16, 4].unpack('l')[0]
   end
   def SQLGetColW()
-    puts "Getting a #{@desc[:SQL_DESC_TYPE_NAME]} with CCSID #{@desc[:SQL_DESC_COLUMN_CCSID]}"  if $-W >= 2
+    puts "Getting a #{@desc}"  if $-W >= 2
     tmpbuffer    = INFObuffer.malloc
     pcbValue     = SQLintsize.malloc
     ileArguments = ILEarglist.malloc
