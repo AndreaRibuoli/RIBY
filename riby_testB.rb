@@ -31,7 +31,9 @@ while s.fetch == 0
   cols.each { |f| row << f.get.to_s << ', '; pp s.error }
   pp row
 end
+cols = []
 s.close
+pp s.error
 s.prepare(ARGV[2])
 pp s.error
 n = s.columns_count[:SQL_DESC_COUNT]
