@@ -9,7 +9,7 @@ e.attrs = { :SQL_ATTR_SERVER_MODE => :SQL_TRUE }
 c = Connect.new(e)
 c.empower(ARGV[0], ARGV[1])
 GC.stress = true
-{
+do
   s = Stmt.new(c)
   s.attrs = { :SQL_ATTR_EXTENDED_COL_INFO => :SQL_TRUE }
   s.prepare(ARGV[2])
@@ -20,7 +20,7 @@ GC.stress = true
     seq = i+1
     cols << Column.new(s, seq, s.column_data(seq))
   }
-}
+end 
 puts "Without bind using get"
 return
 s.execute
