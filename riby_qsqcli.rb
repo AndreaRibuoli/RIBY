@@ -675,7 +675,8 @@ class Stmt
     }
   end
   def handle()                  @hstmt[0,4]; end
-  def add(h)                    @hcols << {h => @elab}; end
+  # cercare di limitare l'accesso ai seguenti due metodi
+  def add(h)                    @hcols[h] = @elab; end
   def delete(h,e)               @hcols.delete(h) if @hcols[h] == e; end
   def error(n = 1)              SQLGetDiagRecW(SQL_HANDLE_STMT, handle, n); end
   def execdirect(sql)           SQLExecDirectW(sql); end
