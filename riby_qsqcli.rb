@@ -140,6 +140,8 @@ module RibyCli
   'SQLBindCol'           => [ - 5, - 3, - 3, -11, - 5, -11,                                      0].pack("s*"),
   'SQLFetch'             => [ - 5,                                                               0].pack("s*"),
   'SQLLanguages'         => [ - 5,                                                               0].pack("s*"),
+  'SQLGetCol'            => [ - 5, - 3, - 3, -11, - 5, -11,                                      0].pack("s*"),
+  'SQLGetColW'           => [ - 5, - 3, - 3, -11, - 5, -11,                                      0].pack("s*"),
 
   'SQLBindFileToCol'     => [ - 5, - 3, -11, -11, -11, - 3, -11, -11,                            0].pack("s*"),
   'SQLBindFileToParam'   => [ - 5, - 3, - 3, -11, -11, -11, - 3, -11,                            0].pack("s*"),
@@ -153,7 +155,6 @@ module RibyCli
   'SQLDriverConnectW'    => [ - 5, -11, -11, - 3, -11, - 3, -11, - 3,                            0].pack("s*"),
   'SQLExtendedFetch'     => [ - 5, - 3, - 5, -11, -11,                                           0].pack("s*"),
   'SQLFetchScroll'       => [ - 5, - 3, - 5,                                                     0].pack("s*"),
-  'SQLGetCol'            => [ - 5, - 3, - 3, -11, - 5, -11,                                      0].pack("s*"),
   'SQLGetConnectOptionW' => [ - 5, - 3, -11,                                                     0].pack("s*"),
   'SQLGetCursorNameW'    => [ - 5, -11, - 3, -11,                                                0].pack("s*"),
   'SQLGetData'           => [ - 5, - 3, - 3, -11, - 5, -11,                                      0].pack("s*"),
@@ -1171,5 +1172,35 @@ class Column
     ileArguments[  80, 16] = [0, @pcbValue.to_i].pack("q*")
     Ilecallx.call(SQLApis['SQLBindCol'], ileArguments, SQLApiList['SQLBindCol'], - 5, 0)
     rc = ileArguments[ 16, 4].unpack('l')[0]
+  end
+  def SQLGetCol()
+    puts "Getting a #{@desc[:SQL_DESC_TYPE_NAME]} with CCSID #{@desc[:SQL_DESC_COLUMN_CCSID]}"  if $-W >= 2
+    tmpbuffer    = INFObuffer.malloc
+    pcbValue     = SQLintsize.malloc
+    ileArguments = ILEarglist.malloc
+    ileArguments[   0, 32] = PAD_32
+    ileArguments[  32,  4] = @hstmt.handle
+    ileArguments[  36,  2] = [@icol].pack("s*")
+    ileArguments[  38,  2] = @desc[:SQL_BIND_TYPE]
+    ileArguments[  40,  8] = PAD_08
+    ileArguments[  48, 16] = [ 0, tmpbuffer.to_i].pack("q*")
+    ileArguments[  64,  4] = [tmpbuffer.instance_variable_get(:@entity).size].pack("l*")
+    ileArguments[  68, 12] = PAD_12
+    ileArguments[  80, 16] = [0, pcbValue.to_i].pack("q*")
+    Ilecallx.call(SQLApis['SQLGetColW'], ileArguments, SQLApiList['SQLGetColW'], - 5, 0)
+    rc = ileArguments[ 16, 4].unpack('l')[0]
+    case
+      when pcbValue[0, 4] == SQL_NTS
+        tbr = tmpbuffer[0, tmpbuffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
+        tmpbuffer[0, tmpbuffer.instance_variable_get(:@entity).size] =
+           ZEROED[0, tmpbuffer.instance_variable_get(:@entity).size]
+        return tbr
+      when pcbValue[0, 4] == SQL_NULL_DATA
+        return nil
+      when pcbValue[0, 4] == SQL_NULL_HANDLE
+        return tmpbuffer[2, @desc[:SQL_DESC_LENGTH]-2].force_encoding('IBM037').encode('utf-8').strip
+      else
+        return "error: pcbValue #{pcbValue[0, 4].unpack("l*")[0]}"
+    end
   end
 end
