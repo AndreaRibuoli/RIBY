@@ -1178,6 +1178,8 @@ class Column
       else
         @desc[:SQL_BIND_TYPE] = SQL_WCHAR
     end
+    @desc[:SQL_BIND_TYPE] = SQL_WCHAR    if @desc[:SQL_BIND_TYPE] = SQL_CHAR
+    @desc[:SQL_BIND_TYPE] = SQL_WVARCHAR if @desc[:SQL_BIND_TYPE] = SQL_VARCHAR
     hstmt.add(seq)
     ObjectSpace.define_finalizer(self, Column.finalizer_proc(seq,hstmt,hstmt.elab))
     puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Column #{seq}(#{hstmt.elab})" if $-W >= 2
@@ -1235,10 +1237,13 @@ class Column
     ileArguments[  38,  2] = @desc[:SQL_BIND_TYPE]
     ileArguments[  40,  8] = PAD_08
     ileArguments[  48, 16] = [ 0, tmpbuffer.to_i].pack("q*")
-    if @desc[:SQL_BIND_TYPE] == SQL_DECIMAL || @desc[:SQL_BIND_TYPE] == SQL_NUMERIC
-      ileArguments[  64,  4] = [@desc[:SQL_DESC_LENGTH]].pack("l*")
-    else
-      ileArguments[  64,  4] = [tmpbuffer.instance_variable_get(:@entity).size].pack("l*")
+    case
+      when @desc[:SQL_BIND_TYPE] == SQL_DECIMAL || @desc[:SQL_BIND_TYPE] == SQL_NUMERIC
+        ileArguments[  64,  4] = [@desc[:SQL_DESC_LENGTH]].pack("l*")
+      when @desc[:SQL_BIND_TYPE] = SQL_WCHAR || @desc[:SQL_BIND_TYPE] = SQL_WVARCHAR
+        ileArguments[  64,  4] = SQL_NULL_HANDLE
+      else
+        ileArguments[  64,  4] = [tmpbuffer.instance_variable_get(:@entity).size].pack("l*")
     end
     ileArguments[  68, 12] = PAD_12
     ileArguments[  80, 16] = [0, pcbValue.to_i].pack("q*")
