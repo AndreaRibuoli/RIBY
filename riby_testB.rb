@@ -35,7 +35,7 @@ pp s.error
 #     pp f.buffer
 #   else
      pp f.get
-     pp s.error
+#    pp s.error
 #   end
   }
 #end
