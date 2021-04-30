@@ -1132,7 +1132,7 @@ class Column
       when @desc[:SQL_DESC_TYPE_NAME] == 'CHAR'
         @desc[:SQL_BIND_TYPE] = SQL_CHAR
       when @desc[:SQL_DESC_TYPE_NAME] == 'DATE'
-          @desc[:SQL_BIND_TYPE] = SQL_DATE
+          @desc[:SQL_BIND_TYPE] = SQL_DATETIME
       when @desc[:SQL_DESC_TYPE_NAME] == 'VARCHAR'
           @desc[:SQL_BIND_TYPE] = SQL_VARCHAR
       when @desc[:SQL_DESC_TYPE_NAME] == 'INTEGER'
@@ -1211,7 +1211,7 @@ class Column
     case
       when @desc[:SQL_BIND_TYPE] == SQL_INTEGER
         return tmpbuffer[0, 4].unpack("l*")[0]
-      when @desc[:SQL_BIND_TYPE] == SQL_CHAR || @desc[:SQL_BIND_TYPE] == SQL_DATE
+      when @desc[:SQL_BIND_TYPE] == SQL_CHAR || @desc[:SQL_BIND_TYPE] == SQL_DATETIME
         enc = 'IBM037' if @desc[:SQL_DESC_COLUMN_CCSID] == 37
         enc = 'IBM280' if @desc[:SQL_DESC_COLUMN_CCSID] == 280
         enc = 'IBM1144' if @desc[:SQL_DESC_COLUMN_CCSID] == 1144
