@@ -12,7 +12,7 @@ s = Stmt.new(c)
 s.attrs = { :SQL_ATTR_EXTENDED_COL_INFO => :SQL_TRUE }
 # s.execdirect(ARGV[2])
 # pp s.error
-pp s.prepare(ARGV[2])
+s.prepare(ARGV[2])
 pp s.error
 n = s.columns_count[:SQL_DESC_COUNT]
 cols = []
@@ -27,17 +27,12 @@ s.execute
 pp s.error
 
 pp s.fetch
-pp s.error
+# pp s.error
 
-#while s.fetch == 0
-  cols.each { |f|
-#   if f.seq > 8
-#     pp f.buffer
-#   else
-     pp f.get
-#    pp s.error
-#   end
-  }
-#end
-pp s.error
+while s.fetch == 0
+  row = ''
+  cols.each { |f| row << f.get << ', ' }
+  pp row
+end
+# pp s.error
 
