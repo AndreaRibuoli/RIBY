@@ -1187,7 +1187,7 @@ SQL_VARGRAPHIC               = [96].pack("s*")
         @desc[:SQL_BIND_TYPE] = SQL_WCHAR
     end
     hstmt.add(seq)
-    ObjectSpace.define_finalizer(self, Stmt.finalizer_proc(seq,hstmt))
+    ObjectSpace.define_finalizer(self, Column.finalizer_proc(seq,hstmt))
   end
   def self.finalizer_proc(icol,hstmt)
     proc {
