@@ -35,6 +35,7 @@ while s.fetch == 0
      pp f.buffer
    else
      pp f.get
+     pp s.error
    end
   }
 end
