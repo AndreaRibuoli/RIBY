@@ -1137,6 +1137,9 @@ class Column
       hstmt.delete(icol)
     }
   end
+  def seq
+    @icol
+  end
   def bind
     SQLBindCol()
   end
@@ -1184,7 +1187,7 @@ class Column
     ileArguments[   0, 32] = PAD_32
     ileArguments[  32,  4] = @hstmt.handle
     ileArguments[  36,  2] = [@icol].pack("s*")
-    ileArguments[  38,  2] = SQL_BINARY
+    ileArguments[  38,  2] = @desc[:SQL_BIND_TYPE]
     ileArguments[  40,  8] = PAD_08
     ileArguments[  48, 16] = [ 0, tmpbuffer.to_i].pack("q*")
     ileArguments[  64,  4] = [tmpbuffer.instance_variable_get(:@entity).size].pack("l*")
