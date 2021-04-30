@@ -1233,7 +1233,11 @@ SQL_VARGRAPHIC               = [96].pack("s*")
     ileArguments[  38,  2] = @desc[:SQL_BIND_TYPE]
     ileArguments[  40,  8] = PAD_08
     ileArguments[  48, 16] = [ 0, @buffer.to_i].pack("q*")
-    ileArguments[  64,  4] = [@buffer.instance_variable_get(:@entity).size].pack("l*")
+    if @desc[:SQL_BIND_TYPE] == SQL_DECIMAL || @desc[:SQL_BIND_TYPE] == SQL_NUMERIC
+      ileArguments[  64,  4] = [@desc[:SQL_DESC_LENGTH]].pack("l*")
+    else
+      ileArguments[  64,  4] = [@buffer.instance_variable_get(:@entity).size].pack("l*")
+    end
     ileArguments[  68, 12] = PAD_12
     ileArguments[  80, 16] = [0, @pcbValue.to_i].pack("q*")
     Ilecallx.call(SQLApis['SQLBindCol'], ileArguments, SQLApiList['SQLBindCol'], - 5, 0)
