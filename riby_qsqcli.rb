@@ -1128,7 +1128,7 @@ class Column
     @desc = desc
     case
       when @desc[:SQL_DESC_TYPE_NAME] == 'CHAR'
-        @desc[:SQL_BIND_TYPE] = SQL_WCHAR
+        @desc[:SQL_BIND_TYPE] = SQL_CHAR
       when @desc[:SQL_DESC_TYPE_NAME] == 'INTEGER'
         @desc[:SQL_BIND_TYPE] = SQL_INTEGER
       when @desc[:SQL_DESC_TYPE_NAME] == 'VARCHAR' && @desc[:SQL_DESC_COLUMN_CCSID] == 65535
