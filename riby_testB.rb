@@ -28,7 +28,11 @@ pp s.error
 
 while s.fetch != 0
   cols.each { |f|
-    pp f.get if f.seq == 1
+    if f.seq != 1
+      pp f.buffer
+    else
+      pp f.get
+    end
   }
 end
 pp s.error
