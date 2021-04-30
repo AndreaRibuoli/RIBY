@@ -1300,7 +1300,7 @@ SQL_VARGRAPHIC               = [96].pack("s*")
                   ZEROED[0, @buffer.instance_variable_get(:@entity).size] if @buffer.nil? == false
         return tbr
       when @desc[:SQL_BIND_TYPE] == SQL_WCHAR && pcbValue[0, 4] == SQL_NULL_HANDLE
-        return tmpbuffer[0, 2*@desc[:SQL_DESC_LENGTH]].force_encoding('UTF-16BE').encode('utf-8')
+        return tmpbuffer[2, 2*@desc[:SQL_DESC_LENGTH]].force_encoding('UTF-16BE').encode('utf-8')
 #        tbr = tmpbuffer[0, tmpbuffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
 #        @buffer[0, @buffer.instance_variable_get(:@entity).size] =
 #                    ZEROED[0, @buffer.instance_variable_get(:@entity).size] if @buffer.nil? == false
