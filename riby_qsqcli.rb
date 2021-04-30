@@ -1158,11 +1158,11 @@ SQL_VARGRAPHIC               = [96].pack("s*")
       when @desc[:SQL_DESC_TYPE_NAME] == 'VARCHAR' && @desc[:SQL_DESC_COLUMN_CCSID] == 65535
         @desc[:SQL_BIND_TYPE] = SQL_VARBINARY
       when @desc[:SQL_DESC_TYPE_NAME] == 'VARCHAR'
-        @desc[:SQL_BIND_TYPE] = SQL_WVARCHAR
+        @desc[:SQL_BIND_TYPE] = SQL_VARCHAR
       when @desc[:SQL_DESC_TYPE_NAME] == 'CHAR' && @desc[:SQL_DESC_COLUMN_CCSID] == 65535
         @desc[:SQL_BIND_TYPE] = SQL_BINARY
       when @desc[:SQL_DESC_TYPE_NAME] == 'CHAR'
-        @desc[:SQL_BIND_TYPE] = SQL_WCHAR
+        @desc[:SQL_BIND_TYPE] = SQL_CHAR
       when @desc[:SQL_DESC_TYPE_NAME] == 'DATE'
         @desc[:SQL_BIND_TYPE] = SQL_DATETIME
       when @desc[:SQL_DESC_TYPE_NAME] == 'DECIMAL'
