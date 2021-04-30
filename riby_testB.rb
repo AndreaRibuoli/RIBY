@@ -12,13 +12,13 @@ GC.stress = true
 s = Stmt.new(c)
 s.attrs = { :SQL_ATTR_EXTENDED_COL_INFO => :SQL_TRUE }
 s.prepare(ARGV[2])
-return
 n = s.columns_count[:SQL_DESC_COUNT]
 cols = []
 n.times {|i|
   seq = i+1
    cols << Column.new(s, seq, s.column_data(seq))
 }
+return
 s.execute
 puts "Without bind using get"
 while s.fetch == 0
