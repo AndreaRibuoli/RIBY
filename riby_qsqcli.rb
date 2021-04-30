@@ -1152,7 +1152,7 @@ SQL_VARGRAPHIC               = [96].pack("s*")
         ( @desc[:SQL_DESC_TYPE_NAME] == 'CHAR' && @desc[:SQL_DESC_COLUMN_CCSID] == 65535 )
         @desc[:SQL_BIND_TYPE] = SQL_BINARY
       when @desc[:SQL_DESC_TYPE_NAME] == 'CHAR'
-        @desc[:SQL_BIND_TYPE] = SQL_UTF8_CHAR
+        @desc[:SQL_BIND_TYPE] = SQL_CHAR
       when @desc[:SQL_DESC_TYPE_NAME] == 'NUMERIC'
         @desc[:SQL_BIND_TYPE] = SQL_NUMERIC
       when @desc[:SQL_DESC_TYPE_NAME] == 'DECIMAL'
@@ -1273,8 +1273,6 @@ SQL_VARGRAPHIC               = [96].pack("s*")
         return tmpbuffer[0, @desc[:SQL_DESC_LENGTH]].force_encoding(enc).encode('utf-8')
       when @desc[:SQL_BIND_TYPE] == SQL_WCHAR
         return tmpbuffer[0, 2*@desc[:SQL_DESC_LENGTH]].force_encoding('UTF-16BE').encode('utf-8')
-      when @desc[:SQL_BIND_TYPE] == SQL_UTF8_CHAR
-        return tmpbuffer[0, @desc[:SQL_DESC_LENGTH]].force_encoding('utf-8')
       when @desc[:SQL_BIND_TYPE] == SQL_VARCHAR
         enc = 'IBM037' if @desc[:SQL_DESC_COLUMN_CCSID] == 37
         enc = 'IBM280' if @desc[:SQL_DESC_COLUMN_CCSID] == 280
