@@ -55,6 +55,9 @@ module RibyCli
   SQL_CLOB_LOCATOR             = [21].pack("s*")
   SQL_DBCLOB_LOCATOR           = [22].pack("s*")
   SQL_UTF8_CHAR                = [23].pack("s*")
+  SQL_DATE                     = [91].pack("s*")
+  SQL_TIME                     = [92].pack("s*")
+  SQL_TIMESTAMP                = [93].pack("s*")
   SQL_GRAPHIC                  = [95].pack("s*")
   SQL_VARGRAPHIC               = [96].pack("s*")
   
@@ -1127,16 +1130,6 @@ class Column
     @icol = seq
     @desc = desc
 =begin
-SQL_VARBINARY                = [-3].pack("s*")
-SQL_BINARY                   = [-2].pack("s*")
-SQL_CHAR                     = [ 1].pack("s*")
-SQL_NUMERIC                  = [ 2].pack("s*")
-SQL_DECIMAL                  = [ 3].pack("s*")
-SQL_INTEGER                  = [ 4].pack("s*")
-SQL_SMALLINT                 = [ 5].pack("s*")
-SQL_FLOAT                    = [ 6].pack("s*")
-SQL_REAL                     = [ 7].pack("s*")
-SQL_DOUBLE                   = [ 8].pack("s*")
 SQL_DATETIME                 = [ 9].pack("s*")
 SQL_VARCHAR                  = [12].pack("s*")
 SQL_BLOB                     = [13].pack("s*")
@@ -1165,14 +1158,26 @@ SQL_VARGRAPHIC               = [96].pack("s*")
         @desc[:SQL_BIND_TYPE] = SQL_BINARY
       when @desc[:SQL_DESC_TYPE_NAME] == 'CHAR'
         @desc[:SQL_BIND_TYPE] = SQL_CHAR
-      when @desc[:SQL_DESC_TYPE_NAME] == 'DATE'
-        @desc[:SQL_BIND_TYPE] = SQL_DATETIME
+      when @desc[:SQL_DESC_TYPE_NAME] == 'NUMERIC'
+        @desc[:SQL_BIND_TYPE] = SQL_NUMERIC
       when @desc[:SQL_DESC_TYPE_NAME] == 'DECIMAL'
         @desc[:SQL_BIND_TYPE] = SQL_DECIMAL
-      when @desc[:SQL_DESC_TYPE_NAME] == 'SMALLINT'
-          @desc[:SQL_BIND_TYPE] = SQL_SMALLINT
       when @desc[:SQL_DESC_TYPE_NAME] == 'INTEGER'
         @desc[:SQL_BIND_TYPE] = SQL_INTEGER
+      when @desc[:SQL_DESC_TYPE_NAME] == 'SMALLINT'
+        @desc[:SQL_BIND_TYPE] = SQL_SMALLINT
+      when @desc[:SQL_DESC_TYPE_NAME] == 'FLOAT'
+        @desc[:SQL_BIND_TYPE] = SQL_FLOAT
+      when @desc[:SQL_DESC_TYPE_NAME] == 'REAL'
+        @desc[:SQL_BIND_TYPE] = SQL_REAL
+      when @desc[:SQL_DESC_TYPE_NAME] == 'DOUBLE'
+        @desc[:SQL_BIND_TYPE] = SQL_DOUBLE
+      when @desc[:SQL_DESC_TYPE_NAME] == 'DATE'
+        @desc[:SQL_BIND_TYPE] = SQL_DATE
+      when @desc[:SQL_DESC_TYPE_NAME] == 'TIME'
+        @desc[:SQL_BIND_TYPE] = SQL_TIME
+      when @desc[:SQL_DESC_TYPE_NAME] == 'TIMESTAMP'
+        @desc[:SQL_BIND_TYPE] = SQL_TIMESTAMP
       else
         @desc[:SQL_BIND_TYPE] = SQL_WCHAR
     end
@@ -1251,7 +1256,7 @@ SQL_VARGRAPHIC               = [96].pack("s*")
     case
       when pcbValue[0, 4] == SQL_NULL_DATA
         return nil
-      when @desc[:SQL_BIND_TYPE] == SQL_DECIMAL
+      when @desc[:SQL_BIND_TYPE] == SQL_DECIMAL || @desc[:SQL_BIND_TYPE] == SQL_NUMERIC
         l = @desc[:SQL_DESC_LENGTH] / 256
         d = @desc[:SQL_DESC_LENGTH] % 256
         z = tmpbuffer[0, l+1].unpack("H*")[0]
@@ -1263,7 +1268,8 @@ SQL_VARGRAPHIC               = [96].pack("s*")
         return tmpbuffer[0, 2].unpack("s*")[0]
       when @desc[:SQL_BIND_TYPE] == SQL_INTEGER
         return tmpbuffer[0, 4].unpack("l*")[0]
-      when @desc[:SQL_BIND_TYPE] == SQL_CHAR || @desc[:SQL_BIND_TYPE] == SQL_DATETIME
+      when @desc[:SQL_BIND_TYPE] == SQL_CHAR || @desc[:SQL_BIND_TYPE] == SQL_DATE ||
+           @desc[:SQL_BIND_TYPE] == SQL_TIME || @desc[:SQL_BIND_TYPE] == SQL_TIMESTAMP
         enc = 'IBM037' if @desc[:SQL_DESC_COLUMN_CCSID] == 37
         enc = 'IBM280' if @desc[:SQL_DESC_COLUMN_CCSID] == 280
         enc = 'IBM1144' if @desc[:SQL_DESC_COLUMN_CCSID] == 1144
