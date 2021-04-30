@@ -26,6 +26,9 @@ cols.each { |f|
 s.execute
 pp s.error
 
+s.fetch
+pp s.error
+
 while s.fetch != 0
   cols.each { |f|
    # if f.seq != 20
