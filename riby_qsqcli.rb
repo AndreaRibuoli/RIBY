@@ -1274,7 +1274,7 @@ SQL_VARGRAPHIC               = [96].pack("s*")
       when @desc[:SQL_BIND_TYPE] == SQL_WCHAR
         return tmpbuffer[0, 2*@desc[:SQL_DESC_LENGTH]].force_encoding('UTF-16BE').encode('utf-8')
       when @desc[:SQL_BIND_TYPE] == SQL_UTF8_CHAR
-        return tmpbuffer[0, 2*@desc[:SQL_DESC_LENGTH]].force_encoding('utf-8').strip
+        return tmpbuffer[0, 3*@desc[:SQL_DESC_LENGTH]].force_encoding('utf-8').strip
       when @desc[:SQL_BIND_TYPE] == SQL_VARCHAR
         enc = 'IBM037' if @desc[:SQL_DESC_COLUMN_CCSID] == 37
         enc = 'IBM280' if @desc[:SQL_DESC_COLUMN_CCSID] == 280
