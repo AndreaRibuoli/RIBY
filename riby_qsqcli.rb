@@ -674,8 +674,8 @@ class Stmt
     }
   end
   def handle()                  @hstmt[0,4]; end
-  def add(handle)               @hcols << handle; end
-  def delete(handle)            @hcols.delete(handle); end
+  def add(h)                    @hcols << h; end
+  def delete(h)                 @hcols.delete(h); end
   def error(n = 1)              SQLGetDiagRecW(SQL_HANDLE_STMT, handle, n); end
   def execdirect(sql)           SQLExecDirectW(sql); end
   def prepare(sql)              SQLPrepareW(sql); end
