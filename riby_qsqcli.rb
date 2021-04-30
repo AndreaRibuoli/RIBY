@@ -1132,9 +1132,11 @@ class Column
       when @desc[:SQL_DESC_TYPE_NAME] == 'CHAR'
         @desc[:SQL_BIND_TYPE] = SQL_CHAR
       when @desc[:SQL_DESC_TYPE_NAME] == 'DATE'
-          @desc[:SQL_BIND_TYPE] = SQL_DATETIME
+        @desc[:SQL_BIND_TYPE] = SQL_DATETIME
+      when @desc[:SQL_DESC_TYPE_NAME] == 'DECIMAL'
+        @desc[:SQL_BIND_TYPE] = SQL_DECIMAL
       when @desc[:SQL_DESC_TYPE_NAME] == 'VARCHAR'
-          @desc[:SQL_BIND_TYPE] = SQL_VARCHAR
+        @desc[:SQL_BIND_TYPE] = SQL_VARCHAR
       when @desc[:SQL_DESC_TYPE_NAME] == 'INTEGER'
         @desc[:SQL_BIND_TYPE] = SQL_INTEGER
       else
@@ -1209,6 +1211,8 @@ class Column
     Ilecallx.call(SQLApis['SQLGetCol'], ileArguments, SQLApiList['SQLGetCol'], - 5, 0)
     rc = ileArguments[ 16, 4].unpack('l')[0]
     case
+      when @desc[:SQL_BIND_TYPE] == SQL_DECIMAL
+        return tmpbuffer[0, 20].unpack("H*")
       when @desc[:SQL_BIND_TYPE] == SQL_INTEGER
         return tmpbuffer[0, 4].unpack("l*")[0]
       when @desc[:SQL_BIND_TYPE] == SQL_CHAR || @desc[:SQL_BIND_TYPE] == SQL_DATETIME
