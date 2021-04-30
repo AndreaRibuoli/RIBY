@@ -684,6 +684,7 @@ class Stmt
   def execute()                 SQLExecute(); end
   def fetch()                   SQLFetch(); end
   def cancel()                  SQLCancel(); end
+  def elab()                    @elab; end
   def close()                   SQLCloseCursor(); end
   def languages()               SQLLanguages(); end
   def tables(s,n,t)             SQLTablesW(s,n,t); end
@@ -1137,7 +1138,7 @@ end
 
 class Column
   include RibyCli
-  def initialize(hstmt, seq, desc, elab = 1)
+  def initialize(hstmt, seq, desc)
     @hstmt = hstmt
     @icol = seq
     @desc = desc
@@ -1189,13 +1190,13 @@ SQL_VARGRAPHIC               = [96].pack("s*")
         @desc[:SQL_BIND_TYPE] = SQL_WCHAR
     end
     hstmt.add(seq)
-    ObjectSpace.define_finalizer(self, Column.finalizer_proc(seq,hstmt,elab))
+    ObjectSpace.define_finalizer(self, Column.finalizer_proc(seq,hstmt,hstmt.elab))
     puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Column #{seq}(#{elab})"  if $-W >= 2
   end
-  def self.finalizer_proc(i,hstmt,elab)
+  def self.finalizer_proc(i,hstmt,e)
     proc {
-      hstmt.delete(i,elab)
-      puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Free Column #{i}(#{elab})"  if $-W >= 2
+      hstmt.delete(i,e)
+      puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Free Column #{i}(#{e})"  if $-W >= 2
     }
   end
   def icol
