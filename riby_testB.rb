@@ -34,15 +34,17 @@ end
 s.close
 s.prepare(ARGV[2])
 pp s.error
-return
 n = s.columns_count[:SQL_DESC_COUNT]
+pp s.error
 cols = []
 n.times {|i|
   seq = i+1
    cols << Column.new(s, seq, s.column_data(seq))
+   pp s.error
 }
 cols.each { |f|
   f.bind  if f.seq > 8
+  pp s.error
 }
 s.execute
 pp s.error
@@ -53,5 +55,4 @@ while s.fetch == 0
   pp row
 end
 
-pp s.error
 
