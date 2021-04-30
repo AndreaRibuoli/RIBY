@@ -1300,7 +1300,7 @@ SQL_VARGRAPHIC               = [96].pack("s*")
                   ZEROED[0, @buffer.instance_variable_get(:@entity).size] if @buffer.nil? == false
         return tbr
       when @desc[:SQL_BIND_TYPE] == SQL_WCHAR
-        puts "pcbValue: pcbValue[0, 4].unpack("l*")[0]"
+        puts "pcbValue: #{pcbValue[0, 4].unpack("l*")[0]}"
         return tmpbuffer[0, 2*@desc[:SQL_DESC_LENGTH]].force_encoding('UTF-16BE').encode('utf-8')
       when @desc[:SQL_BIND_TYPE] == SQL_VARCHAR
         enc = 'IBM037' if @desc[:SQL_DESC_COLUMN_CCSID] == 37
