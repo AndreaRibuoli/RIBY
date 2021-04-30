@@ -1127,6 +1127,8 @@ class Column
     @icol = seq
     @desc = desc
     case
+      when @desc[:SQL_DESC_TYPE_NAME] == 'CHAR'
+        @desc[:SQL_BIND_TYPE] = SQL_WCHAR
       when @desc[:SQL_DESC_TYPE_NAME] == 'INTEGER'
         @desc[:SQL_BIND_TYPE] = SQL_INTEGER
       when @desc[:SQL_DESC_TYPE_NAME] == 'VARCHAR' && @desc[:SQL_DESC_COLUMN_CCSID] == 65535
