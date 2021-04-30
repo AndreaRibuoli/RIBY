@@ -1217,6 +1217,8 @@ class Column
     Ilecallx.call(SQLApis['SQLGetCol'], ileArguments, SQLApiList['SQLGetCol'], - 5, 0)
     rc = ileArguments[ 16, 4].unpack('l')[0]
     case
+      when pcbValue[0, 4] == SQL_NULL_DATA
+        return nil
       when @desc[:SQL_BIND_TYPE] == SQL_DECIMAL
         l = @desc[:SQL_DESC_LENGTH] / 256
         d = @desc[:SQL_DESC_LENGTH] % 256
@@ -1244,8 +1246,6 @@ class Column
         tmpbuffer[0, tmpbuffer.instance_variable_get(:@entity).size] =
            ZEROED[0, tmpbuffer.instance_variable_get(:@entity).size]
         return tbr
-      when pcbValue[0, 4] == SQL_NULL_DATA
-        return nil
       when pcbValue[0, 4] == SQL_NULL_HANDLE
         return tmpbuffer[2, @desc[:SQL_DESC_LENGTH]-2].force_encoding('IBM037').encode('utf-8').strip
       else
