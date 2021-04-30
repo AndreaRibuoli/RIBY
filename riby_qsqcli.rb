@@ -1313,10 +1313,7 @@ SQL_VARGRAPHIC               = [96].pack("s*")
                     ZEROED[0, @buffer.instance_variable_get(:@entity).size] if @buffer.nil? == false
         return tbr
       when @desc[:SQL_BIND_TYPE] == SQL_WVARCHAR && pcbValue[0, 4] == SQL_NULL_HANDLE
-        tbr = tmpbuffer[0, tmpbuffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
-        @buffer[0, @buffer.instance_variable_get(:@entity).size] =
-                      ZEROED[0, @buffer.instance_variable_get(:@entity).size] if @buffer.nil? == false
-        return tbr
+        return tmpbuffer[2, tmpbuffer[0, 2].unpack("s*")[0]].force_encoding('UTF-16BE').encode('utf-8')
       when @desc[:SQL_BIND_TYPE] == SQL_VARCHAR
         enc = 'IBM037' if @desc[:SQL_DESC_COLUMN_CCSID] == 37
         enc = 'IBM280' if @desc[:SQL_DESC_COLUMN_CCSID] == 280
