@@ -1126,19 +1126,49 @@ class Column
     @hstmt = hstmt
     @icol = seq
     @desc = desc
+=begin
+SQL_VARBINARY                = [-3].pack("s*")
+SQL_BINARY                   = [-2].pack("s*")
+SQL_CHAR                     = [ 1].pack("s*")
+SQL_NUMERIC                  = [ 2].pack("s*")
+SQL_DECIMAL                  = [ 3].pack("s*")
+SQL_INTEGER                  = [ 4].pack("s*")
+SQL_SMALLINT                 = [ 5].pack("s*")
+SQL_FLOAT                    = [ 6].pack("s*")
+SQL_REAL                     = [ 7].pack("s*")
+SQL_DOUBLE                   = [ 8].pack("s*")
+SQL_DATETIME                 = [ 9].pack("s*")
+SQL_VARCHAR                  = [12].pack("s*")
+SQL_BLOB                     = [13].pack("s*")
+SQL_CLOB                     = [14].pack("s*")
+SQL_DBCLOB                   = [15].pack("s*")
+SQL_DATALINK                 = [16].pack("s*")
+SQL_WCHAR                    = [17].pack("s*")
+SQL_WVARCHAR                 = [18].pack("s*")
+SQL_BIGINT                   = [19].pack("s*")
+SQL_BLOB_LOCATOR             = [20].pack("s*")
+SQL_CLOB_LOCATOR             = [21].pack("s*")
+SQL_DBCLOB_LOCATOR           = [22].pack("s*")
+SQL_UTF8_CHAR                = [23].pack("s*")
+SQL_GRAPHIC                  = [95].pack("s*")
+SQL_VARGRAPHIC               = [96].pack("s*")
+
+=end
     case
       when @desc[:SQL_DESC_TYPE_NAME] == 'VARCHAR' && @desc[:SQL_DESC_COLUMN_CCSID] == 65535
         @desc[:SQL_BIND_TYPE] = SQL_VARBINARY
+      when @desc[:SQL_DESC_TYPE_NAME] == 'VARCHAR'
+        @desc[:SQL_BIND_TYPE] = SQL_WVARCHAR
+      when @desc[:SQL_DESC_TYPE_NAME] == 'CHAR' && @desc[:SQL_DESC_COLUMN_CCSID] == 65535
+        @desc[:SQL_BIND_TYPE] = SQL_BINARY
       when @desc[:SQL_DESC_TYPE_NAME] == 'CHAR'
-        @desc[:SQL_BIND_TYPE] = SQL_CHAR
+        @desc[:SQL_BIND_TYPE] = SQL_WCHAR
       when @desc[:SQL_DESC_TYPE_NAME] == 'DATE'
         @desc[:SQL_BIND_TYPE] = SQL_DATETIME
       when @desc[:SQL_DESC_TYPE_NAME] == 'DECIMAL'
         @desc[:SQL_BIND_TYPE] = SQL_DECIMAL
       when @desc[:SQL_DESC_TYPE_NAME] == 'SMALLINT'
           @desc[:SQL_BIND_TYPE] = SQL_SMALLINT
-      when @desc[:SQL_DESC_TYPE_NAME] == 'VARCHAR'
-        @desc[:SQL_BIND_TYPE] = SQL_VARCHAR
       when @desc[:SQL_DESC_TYPE_NAME] == 'INTEGER'
         @desc[:SQL_BIND_TYPE] = SQL_INTEGER
       else
