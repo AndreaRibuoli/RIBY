@@ -1189,12 +1189,12 @@ SQL_VARGRAPHIC               = [96].pack("s*")
     hstmt.add(seq)
     ObjectSpace.define_finalizer(self, Column.finalizer_proc(seq,hstmt))
   end
-  def self.finalizer_proc(icol,hstmt)
+  def self.finalizer_proc(i,hstmt)
     proc {
-      hstmt.delete(icol)
+      hstmt.delete(i)
     }
   end
-  def seq
+  def icol
     @icol
   end
   def bind
