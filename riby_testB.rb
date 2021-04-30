@@ -29,7 +29,7 @@ pp s.error
 pp s.fetch
 pp s.error
 
-while s.fetch == 0
+#while s.fetch == 0
   cols.each { |f|
 #   if f.seq > 8
 #     pp f.buffer
@@ -38,6 +38,6 @@ while s.fetch == 0
      pp s.error
 #   end
   }
-end
+#end
 pp s.error
 
