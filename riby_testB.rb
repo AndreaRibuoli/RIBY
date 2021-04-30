@@ -20,15 +20,15 @@ c.empower(ARGV[0], ARGV[1])
     seq = i+1
     cols << Column.new(s, seq, s.column_data(seq))
   }
+  puts "Without bind using get"
+  s.execute
+  while s.fetch == 0
+    row = ''
+    cols.each { |f| row << f.get.to_s << ', '}
+    pp row
+  end
 }
-puts "Without bind using get"
 return
-s.execute
-while s.fetch == 0
-  row = ''
-  cols.each { |f| row << f.get.to_s << ', '}
-  pp row
-end
 cols = []
 s.close
 s.prepare(ARGV[2])

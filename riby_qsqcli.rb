@@ -1148,7 +1148,6 @@ SQL_CLOB_LOCATOR             = [21].pack("s*")
 SQL_DBCLOB_LOCATOR           = [22].pack("s*")
 SQL_GRAPHIC                  = [95].pack("s*")
 SQL_VARGRAPHIC               = [96].pack("s*")
-
 =end
     case
       when @desc[:SQL_DESC_TYPE_NAME] == 'VARBINARY' ||
