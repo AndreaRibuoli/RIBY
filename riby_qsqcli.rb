@@ -1197,8 +1197,10 @@ class Column
     Ilecallx.call(SQLApis['SQLGetCol'], ileArguments, SQLApiList['SQLGetCol'], - 5, 0)
     rc = ileArguments[ 16, 4].unpack('l')[0]
     case
+      when @desc[:SQL_DESC_TYPE_NAME] == 'INTEGER'
+        return tmpbuffer[0, 4].unpack("l*")[0]
       when pcbValue[0, 4] == SQL_NTS
-        tbr = tmpbuffer[0, tmpbuffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
+        tbr = tmpbuffer[0,  tmpbuffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
         tmpbuffer[0, tmpbuffer.instance_variable_get(:@entity).size] =
            ZEROED[0, tmpbuffer.instance_variable_get(:@entity).size]
         return tbr
