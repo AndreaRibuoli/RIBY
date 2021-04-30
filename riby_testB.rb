@@ -30,6 +30,7 @@ while s.fetch == 0
   row = ''
   cols.each { |f| row << f.get.to_s << ', ' }
   pp row
+  return
 end
 # pp s.error
 
