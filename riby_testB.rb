@@ -24,9 +24,12 @@ n.times {|i|
 #  f.bind
 #}
 s.execute
+pp s.error
 
 while s.fetch == 0
   cols.each { |f|
     pp f.get
   }
 end
+pp s.error
+
