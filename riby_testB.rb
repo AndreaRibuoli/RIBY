@@ -8,8 +8,8 @@ e = Env.new
 e.attrs = { :SQL_ATTR_SERVER_MODE => :SQL_TRUE }
 c = Connect.new(e)
 c.empower(ARGV[0], ARGV[1])
-GC.stress = true
-2.times {
+# GC.stress = true
+3.times {
   s = Stmt.new(c)
   s.attrs = { :SQL_ATTR_EXTENDED_COL_INFO => :SQL_TRUE }
   s.prepare(ARGV[2])
