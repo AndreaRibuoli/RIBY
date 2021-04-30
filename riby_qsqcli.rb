@@ -1204,21 +1204,22 @@ SQL_VARGRAPHIC               = [96].pack("s*")
     SQLGetColW()
   end
   def buffer
-    case
-      when @desc[:SQL_BIND_TYPE] == SQL_INTEGER
-        return @buffer[0, 4].unpack("l*")[0]
-      when @pcbValue[0, 4] == SQL_NTS
-        tbr = @buffer[0, @buffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
-        @buffer[0, @buffer.instance_variable_get(:@entity).size] =
-           ZEROED[0, @buffer.instance_variable_get(:@entity).size]
-        return tbr
-      when @pcbValue[0, 4] == SQL_NULL_DATA
-        return nil
-      when @pcbValue[0, 4] == SQL_NULL_HANDLE
-        return @buffer[2, @desc[:SQL_DESC_LENGTH]-2].force_encoding('IBM037').encode('utf-8').strip
-      else
-        return "error: pcbValue #{@pcbValue[0, 4].unpack("l*")[0]}"
-    end
+ #   case
+ #     when @desc[:SQL_BIND_TYPE] == SQL_INTEGER
+ #       return @buffer[0, 4].unpack("l*")[0]
+ #     when @pcbValue[0, 4] == SQL_NTS
+ #       tbr = @buffer[0, @buffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
+ #       @buffer[0, @buffer.instance_variable_get(:@entity).size] =
+ #          ZEROED[0, @buffer.instance_variable_get(:@entity).size]
+ #       return tbr
+ #     when @pcbValue[0, 4] == SQL_NULL_DATA
+ #       return nil
+ #     when @pcbValue[0, 4] == SQL_NULL_HANDLE
+ #       return @buffer[2, @desc[:SQL_DESC_LENGTH]-2].force_encoding('IBM037').encode('utf-8').strip
+ #     else
+ #       return "error: pcbValue #{@pcbValue[0, 4].unpack("l*")[0]}"
+ #   end
+    return innerLogic(@buffer, @pcbValue)
   end
   private
   def SQLBindCol()
@@ -1258,6 +1259,9 @@ SQL_VARGRAPHIC               = [96].pack("s*")
     ileArguments[  80, 16] = [0, pcbValue.to_i].pack("q*")
     Ilecallx.call(SQLApis['SQLGetCol'], ileArguments, SQLApiList['SQLGetCol'], - 5, 0)
     rc = ileArguments[ 16, 4].unpack('l')[0]
+    return innerLogic(tmpbuffer, pcbValue)
+  end
+  def innerLogic(tmpbuffer, pcbValue)
     case
       when pcbValue[0, 4] == SQL_NULL_DATA
         return nil
