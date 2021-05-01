@@ -261,7 +261,7 @@ class Env
     @hdbcs = []
     rc = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, @henv)
     temp = @henv[0,4]
-    puts "#{temp.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Env (#{rc})" if $-W >= 2
+    puts "#{temp.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Env (#{rc})" if $-W >= 3
     SQLSetEnvAttr(ATTRS[:SQL_ATTR_INCLUDE_NULL_IN_LEN], 0)
     ObjectSpace.define_finalizer(self, Env.finalizer_proc(temp))
     return rc
@@ -269,9 +269,9 @@ class Env
   def self.finalizer_proc(h)
     proc {
       rc = Env::SQLReleaseEnv(h)
-      puts "#{h.unpack('H*')} #{'%10.7f' % Time.now.to_f} Release Env (#{rc})"  if $-W >= 2
+      puts "#{h.unpack('H*')} #{'%10.7f' % Time.now.to_f} Release Env (#{rc})"  if $-W >= 3
       rc = RibyCli::SQLFreeHandle(SQL_HANDLE_ENV, h)
-      puts "#{h.unpack('H*')} #{'%10.7f' % Time.now.to_f} Free Env (#{rc})" if $-W >= 2
+      puts "#{h.unpack('H*')} #{'%10.7f' % Time.now.to_f} Free Env (#{rc})" if $-W >= 3
     }
   end
   def add(handle)       @hdbcs << handle; end
@@ -343,7 +343,7 @@ class Env
     attrs_setting
   end
   def release
-    puts "#{handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} ## SYNCHRONOUS SQLReleaseEnv IGNORED!!! ##"  if $-W >= 2
+    puts "#{handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} ## SYNCHRONOUS SQLReleaseEnv IGNORED!!! ##"  if $-W >= 3
     # SQLReleaseEnv()
   end
   def self.SQLReleaseEnv(henv)
@@ -432,15 +432,15 @@ class Connect
     rc = SQLAllocHandle(SQL_HANDLE_DBC, henv.handle, @hdbc)
     temp = @hdbc[0,4]
     henv.add(temp)
-    puts "#{temp.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Connect (#{rc})" if $-W >= 2
+    puts "#{temp.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Connect (#{rc})" if $-W >= 3
     ObjectSpace.define_finalizer(self, Connect.finalizer_proc(temp,henv))
   end
   def self.finalizer_proc(h,henv)
     proc {
       rc = Connect::SQLDisconnect(h)
-      puts "#{h.unpack('H*')} #{'%10.7f' % Time.now.to_f} Disconnect (#{rc})"  if $-W >= 2
+      puts "#{h.unpack('H*')} #{'%10.7f' % Time.now.to_f} Disconnect (#{rc})"  if $-W >= 3
       rc = RibyCli::SQLFreeHandle(SQL_HANDLE_DBC, h)
-      puts "#{h.unpack('H*')} #{'%10.7f' % Time.now.to_f} Free Connect (#{rc})"  if $-W >= 2
+      puts "#{h.unpack('H*')} #{'%10.7f' % Time.now.to_f} Free Connect (#{rc})"  if $-W >= 3
       henv.delete(h)
     }
   end
@@ -533,7 +533,7 @@ class Connect
     attrs_setting
   end
   def disconnect
-    puts "#{handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} ## SYNCHRONOUS SQLDisconnect IGNORED!!! ##"  if $-W >= 2
+    puts "#{handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} ## SYNCHRONOUS SQLDisconnect IGNORED!!! ##"  if $-W >= 3
     # SQLDisconnect()
   end
   def self.SQLDisconnect(hdbc)
@@ -664,13 +664,13 @@ class Stmt
     rc = SQLAllocHandle(SQL_HANDLE_STMT, hdbc.handle, @hstmt)
     temp = @hstmt[0,4]
     hdbc.add(temp)
-    puts "#{temp.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Stmt (#{rc})" if $-W >= 2
+    puts "#{temp.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Stmt (#{rc})" if $-W >= 3
     ObjectSpace.define_finalizer(self, Stmt.finalizer_proc(temp,hdbc))
   end
   def self.finalizer_proc(h,hdbc)
     proc {
       rc = RibyCli::SQLFreeHandle(SQL_HANDLE_STMT, h)
-      puts "#{h.unpack('H*')} #{'%10.7f' % Time.now.to_f} Free Stmt (#{rc})"  if $-W >= 2
+      puts "#{h.unpack('H*')} #{'%10.7f' % Time.now.to_f} Free Stmt (#{rc})"  if $-W >= 3
       hdbc.delete(h)
     }
   end
@@ -1179,12 +1179,12 @@ class Column
     end
     hstmt.add(seq)
     ObjectSpace.define_finalizer(self, Column.finalizer_proc(seq,hstmt,hstmt.elab))
-    puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Column #{seq}(#{hstmt.elab})" if $-W >= 2
+    puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Column #{seq}(#{hstmt.elab})" if $-W >= 3
   end
   def self.finalizer_proc(i,hstmt,e)
     proc {
       hstmt.delete(i,e)
-      puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Free Column #{i}(#{e})" if $-W >= 2
+      puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Free Column #{i}(#{e})" if $-W >= 3
     }
   end
   def icol
