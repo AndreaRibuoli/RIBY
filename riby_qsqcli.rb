@@ -1203,7 +1203,7 @@ class Column
   end
   private
   def SQLBindCol()
-    puts "Binding a #{@desc}"  if $-W >= 3
+    puts "Binding a #{@desc}"  if $-W >= 2
     @buffer      = INFObuffer.malloc
     @pcbValue    = SQLintsize.malloc
     ileArguments = ILEarglist.malloc
@@ -1224,7 +1224,7 @@ class Column
     rc = ileArguments[ 16, 4].unpack('l')[0]
   end
   def SQLGetColW()
-    puts "Getting a #{@desc}"  if $-W >= 3
+    puts "Getting a #{@desc}"  if $-W >= 2
     tmpbuffer    = INFObuffer.malloc
     pcbValue     = SQLintsize.malloc
     ileArguments = ILEarglist.malloc
