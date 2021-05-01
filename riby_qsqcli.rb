@@ -1203,7 +1203,7 @@ class Column
   end
   private
   def SQLBindCol()
-    puts "Binding a #{@desc}"  if $VERBOSE == true
+    pp @desc if $VERBOSE == true
     @buffer      = INFObuffer.malloc
     @pcbValue    = SQLintsize.malloc
     ileArguments = ILEarglist.malloc
@@ -1224,7 +1224,7 @@ class Column
     rc = ileArguments[ 16, 4].unpack('l')[0]
   end
   def SQLGetColW()
-    puts "Getting a #{@desc}"  if $VERBOSE == true
+    pp @desc if $VERBOSE == true
     tmpbuffer    = INFObuffer.malloc
     pcbValue     = SQLintsize.malloc
     ileArguments = ILEarglist.malloc
