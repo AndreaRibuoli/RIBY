@@ -1184,7 +1184,7 @@ class Column
   def self.finalizer_proc(i,hstmt,e)
     proc {
       hstmt.delete(i,e)
-      puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Free Column #{i}(#{e})" if $-W >= 2
+      puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Free Column #{i}(#{e})" if $-W >= 3
     }
   end
   def icol
