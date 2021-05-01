@@ -1116,7 +1116,6 @@ class Stmt
     rc = ileArguments[ 16, 4].unpack('l')[0]
     return { fldi => "return code = #{rc}"} if rc != 0
     case
-#     when (t = SQLDescVals[:VALDESC_ORED][fldi]) != nil
       when (t = SQLDescVals[:VALDESC_DECO][fldi]) != nil
         return { fldi => t.key(numeric[0, 2].unpack("s")[0]) }
       when (t = SQLDescVals[:VALDESC_DECO_INT][fldi]) != nil
@@ -1204,7 +1203,7 @@ class Column
   end
   private
   def SQLBindCol()
-    puts "Binding a #{@desc[:SQL_DESC_TYPE_NAME]} with CCSID #{@desc[:SQL_DESC_COLUMN_CCSID]}"  if $-W >= 2
+    puts "Binding a #{@desc}"  if $-W >= 3
     @buffer      = INFObuffer.malloc
     @pcbValue    = SQLintsize.malloc
     ileArguments = ILEarglist.malloc
@@ -1225,7 +1224,7 @@ class Column
     rc = ileArguments[ 16, 4].unpack('l')[0]
   end
   def SQLGetColW()
-    puts "Getting a #{@desc}"  if $-W >= 2
+    puts "Getting a #{@desc}"  if $-W >= 3
     tmpbuffer    = INFObuffer.malloc
     pcbValue     = SQLintsize.malloc
     ileArguments = ILEarglist.malloc
