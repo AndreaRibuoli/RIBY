@@ -19,7 +19,7 @@ if ARGV[3] == 'GET'
   m = s.numparams
   pars = []
   m.times {|i| seq = i+1; pars << Param.new(s, seq, s.param_data(seq)) }
-  pp m[0]
+  pp pars[0]
   pars.each { |f| f.bind }
   pars[0].buffer= [3].pack('s*')
   pars[0].pcbValue= 2
