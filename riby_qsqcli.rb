@@ -1167,7 +1167,7 @@ class Stmt
              SQL_DESC_LENGTH:    paramSize[0, 4].unpack("l*")[0], # VALDESC_NUM
              SQL_DESC_PRECISION: paramSize[2, 2].unpack("s*")[0],
              SQL_DESC_SCALE:     decDigits[0, 2].unpack("s*")[0], # VALDESC_SMALLINT
-             SQL_DESC_NULLABLE:  SQLDescVals[:VALDESC_DECO][:SQL_DESC_NULLABLE]).key(nullable[0, 2].unpack("s*")[0]),
+             SQL_DESC_NULLABLE:  SQLDescVals[:VALDESC_DECO][:SQL_DESC_NULLABLE].key(nullable[0, 2].unpack("s*")[0]),
              SQL_BIND_TYPE:       dataType[0, 2].unpack("s*")[0]  # preset equal to SQL_DESC_TYPE
            }
   end
