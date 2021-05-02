@@ -1406,6 +1406,13 @@ class Param
     ileArguments[  96, 16] = [0, @pcbValue.to_i].pack("q*")
     Ilecallx.call(SQLApis['SQLBindParameter'], ileArguments, SQLApiList['SQLBindParameter'], - 5, 0)
     rc = ileArguments[ 16, 4].unpack('l')[0]
+    puts ileArguments[   0, 16].unpack('H*')
+    puts ileArguments[  16, 16].unpack('H*')
+    puts ileArguments[  32, 16].unpack('H*')
+    puts ileArguments[  48, 16].unpack('H*')
+    puts ileArguments[  64, 16].unpack('H*')
+    puts ileArguments[  80, 16].unpack('H*')
+    puts ileArguments[  96, 16].unpack('H*')
   end
   def innerLogic(tmpbuffer, pcbValue)
     case
