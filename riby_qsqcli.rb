@@ -1374,7 +1374,7 @@ class Param
   end
   def buffer= val
     l = val.length
-    @pcbValue[0, 4] = [l].pack('l*')
+    @pcbValue[0, 4] = [l].pack("l*")
     @buffer[0, l] = val
   end
   def buffer

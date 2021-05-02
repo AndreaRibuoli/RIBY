@@ -19,6 +19,7 @@ if ARGV[3] == 'GET'
   m = s.numparams
   pars = []
   m.times {|i| seq = i+1; pars << Param.new(s, seq, s.param_data(seq)) }
+  pars.each { |f| f.bind }  
   pars[0].buffer= 'OPERATOR'
   puts "Without bind using get"
   s.execute
