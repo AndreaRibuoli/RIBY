@@ -1158,7 +1158,7 @@ class Stmt
     ileArguments[  36,  2] = [seq].pack("s*")
     ileArguments[  38, 10] = PAD_10
     ileArguments[  48, 16] = [0, dataType.to_i].pack("q*")
-    ileArguments[  64, 16] = [0, paramSize.to_i].pack("9*")
+    ileArguments[  64, 16] = [0, paramSize.to_i].pack("q*")
     ileArguments[  80, 16] = [0, decDigits.to_i].pack("q*")
     ileArguments[  96, 16] = [0, nullable.to_i].pack("q*")
     Ilecallx.call(SQLApis['SQLDescribeParam'], ileArguments, SQLApiList['SQLDescribeParam'], - 5, 0)
