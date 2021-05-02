@@ -1351,8 +1351,10 @@ class Param
     case
       when @desc[:SQL_DESC_TYPE] == SQL_VARCHAR
         @desc[:SQL_BIND_TYPE] = SQL_WVARCHAR
+        @desc[:SQL_DESC_TYPE] = SQL_WVARCHAR
       when @desc[:SQL_DESC_TYPE] == SQL_CHAR
         @desc[:SQL_BIND_TYPE] = SQL_WCHAR
+        @desc[:SQL_DESC_TYPE] = SQL_WCHAR
       else
         #
     end
