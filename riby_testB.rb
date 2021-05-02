@@ -19,15 +19,12 @@ if ARGV[3] == 'GET'
   m = s.numparams
   pars = []
   m.times {|i| seq = i+1; pars << Param.new(s, seq, s.param_data(seq)) }
-  pp s.error
   pars.each { |f| f.bind }
-  pp s.error
-  pars[0].buffer= [3].pack('s*')
+  pars[0].buffer= [ARGV[3]].pack('s*')
   pars[0].pcbValue= 0
   puts "Without bind using get"
   pp pars
   s.execute
-  pp s.error
   while s.fetch == 0
     row = ''
     cols.each { |f| row << f.get.to_s << ', '}
