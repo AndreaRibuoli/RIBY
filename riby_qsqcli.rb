@@ -1213,6 +1213,33 @@ class Desc
     }
     return h
   end
+  DESCS_ROW = {
+#   SQL_DESC_ALLOC_TYPE:             99,
+    SQL_DESC_AUTO_INCREMENT:         14,
+    SQL_DESC_BASE_COLUMN:            17,
+    SQL_DESC_BASE_SCHEMA:            19,
+    SQL_DESC_BASE_TABLE:             18,
+    SQL_DESC_CCSID:                  22,
+    SQL_DESC_COLUMN_CCSID:           24,
+    SQL_DESC_COUNT:                   1,
+#   SQL_DESC_DATA_PTR:               10,
+#   SQL_DESC_DATETIME_INTERVAL_CODE:  7,
+    SQL_DESC_DISPLAY_SIZE:           13,
+#   SQL_DESC_INDICATOR_PTR:           9,
+    SQL_DESC_LABEL:                  20,
+    SQL_DESC_LENGTH:                  3,
+#   SQL_DESC_LENGTH_PTR:              4,
+    SQL_DESC_MONEY:                  21,
+    SQL_DESC_NAME:                   11,
+    SQL_DESC_NULLABLE:                8,
+    SQL_DESC_PRECISION:               5,
+    SQL_DESC_SCALE:                   6,
+    SQL_DESC_SEARCHABLE:             15,
+    SQL_DESC_TYPE_NAME:              23,
+    SQL_DESC_TYPE:                    2,
+    SQL_DESC_UNNAMED:                12,
+    SQL_DESC_UPDATABLE:              16,
+  }
   DESCS_PARAM = {
     SQL_DESC_ALLOC_TYPE:             99,
     SQL_DESC_COUNT:                   1,
