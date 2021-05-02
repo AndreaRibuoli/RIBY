@@ -1394,7 +1394,7 @@ class Param
     ileArguments[  42,  2] = @desc[:SQL_BIND_TYPE]
     ileArguments[  44,  4] = [@desc[:SQL_DESC_LENGTH]].pack("l*")  # da completare
     ileArguments[  48,  2] = [@desc[:SQL_DESC_SCALE]].pack("s*")
-    ileArguments[  50, 14] = PACK_14
+    ileArguments[  50, 14] = PAD_14
     ileArguments[  64, 16] = [0, @buffer.to_i].pack("q*")
     ileArguments[  80,  4] = [@buffer.instance_variable_get(:@entity).size].pack("l*")
     ileArguments[  84, 12] = PAD_12
