@@ -18,10 +18,10 @@ if ARGV[3] == 'GET'
   n.times {|i| seq = i+1; cols << Column.new(s, seq, s.column_data(seq)) }
   m = s.numparams
   d = Desc.new(s)
+  pp d.desc_data(1)
   pars = []
   m.times {|i| seq = i+1; pars << Param.new(s, seq, s.param_data(seq)) }
   pars.each { |f| f.bind }
-  pp d.desc_data(1)
   pars[0].buffer= ARGV[4].encode('IBM280')
   pars[0].pcbValue= ARGV[4].length
   puts "Without bind using get"
