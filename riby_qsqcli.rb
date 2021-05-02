@@ -1350,9 +1350,9 @@ class Param
     @desc = desc
     case
       when @desc[:SQL_DESC_TYPE] == SQL_VARCHAR
-        @desc[:SQL_BIND_TYPE] = SQL_WVARCHAR
+        @desc[:SQL_BIND_TYPE] = SQL_VARBINARY
       when @desc[:SQL_DESC_TYPE] == SQL_CHAR
-        @desc[:SQL_BIND_TYPE] = SQL_WCHAR
+        @desc[:SQL_BIND_TYPE] = SQL_BINARY
       else
         #
     end
