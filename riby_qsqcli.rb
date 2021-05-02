@@ -1395,8 +1395,8 @@ class Param
     ileArguments[  32,  4] = @hstmt.handle
     ileArguments[  36,  2] = [@ipar].pack("s*")
     ileArguments[  38,  2] = iotype
-    ileArguments[  40,  2] = @desc[:SQL_BIND_TYPE]
-    ileArguments[  42,  2] = @desc[:SQL_DESC_TYPE]
+    ileArguments[  40,  2] = @desc[:SQL_BIND_TYPE].pack("s*")
+    ileArguments[  42,  2] = @desc[:SQL_DESC_TYPE].pack("s*")
     ileArguments[  44,  4] = [@desc[:SQL_DESC_LENGTH]].pack("l*")  # da completare
     ileArguments[  48,  2] = [@desc[:SQL_DESC_SCALE]].pack("s*")
     ileArguments[  50, 14] = PAD_14
