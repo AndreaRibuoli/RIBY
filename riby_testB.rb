@@ -22,18 +22,17 @@ if ARGV[3] == 'GET'
   pp s.error
   pars.each { |f| f.bind }
   pp s.error
-  return
   pars[0].buffer= [3].pack('s*')
   pars[0].pcbValue= 0
   puts "Without bind using get"
   pp pars
   s.execute
   pp s.error
-#  while s.fetch == 0
-#    row = ''
-#    cols.each { |f| row << f.get.to_s << ', '}
-#    pp row
-#  end
+  while s.fetch == 0
+    row = ''
+    cols.each { |f| row << f.get.to_s << ', '}
+    pp row
+  end
 end
 =begin
 if ARGV[3] == 'BIND'
