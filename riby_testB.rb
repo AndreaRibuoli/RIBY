@@ -36,7 +36,7 @@ if ARGV[3] == 'GET'
 end
 if ARGV[3] == 'BIND'
   s.prepare(ARGV[2])
-  n = s.columns_count[:SQL_DESC_COUNT]
+  n = s.numcols
   cols = []
   n.times {|i| seq = i+1; cols << Column.new(s, seq, s.column_data(seq)) }
   cols.each { |f| f.bind }
