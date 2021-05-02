@@ -111,11 +111,12 @@ module RibyCli
  ## SQLColAttributesW() has been deprecated and replaced by SQLColAttributeW().
  ## SQLColAttributeW() is a more extensible alternative to the SQLDescribeColW() function
  ## SQLGetDescFieldW() is a more extensible alternative to the SQLGetDescRecW() function.
- ##
- ## SQLGetColW does not exist!
+ ## SQLGetDescFieldW() is similar to that of SQLColAttributeW(),
+ ##   but SQLGetDescFieldW() can retrieve data from parameter descriptors as well as row descriptors.
  ##
  ## SQLBindParam() has been deprecated and replaced by SQLBindParameter()
  ## SQLSetParam() has been deprecated and replaced by SQLBindParameter()
+ ##
  ##
  
   SQLApiList = {            #----#----#----#----#----#----#----#----#----#----#----#----#----#----#
@@ -159,8 +160,6 @@ module RibyCli
   'SQLDescribeParam'     => [ - 5, - 3, -11, -11, -11, -11,                                      0].pack("s*"),
   'SQLGetDescFieldW'     => [ - 5, - 3, - 3, -11, - 5, -11,                                      0].pack("s*"),
   'SQLSetDescFieldW'     => [ - 5, - 3, - 3, -11, - 5,                                           0].pack("s*"),
-  'SQLGetDescRec'        => [ - 5, - 3, -11, - 3, -11, -11, -11, -11, -11, -11, -11,             0].pack("s*"),
-  'SQLSetDescRec'        => [ - 5, - 3, - 3, - 3, - 5, - 3, - 3, -11, -11, -11,                  0].pack("s*"),
   'SQLCopyDesc'          => [ - 5, - 5,                                                          0].pack("s*"),
 
   'SQLBindFileToCol'     => [ - 5, - 3, -11, -11, -11, - 3, -11, -11,                            0].pack("s*"),
@@ -715,6 +714,11 @@ class Stmt
     return h
   end
   def param_data(n)
+#    h = {}
+#    DESCS.each { |k,v|
+#      h.merge!(SQLColAttributeW(n, k)) if k != :SQL_DESC_COUNT
+#    }
+#    return h
     return SQLDescribeParam(n)
   end
   def attrs= hattrs
@@ -1171,6 +1175,95 @@ class Stmt
              SQL_DESC_NULLABLE:  SQLDescVals[:VALDESC_DECO][:SQL_DESC_NULLABLE].key(nullable[0, 2].unpack("s*")[0]),
              SQL_BIND_TYPE:       dataType[0, 2].unpack("s*")[0]  # preset equal to SQL_DESC_TYPE
            }
+  end
+end
+
+class Desc
+  include RibyCli
+  def initialize(hstmt, param = true, app = true)
+    @hstmt = hstmt
+    sa = hstmt.attrs
+    case
+      when param == true && app == true
+        @hdesc = sa[:SQL_ATTR_APP_PARAM_DESC]
+      when param == true && app == false
+        @hdesc = sa[:SQL_ATTR_IMP_PARAM_DESC]
+      when param == false && app == true
+        @hdesc = sa[:SQL_ATTR_APP_ROW_DESC]
+      when param == false && app == false
+        @hdesc = sa[:SQL_ATTR_IMP_ROW_DESC]
+    end
+  end
+  def handle
+    [@hdesc].pack("l*")
+  end
+  def desc_data(n)
+    h = {}
+    DESCS.each { |k,v|
+      h.merge!(SQLGetDescFieldW(n, k)) if k != :SQL_DESC_COUNT
+    }
+    return h
+  end
+  DESCS = {
+#   SQL_DESC_ALLOC_TYPE:             99,
+    SQL_DESC_AUTO_INCREMENT:         14,
+    SQL_DESC_BASE_COLUMN:            17,
+    SQL_DESC_BASE_SCHEMA:            19,
+    SQL_DESC_BASE_TABLE:             18,
+    SQL_DESC_COLUMN_CCSID:           24,
+    SQL_DESC_COUNT:                   1,
+#   SQL_DESC_DATA_PTR:               10,
+#   SQL_DESC_DATETIME_INTERVAL_CODE:  7,
+    SQL_DESC_DISPLAY_SIZE:           13,
+#   SQL_DESC_INDICATOR_PTR:           9,
+    SQL_DESC_LABEL:                  20,
+    SQL_DESC_LENGTH:                  3,
+#   SQL_DESC_LENGTH_PTR:              4,
+    SQL_DESC_MONEY:                  21,
+    SQL_DESC_NAME:                   11,
+    SQL_DESC_NULLABLE:                8,
+    SQL_DESC_PRECISION:               5,
+    SQL_DESC_SCALE:                   6,
+    SQL_DESC_SEARCHABLE:             15,
+    SQL_DESC_TYPE_NAME:              23,
+    SQL_DESC_TYPE:                    2,
+    SQL_DESC_UNNAMED:                12,
+    SQL_DESC_UPDATABLE:              16,
+  }
+  private
+  def SQLGetDescFieldW(seq, fldi)
+    buffer  = INFObuffer.malloc
+    strlen  = SQLintsize.malloc
+    ileArguments = ILEarglist.malloc
+    ileArguments[   0, 32] = PAD_32
+    ileArguments[  32,  4] = handle
+    ileArguments[  36,  2] = [seq].pack("s*")
+    ileArguments[  38,  2] = [DESCS[fldi]].pack("s*")
+    ileArguments[  40,  8] = PAD_08
+    ileArguments[  48, 16] = [0, buffer.to_i].pack("q*")
+    ileArguments[  64,  4] = [SQL_MAX_INFO_LENGTH].pack("s*")
+    ileArguments[  68, 12] = PAD_12
+    ileArguments[  80, 16] = [0, strlen.to_i].pack("q*")
+    Ilecallx.call(SQLApis['SQLGetDescFieldW'], ileArguments, SQLApiList['SQLGetDescFieldW'], - 5, 0)
+    rc = ileArguments[ 16, 4].unpack('l')[0]
+    return { fldi => "return code = #{rc}"} if rc != 0
+    case
+      when (t = SQLDescVals[:VALDESC_DECO][fldi]) != nil
+        return { fldi => t.key(numeric[0, 2].unpack("s")[0]) }
+      when (t = SQLDescVals[:VALDESC_DECO_INT][fldi]) != nil
+        return { fldi => t.key(numeric[0, 4].unpack("l")[0]) }
+      when (t = SQLDescVals[:VALDESC_SMALLINT][fldi]) != nil
+      return { fldi => numeric[0, 2].unpack("s")[0] }
+      when (t = SQLDescVals[:VALDESC_POINTER][fldi]) != nil
+        return { fldi => 'still unsupported!'}
+      when (t = SQLDescVals[:VALDESC_NUM][fldi]) != nil
+        return { fldi => numeric[0, 4].unpack("l")[0] }
+      when (t = SQLDescVals[:VALDESC_WCHAR][fldi]) != nil
+        len = strlen[0, 2].unpack("s")[0]
+        return { fldi => buffer[0, len].force_encoding('UTF-16BE').encode('utf-8') }
+      else
+        return { fldi => 'not found!'}
+    end
   end
 end
 
