@@ -34,7 +34,7 @@ if ARGV[3] == 'GET'
 #    row = ''
 #    cols.each { |f| row << f.get.to_s << ', '}
 #    pp row
-  end
+#  end
 end
 =begin
 if ARGV[3] == 'BIND'
