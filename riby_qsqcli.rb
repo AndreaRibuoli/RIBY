@@ -32,34 +32,38 @@ module RibyCli
   SQL_INDEX_UNIQUE             = [ 0].pack("s*")
   SQL_INDEX_ALL                = [ 1].pack("s*")
   
-  SQL_VARBINARY                = [-3].pack("s*")
-  SQL_BINARY                   = [-2].pack("s*")
-  SQL_CHAR                     = [ 1].pack("s*")
-  SQL_NUMERIC                  = [ 2].pack("s*")
-  SQL_DECIMAL                  = [ 3].pack("s*")
-  SQL_INTEGER                  = [ 4].pack("s*")
-  SQL_SMALLINT                 = [ 5].pack("s*")
-  SQL_FLOAT                    = [ 6].pack("s*")
-  SQL_REAL                     = [ 7].pack("s*")
-  SQL_DOUBLE                   = [ 8].pack("s*")
-  SQL_DATETIME                 = [ 9].pack("s*")
-  SQL_VARCHAR                  = [12].pack("s*")
-  SQL_BLOB                     = [13].pack("s*")
-  SQL_CLOB                     = [14].pack("s*")
-  SQL_DBCLOB                   = [15].pack("s*")
-  SQL_DATALINK                 = [16].pack("s*")
-  SQL_WCHAR                    = [17].pack("s*")
-  SQL_WVARCHAR                 = [18].pack("s*")
-  SQL_BIGINT                   = [19].pack("s*")
-  SQL_BLOB_LOCATOR             = [20].pack("s*")
-  SQL_CLOB_LOCATOR             = [21].pack("s*")
-  SQL_DBCLOB_LOCATOR           = [22].pack("s*")
-  SQL_UTF8_CHAR                = [23].pack("s*")
-  SQL_DATE                     = [91].pack("s*")
-  SQL_TIME                     = [92].pack("s*")
-  SQL_TIMESTAMP                = [93].pack("s*")
-  SQL_GRAPHIC                  = [95].pack("s*")
-  SQL_VARGRAPHIC               = [96].pack("s*")
+  SQL_PARAM_INPUT              = [  1].pack("s*")
+  SQL_PARAM_OUTPUT             = [  2].pack("s*")
+  SQL_PARAM_INPUT_OUTPUT       = [  3].pack("s*")
+  
+  SQL_VARBINARY                = [ -3].pack("s*")
+  SQL_BINARY                   = [ -2].pack("s*")
+  SQL_CHAR                     = [  1].pack("s*")
+  SQL_NUMERIC                  = [  2].pack("s*")
+  SQL_DECIMAL                  = [  3].pack("s*")
+  SQL_INTEGER                  = [  4].pack("s*")
+  SQL_SMALLINT                 = [  5].pack("s*")
+  SQL_FLOAT                    = [  6].pack("s*")
+  SQL_REAL                     = [  7].pack("s*")
+  SQL_DOUBLE                   = [  8].pack("s*")
+  SQL_DATETIME                 = [  9].pack("s*")
+  SQL_VARCHAR                  = [ 12].pack("s*")
+  SQL_BLOB                     = [ 13].pack("s*")
+  SQL_CLOB                     = [ 14].pack("s*")
+  SQL_DBCLOB                   = [ 15].pack("s*")
+  SQL_DATALINK                 = [ 16].pack("s*")
+  SQL_WCHAR                    = [ 17].pack("s*")
+  SQL_WVARCHAR                 = [ 18].pack("s*")
+  SQL_BIGINT                   = [ 19].pack("s*")
+  SQL_BLOB_LOCATOR             = [ 20].pack("s*")
+  SQL_CLOB_LOCATOR             = [ 21].pack("s*")
+  SQL_DBCLOB_LOCATOR           = [ 22].pack("s*")
+  SQL_UTF8_CHAR                = [ 23].pack("s*")
+  SQL_DATE                     = [ 91].pack("s*")
+  SQL_TIME                     = [ 92].pack("s*")
+  SQL_TIMESTAMP                = [ 93].pack("s*")
+  SQL_GRAPHIC                  = [ 95].pack("s*")
+  SQL_VARGRAPHIC               = [ 96].pack("s*")
   
   SQL_COMMIT                   = [ 0].pack("l*")
   SQL_ROLLBACK                 = [ 1].pack("l*")
@@ -110,6 +114,9 @@ module RibyCli
  ##
  ## SQLGetColW does not exist!
  ##
+ ## SQLBindParam() has been deprecated and replaced by SQLBindParameter()
+ ## SQLSetParam() has been deprecated and replaced by SQLBindParameter()
+ ##
  
   SQLApiList = {            #----#----#----#----#----#----#----#----#----#----#----#----#----#----#
   'SQLGetDiagRecW'       => [ - 3, - 5, - 3, -11, -11, -11, - 3, -11,                            0].pack("s*"),
@@ -148,15 +155,14 @@ module RibyCli
   'SQLFetch'             => [ - 5,                                                               0].pack("s*"),
   'SQLLanguages'         => [ - 5,                                                               0].pack("s*"),
   'SQLGetCol'            => [ - 5, - 3, - 3, -11, - 5, -11,                                      0].pack("s*"),
+  'SQLBindParameter'     => [ - 5, - 5, - 5, - 5, - 5, - 5, - 5, -11, - 5, -11,                  0].pack("s*"),
+  'SQLDescribeParam'     => [ - 5, - 3, -11, -11, -11, -11,                                      0].pack("s*"),
 
   'SQLBindFileToCol'     => [ - 5, - 3, -11, -11, -11, - 3, -11, -11,                            0].pack("s*"),
   'SQLBindFileToParam'   => [ - 5, - 3, - 3, -11, -11, -11, - 3, -11,                            0].pack("s*"),
-  'SQLBindParam'         => [ - 5, - 3, - 3, - 3, - 5, - 3, -11, -11,                            0].pack("s*"),
-  'SQLBindParameter'     => [ - 5, - 5, - 5, - 5, - 5, - 5, - 5, -11, - 5, -11,                  0].pack("s*"),
   'SQLColumnPrivilegesW' => [ - 5, -11, - 3, -11, - 3, -11, - 3, -11, - 3,                       0].pack("s*"),
   'SQLCopyDesc'          => [ - 5, - 5,                                                          0].pack("s*"),
   'SQLDataSourcesW'      => [ - 5, - 3, -11, - 3, -11, -11, - 3, -11,                            0].pack("s*"),
-  'SQLDescribeParam'     => [ - 5, - 3, -11, -11, -11, -11,                                      0].pack("s*"),
   'SQLDriverConnectW'    => [ - 5, -11, -11, - 3, -11, - 3, -11, - 3,                            0].pack("s*"),
   'SQLExtendedFetch'     => [ - 5, - 3, - 5, -11, -11,                                           0].pack("s*"),
   'SQLFetchScroll'       => [ - 5, - 3, - 5,                                                     0].pack("s*"),
@@ -184,7 +190,6 @@ module RibyCli
   'SQLSetCursorNameW'    => [ - 5, -11, - 3,                                                     0].pack("s*"),
   'SQLSetDescFieldW'     => [ - 5, - 3, - 3, -11, - 5,                                           0].pack("s*"),
   'SQLSetDescRec'        => [ - 5, - 3, - 3, - 3, - 5, - 3, - 3, -11, -11, -11,                  0].pack("s*"),
-  'SQLSetParam'          => [ - 5, - 3, - 3, - 3, - 5, - 3, -11, -11,                            0].pack("s*"),
   'SQLSetStmtOptionW'    => [ - 5, - 3, -11,                                                     0].pack("s*"),
   'SQLSpecialColumnsW'   => [ - 5, - 3, -11, - 3, -11, - 3, -11, - 3, - 3, - 3,                  0].pack("s*"),
   'SQLStartTran'         => [ - 3, - 5, - 5, - 5,                                                0].pack("s*"),
@@ -661,6 +666,8 @@ class Stmt
     @hdbc = hdbc
     @elab = 1
     @hcols = {}
+    @exec = 1
+    @hpars = {}
     rc = SQLAllocHandle(SQL_HANDLE_STMT, hdbc.handle, @hstmt)
     temp = @hstmt[0,4]
     hdbc.add(temp)
@@ -676,15 +683,18 @@ class Stmt
   end
   def handle()                  @hstmt[0,4]; end
   # cercare di limitare l'accesso ai seguenti due metodi
-  def add(h)                    @hcols[h] = @elab; end
-  def delete(h,e)               @hcols.delete(h) if @hcols[h] == e; end
+  def add_c(h)                  @hcols[h] = @elab; end
+  def delete_c(h,e)             @hcols.delete(h) if @hcols[h] == e; end
+  def add_p(h)                  @hpars[h] = @exec; end
+  def delete_p(h,e)             @hpars.delete(h) if @hpars[h] == e; end
   def error(n = 1)              SQLGetDiagRecW(SQL_HANDLE_STMT, handle, n); end
   def execdirect(sql)           SQLExecDirectW(sql); end
   def prepare(sql)              SQLPrepareW(sql); end
   def execute()                 SQLExecute(); end
   def fetch()                   SQLFetch(); end
   def cancel()                  SQLCancel(); end
-  def elab()                    @elab; end
+  def elab_n()                  @elab; end
+  def exec_n()                  @exec; end
   def close()                   SQLCloseCursor(); end
   def languages()               SQLLanguages(); end
   def tables(s,n,t)             SQLTablesW(s,n,t); end
@@ -702,6 +712,9 @@ class Stmt
       h.merge!(SQLColAttributeW(n, k)) if k != :SQL_DESC_COUNT
     }
     return h
+  end
+  def param_data(n)
+    return SQLDescribeParam(n)
   end
   def attrs= hattrs
     hattrs.each { |k,v|
@@ -893,6 +906,8 @@ class Stmt
     ileArguments[ 32,   4] = handle
     @hcols = {}
     @elab = @elab.next
+    @hpars = {}
+    @exec = @exec.next
     Ilecallx.call(SQLApis['SQLCloseCursor'], ileArguments, SQLApiList['SQLCloseCursor'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
@@ -1096,7 +1111,6 @@ class Stmt
     return nil if rc != 0
     return num[0, 2].unpack('s')[0] if rc == 0
   end
-  
   def SQLColAttributeW(seq, fldi)
     buffer  = INFObuffer.malloc
     strlen  = SQLretsize.malloc
@@ -1132,6 +1146,30 @@ class Stmt
       else
         return { fldi => 'not found!'}
     end
+  end
+  def SQLDescribeParam(seq)
+    dataType  = SQLretsize.malloc
+    paramSize = SQLintsize.malloc
+    decDigits = SQLretsize.malloc
+    nullable  = SQLretsize.malloc
+    ileArguments = ILEarglist.malloc
+    ileArguments[   0, 32] = PAD_32
+    ileArguments[  32,  4] = handle
+    ileArguments[  36,  2] = [seq].pack("s*")
+    ileArguments[  38, 10] = PAD_10
+    ileArguments[  48, 16] = [0, dataType.to_i].pack("q*")
+    ileArguments[  64, 16] = [0, paramSize.to_i].pack("9*")
+    ileArguments[  80, 16] = [0, decDigits.to_i].pack("q*")
+    ileArguments[  96, 16] = [0, nullable.to_i].pack("q*")
+    Ilecallx.call(SQLApis['SQLDescribeParam'], ileArguments, SQLApiList['SQLDescribeParam'], - 5, 0)
+    rc = ileArguments[ 16, 4].unpack('l')[0]
+    return { SQL_DESC_TYPE:       dataType[0, 2].unpack("s*")[0], # VALDESC_NUM (actually VALDESC_SMALLINT)
+             SQL_DESC_LENGTH:    paramSize[0, 4].unpack("l*")[0], # VALDESC_NUM
+             SQL_DESC_PRECISION: paramSize[2, 2].unpack("s*")[0],
+             SQL_DESC_SCALE:     decDigits[0, 2].unpack("s*")[0], # VALDESC_SMALLINT
+             SQL_DESC_NULLABLE:  SQLDescVals[:VALDESC_DECO][:SQL_DESC_NULLABLE]).key(nullable[0, 2].unpack("s*")[0]),
+             SQL_BIND_TYPE:       dataType[0, 2].unpack("s*")[0]  # preset equal to SQL_DESC_TYPE
+           }
   end
 end
 
@@ -1177,13 +1215,13 @@ class Column
       else
         @desc[:SQL_BIND_TYPE] = SQL_WCHAR
     end
-    hstmt.add(seq)
-    ObjectSpace.define_finalizer(self, Column.finalizer_proc(seq,hstmt,hstmt.elab))
-    puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Column #{seq}(#{hstmt.elab})" if $DEBUG == true
+    hstmt.add_c(seq)
+    ObjectSpace.define_finalizer(self, Column.finalizer_proc(seq,hstmt,hstmt.elab_n)
+    puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Column #{seq}(#{hstmt.elab_n})" if $DEBUG == true
   end
   def self.finalizer_proc(i,hstmt,e)
     proc {
-      hstmt.delete(i,e)
+      hstmt.delete_c(i,e)
       puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Free Column #{i}(#{e})" if $DEBUG == true
     }
   end
@@ -1245,6 +1283,119 @@ class Column
     Ilecallx.call(SQLApis['SQLGetCol'], ileArguments, SQLApiList['SQLGetCol'], - 5, 0)
     rc = ileArguments[ 16, 4].unpack('l')[0]
     return innerLogic(tmpbuffer, pcbValue)
+  end
+  def innerLogic(tmpbuffer, pcbValue)
+    case
+      when pcbValue[0, 4] == SQL_NULL_DATA
+        return nil
+      when @desc[:SQL_BIND_TYPE] == SQL_DECIMAL || @desc[:SQL_BIND_TYPE] == SQL_NUMERIC
+        l = @desc[:SQL_DESC_LENGTH] / 256
+        d = @desc[:SQL_DESC_LENGTH] % 256
+        z = tmpbuffer[0, l+1].unpack("H*")[0]
+        dec = ''
+        dec << '-' if z[-1] == 'f'
+        dec << z[0, l-d] << '.' << z[l-d, d]
+        return dec.to_f
+      when @desc[:SQL_BIND_TYPE] == SQL_SMALLINT
+        return tmpbuffer[0, 2].unpack("s*")[0]
+      when @desc[:SQL_BIND_TYPE] == SQL_INTEGER
+        return tmpbuffer[0, 4].unpack("l*")[0]
+      when @desc[:SQL_BIND_TYPE] == SQL_CHAR || @desc[:SQL_BIND_TYPE] == SQL_DATE ||
+           @desc[:SQL_BIND_TYPE] == SQL_TIME || @desc[:SQL_BIND_TYPE] == SQL_TIMESTAMP
+        enc = 'IBM037' if @desc[:SQL_DESC_COLUMN_CCSID] == 37
+        enc = 'IBM280' if @desc[:SQL_DESC_COLUMN_CCSID] == 280
+        enc = 'IBM1144' if @desc[:SQL_DESC_COLUMN_CCSID] == 1144
+        return tmpbuffer[0, @desc[:SQL_DESC_LENGTH]].force_encoding(enc).encode('utf-8')
+      when @desc[:SQL_BIND_TYPE] == SQL_WCHAR && pcbValue[0, 4] == SQL_NTS
+        tbr = tmpbuffer[0, tmpbuffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
+        @buffer[0, @buffer.instance_variable_get(:@entity).size] =
+                  ZEROED[0, @buffer.instance_variable_get(:@entity).size] if @buffer.nil? == false
+        return tbr
+      when @desc[:SQL_BIND_TYPE] == SQL_WCHAR && pcbValue[0, 4] == SQL_NULL_HANDLE
+        return tmpbuffer[2, 2*@desc[:SQL_DESC_LENGTH]].force_encoding('UTF-16BE').encode('utf-8')
+      when @desc[:SQL_BIND_TYPE] == SQL_WCHAR
+        puts "pcbValue: #{pcbValue[0, 4].unpack("l*")[0]}"
+        return tmpbuffer[0, 2*@desc[:SQL_DESC_LENGTH]].force_encoding('UTF-16BE').encode('utf-8')
+      when @desc[:SQL_BIND_TYPE] == SQL_WVARCHAR && pcbValue[0, 4] == SQL_NTS
+        tbr = tmpbuffer[0, tmpbuffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
+        @buffer[0, @buffer.instance_variable_get(:@entity).size] =
+                    ZEROED[0, @buffer.instance_variable_get(:@entity).size] if @buffer.nil? == false
+        return tbr
+      when @desc[:SQL_BIND_TYPE] == SQL_WVARCHAR && pcbValue[0, 4] == SQL_NULL_HANDLE
+        return tmpbuffer[2, 2*tmpbuffer[0, 2].unpack("s*")[0]].force_encoding('UTF-16BE').encode('utf-8')
+      when @desc[:SQL_BIND_TYPE] == SQL_VARCHAR
+        enc = 'IBM037' if @desc[:SQL_DESC_COLUMN_CCSID] == 37
+        enc = 'IBM280' if @desc[:SQL_DESC_COLUMN_CCSID] == 280
+        enc = 'IBM1144' if @desc[:SQL_DESC_COLUMN_CCSID] == 1144
+        return tmpbuffer[2, tmpbuffer[0, 2].unpack("s*")[0]].force_encoding(enc).encode('utf-8')
+      when pcbValue[0, 4] == SQL_NTS
+        tbr = tmpbuffer[0,  tmpbuffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
+        tmpbuffer[0, tmpbuffer.instance_variable_get(:@entity).size] =
+           ZEROED[0, tmpbuffer.instance_variable_get(:@entity).size]
+        return tbr
+      when pcbValue[0, 4] == SQL_NULL_HANDLE
+        puts @desc[:SQL_BIND_TYPE].unpack('H*')
+        return tmpbuffer[2, @desc[:SQL_DESC_LENGTH]-2].force_encoding('IBM037').encode('utf-8').strip
+      else
+        return "error: pcbValue #{pcbValue[0, 4].unpack("l*")[0]}"
+    end
+  end
+end
+
+class Param
+  include RibyCli
+  def initialize(hstmt, seq, desc)
+    @hstmt = hstmt
+    @ipar = seq
+    @desc = desc
+    case
+      when @desc[:SQL_DESC_TYPE] == SQL_VARCHAR
+        @desc[:SQL_BIND_TYPE] = SQL_WVARCHAR
+      when @desc[:SQL_DESC_TYPE] == SQL_CHAR
+        @desc[:SQL_BIND_TYPE] = SQL_WCHAR
+      else
+        #
+    end
+    hstmt.add_p(seq)
+    ObjectSpace.define_finalizer(self, Column.finalizer_proc(seq,hstmt,hstmt.exec_n))
+    puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Column #{seq}(#{hstmt.exec_n})" if $DEBUG == true
+  end
+  def self.finalizer_proc(i,hstmt,e)
+    proc {
+      hstmt.delete_p(i,e)
+      puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Free Column #{i}(#{e})" if $DEBUG == true
+    }
+  end
+  def ipar
+    @ipar
+  end
+  def bind
+    SQLBindParameter(SQL_PARAM_INPUT)
+  end
+  def buffer
+    return innerLogic(@buffer, @pcbValue)
+  end
+  private
+  def SQLBindParameter(iotype)
+    pp @desc if $VERBOSE == true
+    @buffer      = INFObuffer.malloc
+    @pcbValue    = SQLintsize.malloc
+    ileArguments = ILEarglist.malloc
+    ileArguments[   0, 32] = PAD_32
+    ileArguments[  32,  4] = @hstmt.handle
+    ileArguments[  36,  2] = [@ipar].pack("s*")
+    ileArguments[  38,  2] = iotype
+    ileArguments[  40,  2] = @desc[:SQL_DESC_TYPE]
+    ileArguments[  42,  2] = @desc[:SQL_BIND_TYPE]
+    ileArguments[  44,  4] = [@desc[:SQL_DESC_LENGTH]].pack("l*")  # da completare
+    ileArguments[  48,  2] = [@desc[:SQL_DESC_SCALE]].pack("s*")
+    ileArguments[  50, 14] = PACK_14
+    ileArguments[  64, 16] = [0, @buffer.to_i].pack("q*")
+    ileArguments[  80,  4] = [@buffer.instance_variable_get(:@entity).size].pack("l*")
+    ileArguments[  84, 12] = PAD_12
+    ileArguments[  96, 16] = [0, @pcbValue.to_i].pack("q*")
+    Ilecallx.call(SQLApis['SQLBindParameter'], ileArguments, SQLApiList['SQLBindParameter'], - 5, 0)
+    rc = ileArguments[ 16, 4].unpack('l')[0]
   end
   def innerLogic(tmpbuffer, pcbValue)
     case
