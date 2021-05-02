@@ -1250,7 +1250,7 @@ class Desc
         return { fldi => buffer[0, 4].unpack("l")[0] }
       when (t = SQLDescVals[:VALDESC_WCHAR][fldi]) != nil
         len = strlen[0, 2].unpack("s")[0]
-        return { fldi => buffer[0, len].force_encoding('UTF-16BE').encode('utf-8') }
+        return { fldi => buffer[2, len].force_encoding('UTF-16BE').encode('utf-8') }
       else
         return { fldi => 'not found!'}
     end
