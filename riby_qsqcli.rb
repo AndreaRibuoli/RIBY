@@ -1199,48 +1199,14 @@ class Desc
   def handle
     [@hdesc].pack("l*")
   end
-  def descs
-    if @param == true
-      return DESCS_PARAM
-    else
-      return DESCS_ROW
-    end
-  end
   def desc_data(n)
     h = {}
-    descs.each { |k,v|
+    DESCS.each { |k,v|
       h.merge!(SQLGetDescFieldW(n, k))
     }
     return h
   end
-  DESCS_ROW = {
-#   SQL_DESC_ALLOC_TYPE:             99,
-    SQL_DESC_AUTO_INCREMENT:         14,
-    SQL_DESC_BASE_COLUMN:            17,
-    SQL_DESC_BASE_SCHEMA:            19,
-    SQL_DESC_BASE_TABLE:             18,
-    SQL_DESC_CCSID:                  22,
-    SQL_DESC_COLUMN_CCSID:           24,
-    SQL_DESC_COUNT:                   1,
-#   SQL_DESC_DATA_PTR:               10,
-#   SQL_DESC_DATETIME_INTERVAL_CODE:  7,
-    SQL_DESC_DISPLAY_SIZE:           13,
-#   SQL_DESC_INDICATOR_PTR:           9,
-    SQL_DESC_LABEL:                  20,
-    SQL_DESC_LENGTH:                  3,
-#   SQL_DESC_LENGTH_PTR:              4,
-    SQL_DESC_MONEY:                  21,
-    SQL_DESC_NAME:                   11,
-    SQL_DESC_NULLABLE:                8,
-    SQL_DESC_PRECISION:               5,
-    SQL_DESC_SCALE:                   6,
-    SQL_DESC_SEARCHABLE:             15,
-    SQL_DESC_TYPE_NAME:              23,
-    SQL_DESC_TYPE:                    2,
-    SQL_DESC_UNNAMED:                12,
-    SQL_DESC_UPDATABLE:              16,
-  }
-  DESCS_PARAM = {
+  DESCS = {
     SQL_DESC_ALLOC_TYPE:             99,
     SQL_DESC_COUNT:                   1,
     SQL_DESC_CCSID:                  22,
@@ -1268,7 +1234,7 @@ class Desc
     else
       ileArguments[  36,  2] = [seq].pack("s*")
     end
-    ileArguments[  38,  2] = [descs[fldi]].pack("s*")
+    ileArguments[  38,  2] = [DESCS[fldi]].pack("s*")
     ileArguments[  40,  8] = PAD_08
     ileArguments[  48, 16] = [0, buffer.to_i].pack("q*")
     ileArguments[  64,  4] = [SQL_MAX_INFO_LENGTH].pack("s*")
