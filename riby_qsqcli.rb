@@ -1249,15 +1249,15 @@ class Desc
     return { fldi => "return code = #{rc}"} if rc != 0
     case
       when (t = SQLDescVals[:VALDESC_DECO][fldi]) != nil
-        return { fldi => t.key(numeric[0, 2].unpack("s")[0]) }
+        return { fldi => t.key(buffer[0, 2].unpack("s")[0]) }
       when (t = SQLDescVals[:VALDESC_DECO_INT][fldi]) != nil
-        return { fldi => t.key(numeric[0, 4].unpack("l")[0]) }
+        return { fldi => t.key(buffer[0, 4].unpack("l")[0]) }
       when (t = SQLDescVals[:VALDESC_SMALLINT][fldi]) != nil
-      return { fldi => numeric[0, 2].unpack("s")[0] }
+      return { fldi => buffer[0, 2].unpack("s")[0] }
       when (t = SQLDescVals[:VALDESC_POINTER][fldi]) != nil
         return { fldi => 'still unsupported!'}
       when (t = SQLDescVals[:VALDESC_NUM][fldi]) != nil
-        return { fldi => numeric[0, 4].unpack("l")[0] }
+        return { fldi => buffer[0, 4].unpack("l")[0] }
       when (t = SQLDescVals[:VALDESC_WCHAR][fldi]) != nil
         len = strlen[0, 2].unpack("s")[0]
         return { fldi => buffer[0, len].force_encoding('UTF-16BE').encode('utf-8') }
