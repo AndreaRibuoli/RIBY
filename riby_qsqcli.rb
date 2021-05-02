@@ -705,11 +705,11 @@ class Stmt
   def indexes(s,n,u=true)       SQLStatisticsW(s,n,(u==true) ? SQL_INDEX_UNIQUE : SQL_INDEX_ALL); end
   def numcols()                 SQLNumResultCols(); end
   def numparams()               SQLNumParams(); end
-  def columns_count()           SQLColAttributeW(0, :SQL_DESC_COUNT); end
+  def columns_count()           SQLColAttributeW(0, :SQL_DESC_COUNT4); end
   def column_data(n)
     h = {}
     DESCS.each { |k,v|
-      h.merge!(SQLColAttributeW(n, k)) if k != :SQL_DESC_COUNT
+      h.merge!(SQLColAttributeW(n, k)) if k != :SQL_DESC_COUNT4
     }
     return h
   end
