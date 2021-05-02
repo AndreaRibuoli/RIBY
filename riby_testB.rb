@@ -2,7 +2,7 @@
 require_relative 'riby_qsqcli'
 require 'pp'
                                                                        
-raise "Usage: #{__FILE__} <user> <password> <sql> <GET/BIND>" if ARGV.length != 4
+raise "Usage: #{__FILE__} <user> <password> <sql> <GET/BIND> <val>" if ARGV.length != 5
                                                                        
 e = Env.new
 e.attrs = { :SQL_ATTR_SERVER_MODE => :SQL_TRUE }
