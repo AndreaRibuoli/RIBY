@@ -785,7 +785,7 @@ class Stmt
     SQL_DESC_BASE_SCHEMA:            19,
     SQL_DESC_BASE_TABLE:             18,
     SQL_DESC_COLUMN_CCSID:           24,
-    SQL_DESC_COUNT:                   1,
+    SQL_DESC_COUNT4:                  1,
 #   SQL_DESC_DATA_PTR:               10,
 #   SQL_DESC_DATETIME_INTERVAL_CODE:  7,
     SQL_DESC_DISPLAY_SIZE:           13,
