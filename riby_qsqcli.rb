@@ -1380,7 +1380,7 @@ class Param
     @buffer[0, l] = val
   end
   def pcbValue= val
-    @pcbValue[0, 2] = [val].pack("s*")
+    @pcbValue[0, 4] = [val].pack("l*")
   end
   def buffer
     return innerLogic(@buffer, @pcbValue)
