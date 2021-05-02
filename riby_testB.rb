@@ -25,8 +25,8 @@ if ARGV[3] == 'GET'
   pp pars[0].desc
   pars.each { |f| f.bind }
   pp s.error
-  pars[0].buffer= 'OPERATOR'.encode('IBM037')
-  pars[0].pcbValue= 8
+  pars[0].buffer= [3].pack('s*')
+  pars[0].pcbValue= 0
   puts "Without bind using get"
   s.execute
   pp s.error
