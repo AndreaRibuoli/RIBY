@@ -21,7 +21,7 @@ if ARGV[3] == 'GET'
   m.times {|i| seq = i+1; pars << Param.new(s, seq, s.param_data(seq)) }
   pp s.error
   pp pars[0].desc
-  pars[0].desc[:SQL_DESC_PRECISION]=4
+  pars[0].desc[:SQL_DESC_PRECISION]=0
   pp pars[0].desc
   pars.each { |f| f.bind }
   pp s.error
