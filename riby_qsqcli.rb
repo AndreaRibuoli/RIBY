@@ -1216,8 +1216,8 @@ class Column
         @desc[:SQL_BIND_TYPE] = SQL_WCHAR
     end
     hstmt.add_c(seq)
-    ObjectSpace.define_finalizer(self, Column.finalizer_proc(seq,hstmt,hstmt.elab_n)
-  #  puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Column #{seq}(#{hstmt.elab_n})" if $DEBUG == true
+    ObjectSpace.define_finalizer(self, Column.finalizer_proc(seq,hstmt,hstmt.elab_n))
+    puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Column #{seq}(#{hstmt.elab_n})" if $DEBUG == true
   end
   def self.finalizer_proc(i,hstmt,e)
     proc {
