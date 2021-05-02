@@ -22,6 +22,7 @@ if ARGV[3] == 'GET'
   pp s.error
   pars.each { |f| f.bind }
   pp s.error
+  return
   pars[0].buffer= [3].pack('s*')
   pars[0].pcbValue= 0
   puts "Without bind using get"
