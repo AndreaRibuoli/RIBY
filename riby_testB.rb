@@ -20,8 +20,8 @@ if ARGV[3] == 'GET'
   pars = []
   m.times {|i| seq = i+1; pars << Param.new(s, seq, s.param_data(seq)) }
   pars.each { |f| f.bind }
-  pars[0].buffer= [ARGV[4].to_i, 0].pack('s*')
-  pars[0].pcbValue= 0
+  pars[0].buffer= ARGV[4].encode('IBM037')
+  pars[0].pcbValue= ARGV[4].length
   puts "Without bind using get"
   pp pars
   s.execute
