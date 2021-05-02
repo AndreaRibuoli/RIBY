@@ -26,7 +26,7 @@ if ARGV[3] == 'GET'
   pars.each { |f| f.bind }
   pp s.error
   pars[0].buffer= [3].pack('s*')
-  pars[0].pcbValue= -3
+  pars[0].pcbValue= -1
   puts "Without bind using get"
   s.execute
   pp s.error
