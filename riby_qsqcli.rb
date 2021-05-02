@@ -1399,7 +1399,7 @@ class Param
     ileArguments[  48,  2] = [@desc[:SQL_DESC_SCALE]].pack("s*")
     ileArguments[  50, 14] = PAD_14
     ileArguments[  64, 16] = [0, @buffer.to_i].pack("q*")
-    ileArguments[  80,  4] = [@buffer.instance_variable_get(:@entity).size].pack("l*")
+    ileArguments[  80,  4] = [0].pack("l*")
     ileArguments[  84, 12] = PAD_12
     ileArguments[  96, 16] = [0, @pcbValue.to_i].pack("q*")
     Ilecallx.call(SQLApis['SQLBindParameter'], ileArguments, SQLApiList['SQLBindParameter'], - 5, 0)
