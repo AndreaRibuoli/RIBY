@@ -13,17 +13,23 @@ s = Stmt.new(c)
 s.attrs = { :SQL_ATTR_EXTENDED_COL_INFO => :SQL_TRUE }
 if ARGV[3] == 'GET'
   s.prepare(ARGV[2])
-  n = s.columns_count[:SQL_DESC_COUNT]
+  n = s.numcols
   cols = []
   n.times {|i| seq = i+1; cols << Column.new(s, seq, s.column_data(seq)) }
+  m = s.numparams
+  pars = []
+  m.times {|i| seq = i+1; pars << Param.new(s, seq, s.param_data(seq)) }
+  pars[0].buffer= 'OPERATOR'
   puts "Without bind using get"
   s.execute
+  pp s.error
   while s.fetch == 0
     row = ''
     cols.each { |f| row << f.get.to_s << ', '}
     pp row
   end
 end
+=begin
 if ARGV[3] == 'BIND'
   s.prepare(ARGV[2])
   n = s.columns_count[:SQL_DESC_COUNT]
@@ -38,3 +44,4 @@ if ARGV[3] == 'BIND'
     pp row
   end
 end
+=end

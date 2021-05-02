@@ -1372,6 +1372,11 @@ class Param
   def bind
     SQLBindParameter(SQL_PARAM_INPUT)
   end
+  def buffer= val
+    l = val.length
+    @pcbValue[0, 4] = [l].pack('l*')
+    @buffer[0, l] = val
+  end
   def buffer
     return innerLogic(@buffer, @pcbValue)
   end
