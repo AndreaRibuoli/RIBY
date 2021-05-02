@@ -30,13 +30,18 @@ if ARGV[3] == 'GET'
     pp row
   end
 end
-=begin
 if ARGV[3] == 'BIND'
   s.prepare(ARGV[2])
   n = s.columns_count[:SQL_DESC_COUNT]
   cols = []
   n.times {|i| seq = i+1; cols << Column.new(s, seq, s.column_data(seq)) }
   cols.each { |f| f.bind }
+  m = s.numparams
+  pars = []
+  m.times {|i| seq = i+1; pars << Param.new(s, seq, s.param_data(seq)) }
+  pars.each { |f| f.bind }
+  pars[0].buffer= ARGV[4].encode('IBM280')
+  pars[0].pcbValue= ARGV[4].length
   puts "With bind using buffer"
   s.execute
   while s.fetch == 0
@@ -45,4 +50,3 @@ if ARGV[3] == 'BIND'
     pp row
   end
 end
-=end
