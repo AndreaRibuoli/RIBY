@@ -1219,7 +1219,7 @@ class Desc
     SQL_DESC_TYPE:                    2,
     SQL_DESC_UNNAMED:                12,
     SQL_DESC_UPDATABLE:              16,
-    SQL_DESC_CCSID:                   2
+    SQL_DESC_CCSID:                  25
   }
   private
   def SQLGetDescFieldW(seq, fldi)
