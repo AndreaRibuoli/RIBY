@@ -19,19 +19,21 @@ if ARGV[3] == 'GET'
   m = s.numparams
   pars = []
   m.times {|i| seq = i+1; pars << Param.new(s, seq, s.param_data(seq)) }
+  pp s.error
   pp pars[0].desc
   pars[0].desc[:SQL_DESC_PRECISION]=4
   pp pars[0].desc
   pars.each { |f| f.bind }
+  pp s.error
   pars[0].buffer= [3].pack('s*')
   pars[0].pcbValue= 0
   puts "Without bind using get"
   s.execute
   pp s.error
-  while s.fetch == 0
-    row = ''
-    cols.each { |f| row << f.get.to_s << ', '}
-    pp row
+#  while s.fetch == 0
+#    row = ''
+#    cols.each { |f| row << f.get.to_s << ', '}
+#    pp row
   end
 end
 =begin
