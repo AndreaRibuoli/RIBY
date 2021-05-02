@@ -1348,16 +1348,6 @@ class Param
     @hstmt = hstmt
     @ipar = seq
     @desc = desc
-    case
-      when @desc[:SQL_DESC_TYPE] == SQL_VARCHAR
-        @desc[:SQL_BIND_TYPE] = SQL_WVARCHAR
-        @desc[:SQL_DESC_TYPE] = SQL_WVARCHAR
-      when @desc[:SQL_DESC_TYPE] == SQL_CHAR
-        @desc[:SQL_BIND_TYPE] = SQL_WCHAR
-        @desc[:SQL_DESC_TYPE] = SQL_WCHAR
-      else
-        #
-    end
     hstmt.add_p(seq)
     ObjectSpace.define_finalizer(self, Column.finalizer_proc(seq,hstmt,hstmt.exec_n))
     puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Column #{seq}(#{hstmt.exec_n})" if $DEBUG == true
