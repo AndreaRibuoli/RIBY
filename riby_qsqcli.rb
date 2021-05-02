@@ -1199,11 +1199,17 @@ class Desc
   def handle
     [@hdesc].pack("l*")
   end
+  def descs
+    if @param == true
+      return DESCS_PARAM
+    else
+      return DESCS_ROW
+    end
+  end
   def desc_data(n)
     h = {}
-    list_d = DESCS_PARAM if @param == true
-    list_d.each { |k,v|
-      h.merge!(SQLGetDescFieldW(n, k)) 
+    descs.each { |k,v|
+      h.merge!(SQLGetDescFieldW(n, k))
     }
     return h
   end
@@ -1231,7 +1237,7 @@ class Desc
     ileArguments[   0, 32] = PAD_32
     ileArguments[  32,  4] = handle
     ileArguments[  36,  2] = [seq].pack("s*")
-    ileArguments[  38,  2] = [DESCS[fldi]].pack("s*")
+    ileArguments[  38,  2] = [descs[fldi]].pack("s*")
     ileArguments[  40,  8] = PAD_08
     ileArguments[  48, 16] = [0, buffer.to_i].pack("q*")
     ileArguments[  64,  4] = [SQL_MAX_INFO_LENGTH].pack("s*")
