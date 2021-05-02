@@ -1369,6 +1369,9 @@ class Param
   def ipar
     @ipar
   end
+  def desc
+    @desc
+  end
   def bind
     SQLBindParameter(SQL_PARAM_INPUT)
   end
