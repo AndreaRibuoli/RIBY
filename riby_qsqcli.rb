@@ -1395,10 +1395,10 @@ class Param
     ileArguments[  32,  4] = @hstmt.handle
     ileArguments[  36,  2] = [@ipar].pack("s*")
     ileArguments[  38,  2] = [100].pack("s*") ##iotype
-    ileArguments[  40,  2] = [@desc[:SQL_BIND_TYPE]].pack("s*")
-    ileArguments[  42,  2] = [@desc[:SQL_DESC_TYPE]].pack("s*")
-    ileArguments[  44,  4] = [@desc[:SQL_DESC_LENGTH]].pack("l*")  # da completare
-    ileArguments[  48,  2] = [@desc[:SQL_DESC_SCALE]].pack("s*")
+    ileArguments[  40,  2] = [100].pack("s*") #[@desc[:SQL_BIND_TYPE]].pack("s*")
+    ileArguments[  42,  2] = [100].pack("s*") #[@desc[:SQL_DESC_TYPE]].pack("s*")
+    ileArguments[  44,  4] = [100].pack("l*") #[@desc[:SQL_DESC_LENGTH]].pack("l*")  # da completare
+    ileArguments[  48,  2] = [100].pack("s*") #[@desc[:SQL_DESC_SCALE]].pack("s*")
     ileArguments[  50, 14] = PAD_14
     ileArguments[  64, 16] = [0, @buffer.to_i].pack("q*")
     ileArguments[  80,  4] = [0].pack("l*")
