@@ -1236,7 +1236,11 @@ class Desc
     ileArguments = ILEarglist.malloc
     ileArguments[   0, 32] = PAD_32
     ileArguments[  32,  4] = handle
-    ileArguments[  36,  2] = [seq].pack("s*")
+    if fldi == :SQL_DESC_ALLOC_TYPE || fldi == :SQL_DESC_COUNT
+      ileArguments[  36,  2] = [0].pack("s*")
+    else
+      ileArguments[  36,  2] = [seq].pack("s*")
+    end
     ileArguments[  38,  2] = [descs[fldi]].pack("s*")
     ileArguments[  40,  8] = PAD_08
     ileArguments[  48, 16] = [0, buffer.to_i].pack("q*")
