@@ -1348,14 +1348,14 @@ class Param
     @hstmt = hstmt
     @ipar = seq
     @desc = desc
-  #  case
-  #    when @desc[:SQL_DESC_TYPE] == SQL_VARCHAR
-  #      @desc[:SQL_BIND_TYPE] = SQL_WVARCHAR
-  #    when @desc[:SQL_DESC_TYPE] == SQL_CHAR
-  #      @desc[:SQL_BIND_TYPE] = SQL_WCHAR
-  #    else
-  #      #
-  #  end
+    case
+      when @desc[:SQL_DESC_TYPE] == SQL_VARCHAR
+        @desc[:SQL_BIND_TYPE] = SQL_WVARCHAR
+      when @desc[:SQL_DESC_TYPE] == SQL_CHAR
+        @desc[:SQL_BIND_TYPE] = SQL_WCHAR
+      else
+        #
+    end
     hstmt.add_p(seq)
     ObjectSpace.define_finalizer(self, Column.finalizer_proc(seq,hstmt,hstmt.exec_n))
     puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Column #{seq}(#{hstmt.exec_n})" if $DEBUG == true
@@ -1377,6 +1377,9 @@ class Param
     @pcbValue[0, 4] = [l].pack("l*")
     @buffer[0, l] = val
   end
+  def pcbValue= val
+    @pcbValue[0, 2] = [val].pack("s*")
+  end
   def buffer
     return innerLogic(@buffer, @pcbValue)
   end
@@ -1390,8 +1393,8 @@ class Param
     ileArguments[  32,  4] = @hstmt.handle
     ileArguments[  36,  2] = [@ipar].pack("s*")
     ileArguments[  38,  2] = iotype
-    ileArguments[  40,  2] = @desc[:SQL_DESC_TYPE]
-    ileArguments[  42,  2] = @desc[:SQL_BIND_TYPE]
+    ileArguments[  40,  2] = @desc[:SQL_BIND_TYPE]
+    ileArguments[  42,  2] = @desc[:SQL_DESC_TYPE]
     ileArguments[  44,  4] = [@desc[:SQL_DESC_LENGTH]].pack("l*")  # da completare
     ileArguments[  48,  2] = [@desc[:SQL_DESC_SCALE]].pack("s*")
     ileArguments[  50, 14] = PAD_14
