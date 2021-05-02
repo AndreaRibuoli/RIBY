@@ -18,7 +18,7 @@ if ARGV[3] == 'GET'
   n.times {|i| seq = i+1; cols << Column.new(s, seq, s.column_data(seq)) }
   m = s.numparams
   d = Desc.new(s)
-  pp d.desc_data
+  pp d.desc_data(1)
   pars = []
   m.times {|i| seq = i+1; pars << Param.new(s, seq, s.param_data(seq)) }
   pars.each { |f| f.bind }
