@@ -21,7 +21,7 @@ if ARGV[3] == 'GET'
   m.times {|i| seq = i+1; pars << Param.new(s, seq, s.param_data(seq)) }
   pars.each { |f| f.bind }
   pars[0].buffer= ARGV[4].encode('UTF-16BE')
-  pars[0].pcbValue= ARGV[4].length * 2
+  pars[0].pcbValue= ARGV[4].length
   puts "Without bind using get"
   s.execute
   while s.fetch == 0
