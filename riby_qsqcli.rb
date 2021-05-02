@@ -1182,6 +1182,8 @@ class Desc
   include RibyCli
   def initialize(hstmt, param = true, app = true)
     @hstmt = hstmt
+    @param = param
+    @app = app
     sa = hstmt.attrs
     case
       when param == true && app == true
@@ -1199,12 +1201,13 @@ class Desc
   end
   def desc_data(n)
     h = {}
-    DESCS.each { |k,v|
-      h.merge!(SQLGetDescFieldW(n, k)) if k != :SQL_DESC_COUNT
+    list_d = DESCS_PARAM if @param == true
+    list_d.each { |k,v|
+      h.merge!(SQLGetDescFieldW(n, k)) 
     }
     return h
   end
-  DESCS = {
+  DESCS_PARAM = {
     SQL_DESC_ALLOC_TYPE:             99,
     SQL_DESC_COUNT:                   1,
     SQL_DESC_CCSID:                  22,
