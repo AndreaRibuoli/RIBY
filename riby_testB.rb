@@ -44,7 +44,7 @@ if ARGV[3] == 'BIND'
   cols.each { |f| f.bind }
   m = s.numparams
   pars = []
-  m.times {|i| seq = i+1; pars << Param.new(s, seq, Desc.new(s).desc_data(seq)) }
+  m.times {|i| seq = i+1; p = Desc.new(s); pars << Param.new(s, seq, p.desc_data(seq)) } Desc.new(s).desc_data(seq)) }
   pars.each { |f| f.bind }
   pars[0].buffer= ARGV[4].encode('IBM280')
   pars[0].pcbValue= ARGV[4].length
