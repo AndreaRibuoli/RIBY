@@ -21,6 +21,8 @@ if ARGV[3] == 'GET'
   pp d1.desc_data(1)
   d2 = Desc.new(s, false)
   pp d2.desc_data(2)
+  d3 = Desc.new(s, false, false)
+  pp d3.desc_data(2)
   pars = []
   m.times {|i| seq = i+1; pars << Param.new(s, seq, s.param_data(seq)) }
   pars.each { |f| f.bind }
@@ -45,6 +47,8 @@ if ARGV[3] == 'BIND'
   pp d1.desc_data(1)
   d2 = Desc.new(s, false)
   pp d2.desc_data(2)
+  d3 = Desc.new(s, false, false)
+  pp d3.desc_data(2)
   pars = []
   m.times {|i| seq = i+1; pars << Param.new(s, seq, s.param_data(seq)) }
   pars.each { |f| f.bind }
