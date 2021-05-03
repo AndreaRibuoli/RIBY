@@ -1440,12 +1440,12 @@ class Param
     @desc = desc
     hstmt.add_p(seq)
     ObjectSpace.define_finalizer(self, Column.finalizer_proc(seq,hstmt,hstmt.exec_n))
-    puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Column #{seq}(#{hstmt.exec_n})" if $DEBUG == true
+    puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Param #{seq}(#{hstmt.exec_n})" if $DEBUG == true
   end
   def self.finalizer_proc(i,hstmt,e)
     proc {
       hstmt.delete_p(i,e)
-      puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Free Column #{i}(#{e})" if $DEBUG == true
+      puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Free Param #{i}(#{e})" if $DEBUG == true
     }
   end
   def ipar
