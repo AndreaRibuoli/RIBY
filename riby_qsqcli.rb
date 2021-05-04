@@ -1137,8 +1137,8 @@ class Desc
     ileArguments[  64,  4] = [SQL_MAX_INFO_LENGTH].pack("s*")
     ileArguments[  68, 12] = PAD_12
     ileArguments[  80, 16] = [0, strlen.to_i].pack("q*")
-    Ilecallx.call(SQLApis['SQLGetDescField'], ileArguments, SQLApiList['SQLGetDescField'], - 5, 0)
-#   Ilecallx.call(SQLApis['SQLGetDescFieldW'], ileArguments, SQLApiList['SQLGetDescFieldW'], - 5, 0)
+ #   Ilecallx.call(SQLApis['SQLGetDescField'], ileArguments, SQLApiList['SQLGetDescField'], - 5, 0)
+    Ilecallx.call(SQLApis['SQLGetDescFieldW'], ileArguments, SQLApiList['SQLGetDescFieldW'], - 5, 0)
     rc = ileArguments[ 16, 4].unpack('l')[0]
     return { fldi => "return code = #{rc}"} if rc != 0
     case
@@ -1153,8 +1153,9 @@ class Desc
       when (t = SQLDescVals[:VALDESC_NUM][fldi]) != nil
         return { fldi => buffer[0, 4].unpack("l")[0] }
       when (t = SQLDescVals[:VALDESC_WCHAR][fldi]) != nil
-        len = strlen[0, 2].unpack("s")[0]
-        return { fldi => buffer[2, len].force_encoding('UTF-16BE').encode('utf-8') }
+       # len = strlen[0, 2].unpack("s*")[0]
+       # return { fldi => buffer[2, len].force_encoding('UTF-16BE').encode('utf-8') }
+       return { fldi => buffer[0, 20].unpack('H*')[0] }
       else
         return { fldi => 'not found!'}
     end
