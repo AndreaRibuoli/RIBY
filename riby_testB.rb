@@ -31,7 +31,8 @@ if ARGV[3] == 'GET'
   dpi.set(1, :SQL_DESC_CCSID, 1208)
   m.times {|i| seq = i+1; pars << Param.new(s, seq, dp.desc_data(seq), dpi.desc_data(seq)) }
   pars.each { |f| f.bind }
-  pars[0].buffer= (ARGV[4] << '\0')
+  val = ARGV[4]  
+  pars[0].buffer= (val << '\0')
   pars[0].pcbValue= -3
   puts "Without bind using get"
   s.execute
