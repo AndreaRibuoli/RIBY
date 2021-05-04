@@ -26,9 +26,8 @@ if ARGV[3] == 'GET'
   dpi = Desc.new(s, true, false)
   m.times {|i| seq = i+1; pars << Param.new(s, seq, dp.desc_data(seq), dpi.desc_data(seq)) }
   pars.each { |f| f.bind }
-#  pars[0].buffer= ARGV[4].encode('IBM280')
-#  pars[0].pcbValue= ARGV[4].length
-  pars[0].buffer= [ARGV[4].to_i].pack('l*')
+  pars[0].buffer= ARGV[4].encode('IBM280')
+  pars[0].pcbValue= ARGV[4].length
   puts "Without bind using get"
   puts head
   s.execute
