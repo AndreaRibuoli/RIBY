@@ -129,7 +129,6 @@ module RibyCli
   'SQLGetCol'            => [ - 5, - 3, - 3, -11, - 5, -11,                                      0].pack("s*"),
   'SQLBindParameter'     => [ - 5, - 3, - 3, - 3, - 3, - 5, - 3, -11, - 5, -11,                  0].pack("s*"),
   'SQLDescribeParam'     => [ - 5, - 3, -11, -11, -11, -11,                                      0].pack("s*"),
-  'SQLGetDescField'      => [ - 5, - 3, - 3, -11, - 5, -11,                                      0].pack("s*"),
   'SQLGetDescFieldW'     => [ - 5, - 3, - 3, -11, - 5, -11,                                      0].pack("s*"),
   'SQLSetDescFieldW'     => [ - 5, - 3, - 3, -11, - 5,                                           0].pack("s*"),
   'SQLCopyDesc'          => [ - 5, - 5,                                                          0].pack("s*"),
@@ -1152,10 +1151,7 @@ class Desc
       when (t = SQLDescVals[:VALDESC_NUM][fldi]) != nil
         return { fldi => buffer[0, 4].unpack("l")[0] }
       when (t = SQLDescVals[:VALDESC_WCHAR][fldi]) != nil
-       # len = strlen[0, 2].unpack("s*")[0]
-       # return { fldi => buffer[2, len].force_encoding('UTF-16BE').encode('utf-8') }
-       return { fldi => [strlen[0, 2].unpack("s*")[0],
-                         buffer[0, 128].force_encoding('UTF-16BE').encode('utf-8').delete("\000")] }
+        return { fldi => buffer[0, 128].force_encoding('UTF-16BE').encode('utf-8').delete("\000") }
       else
         return { fldi => 'not found!'}
     end
