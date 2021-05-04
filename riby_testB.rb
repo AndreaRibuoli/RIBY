@@ -59,8 +59,8 @@ if ARGV[3] == 'BIND'
   dpi = Desc.new(s, true, false)
   m.times {|i| seq = i+1; pars << Param.new(s, seq, dp.desc_data(seq), dpi.desc_data(seq)) }
   pars.each { |f| f.bind }
-  pars[0].buffer= ARGV[4].encode('IBM280')
-  pars[0].pcbValue= ARGV[4].length
+  pars[0].buffer= ARGV[4]
+  pars[0].pcbValue= -3
   puts "With bind using buffer"
   s.execute
   while s.fetch == 0
