@@ -36,7 +36,9 @@ if ARGV[3] == 'BIND'
   s.prepare(ARGV[2])
   n = s.numcols
   cols = []
-  n.times {|i| seq = i+1; cols << Column.new(s, seq, s.column_data(seq)) }
+  dc = Desc.new(s, false)
+# n.times {|i| seq = i+1; cols << Column.new(s, seq, s.column_data(seq)) }
+  n.times {|i| seq = i+1; cols << Column.new(s, seq, dc.desc_data(seq)) }
   cols.each { |f| f.bind }
   m = s.numparams
   pars = []
