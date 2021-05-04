@@ -735,21 +735,6 @@ class Stmt
   def numcols()                 SQLNumResultCols(); end
   def numparams()               SQLNumParams(); end
   def columns_count()           SQLColAttributeW(0, :SQL_DESC_COUNT4); end#
-#  def column_data(n)
-#    h = {}
-#    DESCS.each { |k,v|
-#      h.merge!(SQLColAttributeW(n, k)) if k != :SQL_DESC_COUNT4
-#    }
-#    return h
-#  end
-#  def param_data(n)
-#    h = {}
-#    DESCS.each { |k,v|
-#      h.merge!(SQLColAttributeW(n, k)) if k != :SQL_DESC_COUNT
-#    }
-#    return h
-#    return SQLDescribeParam(n)
-#  end
   def attrs= hattrs
     hattrs.each { |k,v|
       lis = SQLAttrVals[:VALATTR_DECO][k]
@@ -1145,68 +1130,6 @@ class Stmt
     return nil if rc != 0
     return num[0, 2].unpack('s')[0] if rc == 0
   end
-=begin
-  def SQLColAttributeW(seq, fldi)
-    buffer  = INFObuffer.malloc
-    strlen  = SQLretsize.malloc
-    numeric = SQLintsize.malloc
-    ileArguments = ILEarglist.malloc
-    ileArguments[   0, 32] = PAD_32
-    ileArguments[  32,  4] = handle
-    ileArguments[  36,  2] = [seq].pack("s*")
-    ileArguments[  38,  2] = [DESCS[fldi]].pack("s*")
-    ileArguments[  40,  8] = PAD_08
-    ileArguments[  48, 16] = [0, buffer.to_i].pack("q*")
-    ileArguments[  64,  2] = [SQL_MAX_INFO_LENGTH].pack("s*")
-    ileArguments[  66, 14] = PAD_14
-    ileArguments[  80, 16] = [0, strlen.to_i].pack("q*")
-    ileArguments[  96, 16] = [0, numeric.to_i].pack("q*")
-    Ilecallx.call(SQLApis['SQLColAttributeW'], ileArguments, SQLApiList['SQLColAttributeW'], - 5, 0)
-    rc = ileArguments[ 16, 4].unpack('l')[0]
-    return { fldi => "return code = #{rc}"} if rc != 0
-    case
-      when (t = SQLDescVals[:VALDESC_DECO][fldi]) != nil
-        return { fldi => t.key(numeric[0, 2].unpack("s")[0]) }
-      when (t = SQLDescVals[:VALDESC_DECO_INT][fldi]) != nil
-        return { fldi => t.key(numeric[0, 4].unpack("l")[0]) }
-      when (t = SQLDescVals[:VALDESC_SMALLINT][fldi]) != nil
-      return { fldi => numeric[0, 2].unpack("s")[0] }
-      when (t = SQLDescVals[:VALDESC_POINTER][fldi]) != nil
-        return { fldi => 'still unsupported!'}
-      when (t = SQLDescVals[:VALDESC_NUM][fldi]) != nil
-        return { fldi => numeric[0, 4].unpack("l")[0] }
-      when (t = SQLDescVals[:VALDESC_WCHAR][fldi]) != nil
-        len = strlen[0, 2].unpack("s")[0]
-        return { fldi => buffer[0, len].force_encoding('UTF-16BE').encode('utf-8') }
-      else
-        return { fldi => 'not found!'}
-    end
-  end
-  def SQLDescribeParam(seq)
-    dataType  = SQLretsize.malloc
-    paramSize = SQLintsize.malloc
-    decDigits = SQLretsize.malloc
-    nullable  = SQLretsize.malloc
-    ileArguments = ILEarglist.malloc
-    ileArguments[   0, 32] = PAD_32
-    ileArguments[  32,  4] = handle
-    ileArguments[  36,  2] = [seq].pack("s*")
-    ileArguments[  38, 10] = PAD_10
-    ileArguments[  48, 16] = [0, dataType.to_i].pack("q*")
-    ileArguments[  64, 16] = [0, paramSize.to_i].pack("q*")
-    ileArguments[  80, 16] = [0, decDigits.to_i].pack("q*")
-    ileArguments[  96, 16] = [0, nullable.to_i].pack("q*")
-    Ilecallx.call(SQLApis['SQLDescribeParam'], ileArguments, SQLApiList['SQLDescribeParam'], - 5, 0)
-    rc = ileArguments[ 16, 4].unpack('l')[0]
-    return { SQL_DESC_TYPE:       dataType[0, 2].unpack("s*")[0], # VALDESC_NUM (actually VALDESC_SMALLINT)
-             SQL_DESC_LENGTH:    paramSize[0, 4].unpack("l*")[0], # VALDESC_NUM
-             SQL_DESC_PRECISION: paramSize[2, 2].unpack("s*")[0],
-             SQL_DESC_SCALE:     decDigits[0, 2].unpack("s*")[0], # VALDESC_SMALLINT
-             SQL_DESC_NULLABLE:  SQLDescVals[:VALDESC_DECO][:SQL_DESC_NULLABLE].key(nullable[0, 2].unpack("s*")[0]),
-             SQL_BIND_TYPE:       dataType[0, 2].unpack("s*")[0]  # preset equal to SQL_DESC_TYPE
-           }
-  end
-=end
 end
 
 class Desc
