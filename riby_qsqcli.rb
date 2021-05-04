@@ -1410,6 +1410,7 @@ class Column
       when pcbValue[0, 4] == SQL_NULL_DATA
         return nil
       when @desc[:SQL_DESC_TYPE] == SQL_DECIMAL || @desc[:SQL_DESC_TYPE] == SQL_NUMERIC
+        pp @desc
         l = @desc[:SQL_DESC_LENGTH] / 256
         d = @desc[:SQL_DESC_LENGTH] % 256
         z = tmpbuffer[0, l+1].unpack("H*")[0]
