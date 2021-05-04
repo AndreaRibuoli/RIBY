@@ -1190,7 +1190,7 @@ class Column
   end
   private
   def SQLBindCol()
-    pp @desc if $VERBOSE == true
+    pp [@desc, @impl] if $VERBOSE == true
     @buffer      = INFObuffer.malloc
     @pcbValue    = SQLintsize.malloc
     ileArguments = ILEarglist.malloc
@@ -1212,7 +1212,7 @@ class Column
     rc = ileArguments[ 16, 4].unpack('l')[0]
   end
   def SQLGetColW()
-    pp @desc if $VERBOSE == true
+    pp [@desc, @impl] if $VERBOSE == true
     tmpbuffer    = INFObuffer.malloc
     pcbValue     = SQLintsize.malloc
     ileArguments = ILEarglist.malloc
@@ -1331,7 +1331,7 @@ class Param
   end
   private
   def SQLBindParameter(iotype)
-    pp @desc if $VERBOSE == true
+    pp [@desc, @impl] if $VERBOSE == true
     @buffer      = INFObuffer.malloc
     @pcbValue    = SQLintsize.malloc
     ileArguments = ILEarglist.malloc
