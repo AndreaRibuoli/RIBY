@@ -1196,10 +1196,10 @@ class Column
     ileArguments[   0, 32] = PAD_32
     ileArguments[  32,  4] = @hstmt.handle
     ileArguments[  36,  2] = [@icol].pack("s*")
-    ileArguments[  38,  2] = [@desc[:SQL_DESC_TYPE]].pack("s*") # @desc[:SQL_BIND_TYPE]
+    ileArguments[  38,  2] = [SQLDescVals[:VALDESC_DECO][:SQL_DESC_TYPE][@desc[:SQL_DESC_TYPE]]].pack("s*")
     ileArguments[  40,  8] = PAD_08
     ileArguments[  48, 16] = [ 0, @buffer.to_i].pack("q*")
-    if @desc[:SQL_DESC_TYPE] == SQL_DECIMAL || @desc[:SQL_DESC_TYPE] == SQL_NUMERIC
+    if @desc[:SQL_DESC_TYPE] == :SQL_DECIMAL || @desc[:SQL_DESC_TYPE] == :SQL_NUMERIC
       ileArguments[  64,  4] = [@desc[:SQL_DESC_PRECISION]*256 +
                                 @desc[:SQL_DESC_SCALE]].pack("l*")
     else
@@ -1218,7 +1218,7 @@ class Column
     ileArguments[   0, 32] = PAD_32
     ileArguments[  32,  4] = @hstmt.handle
     ileArguments[  36,  2] = [@icol].pack("s*")
-    ileArguments[  38,  2] = [@desc[:SQL_DESC_TYPE]].pack("s*") # @desc[:SQL_BIND_TYPE]
+    ileArguments[  38,  2] = [SQLDescVals[:VALDESC_DECO][:SQL_DESC_TYPE][@desc[:SQL_DESC_TYPE]]].pack("s*")
     ileArguments[  40,  8] = PAD_08
     ileArguments[  48, 16] = [ 0, tmpbuffer.to_i].pack("q*")
     if @desc[:SQL_DESC_TYPE] == :SQL_DECIMAL || @desc[:SQL_DESC_TYPE] == :SQL_NUMERIC
@@ -1337,8 +1337,8 @@ class Param
     ileArguments[  32,  4] = @hstmt.handle
     ileArguments[  36,  2] = [@ipar].pack("s*")
     ileArguments[  38,  2] = iotype
-    ileArguments[  40,  2] = [@desc[:SQL_DESC_TYPE]].pack("s*")    # era  SQL_BIND_TYPE
-    ileArguments[  42,  2] = [@desc[:SQL_DESC_TYPE]].pack("s*")
+    ileArguments[  40,  2] = [SQLDescVals[:VALDESC_DECO][:SQL_DESC_TYPE][@desc[:SQL_DESC_TYPE]]].pack("s*")
+    ileArguments[  42,  2] = [SQLDescVals[:VALDESC_DECO][:SQL_DESC_TYPE][@desc[:SQL_DESC_TYPE]]].pack("s*")
     ileArguments[  44,  4] = [@desc[:SQL_DESC_LENGTH]].pack("l*")  # da completare
     ileArguments[  48,  2] = [@desc[:SQL_DESC_SCALE]].pack("s*")
     ileArguments[  50, 14] = PAD_14
