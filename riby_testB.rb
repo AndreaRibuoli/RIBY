@@ -20,11 +20,6 @@ if ARGV[3] == 'GET'
   n.times {|i| seq = i+1; cols << Column.new(s, seq, dc.desc_data(seq), dci.desc_data(seq)) }
   m = s.numparams
   pars = []
-#  dp = Desc.new(s)
-#  m.times {|i| seq = i+1; pars << Param.new(s, seq, dp.desc_data(seq)) }
-#  pars.each { |f| f.bind }
-#  pars[0].buffer= ARGV[4].encode('IBM280')
-#  pars[0].pcbValue= ARGV[4].length
   dp = Desc.new(s)
   dpi = Desc.new(s, true, false)
   m.times {|i| seq = i+1; pars << Param.new(s, seq, dp.desc_data(seq), dpi.desc_data(seq)) }
@@ -51,12 +46,11 @@ if ARGV[3] == 'BIND'
   m = s.numparams
   pars = []
   dp  = Desc.new(s)
-#  dp.set(1, :SQL_DESC_TYPE, :SQL_WCHAR)
   dpi = Desc.new(s, true, false)
   m.times {|i| seq = i+1; pars << Param.new(s, seq, dp.desc_data(seq), dpi.desc_data(seq)) }
   pars.each { |f| f.bind }
   pars[0].buffer= ARGV[4].encode('IBM280')
-  pars[0].pcbValue= 8
+  pars[0].pcbValue= ARGV[4].length
   puts "With bind using buffer"
   s.execute
   while s.fetch == 0
