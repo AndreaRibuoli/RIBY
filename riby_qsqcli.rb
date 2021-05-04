@@ -1183,7 +1183,7 @@ class Desc
     ileArguments[  48, 16] = [0, buffer.to_i].pack("q*")
     ileArguments[  64,  4] = [SQL_MAX_INFO_LENGTH].pack("s*")
     ileArguments[  68, 12] = PAD_12
-    Ilecallx.call(SQLApis['SQLSetDescFieldW'], ileArguments, SQLApiList['SQLSetDescFieldW'], - 5, 0)
+    Ilecallx.call(SQLApis['SQLSetDescField'], ileArguments, SQLApiList['SQLSetDescField'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
 end
