@@ -17,6 +17,7 @@ if ARGV[3] == 'GET'
   cols = []
   dc = Desc.new(s, false)
   dci = Desc.new(s, false, false)
+  dci.each {|e| puts "#{e[:SQL_DESC_NAME]}, "
   n.times {|i| seq = i+1; cols << Column.new(s, seq, dc.desc_data(seq), dci.desc_data(seq)) }
   m = s.numparams
   pars = []
@@ -41,6 +42,7 @@ if ARGV[3] == 'BIND'
   cols = []
   dc  = Desc.new(s, false)
   dci = Desc.new(s, false, false)
+  dci.each {|e| puts "#{e[:SQL_DESC_NAME]}, "
   n.times {|i| seq = i+1; cols << Column.new(s, seq, dc.desc_data(seq), dci.desc_data(seq)) }
   cols.each { |f| f.bind }
   m = s.numparams
