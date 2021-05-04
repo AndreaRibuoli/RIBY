@@ -19,7 +19,6 @@ if ARGV[3] == 'GET'
   dci = Desc.new(s, false, false)
   head = ''
   n.times {|i| seq = i+1; head << dci.desc_data(seq)[:SQL_DESC_NAME] << ', ' }
-  puts head
   n.times {|i| seq = i+1; cols << Column.new(s, seq, dc.desc_data(seq), dci.desc_data(seq)) }
   m = s.numparams
   pars = []
@@ -30,6 +29,7 @@ if ARGV[3] == 'GET'
   pars[0].buffer= ARGV[4].encode('IBM280')
   pars[0].pcbValue= ARGV[4].length
   puts "Without bind using get"
+  puts head
   s.execute
   pp s.error
   while s.fetch == 0
@@ -46,7 +46,6 @@ if ARGV[3] == 'BIND'
   dci = Desc.new(s, false, false)
   head = ''
   n.times {|i| seq = i+1; head << dci.desc_data(seq)[:SQL_DESC_NAME] << ', ' }
-  puts head
   n.times {|i| seq = i+1; cols << Column.new(s, seq, dc.desc_data(seq), dci.desc_data(seq)) }
   cols.each { |f| f.bind }
   m = s.numparams
@@ -58,6 +57,7 @@ if ARGV[3] == 'BIND'
   pars[0].buffer= ARGV[4].encode('IBM280')
   pars[0].pcbValue= ARGV[4].length
   puts "With bind using buffer"
+  puts head
   s.execute
   while s.fetch == 0
     row = ''
