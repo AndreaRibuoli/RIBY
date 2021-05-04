@@ -1427,7 +1427,8 @@ class Column
         return tbr
       when pcbValue[0, 4] == SQL_NULL_HANDLE
         pp @desc
-        return tmpbuffer[2, @desc[:SQL_DESC_LENGTH]-2].force_encoding('IBM037').encode('utf-8').strip
+        return tmpbuffer[0, 4].unpack('H*')
+      ##  return tmpbuffer[2, @desc[:SQL_DESC_LENGTH]-2].force_encoding('IBM037').encode('utf-8').strip
       else
         return "error: pcbValue #{pcbValue[0, 4].unpack("l*")[0]}"
     end
