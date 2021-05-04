@@ -31,9 +31,10 @@ if ARGV[3] == 'GET'
   m.times {|i| seq = i+1; pars << Param.new(s, seq, dp.desc_data(seq), dpi.desc_data(seq)) }
   pars.each { |f| f.bind }
   pars[0].buffer= ARGV[4]
-  pars[0].pcbValue= -3
+  pars[0].pcbValue= 8
   puts "Without bind using get"
   s.execute
+  pp s.error
   while s.fetch == 0
     row = ''
     cols.each { |f| row << f.get.to_s << ', '}
