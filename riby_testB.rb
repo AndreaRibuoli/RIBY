@@ -26,13 +26,11 @@ if ARGV[3] == 'GET'
 #  pars[0].buffer= ARGV[4].encode('IBM280')
 #  pars[0].pcbValue= ARGV[4].length
   dp = Desc.new(s)
-  dp.set(1, :SQL_DESC_CCSID, 1208)
   dpi = Desc.new(s, true, false)
   m.times {|i| seq = i+1; pars << Param.new(s, seq, dp.desc_data(seq), dpi.desc_data(seq)) }
   pars.each { |f| f.bind }
-  val = "#{ARGV[4]}"
-  pars[0].buffer= val
-  pars[0].pcbValue= -3
+  pars[0].buffer= ARGV[4].encode('IBM280')
+  pars[0].pcbValue= ARGV[4].length
   puts "Without bind using get"
   s.execute
   pp s.error
