@@ -93,7 +93,7 @@ SQL_TIME                     =  92
 SQL_TIMESTAMP                =  93
 SQL_GRAPHIC                  =  95
 SQL_VARGRAPHIC               =  96
-=
+
   SQL_COMMIT                   = [ 0].pack("l*")
   SQL_ROLLBACK                 = [ 1].pack("l*")
   SQL_COMMIT_HOLD              = [ 2].pack("l*")
