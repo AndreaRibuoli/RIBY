@@ -35,64 +35,6 @@ module RibyCli
   SQL_PARAM_INPUT              = [  1].pack("s*")
   SQL_PARAM_OUTPUT             = [  2].pack("s*")
   SQL_PARAM_INPUT_OUTPUT       = [  3].pack("s*")
-=begin
-  SQL_VARBINARY                = [ -3].pack("s*")
-  SQL_BINARY                   = [ -2].pack("s*")
-  SQL_CHAR                     = [  1].pack("s*")
-  SQL_NUMERIC                  = [  2].pack("s*")
-  SQL_DECIMAL                  = [  3].pack("s*")
-  SQL_INTEGER                  = [  4].pack("s*")
-  SQL_SMALLINT                 = [  5].pack("s*")
-  SQL_FLOAT                    = [  6].pack("s*")
-  SQL_REAL                     = [  7].pack("s*")
-  SQL_DOUBLE                   = [  8].pack("s*")
-  SQL_DATETIME                 = [  9].pack("s*")
-  SQL_VARCHAR                  = [ 12].pack("s*")
-  SQL_BLOB                     = [ 13].pack("s*")
-  SQL_CLOB                     = [ 14].pack("s*")
-  SQL_DBCLOB                   = [ 15].pack("s*")
-  SQL_DATALINK                 = [ 16].pack("s*")
-  SQL_WCHAR                    = [ 17].pack("s*")
-  SQL_WVARCHAR                 = [ 18].pack("s*")
-  SQL_BIGINT                   = [ 19].pack("s*")
-  SQL_BLOB_LOCATOR             = [ 20].pack("s*")
-  SQL_CLOB_LOCATOR             = [ 21].pack("s*")
-  SQL_DBCLOB_LOCATOR           = [ 22].pack("s*")
-  SQL_UTF8_CHAR                = [ 23].pack("s*")
-  SQL_DATE                     = [ 91].pack("s*")
-  SQL_TIME                     = [ 92].pack("s*")
-  SQL_TIMESTAMP                = [ 93].pack("s*")
-  SQL_GRAPHIC                  = [ 95].pack("s*")
-  SQL_VARGRAPHIC               = [ 96].pack("s*")
-=end
-SQL_VARBINARY                =  -3
-SQL_BINARY                   =  -2
-SQL_CHAR                     =   1
-SQL_NUMERIC                  =   2
-SQL_DECIMAL                  =   3
-SQL_INTEGER                  =   4
-SQL_SMALLINT                 =   5
-SQL_FLOAT                    =   6
-SQL_REAL                     =   7
-SQL_DOUBLE                   =   8
-SQL_DATETIME                 =   9
-SQL_VARCHAR                  =  12
-SQL_BLOB                     =  13
-SQL_CLOB                     =  14
-SQL_DBCLOB                   =  15
-SQL_DATALINK                 =  16
-SQL_WCHAR                    =  17
-SQL_WVARCHAR                 =  18
-SQL_BIGINT                   =  19
-SQL_BLOB_LOCATOR             =  20
-SQL_CLOB_LOCATOR             =  21
-SQL_DBCLOB_LOCATOR           =  22
-SQL_UTF8_CHAR                =  23
-SQL_DATE                     =  91
-SQL_TIME                     =  92
-SQL_TIMESTAMP                =  93
-SQL_GRAPHIC                  =  95
-SQL_VARGRAPHIC               =  96
 
   SQL_COMMIT                   = [ 0].pack("l*")
   SQL_ROLLBACK                 = [ 1].pack("l*")
@@ -1223,44 +1165,6 @@ class Column
     @hstmt = hstmt
     @icol = seq
     @desc = desc
-=begin
-    case
-      when @desc[:SQL_DESC_TYPE_NAME] == 'VARBINARY' ||
-        ( @desc[:SQL_DESC_TYPE_NAME] == 'VARCHAR' && @desc[:SQL_DESC_COLUMN_CCSID] == 65535 )
-        @desc[:SQL_BIND_TYPE] = SQL_VARBINARY
-      when @desc[:SQL_DESC_TYPE_NAME] == 'VARCHAR'
-        @desc[:SQL_BIND_TYPE] = SQL_VARCHAR
-      when @desc[:SQL_DESC_TYPE_NAME] == 'BINARY' ||
-        ( @desc[:SQL_DESC_TYPE_NAME] == 'CHAR' && @desc[:SQL_DESC_COLUMN_CCSID] == 65535 )
-        @desc[:SQL_BIND_TYPE] = SQL_BINARY
-      when @desc[:SQL_DESC_TYPE_NAME] == 'CHAR'
-        @desc[:SQL_BIND_TYPE] = SQL_CHAR
-      when @desc[:SQL_DESC_TYPE_NAME] == 'NUMERIC'
-        @desc[:SQL_BIND_TYPE] = SQL_NUMERIC
-      when @desc[:SQL_DESC_TYPE_NAME] == 'DECIMAL'
-        @desc[:SQL_BIND_TYPE] = SQL_DECIMAL
-      when @desc[:SQL_DESC_TYPE_NAME] == 'INTEGER'
-        @desc[:SQL_BIND_TYPE] = SQL_INTEGER
-      when @desc[:SQL_DESC_TYPE_NAME] == 'SMALLINT'
-        @desc[:SQL_BIND_TYPE] = SQL_SMALLINT
-      when @desc[:SQL_DESC_TYPE_NAME] == 'BIGINT'
-        @desc[:SQL_BIND_TYPE] = SQL_BIGINT
-      when @desc[:SQL_DESC_TYPE_NAME] == 'FLOAT'
-        @desc[:SQL_BIND_TYPE] = SQL_FLOAT
-      when @desc[:SQL_DESC_TYPE_NAME] == 'REAL'
-        @desc[:SQL_BIND_TYPE] = SQL_REAL
-      when @desc[:SQL_DESC_TYPE_NAME] == 'DOUBLE'
-        @desc[:SQL_BIND_TYPE] = SQL_DOUBLE
-      when @desc[:SQL_DESC_TYPE_NAME] == 'DATE'
-        @desc[:SQL_BIND_TYPE] = SQL_DATE
-      when @desc[:SQL_DESC_TYPE_NAME] == 'TIME'
-        @desc[:SQL_BIND_TYPE] = SQL_TIME
-      when @desc[:SQL_DESC_TYPE_NAME] == 'TIMESTAMP'
-        @desc[:SQL_BIND_TYPE] = SQL_TIMESTAMP
-      else
-        @desc[:SQL_BIND_TYPE] = SQL_WCHAR
-    end
-=end
     hstmt.add_c(seq)
     ObjectSpace.define_finalizer(self, Column.finalizer_proc(seq,hstmt,hstmt.elab_n))
     puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Column #{seq}(#{hstmt.elab_n})" if $DEBUG == true
@@ -1275,8 +1179,6 @@ class Column
     @icol
   end
   def bind
-  #  @desc[:SQL_BIND_TYPE] = SQL_WCHAR    if @desc[:SQL_BIND_TYPE] = SQL_CHAR
-  #  @desc[:SQL_BIND_TYPE] = SQL_WVARCHAR if @desc[:SQL_BIND_TYPE] = SQL_VARCHAR
     SQLBindCol()
   end
   def get
@@ -1333,9 +1235,9 @@ class Column
   end
   def innerLogic(tmpbuffer, pcbValue)
     case
-      when pcbValue[0, 4] == SQL_NULL_DATA
+      when pcbValue[0, 4] == :SQL_NULL_DATA
         return nil
-      when @desc[:SQL_DESC_TYPE] == SQL_DECIMAL || @desc[:SQL_DESC_TYPE] == SQL_NUMERIC
+      when @desc[:SQL_DESC_TYPE] == :SQL_DECIMAL || @desc[:SQL_DESC_TYPE] == :SQL_NUMERIC
         l = @desc[:SQL_DESC_PRECISION]
         d = @desc[:SQL_DESC_SCALE]
         z = tmpbuffer[0, l+1].unpack("H*")[0]
@@ -1343,34 +1245,34 @@ class Column
         dec << '-' if z[-1] == 'f'
         dec << z[0, l-d] << '.' << z[l-d, d]
         return dec.to_f
-      when @desc[:SQL_DESC_TYPE] == SQL_SMALLINT
+      when @desc[:SQL_DESC_TYPE] == :SQL_SMALLINT
         return tmpbuffer[0, 2].unpack("s*")[0]
-      when @desc[:SQL_DESC_TYPE] == SQL_INTEGER
+      when @desc[:SQL_DESC_TYPE] == :SQL_INTEGER
         return tmpbuffer[0, 4].unpack("l*")[0]
-      when @desc[:SQL_DESC_TYPE] == SQL_CHAR || @desc[:SQL_DESC_TYPE] == SQL_DATE ||
-           @desc[:SQL_DESC_TYPE] == SQL_TIME || @desc[:SQL_DESC_TYPE] == SQL_TIMESTAMP
+      when @desc[:SQL_DESC_TYPE] == :SQL_CHAR || @desc[:SQL_DESC_TYPE] == :SQL_DATE ||
+           @desc[:SQL_DESC_TYPE] == :SQL_TIME || @desc[:SQL_DESC_TYPE] == :SQL_TIMESTAMP
         enc = 'IBM037' if @desc[:SQL_DESC_CCSID] == 37
         enc = 'IBM280' if @desc[:SQL_DESC_CCSID] == 280
         enc = 'IBM1144' if @desc[:SQL_DESC_CCSID] == 1144
         return tmpbuffer[0, @desc[:SQL_DESC_LENGTH]].force_encoding(enc).encode('utf-8')
-      when @desc[:SQL_DESC_TYPE] == SQL_WCHAR && pcbValue[0, 4] == SQL_NTS
+      when @desc[:SQL_DESC_TYPE] == :SQL_WCHAR && pcbValue[0, 4] == SQL_NTS
         tbr = tmpbuffer[0, tmpbuffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
         @buffer[0, @buffer.instance_variable_get(:@entity).size] =
                   ZEROED[0, @buffer.instance_variable_get(:@entity).size] if @buffer.nil? == false
         return tbr
-      when @desc[:SQL_DESC_TYPE] == SQL_WCHAR && pcbValue[0, 4] == SQL_NULL_HANDLE
+      when @desc[:SQL_DESC_TYPE] == :SQL_WCHAR && pcbValue[0, 4] == SQL_NULL_HANDLE
         return tmpbuffer[2, 2*@desc[:SQL_DESC_LENGTH]].force_encoding('UTF-16BE').encode('utf-8')
-      when @desc[:SQL_DESC_TYPE] == SQL_WCHAR
+      when @desc[:SQL_DESC_TYPE] == :SQL_WCHAR
         puts "pcbValue: #{pcbValue[0, 4].unpack("l*")[0]}"
         return tmpbuffer[0, 2*@desc[:SQL_DESC_LENGTH]].force_encoding('UTF-16BE').encode('utf-8')
-      when @desc[:SQL_BIND_TYPE] == SQL_WVARCHAR && pcbValue[0, 4] == SQL_NTS
+      when @desc[:SQL_BIND_TYPE] == :SQL_WVARCHAR && pcbValue[0, 4] == SQL_NTS
         tbr = tmpbuffer[0, tmpbuffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
         @buffer[0, @buffer.instance_variable_get(:@entity).size] =
                     ZEROED[0, @buffer.instance_variable_get(:@entity).size] if @buffer.nil? == false
         return tbr
-      when @desc[:SQL_DESC_TYPE] == SQL_WVARCHAR && pcbValue[0, 4] == SQL_NULL_HANDLE
+      when @desc[:SQL_DESC_TYPE] == :SQL_WVARCHAR && pcbValue[0, 4] == SQL_NULL_HANDLE
         return tmpbuffer[2, 2*tmpbuffer[0, 2].unpack("s*")[0]].force_encoding('UTF-16BE').encode('utf-8')
-      when @desc[:SQL_DESC_TYPE] == SQL_VARCHAR
+      when @desc[:SQL_DESC_TYPE] == :SQL_VARCHAR
         enc = 'IBM037' if @desc[:SQL_DESC_CCSID] == 37
         enc = 'IBM280' if @desc[:SQL_DESC_CCSID] == 280
         enc = 'IBM1144' if @desc[:SQL_DESC_CCSID] == 1144
@@ -1451,7 +1353,7 @@ class Param
     case
       when pcbValue[0, 4] == SQL_NULL_DATA
         return nil
-      when @desc[:SQL_BIND_TYPE] == SQL_DECIMAL || @desc[:SQL_BIND_TYPE] == SQL_NUMERIC
+      when @desc[:SQL_BIND_TYPE] == :SQL_DECIMAL || @desc[:SQL_BIND_TYPE] == :SQL_NUMERIC
         l = @desc[:SQL_DESC_LENGTH] / 256
         d = @desc[:SQL_DESC_LENGTH] % 256
         z = tmpbuffer[0, l+1].unpack("H*")[0]
@@ -1459,34 +1361,34 @@ class Param
         dec << '-' if z[-1] == 'f'
         dec << z[0, l-d] << '.' << z[l-d, d]
         return dec.to_f
-      when @desc[:SQL_BIND_TYPE] == SQL_SMALLINT
+      when @desc[:SQL_BIND_TYPE] == :SQL_SMALLINT
         return tmpbuffer[0, 2].unpack("s*")[0]
-      when @desc[:SQL_BIND_TYPE] == SQL_INTEGER
+      when @desc[:SQL_BIND_TYPE] == :SQL_INTEGER
         return tmpbuffer[0, 4].unpack("l*")[0]
-      when @desc[:SQL_BIND_TYPE] == SQL_CHAR || @desc[:SQL_BIND_TYPE] == SQL_DATE ||
-           @desc[:SQL_BIND_TYPE] == SQL_TIME || @desc[:SQL_BIND_TYPE] == SQL_TIMESTAMP
+      when @desc[:SQL_BIND_TYPE] == :SQL_CHAR || @desc[:SQL_BIND_TYPE] == :SQL_DATE ||
+           @desc[:SQL_BIND_TYPE] == :SQL_TIME || @desc[:SQL_BIND_TYPE] == :SQL_TIMESTAMP
         enc = 'IBM037' if @desc[:SQL_DESC_COLUMN_CCSID] == 37
         enc = 'IBM280' if @desc[:SQL_DESC_COLUMN_CCSID] == 280
         enc = 'IBM1144' if @desc[:SQL_DESC_COLUMN_CCSID] == 1144
         return tmpbuffer[0, @desc[:SQL_DESC_LENGTH]].force_encoding(enc).encode('utf-8')
-      when @desc[:SQL_BIND_TYPE] == SQL_WCHAR && pcbValue[0, 4] == SQL_NTS
+      when @desc[:SQL_BIND_TYPE] == :SQL_WCHAR && pcbValue[0, 4] == SQL_NTS
         tbr = tmpbuffer[0, tmpbuffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
         @buffer[0, @buffer.instance_variable_get(:@entity).size] =
                   ZEROED[0, @buffer.instance_variable_get(:@entity).size] if @buffer.nil? == false
         return tbr
-      when @desc[:SQL_BIND_TYPE] == SQL_WCHAR && pcbValue[0, 4] == SQL_NULL_HANDLE
+      when @desc[:SQL_BIND_TYPE] == :SQL_WCHAR && pcbValue[0, 4] == SQL_NULL_HANDLE
         return tmpbuffer[2, 2*@desc[:SQL_DESC_LENGTH]].force_encoding('UTF-16BE').encode('utf-8')
-      when @desc[:SQL_BIND_TYPE] == SQL_WCHAR
+      when @desc[:SQL_BIND_TYPE] == :SQL_WCHAR
         puts "pcbValue: #{pcbValue[0, 4].unpack("l*")[0]}"
         return tmpbuffer[0, 2*@desc[:SQL_DESC_LENGTH]].force_encoding('UTF-16BE').encode('utf-8')
-      when @desc[:SQL_BIND_TYPE] == SQL_WVARCHAR && pcbValue[0, 4] == SQL_NTS
+      when @desc[:SQL_BIND_TYPE] == :SQL_WVARCHAR && pcbValue[0, 4] == SQL_NTS
         tbr = tmpbuffer[0, tmpbuffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
         @buffer[0, @buffer.instance_variable_get(:@entity).size] =
                     ZEROED[0, @buffer.instance_variable_get(:@entity).size] if @buffer.nil? == false
         return tbr
-      when @desc[:SQL_BIND_TYPE] == SQL_WVARCHAR && pcbValue[0, 4] == SQL_NULL_HANDLE
+      when @desc[:SQL_BIND_TYPE] == :SQL_WVARCHAR && pcbValue[0, 4] == SQL_NULL_HANDLE
         return tmpbuffer[2, 2*tmpbuffer[0, 2].unpack("s*")[0]].force_encoding('UTF-16BE').encode('utf-8')
-      when @desc[:SQL_BIND_TYPE] == SQL_VARCHAR
+      when @desc[:SQL_BIND_TYPE] == :SQL_VARCHAR
         enc = 'IBM037' if @desc[:SQL_DESC_COLUMN_CCSID] == 37
         enc = 'IBM280' if @desc[:SQL_DESC_COLUMN_CCSID] == 280
         enc = 'IBM1144' if @desc[:SQL_DESC_COLUMN_CCSID] == 1144

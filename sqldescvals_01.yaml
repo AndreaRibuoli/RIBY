@@ -1,6 +1,35 @@
 ---
 :VALDESC_ORED:
 :VALDESC_DECO:
+  :SQL_DESC_TYPE:
+    :SQL_VARBINARY:      -3
+    :SQL_BINARY:         -2
+    :SQL_CHAR:            1
+    :SQL_NUMERIC:         2
+    :SQL_DECIMAL:         3
+    :SQL_INTEGER:         4
+    :SQL_SMALLINT:        5
+    :SQL_FLOAT:           6
+    :SQL_REAL:            7
+    :SQL_DOUBLE:          8
+    :SQL_DATETIME:        9
+    :SQL_VARCHAR:        12
+    :SQL_BLOB            13
+    :SQL_CLOB            14
+    :SQL_DBCLOB:         15
+    :SQL_DATALINK:       16
+    :SQL_WCHAR:          17
+    :SQL_WVARCHAR:       18
+    :SQL_BIGINT:         19
+    :SQL_BLOB_LOCATOR:   20
+    :SQL_CLOB_LOCATOR:   21
+    :SQL_DBCLOB_LOCATOR: 22
+    :SQL_UTF8_CHAR:      23
+    :SQL_DATE:           91
+    :SQL_TIME:           92
+    :SQL_TIMESTAMP:      93
+    :SQL_GRAPHIC:        95
+    :SQL_VARGRAPHIC:     96
   :SQL_DESC_ALLOC_TYPE:
     :SQL_DESC_ALLOC_AUTO: 1
     :SQL_DESC_ALLOC_USER: 2
@@ -41,7 +70,6 @@
   :SQL_DESC_COLUMN_CCSID: true
   :SQL_DESC_COUNT: true
   :SQL_DESC_LENGTH: true
-  :SQL_DESC_TYPE: true
 :VALDESC_WCHAR:
   :SQL_DESC_BASE_COLUMN: true
   :SQL_DESC_BASE_SCHEMA: true
