@@ -54,6 +54,7 @@ if ARGV[3] == 'BIND'
   m = s.numparams
   pars = []
   dp  = Desc.new(s)
+  dp.set(1, :SQL_DESC_CCSID, 1208)  
   dpi = Desc.new(s, true, false)
   m.times {|i| seq = i+1; pars << Param.new(s, seq, dp.desc_data(seq), dpi.desc_data(seq)) }
   pars.each { |f| f.bind }
