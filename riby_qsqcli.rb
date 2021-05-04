@@ -1373,7 +1373,8 @@ class Column
     ileArguments[  40,  8] = PAD_08
     ileArguments[  48, 16] = [ 0, @buffer.to_i].pack("q*")
     if @desc[:SQL_DESC_TYPE] == SQL_DECIMAL || @desc[:SQL_DESC_TYPE] == SQL_NUMERIC
-      ileArguments[  64,  4] = [@desc[:SQL_DESC_LENGTH]].pack("l*")
+      ileArguments[  64,  4] = [@desc[:SQL_DESC_PRECISION]*256 +
+                                @desc[:SQL_DESC_SCALE]].pack("l*")
     else
       ileArguments[  64,  4] = [@buffer.instance_variable_get(:@entity).size].pack("l*")
     end
