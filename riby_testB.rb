@@ -32,7 +32,7 @@ if ARGV[3] == 'GET'
   while s.fetch == 0
     row = ''
     cols.each { |f| row << f.get.to_s << ', '}
-    pp row
+    puts row
   end
 end
 if ARGV[3] == 'BIND'
@@ -56,6 +56,6 @@ if ARGV[3] == 'BIND'
   while s.fetch == 0
     row = ''
     cols.each { |f| row << f.buffer.to_s << ', '}
-    pp row
+    puts row
   end
 end
