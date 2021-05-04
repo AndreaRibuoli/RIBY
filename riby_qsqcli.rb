@@ -1095,6 +1095,7 @@ class Desc
   def handle
     [@hdesc].pack("l*")
   end
+  def set(s,f,v) SQLSetDescFieldW(s,f,v); end
   def desc_data(n)
     h = {}
     DESCS.each { |k,v|
@@ -1156,6 +1157,35 @@ class Desc
         return { fldi => 'not found!'}
     end
   end
+  def SQLSetDescFieldW(seq, fldi, val)
+    buffer  = INFObuffer.malloc
+    case
+      when (t = SQLDescVals[:VALDESC_DECO][fldi]) != nil
+        buffer[0, 2] = [t[val]].pack("s*")
+      when (t = SQLDescVals[:VALDESC_DECO_INT][fldi]) != nil
+        buffer[0, 4] = [t[val]].pack("l*")
+      when (t = SQLDescVals[:VALDESC_SMALLINT][fldi]) != nil
+        buffer[0, 2] = [val].pack("s*")
+      when (t = SQLDescVals[:VALDESC_POINTER][fldi]) != nil
+        # buffer[0, 16]  è necessario effettuare la copia correttamente...
+      when (t = SQLDescVals[:VALDESC_NUM][fldi]) != nil
+        buffer[0, 4] = [val].pack("l*")
+      when (t = SQLDescVals[:VALDESC_WCHAR][fldi]) != nil
+        buffer[0, 128] = val.encode('UTF-16BE')
+      else
+    end
+    ileArguments = ILEarglist.malloc
+    ileArguments[   0, 32] = PAD_32
+    ileArguments[  32,  4] = handle
+    ileArguments[  36,  2] = [seq].pack("s*")
+    ileArguments[  38,  2] = [DESCS[fldi]].pack("s*")
+    ileArguments[  40,  8] = PAD_08
+    ileArguments[  48, 16] = [0, buffer.to_i].pack("q*")
+    ileArguments[  64,  4] = [SQL_MAX_INFO_LENGTH].pack("s*")
+    ileArguments[  68, 12] = PAD_12
+    Ilecallx.call(SQLApis['SQLSetDescFieldW'], ileArguments, SQLApiList['SQLSetDescFieldW'], - 5, 0)
+    return ileArguments[ 16, 4].unpack('l')[0]
+  end
 end
 
 class Column
@@ -1200,8 +1230,7 @@ class Column
     ileArguments[  40,  8] = PAD_08
     ileArguments[  48, 16] = [ 0, @buffer.to_i].pack("q*")
     if @desc[:SQL_DESC_TYPE] == :SQL_DECIMAL || @desc[:SQL_DESC_TYPE] == :SQL_NUMERIC
-      ileArguments[  64,  4] = [@desc[:SQL_DESC_PRECISION]*256 +
-                                @desc[:SQL_DESC_SCALE]].pack("l*")
+      ileArguments[  64,  4] = [@desc[:SQL_DESC_PRECISION] * 256 + @desc[:SQL_DESC_SCALE]].pack("l*")
     else
       ileArguments[  64,  4] = [@buffer.instance_variable_get(:@entity).size].pack("l*")
     end
@@ -1222,8 +1251,7 @@ class Column
     ileArguments[  40,  8] = PAD_08
     ileArguments[  48, 16] = [ 0, tmpbuffer.to_i].pack("q*")
     if @desc[:SQL_DESC_TYPE] == :SQL_DECIMAL || @desc[:SQL_DESC_TYPE] == :SQL_NUMERIC
-      ileArguments[  64,  4] = [@desc[:SQL_DESC_PRECISION]*256 +
-                                @desc[:SQL_DESC_SCALE]].pack("l*")
+      ileArguments[  64,  4] = [@desc[:SQL_DESC_PRECISION] * 256 + @desc[:SQL_DESC_SCALE]].pack("l*")
     else
       ileArguments[  64,  4] = [tmpbuffer.instance_variable_get(:@entity).size].pack("l*")
     end
@@ -1251,8 +1279,8 @@ class Column
         return tmpbuffer[0, 4].unpack("l*")[0]
       when @desc[:SQL_DESC_TYPE] == :SQL_CHAR || @desc[:SQL_DESC_TYPE] == :SQL_DATE ||
            @desc[:SQL_DESC_TYPE] == :SQL_TIME || @desc[:SQL_DESC_TYPE] == :SQL_TIMESTAMP
-        enc = 'IBM037' if @desc[:SQL_DESC_CCSID] == 37
-        enc = 'IBM280' if @desc[:SQL_DESC_CCSID] == 280
+        enc = 'IBM037'  if @desc[:SQL_DESC_CCSID] == 37
+        enc = 'IBM280'  if @desc[:SQL_DESC_CCSID] == 280
         enc = 'IBM1144' if @desc[:SQL_DESC_CCSID] == 1144
         return tmpbuffer[0, @desc[:SQL_DESC_LENGTH]].force_encoding(enc).encode('utf-8')
       when @desc[:SQL_DESC_TYPE] == :SQL_WCHAR && pcbValue[0, 4] == SQL_NTS
@@ -1265,7 +1293,7 @@ class Column
       when @desc[:SQL_DESC_TYPE] == :SQL_WCHAR
         puts "pcbValue: #{pcbValue[0, 4].unpack("l*")[0]}"
         return tmpbuffer[0, 2*@desc[:SQL_DESC_LENGTH]].force_encoding('UTF-16BE').encode('utf-8')
-      when @desc[:SQL_BIND_TYPE] == :SQL_WVARCHAR && pcbValue[0, 4] == SQL_NTS
+      when @desc[:SQL_DESC_TYPE] == :SQL_WVARCHAR && pcbValue[0, 4] == SQL_NTS
         tbr = tmpbuffer[0, tmpbuffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
         @buffer[0, @buffer.instance_variable_get(:@entity).size] =
                     ZEROED[0, @buffer.instance_variable_get(:@entity).size] if @buffer.nil? == false
@@ -1273,8 +1301,8 @@ class Column
       when @desc[:SQL_DESC_TYPE] == :SQL_WVARCHAR && pcbValue[0, 4] == SQL_NULL_HANDLE
         return tmpbuffer[2, 2*tmpbuffer[0, 2].unpack("s*")[0]].force_encoding('UTF-16BE').encode('utf-8')
       when @desc[:SQL_DESC_TYPE] == :SQL_VARCHAR
-        enc = 'IBM037' if @desc[:SQL_DESC_CCSID] == 37
-        enc = 'IBM280' if @desc[:SQL_DESC_CCSID] == 280
+        enc = 'IBM037'  if @desc[:SQL_DESC_CCSID] == 37
+        enc = 'IBM280'  if @desc[:SQL_DESC_CCSID] == 280
         enc = 'IBM1144' if @desc[:SQL_DESC_CCSID] == 1144
         return tmpbuffer[2, tmpbuffer[0, 2].unpack("s*")[0]].force_encoding(enc).encode('utf-8')
       when pcbValue[0, 4] == SQL_NTS
@@ -1349,61 +1377,5 @@ class Param
     ileArguments[  96, 16] = [0, @pcbValue.to_i].pack("q*")
     Ilecallx.call(SQLApis['SQLBindParameter'], ileArguments, SQLApiList['SQLBindParameter'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
-  end
-  def innerLogic(tmpbuffer, pcbValue)
-    case
-      when pcbValue[0, 4] == SQL_NULL_DATA
-        return nil
-      when @desc[:SQL_BIND_TYPE] == :SQL_DECIMAL || @desc[:SQL_BIND_TYPE] == :SQL_NUMERIC
-        l = @desc[:SQL_DESC_LENGTH] / 256
-        d = @desc[:SQL_DESC_LENGTH] % 256
-        z = tmpbuffer[0, l+1].unpack("H*")[0]
-        dec = ''
-        dec << '-' if z[-1] == 'f'
-        dec << z[0, l-d] << '.' << z[l-d, d]
-        return dec.to_f
-      when @desc[:SQL_BIND_TYPE] == :SQL_SMALLINT
-        return tmpbuffer[0, 2].unpack("s*")[0]
-      when @desc[:SQL_BIND_TYPE] == :SQL_INTEGER
-        return tmpbuffer[0, 4].unpack("l*")[0]
-      when @desc[:SQL_BIND_TYPE] == :SQL_CHAR || @desc[:SQL_BIND_TYPE] == :SQL_DATE ||
-           @desc[:SQL_BIND_TYPE] == :SQL_TIME || @desc[:SQL_BIND_TYPE] == :SQL_TIMESTAMP
-        enc = 'IBM037' if @desc[:SQL_DESC_COLUMN_CCSID] == 37
-        enc = 'IBM280' if @desc[:SQL_DESC_COLUMN_CCSID] == 280
-        enc = 'IBM1144' if @desc[:SQL_DESC_COLUMN_CCSID] == 1144
-        return tmpbuffer[0, @desc[:SQL_DESC_LENGTH]].force_encoding(enc).encode('utf-8')
-      when @desc[:SQL_BIND_TYPE] == :SQL_WCHAR && pcbValue[0, 4] == SQL_NTS
-        tbr = tmpbuffer[0, tmpbuffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
-        @buffer[0, @buffer.instance_variable_get(:@entity).size] =
-                  ZEROED[0, @buffer.instance_variable_get(:@entity).size] if @buffer.nil? == false
-        return tbr
-      when @desc[:SQL_BIND_TYPE] == :SQL_WCHAR && pcbValue[0, 4] == SQL_NULL_HANDLE
-        return tmpbuffer[2, 2*@desc[:SQL_DESC_LENGTH]].force_encoding('UTF-16BE').encode('utf-8')
-      when @desc[:SQL_BIND_TYPE] == :SQL_WCHAR
-        puts "pcbValue: #{pcbValue[0, 4].unpack("l*")[0]}"
-        return tmpbuffer[0, 2*@desc[:SQL_DESC_LENGTH]].force_encoding('UTF-16BE').encode('utf-8')
-      when @desc[:SQL_BIND_TYPE] == :SQL_WVARCHAR && pcbValue[0, 4] == SQL_NTS
-        tbr = tmpbuffer[0, tmpbuffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
-        @buffer[0, @buffer.instance_variable_get(:@entity).size] =
-                    ZEROED[0, @buffer.instance_variable_get(:@entity).size] if @buffer.nil? == false
-        return tbr
-      when @desc[:SQL_BIND_TYPE] == :SQL_WVARCHAR && pcbValue[0, 4] == SQL_NULL_HANDLE
-        return tmpbuffer[2, 2*tmpbuffer[0, 2].unpack("s*")[0]].force_encoding('UTF-16BE').encode('utf-8')
-      when @desc[:SQL_BIND_TYPE] == :SQL_VARCHAR
-        enc = 'IBM037' if @desc[:SQL_DESC_COLUMN_CCSID] == 37
-        enc = 'IBM280' if @desc[:SQL_DESC_COLUMN_CCSID] == 280
-        enc = 'IBM1144' if @desc[:SQL_DESC_COLUMN_CCSID] == 1144
-        return tmpbuffer[2, tmpbuffer[0, 2].unpack("s*")[0]].force_encoding(enc).encode('utf-8')
-      when pcbValue[0, 4] == SQL_NTS
-        tbr = tmpbuffer[0,  tmpbuffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
-        tmpbuffer[0, tmpbuffer.instance_variable_get(:@entity).size] =
-           ZEROED[0, tmpbuffer.instance_variable_get(:@entity).size]
-        return tbr
-      when pcbValue[0, 4] == SQL_NULL_HANDLE
-        puts @desc[:SQL_BIND_TYPE].unpack('H*')
-        return tmpbuffer[2, @desc[:SQL_DESC_LENGTH]-2].force_encoding('IBM037').encode('utf-8').strip
-      else
-        return "error: pcbValue #{pcbValue[0, 4].unpack("l*")[0]}"
-    end
   end
 end
