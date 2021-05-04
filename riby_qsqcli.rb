@@ -1161,10 +1161,11 @@ end
 
 class Column
   include RibyCli
-  def initialize(hstmt, seq, desc)
+  def initialize(hstmt, seq, desc, impl = nil)
     @hstmt = hstmt
     @icol = seq
     @desc = desc
+    @impl = impl
     hstmt.add_c(seq)
     ObjectSpace.define_finalizer(self, Column.finalizer_proc(seq,hstmt,hstmt.elab_n))
     puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Column #{seq}(#{hstmt.elab_n})" if $DEBUG == true
@@ -1294,10 +1295,11 @@ end
 
 class Param
   include RibyCli
-  def initialize(hstmt, seq, desc)
+  def initialize(hstmt, seq, desc, impl = nil)
     @hstmt = hstmt
     @ipar = seq
     @desc = desc
+    @impl = impl
     hstmt.add_p(seq)
     ObjectSpace.define_finalizer(self, Column.finalizer_proc(seq,hstmt,hstmt.exec_n))
     puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Param #{seq}(#{hstmt.exec_n})" if $DEBUG == true

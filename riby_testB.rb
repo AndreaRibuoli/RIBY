@@ -36,13 +36,15 @@ if ARGV[3] == 'BIND'
   s.prepare(ARGV[2])
   n = s.numcols
   cols = []
-  dc = Desc.new(s, false)
-  n.times {|i| seq = i+1; cols << Column.new(s, seq, dc.desc_data(seq)) }
+  dc  = Desc.new(s, false)
+  dci = Desc.new(s, false, false)
+  n.times {|i| seq = i+1; cols << Column.new(s, seq, dc.desc_data(seq), dci.desc_data(seq)) }
   cols.each { |f| f.bind }
   m = s.numparams
   pars = []
-  dp = Desc.new(s)
-  m.times {|i| seq = i+1; pars << Param.new(s, seq, dp.desc_data(seq)) }
+  dp  = Desc.new(s)
+  dpi = Desc.new(s, true, false)
+  m.times {|i| seq = i+1; pars << Param.new(s, seq, dp.desc_data(seq), dpi.desc_data(seq)) }
   pars.each { |f| f.bind }
   pars[0].buffer= ARGV[4].encode('IBM280')
   pars[0].pcbValue= ARGV[4].length
