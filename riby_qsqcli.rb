@@ -35,7 +35,7 @@ module RibyCli
   SQL_PARAM_INPUT              = [  1].pack("s*")
   SQL_PARAM_OUTPUT             = [  2].pack("s*")
   SQL_PARAM_INPUT_OUTPUT       = [  3].pack("s*")
-  
+=begin
   SQL_VARBINARY                = [ -3].pack("s*")
   SQL_BINARY                   = [ -2].pack("s*")
   SQL_CHAR                     = [  1].pack("s*")
@@ -64,7 +64,36 @@ module RibyCli
   SQL_TIMESTAMP                = [ 93].pack("s*")
   SQL_GRAPHIC                  = [ 95].pack("s*")
   SQL_VARGRAPHIC               = [ 96].pack("s*")
-  
+=end
+SQL_VARBINARY                =  -3
+SQL_BINARY                   =  -2
+SQL_CHAR                     =   1
+SQL_NUMERIC                  =   2
+SQL_DECIMAL                  =   3
+SQL_INTEGER                  =   4
+SQL_SMALLINT                 =   5
+SQL_FLOAT                    =   6
+SQL_REAL                     =   7
+SQL_DOUBLE                   =   8
+SQL_DATETIME                 =   9
+SQL_VARCHAR                  =  12
+SQL_BLOB                     =  13
+SQL_CLOB                     =  14
+SQL_DBCLOB                   =  15
+SQL_DATALINK                 =  16
+SQL_WCHAR                    =  17
+SQL_WVARCHAR                 =  18
+SQL_BIGINT                   =  19
+SQL_BLOB_LOCATOR             =  20
+SQL_CLOB_LOCATOR             =  21
+SQL_DBCLOB_LOCATOR           =  22
+SQL_UTF8_CHAR                =  23
+SQL_DATE                     =  91
+SQL_TIME                     =  92
+SQL_TIMESTAMP                =  93
+SQL_GRAPHIC                  =  95
+SQL_VARGRAPHIC               =  96
+=
   SQL_COMMIT                   = [ 0].pack("l*")
   SQL_ROLLBACK                 = [ 1].pack("l*")
   SQL_COMMIT_HOLD              = [ 2].pack("l*")
