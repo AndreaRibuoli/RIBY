@@ -16,11 +16,11 @@ if ARGV[3] == 'GET'
   n = s.numcols
   cols = []
   dc = Desc.new(s, false)
-# n.times {|i| seq = i+1; cols << Column.new(s, seq, s.column_data(seq)) }
   n.times {|i| seq = i+1; cols << Column.new(s, seq, dc.desc_data(seq)) }
   m = s.numparams
   pars = []
-  m.times {|i| seq = i+1; pars << Param.new(s, seq, s.param_data(seq)) }
+  dp = Desc.new(s)
+  m.times {|i| seq = i+1; pars << Param.new(s, seq, dp.desc_data(seq)) }
   pars.each { |f| f.bind }
   pars[0].buffer= ARGV[4].encode('IBM280')
   pars[0].pcbValue= ARGV[4].length
@@ -37,12 +37,12 @@ if ARGV[3] == 'BIND'
   n = s.numcols
   cols = []
   dc = Desc.new(s, false)
-# n.times {|i| seq = i+1; cols << Column.new(s, seq, s.column_data(seq)) }
   n.times {|i| seq = i+1; cols << Column.new(s, seq, dc.desc_data(seq)) }
   cols.each { |f| f.bind }
   m = s.numparams
   pars = []
-  m.times {|i| seq = i+1; p = Desc.new(s); pars << Param.new(s, seq, p.desc_data(seq)) }
+  dp = Desc.new(s)
+  m.times {|i| seq = i+1; pars << Param.new(s, seq, dp.desc_data(seq)) }
   pars.each { |f| f.bind }
   pars[0].buffer= ARGV[4].encode('IBM280')
   pars[0].pcbValue= ARGV[4].length

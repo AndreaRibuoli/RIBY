@@ -734,22 +734,22 @@ class Stmt
   def indexes(s,n,u=true)       SQLStatisticsW(s,n,(u==true) ? SQL_INDEX_UNIQUE : SQL_INDEX_ALL); end
   def numcols()                 SQLNumResultCols(); end
   def numparams()               SQLNumParams(); end
-  def columns_count()           SQLColAttributeW(0, :SQL_DESC_COUNT4); end
-  def column_data(n)
-    h = {}
-    DESCS.each { |k,v|
-      h.merge!(SQLColAttributeW(n, k)) if k != :SQL_DESC_COUNT4
-    }
-    return h
-  end
-  def param_data(n)
+  def columns_count()           SQLColAttributeW(0, :SQL_DESC_COUNT4); end#
+#  def column_data(n)
+#    h = {}
+#    DESCS.each { |k,v|
+#      h.merge!(SQLColAttributeW(n, k)) if k != :SQL_DESC_COUNT4
+#    }
+#    return h
+#  end
+#  def param_data(n)
 #    h = {}
 #    DESCS.each { |k,v|
 #      h.merge!(SQLColAttributeW(n, k)) if k != :SQL_DESC_COUNT
 #    }
 #    return h
-    return SQLDescribeParam(n)
-  end
+#    return SQLDescribeParam(n)
+#  end
   def attrs= hattrs
     hattrs.each { |k,v|
       lis = SQLAttrVals[:VALATTR_DECO][k]
@@ -1145,6 +1145,7 @@ class Stmt
     return nil if rc != 0
     return num[0, 2].unpack('s')[0] if rc == 0
   end
+=begin
   def SQLColAttributeW(seq, fldi)
     buffer  = INFObuffer.malloc
     strlen  = SQLretsize.malloc
@@ -1205,6 +1206,7 @@ class Stmt
              SQL_BIND_TYPE:       dataType[0, 2].unpack("s*")[0]  # preset equal to SQL_DESC_TYPE
            }
   end
+=end
 end
 
 class Desc
