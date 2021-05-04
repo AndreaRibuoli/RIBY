@@ -1415,7 +1415,7 @@ class Column
         z = tmpbuffer[0, l+1].unpack("H*")[0]
         dec = ''
         dec << '-' if z[-1] == 'f'
-        dec << z[0, l-d] << '.' << z[l-d, d]
+        # dec << z[0, l-d] << '.' << z[l-d, d]
         return dec.to_f
       when @desc[:SQL_DESC_TYPE] == SQL_SMALLINT
         return tmpbuffer[0, 2].unpack("s*")[0]
