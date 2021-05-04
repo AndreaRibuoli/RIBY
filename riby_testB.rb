@@ -55,9 +55,10 @@ if ARGV[3] == 'BIND'
   pars = []
   dp  = Desc.new(s)
   dp.set(1, :SQL_DESC_TYPE, :SQL_WCHAR)
-  dp.set(1, :SQL_DESC_LENGTH, 16)
+# dp.set(1, :SQL_DESC_LENGTH, 16)
 # dp.set(1, :SQL_DESC_CCSID, 1200)
   dpi = Desc.new(s, true, false)
+  dpi.set(1, :SQL_DESC_TYPE, :SQL_WCHAR)
   m.times {|i| seq = i+1; pars << Param.new(s, seq, dp.desc_data(seq), dpi.desc_data(seq)) }
   pars.each { |f| f.bind }
   pars[0].buffer= ARGV[4].encode('UTF-16BE')
