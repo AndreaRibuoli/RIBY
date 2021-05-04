@@ -129,7 +129,9 @@ module RibyCli
   'SQLGetCol'            => [ - 5, - 3, - 3, -11, - 5, -11,                                      0].pack("s*"),
   'SQLBindParameter'     => [ - 5, - 3, - 3, - 3, - 3, - 5, - 3, -11, - 5, -11,                  0].pack("s*"),
   'SQLDescribeParam'     => [ - 5, - 3, -11, -11, -11, -11,                                      0].pack("s*"),
+  'SQLGetDescField'      => [ - 5, - 3, - 3, -11, - 5, -11,                                      0].pack("s*"),
   'SQLGetDescFieldW'     => [ - 5, - 3, - 3, -11, - 5, -11,                                      0].pack("s*"),
+  'SQLSetDescField'      => [ - 5, - 3, - 3, -11, - 5,                                           0].pack("s*"),
   'SQLSetDescFieldW'     => [ - 5, - 3, - 3, -11, - 5,                                           0].pack("s*"),
   'SQLCopyDesc'          => [ - 5, - 5,                                                          0].pack("s*"),
 
