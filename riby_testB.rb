@@ -33,8 +33,8 @@ m.times {|i|
   pars << Param.new(s, seq, da, di)
 }
 pars.each { |f| f.bind }
-pars[0].buffer= ARGV[3].encode('IBM280')
-pars[0].pcbValue= ARGV[3].length
+pars[0].buffer= ARGV[3].encode('UTF-16BE')               # .encode('IBM280')
+pars[0].pcbValue= ARGV[3].length * 2
 s.execute
 records = [head]
 while s.fetch == 0

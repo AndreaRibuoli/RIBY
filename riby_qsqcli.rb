@@ -1342,11 +1342,19 @@ end
 
 class Param
   include RibyCli
-  def initialize(hstmt, seq, desc, impl = nil)
+  def initialize(hstmt, seq, desc = nil, impl = nil)
     @hstmt = hstmt
     @ipar = seq
-    @desc = desc
-    @impl = impl
+    if desc == nil
+      @desc = Desc.new(@hstmt).desc_data(@icol)
+    else
+      @desc = desc
+    end
+    if impl == nil
+      @impl = Desc.new(@hstmt, true, false).desc_data(@icol)
+    else
+      @impl = impl
+    end
     hstmt.add_p(seq)
     ObjectSpace.define_finalizer(self, Column.finalizer_proc(seq,hstmt,hstmt.exec_n))
     puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Param #{seq}(#{hstmt.exec_n})" if $DEBUG == true
@@ -1364,6 +1372,8 @@ class Param
     @desc
   end
   def bind
+    Desc.new(@hstmt).set(@icol, :SQL_DESC_TYPE, :SQL_WCHAR)    if @desc[:SQL_DESC_TYPE] == :SQL_CHAR
+    Desc.new(@hstmt).set(@icol, :SQL_DESC_TYPE, :SQL_WVARCHAR) if @desc[:SQL_DESC_TYPE] == :SQL_VARCHAR
     SQLBindParameter(SQL_PARAM_INPUT)
   end
   def buffer= val
