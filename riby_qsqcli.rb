@@ -1379,15 +1379,18 @@ class Param
     SQLBindParameter(SQL_PARAM_INPUT)
   end
   def buffer= val
+    enc = 'IBM037'  if @desc[:SQL_DESC_CCSID] == 37
+    enc = 'IBM280'  if @desc[:SQL_DESC_CCSID] == 280
+    enc = 'IBM1144' if @desc[:SQL_DESC_CCSID] == 1144
     case
       when @desc[:SQL_DESC_TYPE] == :SQL_CHAR
         l = val.length
-        @buffer[0, l] = val
         @pcbValue[0, 4] = [l].pack("l*")
+        @buffer[0, l] = val.encode(enc)
       when @desc[:SQL_DESC_TYPE] == :SQL_VARCHAR
         l = val.length
         @buffer[0, 2] = [l].pack('s*')
-        @buffer[2, l+2] = val
+        @buffer[2, l+2] = val.encode(enc)
       else
     end
   end
