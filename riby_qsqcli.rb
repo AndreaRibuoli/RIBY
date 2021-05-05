@@ -1383,7 +1383,7 @@ class Param
       when @desc[:SQL_DESC_TYPE] == :SQL_CHAR
         l = val.length
         @buffer[0, l] = val
-        pcbValue= l
+        @pcbValue[0, 4] = [l].pack("l*")
       when @desc[:SQL_DESC_TYPE] == :SQL_VARCHAR
         l = val.length
         @buffer[0, 2] = [l].pack('s*')
