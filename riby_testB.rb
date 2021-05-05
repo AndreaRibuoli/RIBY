@@ -28,7 +28,7 @@ m.times {|i|
 }
 pars.each { |f| f.bind }
 pars[0].buffer= ARGV[3].encode('UTF-16BE')
-pars[0].pcbValue= ARGV[3].length * 2
+pars[0].pcbValue= -3
 s.execute
 pp s.error
 records = [head]
