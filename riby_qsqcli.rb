@@ -1153,6 +1153,7 @@ class Desc
     return { fldi => "return code = #{rc}"} if rc != 0
     case
       when (t = SQLDescVals[:VALDESC_DECO][fldi]) != nil
+        puts t
         puts "\nIl valore #{buffer[0, 2].unpack('s')[0]} restituisce #{t.key(buffer[0, 2].unpack('s')[0])}\n"
         return { fldi => t.key(buffer[0, 2].unpack("s")[0]) }
       when (t = SQLDescVals[:VALDESC_DECO_INT][fldi]) != nil
