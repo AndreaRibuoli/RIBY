@@ -1223,8 +1223,8 @@ class Column
     @icol
   end
   def bind
-    dca.set(icol, :SQL_DESC_TYPE, :SQL_WCHAR)    if @desc[:SQL_DESC_TYPE] == :SQL_CHAR
-    dca.set(icol, :SQL_DESC_TYPE, :SQL_WVARCHAR) if @desc[:SQL_DESC_TYPE] == :SQL_VARCHAR
+    @desc.set(icol, :SQL_DESC_TYPE, :SQL_WCHAR)    if @desc[:SQL_DESC_TYPE] == :SQL_CHAR
+    @desc.set(icol, :SQL_DESC_TYPE, :SQL_WVARCHAR) if @desc[:SQL_DESC_TYPE] == :SQL_VARCHAR
     SQLBindCol()
   end
   def get
