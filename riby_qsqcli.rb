@@ -1090,6 +1090,7 @@ class Desc
     @hstmt = hstmt
     @param = param
     @app = app
+    @prev = {}
     sa = hstmt.attrs
     case
       when param == true && app == true
