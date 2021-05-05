@@ -14,15 +14,12 @@ s.attrs = { :SQL_ATTR_EXTENDED_COL_INFO => :SQL_TRUE }
 s.prepare(ARGV[2])
 n = s.numcols
 cols = []
-dca = Desc.new(s, false)
-dci = Desc.new(s, false, false)
 head = []
 n.times {|i|
   seq = i+1
-  da = dca.desc_data(seq)
-  di = dci.desc_data(seq)
+  di = Desc.new(s, false, false).desc_data(seq)
   head << di[:SQL_DESC_NAME]
-  cols << Column.new(s, seq, da, di)
+  cols << Column.new(s, seq)
 }
 cols.each { |f| f.bind } if ARGV[4] == 'BIND'
 m = s.numparams

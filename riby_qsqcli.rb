@@ -1204,10 +1204,14 @@ end
 
 class Column
   include RibyCli
-  def initialize(hstmt, seq, desc, impl = nil)
+  def initialize(hstmt, seq, desc = nil, impl = nil)
     @hstmt = hstmt
     @icol = seq
-    @desc = desc
+    if desc == nil
+      @desc = Desc.new(@hstmt, false).desc_data(@icol)
+    else
+      @desc = desc
+    end
     @impl = impl
     hstmt.add_c(seq)
     ObjectSpace.define_finalizer(self, Column.finalizer_proc(seq,hstmt,hstmt.elab_n))
