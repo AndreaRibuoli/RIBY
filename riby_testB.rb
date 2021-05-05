@@ -25,6 +25,7 @@ head = []
 #  cols << Column.new(s, seq, da, di)
 #}
 dca.set(1, :SQL_DESC_TYPE, :SQL_WCHAR)
+pp s.error
 cols << Column.new(s, 1, dca.desc_data(1))
 cols.each { |f| f.bind } if ARGV[4] == 'BIND'
 pp dca.desc_data(1)
