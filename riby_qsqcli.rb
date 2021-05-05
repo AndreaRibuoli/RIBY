@@ -73,6 +73,10 @@ module RibyCli
                   Preload['_ILECALLX'],
                   [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_SHORT, Fiddle::TYPE_INT],
                   Fiddle::TYPE_INT )
+  Cvtspp      = Fiddle::Function.new(
+                  Preload['_CVTSPP'],
+                  [Fiddle::TYPE_VOIDP],
+                  Fiddle::TYPE_LONG_LONG )
  ##
  ## In ODBC 3.0, SQLError() has been deprecated and replaced with SQLGetDiagRec() and SQLGetDiagField()
  ## In ODBC 3.0, SQLTransact() has been deprecated and replaced with SQLEndTran()
@@ -1150,7 +1154,7 @@ class Desc
       when (t = SQLDescVals[:VALDESC_SMALLINT][fldi]) != nil
       return { fldi => buffer[0, 2].unpack("s")[0] }
       when (t = SQLDescVals[:VALDESC_POINTER][fldi]) != nil
-        return { fldi => buffer[0, 16].unpack("H*")[0]}
+        return { fldi => [buffer[0, 16].unpack("H*")[0], Cvtspp.call(buffer)] }
       when (t = SQLDescVals[:VALDESC_NUM][fldi]) != nil
         return { fldi => buffer[0, 4].unpack("l")[0] }
       when (t = SQLDescVals[:VALDESC_WCHAR][fldi]) != nil
