@@ -1154,7 +1154,7 @@ class Desc
       when (t = SQLDescVals[:VALDESC_SMALLINT][fldi]) != nil
       return { fldi => buffer[0, 2].unpack("s")[0] }
       when (t = SQLDescVals[:VALDESC_POINTER][fldi]) != nil
-        return { fldi => [buffer[0, 16].unpack("H*")[0], [0, Cvtspp.call(buffer.to_i)].pack("q*")] }
+        return { fldi => [buffer[0, 16].unpack("H*")[0], [0, Cvtspp.call(buffer)].pack("q*")] }
       when (t = SQLDescVals[:VALDESC_NUM][fldi]) != nil
         return { fldi => buffer[0, 4].unpack("l")[0] }
       when (t = SQLDescVals[:VALDESC_WCHAR][fldi]) != nil
