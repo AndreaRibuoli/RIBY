@@ -25,6 +25,8 @@ n.times {|i|
   cols << Column.new(s, seq, da, di)
 }
 cols.each { |f| f.bind } if ARGV[4] == 'BIND'
+pp dca.desc_data(1)
+pp dci.desc_data(1)
 m = s.numparams
 pars = []
 dpa = Desc.new(s)
