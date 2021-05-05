@@ -27,6 +27,7 @@ n.times {|i|
 cols.each { |f| f.bind } if ARGV[4] == 'BIND'
 datemp = dca.desc_data(1)
 pp datemp[:SQL_DESC_DATA_PTR]
+pp datemp[:SQL_DESC_DATA_PTR][1][0, 16].unpack("H*")[0]
 dca.set(1, :SQL_DESC_DATA_PTR, datemp[:SQL_DESC_DATA_PTR][1])
 datemp2 = dca.desc_data(1)
 pp datemp2[:SQL_DESC_DATA_PTR]
