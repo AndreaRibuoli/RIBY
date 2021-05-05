@@ -15,10 +15,8 @@ s.prepare(ARGV[2])
 n = s.numcols
 cols = []
 head = []
-dci = Desc.new(s, false, false)
 n.times {|i|
   seq = i+1
-  head << dci.desc_data(seq)[:SQL_DESC_NAME]
   cols << Column.new(s, seq)
 }
 cols.each { |f| f.bind } if ARGV[4] == 'BIND'
@@ -34,7 +32,7 @@ m.times {|i|
 }
 pars.each { |f| f.bind }
 pars[0].buffer= ARGV[3].encode('IBM280')
-pars[0].pcbValue= ARGV[3].length 
+pars[0].pcbValue= ARGV[3].length
 s.execute
 pp s.error
 records = [head]

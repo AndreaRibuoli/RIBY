@@ -1212,7 +1212,11 @@ class Column
     else
       @desc = desc
     end
-    @impl = impl
+    if impl == nil
+      @impl = Desc.new(@hstmt, false, false).desc_data(@icol)
+    else
+      @impl = impl
+    end
     hstmt.add_c(seq)
     ObjectSpace.define_finalizer(self, Column.finalizer_proc(seq,hstmt,hstmt.elab_n))
     puts "#{hstmt.handle.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Column #{seq}(#{hstmt.elab_n})" if $DEBUG == true
@@ -1346,12 +1350,12 @@ class Param
     @hstmt = hstmt
     @ipar = seq
     if desc == nil
-      @desc = Desc.new(@hstmt).desc_data(@icol)
+      @desc = Desc.new(@hstmt).desc_data(@ipar)
     else
       @desc = desc
     end
     if impl == nil
-      @impl = Desc.new(@hstmt, true, false).desc_data(@icol)
+      @impl = Desc.new(@hstmt, true, false).desc_data(@ipar)
     else
       @impl = impl
     end
