@@ -53,7 +53,7 @@ Let's go!
 31. [to let Ruby free handles](#31-to-let-ruby-free-handles)
 32. [to work hard for a fix](#32-to-work-hard-for-a-fix)
 33. [to find a role for columns](#33-to-find-a-role-for-columns)
-34. [to to customize descriptors](#34-to-customize-descriptors)
+34. [to customize descriptors](#34-to-customize-descriptors)
 
 <!---
 3X. [to to customize subsystem](#3X-to-customize-subsystem)
