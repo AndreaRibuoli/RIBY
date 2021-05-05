@@ -2,7 +2,7 @@
 require_relative 'riby_qsqcli'
 require 'csv'
                                                                        
-raise "Usage: #{__FILE__} <user> <password> <sql> <val> <GET/BIND>" if ARGV.length >= 4
+raise "Usage: #{__FILE__} <user> <password> <sql> <val> [BIND]" if ARGV.length < 4
                                                                        
 e = Env.new
 e.attrs = { :SQL_ATTR_SERVER_MODE => :SQL_TRUE,
