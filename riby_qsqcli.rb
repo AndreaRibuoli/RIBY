@@ -77,6 +77,10 @@ module RibyCli
                   Preload['_CVTSPP'],
                   [Fiddle::TYPE_VOIDP],
                   Fiddle::TYPE_LONG_LONG )
+  Memcpy_wt  = Fiddle::Function.new(
+                  Preload['_MEMCPY_WT'],
+                  [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_INT],
+                  Fiddle::TYPE_VOIDP )
  ##
  ## In ODBC 3.0, SQLError() has been deprecated and replaced with SQLGetDiagRec() and SQLGetDiagField()
  ## In ODBC 3.0, SQLTransact() has been deprecated and replaced with SQLEndTran()
@@ -1154,7 +1158,9 @@ class Desc
       when (t = SQLDescVals[:VALDESC_SMALLINT][fldi]) != nil
       return { fldi => buffer[0, 2].unpack("s")[0] }
       when (t = SQLDescVals[:VALDESC_POINTER][fldi]) != nil
-        return { fldi => [buffer[0, 16].unpack("H*")[0], [0, Cvtspp.call(buffer)].pack("q*")] }
+        prev = ILEpointer.malloc
+        Memcpy_wt.call(prev, buffer, 16)
+        return { fldi => [buffer[0, 16].unpack("H*")[0], prev] }
       when (t = SQLDescVals[:VALDESC_NUM][fldi]) != nil
         return { fldi => buffer[0, 4].unpack("l")[0] }
       when (t = SQLDescVals[:VALDESC_WCHAR][fldi]) != nil
@@ -1173,7 +1179,7 @@ class Desc
       when (t = SQLDescVals[:VALDESC_SMALLINT][fldi]) != nil
         buffer[0, 2] = [val].pack("s*")
       when (t = SQLDescVals[:VALDESC_POINTER][fldi]) != nil
-        buffer[0, 16] = val
+        Memcpy_wt.call(buffer, val, 16)
         # buffer[0, 16]  è necessario effettuare la copia correttamente...
       when (t = SQLDescVals[:VALDESC_NUM][fldi]) != nil
         buffer[0, 4] = [val].pack("l*")
