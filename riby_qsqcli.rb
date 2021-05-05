@@ -1379,11 +1379,16 @@ class Param
     SQLBindParameter(SQL_PARAM_INPUT)
   end
   def buffer= val
-    l = val.length
-    @buffer[0, l] = val if @desc[:SQL_DESC_TYPE] == :SQL_CHAR
-    if @desc[:SQL_DESC_TYPE] == :SQL_VARCHAR
-      @buffer[0, 2] = [l].pack('s*')
-      @buffer[2, l+2] = val
+    case
+      when @desc[:SQL_DESC_TYPE] == :SQL_CHAR
+        l = val.length
+        @buffer[0, l] = val
+        pcbValue= l
+      when @desc[:SQL_DESC_TYPE] == :SQL_VARCHAR
+        l = val.length
+        @buffer[0, 2] = [l].pack('s*')
+        @buffer[2, l+2] = val
+      else
     end
   end
   def pcbValue= val
