@@ -24,12 +24,9 @@ n.times {|i|
   head << di[:SQL_DESC_NAME]
   cols << Column.new(s, seq, da, di)
 }
-cols.each { |f| f.bind } if ARGV[4] == 'BIND'
 pp dca.desc_data(1)
 dca.set(1, :SQL_DESC_TYPE, :SQL_WCHAR)
-dca.set(1, :SQL_DESC_DATA_PTR, nil)
-dca.set(1, :SQL_DESC_INDICATOR_PTR, nil)
-dca.set(1, :SQL_DESC_LENGTH_PTR, nil)
+cols.each { |f| f.bind } if ARGV[4] == 'BIND'
 pp dca.desc_data(1)
 m = s.numparams
 pars = []
