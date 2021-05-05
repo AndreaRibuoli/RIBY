@@ -4,7 +4,6 @@
   :SQL_DESC_TYPE:
     :SQL_VARBINARY:      -3
     :SQL_BINARY:         -2
-    :SQL_ALL_TYPES:       0
     :SQL_CHAR:            1
     :SQL_NUMERIC:         2
     :SQL_DECIMAL:         3
@@ -39,8 +38,9 @@
     :SQL_FALSE: 0
     :SQL_TRUE: 1
   :SQL_DESC_DATETIME_INTERVAL_CODE:
-    :SQL_CODE_DATE: 1
-    :SQL_CODE_TIME: 2
+    :SQL_ALL_TYPES:      0
+    :SQL_CODE_DATE:      1
+    :SQL_CODE_TIME:      2
     :SQL_CODE_TIMESTAMP: 3
   :SQL_DESC_NULLABLE:
     :SQL_NO_NULLS: 0
