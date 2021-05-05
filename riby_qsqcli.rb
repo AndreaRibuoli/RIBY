@@ -1150,7 +1150,7 @@ class Desc
     ileArguments[  80, 16] = [0, strlen.to_i].pack("q*")
     Ilecallx.call(SQLApis['SQLGetDescFieldW'], ileArguments, SQLApiList['SQLGetDescFieldW'], - 5, 0)
     rc = ileArguments[ 16, 4].unpack('l')[0]
-    puts "\n FLDI = #{fldi}"
+    puts "\n FLDI = #{fldi} VALUE #{buffer[0, 2].unpack('s')[0]}" if fldi == :SQL_DESC_TYPE
     return { fldi => "return code = #{rc}" } if rc != 0
     case
       when (t = SQLDescVals[:VALDESC_DECO][fldi]) != nil
