@@ -1381,7 +1381,10 @@ class Param
   def buffer= val
     l = val.length
     @buffer[0, l] = val if @desc[:SQL_DESC_TYPE] == :SQL_CHAR
-    { @buffer[0, 2] = [l].pack('s*'); @buffer[2, l+2] = val } if @desc[:SQL_DESC_TYPE] == :SQL_VARCHAR
+    if @desc[:SQL_DESC_TYPE] == :SQL_VARCHAR
+      @buffer[0, 2] = [l].pack('s*')
+      @buffer[2, l+2] = val
+    end
   end
   def pcbValue= val
     @pcbValue[0, 4] = [val].pack("l*")
