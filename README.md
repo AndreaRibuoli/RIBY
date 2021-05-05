@@ -53,9 +53,10 @@ Let's go!
 31. [to let Ruby free handles](#31-to-let-ruby-free-handles)
 32. [to work hard for a fix](#32-to-work-hard-for-a-fix)
 33. [to find a role for columns](#33-to-find-a-role-for-columns)
+34. [to to customize descriptors](#34-to-customize-descriptors)
 
 <!---
-3X. [to lto customize subsystem](#3X-to-customize-subsystem)
+3X. [to to customize subsystem](#3X-to-customize-subsystem)
 
 ----
 ### 3X. to customize subsystem
@@ -68,6 +69,65 @@ There is a corresponding Environment attribute named **SQL\_ATTR\_SERVERMODE\_SU
 in previous requests.
 
 --->
+
+----
+### 34. to customize descriptors
+
+There are many overlapping APIs in this area. 
+So I revised my evolving implementation introducing a `Desc` class. 
+Every statement that has been prepared offers the ability to collect 4 different handles to descriptors: two of them focus on parameters while the other two on columns.
+Although other APIs are available for columns I modified the code to adopt the same building blocks.
+
+The descriptor handles are identified by means of 4 different statement attributes:
+
+* **SQL\_ATTR\_APP\_PARAM\_DESC**
+* **SQL\_ATTR\_IMP\_PARAM\_DESC**
+* **SQL\_ATTR\_APP\_ROW\_DESC**
+* **SQL\_ATTR\_IMP\_ROW\_DESC**
+
+Given the following implementation:
+
+``` ruby
+class Desc
+  include RibyCli
+  def initialize(hstmt, param = true, app = true)
+    @hstmt = hstmt
+    @param = param
+    @app = app
+    sa = hstmt.attrs
+    case
+      when param == true && app == true
+        @hdesc = sa[:SQL_ATTR_APP_PARAM_DESC]
+      when param == true && app == false
+        @hdesc = sa[:SQL_ATTR_IMP_PARAM_DESC]
+      when param == false && app == true
+        @hdesc = sa[:SQL_ATTR_APP_ROW_DESC]
+      when param == false && app == false
+        @hdesc = sa[:SQL_ATTR_IMP_ROW_DESC]
+    end
+  end
+  . . . 
+end
+```
+
+to initialize each of them we will passing the following arguments:
+
+``` ruby
+dpa = Desc.new(s)
+dpi = Desc.new(s, true, false)
+dca = Desc.new(s, false)
+dci = Desc.new(s, false, false)
+```
+
+|            | **APP** | **IMPL** |
+| ---------- |:-------:|:--------:|
+| **param**  |  *dpa*  |  *dpi*   | 
+| **column** |  *dca*  |  *dci*   |
+
+
+``` ruby
+
+```
 
 ----
 ### 33. to find a role for columns
@@ -205,6 +265,7 @@ irb(main):015:0> end
 => nil
 irb(main):016:0>
 ```
+[NEXT-34(#34-to-customize-descriptors)
 
 
 ### 32. to work hard for a fix
@@ -935,6 +996,8 @@ bash-4.4$ ruby -W2 riby_test8.rb andrea password | grep onnect | sort
 ["00000038"] 1618824424.1029911 Disconnect (0)
 ["00000038"] 1618824424.1034620 Free Connect (0)
 ```
+[NEXT-33](#33-to-find-a-role-for-columns)
+
 
 ----
 ### 31. to let Ruby free handles
@@ -1516,6 +1579,7 @@ $ riby_test8.rb andrea password | sort
 344071/QUSER/QSQSRVR : Connect 00000010
 344071/QUSER/QSQSRVR : Connect 00000010
 ```
+[NEXT-32](#32-to-work-hard-for-a-fix)
 
 ----
 ### 30. to set attributes
