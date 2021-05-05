@@ -27,7 +27,8 @@ m.times {|i|
   pars << Param.new(s, seq)
 }
 pars.each { |f| f.bind }
-pars[0].buffer= ARGV[3].encode('IBM280')
+pars[0].buffer[2, 20]= ARGV[3].encode('IBM280')
+pars[0].buffer[0, 2]= [ARGV[3].length].pack('s*')
 pars[0].pcbValue= ARGV[3].length
 s.execute
 pp s.error
