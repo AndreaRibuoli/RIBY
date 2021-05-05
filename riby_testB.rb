@@ -21,7 +21,7 @@ n.times {|i|
   seq = i+1
   da = dca.desc_data(seq)
   di = dci.desc_data(seq)
-  head << d[:SQL_DESC_NAME]
+  head << di[:SQL_DESC_NAME]
   cols << Column.new(s, seq, da, di)
 }
 cols.each { |f| f.bind } if ARGV[4] == 'BIND'
