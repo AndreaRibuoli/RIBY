@@ -1153,11 +1153,12 @@ class Desc
     return { fldi => "return code = #{rc}"} if rc != 0
     case
       when (t = SQLDescVals[:VALDESC_DECO][fldi]) != nil
+        puts "\nvalore #{buffer[0, 2].unpack('s')[0]}\n"
         return { fldi => t.key(buffer[0, 2].unpack("s")[0]) }
       when (t = SQLDescVals[:VALDESC_DECO_INT][fldi]) != nil
         return { fldi => t.key(buffer[0, 4].unpack("l")[0]) }
       when (t = SQLDescVals[:VALDESC_SMALLINT][fldi]) != nil
-      return { fldi => buffer[0, 2].unpack("s")[0] }
+        return { fldi => buffer[0, 2].unpack("s")[0] }
       when (t = SQLDescVals[:VALDESC_POINTER][fldi]) != nil
         @prev[fldi] = ILEpointer.malloc
         Memcpy_wt.call(@prev[fldi], buffer, 16)
