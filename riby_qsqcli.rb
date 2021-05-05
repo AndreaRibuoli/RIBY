@@ -1159,7 +1159,7 @@ class Desc
       return { fldi => buffer[0, 2].unpack("s")[0] }
       when (t = SQLDescVals[:VALDESC_POINTER][fldi]) != nil
         prev = ILEpointer.malloc
-        Memcpy_wt.call(prev, Cvtssp(buffer), 16)
+        Memcpy_wt.call(prev, Cvtspp.call(buffer), 16)
         return { fldi => [buffer[0, 16].unpack("H*")[0], prev] }
       when (t = SQLDescVals[:VALDESC_NUM][fldi]) != nil
         return { fldi => buffer[0, 4].unpack("l")[0] }
