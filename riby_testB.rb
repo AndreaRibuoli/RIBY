@@ -17,17 +17,14 @@ cols = []
 dca = Desc.new(s, false)
 dci = Desc.new(s, false, false)
 head = []
-#n.times {|i|
-#  seq = i+1
-#  da = dca.desc_data(seq)
-#  di = dci.desc_data(seq)
-#  head << di[:SQL_DESC_NAME]
-#  cols << Column.new(s, seq, da, di)
-#}
-dca.set(1, :SQL_DESC_TYPE, :SQL_WCHAR)
-cols << Column.new(s, 1, dca.desc_data(1))
+n.times {|i|
+  seq = i+1
+  da = dca.desc_data(seq)
+  di = dci.desc_data(seq)
+  head << di[:SQL_DESC_NAME]
+  cols << Column.new(s, seq, da, di)
+}
 cols.each { |f| f.bind } if ARGV[4] == 'BIND'
-pp dca.desc_data(1)
 m = s.numparams
 pars = []
 dpa = Desc.new(s)
