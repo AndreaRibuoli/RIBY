@@ -22,13 +22,9 @@ n.times {|i|
 cols.each { |f| f.bind } if ARGV[4] == 'BIND'
 m = s.numparams
 pars = []
-dpa = Desc.new(s)
-dpi = Desc.new(s, true, false)
 m.times {|i|
   seq = i+1
-  da = dpa.desc_data(seq)
-  di = dpi.desc_data(seq)
-  pars << Param.new(s, seq, da, di)
+  pars << Param.new(s, seq)
 }
 pars.each { |f| f.bind }
 pars[0].buffer= ARGV[3].encode('IBM280')
