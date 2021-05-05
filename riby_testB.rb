@@ -15,10 +15,10 @@ s.prepare(ARGV[2])
 n = s.numcols
 cols = []
 head = []
+dci = Desc.new(s, false, false)
 n.times {|i|
   seq = i+1
-  di = Desc.new(s, false, false).desc_data(seq)
-  head << di[:SQL_DESC_NAME]
+  head << dci.desc_data(seq)[:SQL_DESC_NAME]
   cols << Column.new(s, seq)
 }
 cols.each { |f| f.bind } if ARGV[4] == 'BIND'
