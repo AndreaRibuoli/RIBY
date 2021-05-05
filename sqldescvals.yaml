@@ -4,6 +4,7 @@
   :SQL_DESC_TYPE:
     :SQL_VARBINARY:      -3
     :SQL_BINARY:         -2
+    :SQL_UNKNOWN_TYPE:   -1
     :SQL_CHAR:            1
     :SQL_NUMERIC:         2
     :SQL_DECIMAL:         3

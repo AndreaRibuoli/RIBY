@@ -1150,7 +1150,6 @@ class Desc
     ileArguments[  80, 16] = [0, strlen.to_i].pack("q*")
     Ilecallx.call(SQLApis['SQLGetDescFieldW'], ileArguments, SQLApiList['SQLGetDescFieldW'], - 5, 0)
     rc = ileArguments[ 16, 4].unpack('l')[0]
-    puts "\n FLDI = #{fldi} VALUE #{buffer[0, 2].unpack('s')[0]}" if fldi == :SQL_DESC_TYPE
     return { fldi => "return code = #{rc}" } if rc != 0
     case
       when (t = SQLDescVals[:VALDESC_DECO][fldi]) != nil
@@ -1320,7 +1319,7 @@ class Column
         enc = 'IBM280'  if @desc[:SQL_DESC_CCSID] == 280
         enc = 'IBM1144' if @desc[:SQL_DESC_CCSID] == 1144
         return tmpbuffer[2, tmpbuffer[0, 2].unpack("s*")[0]].force_encoding(enc).encode('utf-8')
-      when pcbValue[0, 4] == SQL_NTS
+      when @desc[:SQL_DESC_TYPE] == :SQL_UNKNOWN_TYPE  && pcbValue[0, 4] == SQL_NTS
         tbr = tmpbuffer[0,  tmpbuffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
         tmpbuffer[0, tmpbuffer.instance_variable_get(:@entity).size] =
            ZEROED[0, tmpbuffer.instance_variable_get(:@entity).size]
