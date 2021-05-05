@@ -38,7 +38,6 @@ m.times {|i|
 pars.each { |f| f.bind }
 pars[0].buffer= ARGV[3].encode('IBM280')
 pars[0].pcbValue= ARGV[3].length
-puts "Without bind using get"
 s.execute
 records = [head]
 while s.fetch == 0
