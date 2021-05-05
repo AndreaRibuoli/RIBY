@@ -110,7 +110,7 @@ class Desc
 end
 ```
 
-to initialize each of them we will passing the following arguments:
+to initialize each of them we will pass the following arguments:
 
 ``` ruby
 dpa = Desc.new(s)
