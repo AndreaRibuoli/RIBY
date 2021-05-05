@@ -1158,9 +1158,9 @@ class Desc
       when (t = SQLDescVals[:VALDESC_SMALLINT][fldi]) != nil
       return { fldi => buffer[0, 2].unpack("s")[0] }
       when (t = SQLDescVals[:VALDESC_POINTER][fldi]) != nil
-        prev = ILEpointer.malloc
-        Memcpy_wt.call(prev, buffer, 16)
-        return { fldi => [buffer[0, 16].unpack("H*")[0], prev, prev[0, 16].unpack("H*")[0]] }
+        @prev[fldi] = ILEpointer.malloc
+        Memcpy_wt.call(@prev[fldi], buffer, 16)
+        return { fldi => buffer[0, 16].unpack("H*")[0] }
       when (t = SQLDescVals[:VALDESC_NUM][fldi]) != nil
         return { fldi => buffer[0, 4].unpack("l")[0] }
       when (t = SQLDescVals[:VALDESC_WCHAR][fldi]) != nil
@@ -1179,7 +1179,7 @@ class Desc
       when (t = SQLDescVals[:VALDESC_SMALLINT][fldi]) != nil
         buffer[0, 2] = [val].pack("s*")
       when (t = SQLDescVals[:VALDESC_POINTER][fldi]) != nil
-        Memcpy_wt.call(buffer, val, 16)
+        Memcpy_wt.call(buffer, @prev[fldi], 16)
         # buffer[0, 16]  è necessario effettuare la copia correttamente...
       when (t = SQLDescVals[:VALDESC_NUM][fldi]) != nil
         buffer[0, 4] = [val].pack("l*")
