@@ -243,6 +243,18 @@ we get a lot of information about the descriptors involved (note the `:SQL_DESC_
   :SQL_DESC_UNNAMED=>0}]
 ```
 
+By adding an explicit
+
+``` ruby
+cols.each { |f| f.bind } if ARGV[4] == 'BIND'
+pp dca.desc_data(1)
+pp dci.desc_data(1)
+```
+
+operating in BIND mode:
+
+
+
 ----
 ### 33. to find a role for columns
 
