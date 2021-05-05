@@ -25,9 +25,12 @@ n.times {|i|
   cols << Column.new(s, seq, da, di)
 }
 cols.each { |f| f.bind } if ARGV[4] == 'BIND'
-#dca.set(1, :SQL_DESC_TYPE, :SQL_WCHAR)
+datemp = dca.desc_data(1)
+dca.set(1, :SQL_DESC_TYPE, :SQL_WCHAR)
+dca.set(1, :SQL_DESC_DATA_PTR, datemp[:SQL_DESC_DATA_PTR][1])
+dca.set(1, :SQL_DESC_INDICATOR_PTR, datemp[:SQL_DESC_INDICATOR_PTR][1])
+dca.set(1, :SQL_DESC_LENGTH_PTR, datemp[:SQL_DESC_LENGTH_PTR][1])
 pp dca.desc_data(1)
-pp dci.desc_data(1)
 m = s.numparams
 pars = []
 dpa = Desc.new(s)

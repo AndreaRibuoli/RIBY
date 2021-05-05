@@ -1173,6 +1173,7 @@ class Desc
       when (t = SQLDescVals[:VALDESC_SMALLINT][fldi]) != nil
         buffer[0, 2] = [val].pack("s*")
       when (t = SQLDescVals[:VALDESC_POINTER][fldi]) != nil
+        buffer[0, 16] = [0, val].pack("q*")
         # buffer[0, 16]  è necessario effettuare la copia correttamente...
       when (t = SQLDescVals[:VALDESC_NUM][fldi]) != nil
         buffer[0, 4] = [val].pack("l*")
