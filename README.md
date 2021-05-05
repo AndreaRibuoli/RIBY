@@ -251,8 +251,49 @@ pp dca.desc_data(1)
 pp dci.desc_data(1)
 ```
 
-operating in BIND mode:
+operating in BIND mode we will notice the **\*\_PTR** descriptor attributes are set in the APPLICATION descriptor for the column **EMPNO**:
 
+
+``` ruby
+bash-4.4$ riby_testB.rb andrearib champion 'select empno from sample.employee where job = ?' OPERATOR BIND
+{:SQL_DESC_ALLOC_TYPE=>:SQL_DESC_ALLOC_AUTO,
+ :SQL_DESC_COUNT=>1,
+ :SQL_DESC_CCSID=>0,
+ :SQL_DESC_DATA_PTR=>"800000000000000000008016b2935710",
+ :SQL_DESC_DATETIME_INTERVAL_CODE=>nil,
+ :SQL_DESC_INDICATOR_PTR=>"800000000000000000008016b268d470",
+ :SQL_DESC_LENGTH_PTR=>"800000000000000000008016b268d470",
+ :SQL_DESC_LENGTH=>4096,
+ :SQL_DESC_NAME=>"",
+ :SQL_DESC_NULLABLE=>:SQL_NULLABLE,
+ :SQL_DESC_PRECISION=>4096,
+ :SQL_DESC_SCALE=>0,
+ :SQL_DESC_TYPE=>:SQL_CHAR,
+ :SQL_DESC_UNNAMED=>1}
+{:SQL_DESC_ALLOC_TYPE=>:SQL_DESC_ALLOC_AUTO,
+ :SQL_DESC_COUNT=>1,
+ :SQL_DESC_CCSID=>280,
+ :SQL_DESC_DATA_PTR=>"00000000000000000000000000000000",
+ :SQL_DESC_DATETIME_INTERVAL_CODE=>nil,
+ :SQL_DESC_INDICATOR_PTR=>"00000000000000000000000000000000",
+ :SQL_DESC_LENGTH_PTR=>"00000000000000000000000000000000",
+ :SQL_DESC_LENGTH=>6,
+ :SQL_DESC_NAME=>"EMPNO",
+ :SQL_DESC_NULLABLE=>:SQL_NO_NULLS,
+ :SQL_DESC_PRECISION=>6,
+ :SQL_DESC_SCALE=>0,
+ :SQL_DESC_TYPE=>:SQL_CHAR,
+ :SQL_DESC_UNNAMED=>0}
+```
+
+What occurs if after the bind we modify the application `SQL_DESC_TYPE` to `SQL_WCHAR`?
+
+``` ruby
+cols.each { |f| f.bind } if ARGV[4] == 'BIND'
+dca.set(1, :SQL_DESC_TYPE, :SQL_WCHAR)
+pp dca.desc_data(1)
+pp dci.desc_data(1)
+```
 
 
 ----
