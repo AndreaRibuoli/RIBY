@@ -51,7 +51,7 @@ while s.fetch == 0
   }
   records << row
 end
-CSV(STDOUT) do |csv|
+CSV.open("../demo.csv", "w") do |csv|
   records.each do |row|
     csv << row
   end
