@@ -1376,9 +1376,13 @@ class Param
     @desc
   end
   def bind
-    Desc.new(@hstmt).set(@ipar, :SQL_DESC_TYPE, :SQL_WCHAR)    if @desc[:SQL_DESC_TYPE] == :SQL_CHAR
-    Desc.new(@hstmt).set(@ipar, :SQL_DESC_TYPE, :SQL_WVARCHAR) if @desc[:SQL_DESC_TYPE] == :SQL_VARCHAR
-    @desc = Desc.new(@hstmt).desc_data(@ipar)
+    if @desc[:SQL_DESC_TYPE] == :SQL_CHAR
+      d = Desc.new(@hstmt)
+      d.set(@ipar, :SQL_DESC_TYPE, :SQL_WCHAR)
+      d.set(@ipar, :SQL_DESC_CCSID, 1200)
+      d.set(@ipar, :SQL_DESC_LENGTH, 16)
+      @desc = Desc.new(@hstmt).desc_data(@ipar)
+    end
     SQLBindParameter(SQL_PARAM_INPUT)
   end
   def buffer= val
