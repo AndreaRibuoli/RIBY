@@ -10,11 +10,9 @@ e.attrs = { :SQL_ATTR_SERVER_MODE => :SQL_TRUE,
 pp e.error
 c = Connect.new(e)
 c.empower(ARGV[0], ARGV[1])
-pp c.error
 s = Stmt.new(c)
 s.attrs = { :SQL_ATTR_EXTENDED_COL_INFO => :SQL_TRUE }
 s.prepare(ARGV[2])
-pp s.error
 n = s.numcols
 pp s.error
 cols = []
@@ -25,7 +23,6 @@ n.times {|i|
 }
 cols.each { |f| f.bind } if ARGV[4] == 'BIND'
 m = s.numparams
-pp s.error
 pars = []
 m.times {|i|
   seq = i+1
@@ -34,9 +31,7 @@ m.times {|i|
 pars.each { |f| f.bind }
 pp Desc.new(s).desc_data(1)
 pars[0].buffer= ARGV[3]
-pp pars[0].buffer
 s.execute
-pp s.error
 records = [head]
 while s.fetch == 0
   row = []
