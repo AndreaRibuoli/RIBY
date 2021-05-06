@@ -1391,10 +1391,11 @@ class Param
     SQLBindParameter(SQL_PARAM_INPUT)
   end
   def buffer= val
-    enc = 'IBM037'  if @desc[:SQL_DESC_CCSID] == 37
-    enc = 'IBM280'  if @desc[:SQL_DESC_CCSID] == 280
-    enc = 'IBM1144' if @desc[:SQL_DESC_CCSID] == 1144
-    enc = 'utf-8'   if @desc[:SQL_DESC_CCSID] == 1208
+    enc = 'IBM037'   if @desc[:SQL_DESC_CCSID] == 37
+    enc = 'IBM280'   if @desc[:SQL_DESC_CCSID] == 280
+    enc = 'IBM1144'  if @desc[:SQL_DESC_CCSID] == 1144
+    enc = 'UTF-16BE' if @desc[:SQL_DESC_CCSID] == 1200
+    enc = 'utf-8'    if @desc[:SQL_DESC_CCSID] == 1208
     case
       when @desc[:SQL_DESC_TYPE] == :SQL_CHAR
         l = val.length
@@ -1407,11 +1408,11 @@ class Param
       when @desc[:SQL_DESC_TYPE] == :SQL_WCHAR
         l = val.length
         @pcbValue[0, 4] = [l].pack("l*")
-        @buffer[0, l*2] = val.encode('UTF-16BE')
+        @buffer[0, l*2] = val.encode(enc)
       when @desc[:SQL_DESC_TYPE] == :SQL_WVARCHAR
         l = val.length
         @buffer[0, 2] = [l].pack('s*')
-        @buffer[2, l*2] = val.encode('UTF-16BE')
+        @buffer[2, l*2] = val.encode(enc)
       else
     end
   end
@@ -1419,8 +1420,7 @@ class Param
     @pcbValue[0, 4] = [val].pack("l*")
   end
   def buffer
-  #  return innerLogic(@buffer, @pcbValue)
-    return @buffer[2, 20].force_encoding('UTF-16BE').encode('utf-8')
+    return innerLogic(@buffer, @pcbValue)
   end
   private
   def SQLBindParameter(iotype)
