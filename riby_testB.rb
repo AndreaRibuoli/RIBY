@@ -28,6 +28,7 @@ m.times {|i|
 }
 pars.each { |f| f.bind }
 pp Desc.new(s).desc_data(1)
+pp Desc.new(s,true,false).desc_data(1)
 pars[0].buffer= ARGV[3]
 s.execute
 records = [head]
