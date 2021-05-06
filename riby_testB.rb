@@ -7,8 +7,10 @@ raise "Usage: #{__FILE__} <user> <password> <sql> <val> [BIND]" if ARGV.length <
 e = Env.new
 e.attrs = { :SQL_ATTR_SERVER_MODE => :SQL_TRUE,
             :SQL_ATTR_NON_HEXCCSID => :SQL_TRUE }
+pp e.error
 c = Connect.new(e)
 c.empower(ARGV[0], ARGV[1])
+pp c.error
 s = Stmt.new(c)
 s.attrs = { :SQL_ATTR_EXTENDED_COL_INFO => :SQL_TRUE }
 s.prepare(ARGV[2])
