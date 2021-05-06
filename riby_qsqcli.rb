@@ -1404,10 +1404,12 @@ class Param
         @buffer[2, l+2] = val.encode(enc)
       when @desc[:SQL_DESC_TYPE] == :SQL_WCHAR
         l = val.length
-        @buffer[0, l] = val.encode('UTF-16BE')
+        @buffer[0, 2] = [l*2].pack('s*')
+        @buffer[2, l*2+2] = val.encode('UTF-16BE')
       when @desc[:SQL_DESC_TYPE] == :SQL_WVARCHAR
         l = val.length
-        @buffer[0, l] = val.encode('UTF-16BE')
+        @buffer[0, 2] = [l*2].pack('s*')
+        @buffer[2, l*2+2] = val.encode('UTF-16BE')
       else
     end
   end
