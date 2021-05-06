@@ -249,6 +249,7 @@ class Env
     temp = @henv[0,4]
     puts "#{temp.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Env (#{rc})" if $DEBUG == true
     SQLSetEnvAttr(ATTRS[:SQL_ATTR_INCLUDE_NULL_IN_LEN], 0)
+    SQLSetEnvAttr(ATTRS[:SQL_ATTR_UCS2], 1)
     ObjectSpace.define_finalizer(self, Env.finalizer_proc(temp))
     return rc
   end
@@ -273,6 +274,7 @@ class Env
   def attrs= hattrs
     hattrs.each { |k,v|
       next if (k == :SQL_ATTR_INCLUDE_NULL_IN_LEN)
+      next if (k == :SQL_ATTR_UCS2)
       lis = SQLAttrVals[:VALATTR_DECO][k]
       if lis != nil then
         SQLSetEnvAttr(ATTRS[k], lis[v])
