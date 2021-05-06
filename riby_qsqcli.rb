@@ -1419,7 +1419,8 @@ class Param
     @pcbValue[0, 4] = [val].pack("l*")
   end
   def buffer
-    return innerLogic(@buffer, @pcbValue)
+  #  return innerLogic(@buffer, @pcbValue)
+    return @buffer[0, 32].unpack('H*')
   end
   private
   def SQLBindParameter(iotype)
