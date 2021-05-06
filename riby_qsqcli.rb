@@ -1420,7 +1420,7 @@ class Param
   end
   def buffer
   #  return innerLogic(@buffer, @pcbValue)
-    return @buffer[0, 32].unpack('H*')
+    return @buffer[2, 20].force_encoding('UTF-16BE').encode('utf-8')
   end
   private
   def SQLBindParameter(iotype)
