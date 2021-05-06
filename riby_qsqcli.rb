@@ -249,7 +249,6 @@ class Env
     temp = @henv[0,4]
     puts "#{temp.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Env (#{rc})" if $DEBUG == true
     SQLSetEnvAttr(ATTRS[:SQL_ATTR_INCLUDE_NULL_IN_LEN], :SQL_FALSE)
-    SQLSetEnvAttr(ATTRS[:SQL_ATTR_UCS2], :SQL_UNIC_DATA)
     ObjectSpace.define_finalizer(self, Env.finalizer_proc(temp))
     return rc
   end
@@ -422,6 +421,7 @@ class Connect
     henv.add(temp)
     puts "#{temp.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Connect (#{rc})" if $DEBUG == true
     ObjectSpace.define_finalizer(self, Connect.finalizer_proc(temp,henv))
+    SQLSetConnectAttr(ATTRS[:SQL_ATTR_UCS2], :SQL_UNIC_DATA)
   end
   def self.finalizer_proc(h,henv)
     proc {
