@@ -14,7 +14,9 @@ pp c.error
 s = Stmt.new(c)
 s.attrs = { :SQL_ATTR_EXTENDED_COL_INFO => :SQL_TRUE }
 s.prepare(ARGV[2])
+pp s.error
 n = s.numcols
+pp s.error
 cols = []
 head = []
 n.times {|i|
@@ -23,6 +25,7 @@ n.times {|i|
 }
 cols.each { |f| f.bind } if ARGV[4] == 'BIND'
 m = s.numparams
+pp s.error
 pars = []
 m.times {|i|
   seq = i+1
