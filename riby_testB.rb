@@ -32,8 +32,9 @@ m.times {|i|
   pars << Param.new(s, seq)
 }
 pars.each { |f| f.bind }
-pars[0].buffer= ARGV[3]
+pars[0].buffer= ARGV[3].encode('UTF-16BE')
 s.execute
+pp s.error
 records = [head]
 while s.fetch == 0
   row = []
