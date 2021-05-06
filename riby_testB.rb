@@ -32,7 +32,7 @@ m.times {|i|
   pars << Param.new(s, seq)
 }
 pars.each { |f| f.bind }
-pars[0].buffer= ARGV[3].encode('UTF-16BE')
+pars[0].buffer= ARGV[3]
 s.execute
 pp s.error
 records = [head]
