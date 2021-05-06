@@ -1380,10 +1380,12 @@ class Param
   def bind
     if @desc[:SQL_DESC_TYPE] == :SQL_CHAR
       Desc.new(@hstmt).set(@ipar, :SQL_DESC_TYPE, :SQL_WCHAR)
+      Desc.new(@hstmt).set(@ipar, :SQL_DESC_CCSID, 1200)
       @desc[:SQL_DESC_TYPE] = :SQL_WCHAR
     end
     if @desc[:SQL_DESC_TYPE] == :SQL_VARCHAR
       Desc.new(@hstmt).set(@ipar, :SQL_DESC_TYPE, :SQL_WVARCHAR)
+      Desc.new(@hstmt).set(@ipar, :SQL_DESC_CCSID, 1200)
       @desc[:SQL_DESC_TYPE] = :SQL_WVARCHAR
     end
     SQLBindParameter(SQL_PARAM_INPUT)
