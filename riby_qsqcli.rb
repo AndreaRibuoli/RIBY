@@ -1389,10 +1389,10 @@ class Param
     SQLBindParameter(SQL_PARAM_INPUT)
   end
   def buffer= val
-    enc = 'IBM037'  if @impl[:SQL_DESC_CCSID] == 37
-    enc = 'IBM280'  if @impl[:SQL_DESC_CCSID] == 280
-    enc = 'IBM1144' if @impl[:SQL_DESC_CCSID] == 1144
-    enc = 'utf-8'   if @impl[:SQL_DESC_CCSID] == 1208
+    enc = 'IBM037'  if @desc[:SQL_DESC_CCSID] == 37
+    enc = 'IBM280'  if @desc[:SQL_DESC_CCSID] == 280
+    enc = 'IBM1144' if @desc[:SQL_DESC_CCSID] == 1144
+    enc = 'utf-8'   if @desc[:SQL_DESC_CCSID] == 1208
     case
       when @desc[:SQL_DESC_TYPE] == :SQL_CHAR
         l = val.length
@@ -1402,14 +1402,12 @@ class Param
         l = val.length
         @buffer[0, 2] = [l].pack('s*')
         @buffer[2, l+2] = val.encode(enc)
-        when @desc[:SQL_DESC_TYPE] == :SQL_WCHAR
-          l = val.length
-          @pcbValue[0, 4] = [l].pack("l*")
-          @buffer[0, l] = val.encode('UTF-16BE')
-        when @desc[:SQL_DESC_TYPE] == :SQL_WVARCHAR
-          l = val.length
-          @buffer[0, 2] = [l].pack('s*')
-          @buffer[2, l+2] = val.encode('UTF-16BE')
+      when @desc[:SQL_DESC_TYPE] == :SQL_WCHAR
+        l = val.length
+        @buffer[0, l] = val.encode('UTF-16BE')
+      when @desc[:SQL_DESC_TYPE] == :SQL_WVARCHAR
+        l = val.length
+        @buffer[0, l] = val.encode('UTF-16BE')
       else
     end
   end
