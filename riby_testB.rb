@@ -34,7 +34,7 @@ m.times {|i|
 pars.each { |f| f.bind }
 pp Desc.new(s).desc_data(1)
 pars[0].buffer= ARGV[3]
-pars[0].pcbValue= -3
+# pars[0].pcbValue= -3
 pp pars[0].buffer
 s.execute
 pp s.error
