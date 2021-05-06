@@ -1378,7 +1378,6 @@ class Param
     @desc
   end
   def bind
-=begin
     if @desc[:SQL_DESC_TYPE] == :SQL_CHAR
       Desc.new(@hstmt).set(@ipar, :SQL_DESC_TYPE, :SQL_WCHAR)
       @desc[:SQL_DESC_TYPE] = :SQL_WCHAR
@@ -1387,23 +1386,22 @@ class Param
       Desc.new(@hstmt).set(@ipar, :SQL_DESC_TYPE, :SQL_WVARCHAR)
       @desc[:SQL_DESC_TYPE] = :SQL_WVARCHAR
     end
-=end
     SQLBindParameter(SQL_PARAM_INPUT)
   end
   def buffer= val
     enc = 'IBM037'  if @impl[:SQL_DESC_CCSID] == 37
-#   enc = 'IBM280'  if @impl[:SQL_DESC_CCSID] == 280
+    enc = 'IBM280'  if @impl[:SQL_DESC_CCSID] == 280
     enc = 'IBM1144' if @impl[:SQL_DESC_CCSID] == 1144
     enc = 'utf-8'   if @impl[:SQL_DESC_CCSID] == 1208
     case
       when @desc[:SQL_DESC_TYPE] == :SQL_CHAR
         l = val.length
         @pcbValue[0, 4] = [l].pack("l*")
-        @buffer[0, l] = val.encode(enc)
+        @buffer[0, l] = val  #.encode(enc)
       when @desc[:SQL_DESC_TYPE] == :SQL_VARCHAR
         l = val.length
         @buffer[0, 2] = [l].pack('s*')
-        @buffer[2, l+2] = val.encode(enc)
+        @buffer[2, l+2] = val  #.encode(enc)
       else
     end
   end
