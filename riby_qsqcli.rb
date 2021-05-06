@@ -249,7 +249,7 @@ class Env
     temp = @henv[0,4]
     puts "#{temp.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Env (#{rc})" if $DEBUG == true
     SQLSetEnvAttr(ATTRS[:SQL_ATTR_INCLUDE_NULL_IN_LEN], :SQL_FALSE)
-    SQLSetEnvAttr(ATTRS[:SQL_ATTR_UCS2], :SQL_TRUE)
+    SQLSetEnvAttr(ATTRS[:SQL_ATTR_UCS2], :SQL_UNIC_DATA)
     ObjectSpace.define_finalizer(self, Env.finalizer_proc(temp))
     return rc
   end
