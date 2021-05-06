@@ -13,6 +13,7 @@ c.empower(ARGV[0], ARGV[1])
 s = Stmt.new(c)
 s.attrs = { :SQL_ATTR_EXTENDED_COL_INFO => :SQL_TRUE }
 s.prepare(ARGV[2])
+pp s.error
 n = s.numcols
 pp s.error
 cols = []
