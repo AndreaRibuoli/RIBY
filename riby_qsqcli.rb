@@ -1394,7 +1394,7 @@ class Param
   end
   def buffer= val
     enc = 'IBM037'   if @desc[:SQL_DESC_CCSID] == 37
-  #  enc = 'IBM280'   if @desc[:SQL_DESC_CCSID] == 280
+    enc = 'IBM280'   if @desc[:SQL_DESC_CCSID] == 280
     enc = 'IBM1144'  if @desc[:SQL_DESC_CCSID] == 1144
     enc = 'UTF-16BE' if @desc[:SQL_DESC_CCSID] == 1200
     enc = 'utf-8'    if @desc[:SQL_DESC_CCSID] == 1208

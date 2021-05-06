@@ -54,9 +54,10 @@ Let's go!
 32. [to work hard for a fix](#32-to-work-hard-for-a-fix)
 33. [to find a role for columns](#33-to-find-a-role-for-columns)
 34. [to customize descriptors](#34-to-customize-descriptors)
+35. [to enjoy DB2 encoding support](#35-to-enjoy-db2-encoding-support)
 
 <!---
-3X. [to to customize subsystem](#3X-to-customize-subsystem)
+3X. [to customize subsystem](#3X-to-customize-subsystem)
 
 ----
 ### 3X. to customize subsystem
@@ -69,6 +70,83 @@ There is a corresponding Environment attribute named **SQL\_ATTR\_SERVERMODE\_SU
 in previous requests.
 
 --->
+
+
+----
+### 35. to enjoy DB2 encoding support
+
+I thank *Kevin Adler* (IBM) for providing a subtle hint on how to interpret the quite obscure **SQL\_ATTR\_UCS2**.
+I thought it was useless for me as I was using Wide APIs but it revealed itself as crucial in supporting string **parameter markers** transcoding.
+ 
+In a previous post I explained how I leveraged Ruby's support for YAML files.
+One of the yaml file I created describes the nature of attributes (*SQL\_ATTR\_xxx*) and the actual options.
+I adopted Ruby **convention-over-configuration** approach in structuring its content.
+
+The definition of Ruby **Symbol** `:SQL_ATTR_UCS2` is inside the `:VALATTR_DECO` that groups the options requiring decoding. This means that when reading attributes the driver I am writing can handle Symbols rather than numbers:
+
+``` yaml
+:VALATTR_DECO:
+  :SQL_ATTR_UCS2:
+    :SQL_FALSE: 0
+    :SQL_TRUE: 1
+``` 
+
+Although public documentation still mentions `SQL_FALSE` (0) and `SQL_TRUE` (1) as possible options a third one plays a role:
+
+``` yaml
+:VALATTR_DECO:
+  :SQL_ATTR_UCS2:
+    :SQL_FALSE: 0
+    :SQL_TRUE: 1
+    :SQL_UNIC_DATA: 99
+``` 
+
+This value is so relevant that I decided to hardcode its value *Connect* class *initialize* function:
+
+``` ruby
+class Connect
+  include RibyCli
+  def initialize(henv, dsn = '*LOCAL')
+    @hdbc = SQLhandle.malloc
+    . . .
+    rc = SQLAllocHandle(SQL_HANDLE_DBC, henv.handle, @hdbc)
+    . . .  
+    SQLSetConnectAttrW(ATTRS[:SQL_ATTR_UCS2], 99)
+  end
+```
+
+and to forbid its setting (silently ignoring any attempt):
+
+```
+  def attrs= hattrs
+    hattrs.each { |k,v|
+      next if (k == :SQL_ATTR_UCS2)
+      lis = SQLAttrVals[:VALATTR_DECO][k]
+      if lis != nil then
+        SQLSetConnectAttrW(ATTRS[k], lis[v])
+      . . . 
+    }
+  end
+```
+
+The code is now independent from the specific CCSID of the record fields and of parameter markers.
+
+In the previous post we noticed that the implementation descriptor for columns offers an **SQL\_DESC\_NAME** 
+
+```
+:SQL_DESC_NAME=>"SALARY",
+```
+
+<!---
+
+You will be surprized to note that parameters can also return a name.
+
+How that could be possible?
+
+We are used to specify question marks (**?**) to denote values we can provide dinamically on the repeated execution of a prepared statement. But the standard for *parameter markers* specify we can use an alternative notation:
+--->
+
+  
 
 ----
 ### 34. to customize descriptors
