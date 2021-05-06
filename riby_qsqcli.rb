@@ -1397,11 +1397,19 @@ class Param
       when @desc[:SQL_DESC_TYPE] == :SQL_CHAR
         l = val.length
         @pcbValue[0, 4] = [l].pack("l*")
-        @buffer[0, l] = val  #.encode(enc)
+        @buffer[0, l] = val.encode(enc)
       when @desc[:SQL_DESC_TYPE] == :SQL_VARCHAR
         l = val.length
         @buffer[0, 2] = [l].pack('s*')
-        @buffer[2, l+2] = val  #.encode(enc)
+        @buffer[2, l+2] = val.encode(enc)
+        when @desc[:SQL_DESC_TYPE] == :SQL_WCHAR
+          l = val.length
+          @pcbValue[0, 4] = [l].pack("l*")
+          @buffer[0, l] = val.encode('UTF-16BE')
+        when @desc[:SQL_DESC_TYPE] == :SQL_WVARCHAR
+          l = val.length
+          @buffer[0, 2] = [l].pack('s*')
+          @buffer[2, l+2] = val.encode('UTF-16BE')
       else
     end
   end
