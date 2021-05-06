@@ -273,7 +273,6 @@ class Env
   def attrs= hattrs
     hattrs.each { |k,v|
       next if (k == :SQL_ATTR_INCLUDE_NULL_IN_LEN)
-      next if (k == :SQL_ATTR_UCS2)
       lis = SQLAttrVals[:VALATTR_DECO][k]
       if lis != nil then
         SQLSetEnvAttr(ATTRS[k], lis[v])
@@ -421,7 +420,7 @@ class Connect
     henv.add(temp)
     puts "#{temp.unpack('H*')} #{'%10.7f' % Time.now.to_f} Alloc Connect (#{rc})" if $DEBUG == true
     ObjectSpace.define_finalizer(self, Connect.finalizer_proc(temp,henv))
-    SQLSetConnectAttrW(ATTRS[:SQL_ATTR_UCS2], :SQL_UNIC_DATA)
+    SQLSetConnectAttrW(ATTRS[:SQL_ATTR_UCS2], 99)
   end
   def self.finalizer_proc(h,henv)
     proc {
@@ -465,6 +464,7 @@ class Connect
   end
   def attrs= hattrs
     hattrs.each { |k,v|
+      next if (k == :SQL_ATTR_UCS2)
       lis = SQLAttrVals[:VALATTR_DECO][k]
       if lis != nil then
         SQLSetConnectAttrW(ATTRS[k], lis[v])
