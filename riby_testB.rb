@@ -22,6 +22,7 @@ n.times {|i|
 cols.each { |f| f.bind } if ARGV[4] == 'BIND'
 m = s.numparams
 pars = []
+Desc.new(s).set(1, :SQL_DESC_CCSID, 1208)
 m.times {|i|
   seq = i+1
   pars << Param.new(s, seq)
