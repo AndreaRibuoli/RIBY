@@ -1165,7 +1165,8 @@ class Desc
       when (t = SQLDescVals[:VALDESC_NUM][fldi]) != nil
         return { fldi => buffer[0, 4].unpack("l")[0] }
       when (t = SQLDescVals[:VALDESC_WCHAR][fldi]) != nil
-        return { fldi => buffer[0, 128].force_encoding('UTF-16BE').encode('utf-8').delete("\000") }
+        return { fldi => [buffer[0, 128].force_encoding('UTF-16BE').encode('utf-8').delete("\000"),
+                          buffer[0,  64].unpack("H*")[0]] }
       else
         return { fldi => 'not found!'}
     end
