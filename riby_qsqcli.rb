@@ -1280,13 +1280,10 @@ class Column
   end
   def SQLGetColW()
     if @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_CHAR
-    #  Desc.new(@hstmt, false).set(@icol, :SQL_DESC_CONCISE_TYPE, :SQL_WCHAR)
       Desc.new(@hstmt, false).set(@icol, :SQL_DESC_CCSID, 1200)
-      l = @desc[:SQL_DESC_LENGTH] * 2
-      Desc.new(@hstmt, false).set(@icol, :SQL_DESC_LENGTH, l)
-    #  @desc[:SQL_DESC_CONCISE_TYPE] = :SQL_WCHAR
+      Desc.new(@hstmt, false).set(@icol, :SQL_DESC_CONCISE_TYPE, :SQL_WCHAR)
       @desc[:SQL_DESC_CCSID]  = 1200
-      @desc[:SQL_DESC_LENGTH] = l
+      @desc[:SQL_DESC_CONCISE_TYPE] = :SQL_WCHAR
     end
     if @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_VARCHAR
     #  Desc.new(@hstmt, false).set(@icol, :SQL_DESC_CONCISE_TYPE, :SQL_WVARCHAR)
