@@ -1332,6 +1332,7 @@ class Column
       when @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_CHAR || @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_DATE ||
            @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_TIME || @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_TIMESTAMP
         enc = trasco(@desc[:SQL_DESC_CCSID])
+        puts "Using #{enc} encoding"
         return tmpbuffer[0, @desc[:SQL_DESC_LENGTH]].force_encoding(enc).encode('utf-8')
       when @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_WCHAR && pcbValue[0, 4] == SQL_NTS
         tbr = tmpbuffer[0, tmpbuffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
