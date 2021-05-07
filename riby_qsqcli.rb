@@ -1161,7 +1161,7 @@ class Desc
       when (t = SQLDescVals[:VALDESC_DECO][fldi]) != nil
         return { fldi => t.key(buffer[0, 2].unpack("s")[0]) }
       when (t = SQLDescVals[:VALDESC_DECO_INT][fldi]) != nil
-        puts "searching for #{fldi}"
+        puts "searching for #{fldi} = #{buffer[0, 4].unpack('l')}"
         return { fldi => t.key(buffer[0, 4].unpack("l")[0]) }
       when (t = SQLDescVals[:VALDESC_SMALLINT][fldi]) != nil
         return { fldi => buffer[0, 2].unpack("s")[0] }
