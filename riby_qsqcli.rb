@@ -1279,18 +1279,20 @@ class Column
     rc = ileArguments[ 16, 4].unpack('l')[0]
   end
   def SQLGetColW()
+=begin
     if @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_CHAR
-      Desc.new(@hstmt, false).set(@icol, :SQL_DESC_CCSID, 1200)
       Desc.new(@hstmt, false).set(@icol, :SQL_DESC_CONCISE_TYPE, :SQL_WCHAR)
-      @desc[:SQL_DESC_CCSID]  = 1200
+      Desc.new(@hstmt, false).set(@icol, :SQL_DESC_CCSID, 1200)
       @desc[:SQL_DESC_CONCISE_TYPE] = :SQL_WCHAR
+      @desc[:SQL_DESC_CCSID]  = 1200
     end
     if @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_VARCHAR
-    #  Desc.new(@hstmt, false).set(@icol, :SQL_DESC_CONCISE_TYPE, :SQL_WVARCHAR)
+      Desc.new(@hstmt, false).set(@icol, :SQL_DESC_CONCISE_TYPE, :SQL_WVARCHAR)
       Desc.new(@hstmt, false).set(@icol, :SQL_DESC_CCSID, 1200)
-    #  @desc[:SQL_DESC_CONCISE_TYPE] = :SQL_WVARCHAR
+      @desc[:SQL_DESC_CONCISE_TYPE] = :SQL_WVARCHAR
       @desc[:SQL_DESC_CCSID] = 1200
     end
+=end
     pp [@desc, @impl] if $VERBOSE == true
     tmpbuffer    = INFObuffer.malloc
     pcbValue     = SQLintsize.malloc
@@ -1310,7 +1312,6 @@ class Column
     ileArguments[  80, 16] = [0, pcbValue.to_i].pack("q*")
     Ilecallx.call(SQLApis['SQLGetCol'], ileArguments, SQLApiList['SQLGetCol'], - 5, 0)
     rc = ileArguments[ 16, 4].unpack('l')[0]
-    puts "SQLGetCol returned #{rc} on #{@desc}"
     return innerLogic(tmpbuffer, pcbValue)
   end
   def innerLogic(tmpbuffer, pcbValue)
@@ -1332,7 +1333,6 @@ class Column
       when @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_CHAR || @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_DATE ||
            @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_TIME || @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_TIMESTAMP
         enc = trasco(@desc[:SQL_DESC_CCSID])
-        puts "Lunghezza #{@desc[:SQL_DESC_LENGTH]} #{pcbValue[0, 4].unpack("l*")[0]}"
         return tmpbuffer[0, @desc[:SQL_DESC_LENGTH]].force_encoding(enc).encode('utf-8')
       when @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_WCHAR && pcbValue[0, 4] == SQL_NTS
         tbr = tmpbuffer[0, tmpbuffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
