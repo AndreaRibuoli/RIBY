@@ -40,6 +40,7 @@ while s.fetch == 0
   }
   records << row
 end
+pp s.error
 CSV.open("../demo.csv", "w") do |csv|
   records.each do |row|
     csv << row
