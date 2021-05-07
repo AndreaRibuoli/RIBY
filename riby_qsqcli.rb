@@ -1115,6 +1115,7 @@ class Desc
   def desc_data(n)
     h = {}
     DESCS.each { |k,v|
+      puts "#{k} (#{v})"
       h.merge!(SQLGetDescFieldW(n, k))
     }
     return h
@@ -1160,6 +1161,7 @@ class Desc
       when (t = SQLDescVals[:VALDESC_DECO][fldi]) != nil
         return { fldi => t.key(buffer[0, 2].unpack("s")[0]) }
       when (t = SQLDescVals[:VALDESC_DECO_INT][fldi]) != nil
+        puts "searching for #{fldi}"
         return { fldi => t.key(buffer[0, 4].unpack("l")[0]) }
       when (t = SQLDescVals[:VALDESC_SMALLINT][fldi]) != nil
         return { fldi => buffer[0, 2].unpack("s")[0] }
