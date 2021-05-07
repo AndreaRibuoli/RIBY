@@ -1236,8 +1236,8 @@ class Column
     @icol
   end
   def bind
-    Desc.new(@hstmt, false).set(@icol, :SQL_DESC_TYPE, :SQL_WCHAR)    if @desc[:SQL_DESC_TYPE] == :SQL_CHAR
-    Desc.new(@hstmt, false).set(@icol, :SQL_DESC_TYPE, :SQL_WVARCHAR) if @desc[:SQL_DESC_TYPE] == :SQL_VARCHAR
+    Desc.new(@hstmt, false).set(@icol, :SQL_DESC_CONCISE_TYPE, :SQL_WCHAR)    if @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_CHAR
+    Desc.new(@hstmt, false).set(@icol, :SQL_DESC_CONCISE_TYPE, :SQL_WVARCHAR) if @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_VARCHAR
     SQLBindCol()
   end
   def get
@@ -1255,10 +1255,10 @@ class Column
     ileArguments[   0, 32] = PAD_32
     ileArguments[  32,  4] = @hstmt.handle
     ileArguments[  36,  2] = [@icol].pack("s*")
-    ileArguments[  38,  2] = [SQLDescVals[:VALDESC_DECO][:SQL_DESC_TYPE][@desc[:SQL_DESC_TYPE]]].pack("s*")
+    ileArguments[  38,  2] = [SQLDescVals[:VALDESC_DECO][:SQL_DESC_CONCISE_TYPE][@desc[:SQL_DESC_CONCISE_TYPE]]].pack("s*")
     ileArguments[  40,  8] = PAD_08
     ileArguments[  48, 16] = [ 0, @buffer.to_i].pack("q*")
-    if @desc[:SQL_DESC_TYPE] == :SQL_DECIMAL || @desc[:SQL_DESC_TYPE] == :SQL_NUMERIC
+    if @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_DECIMAL || @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_NUMERIC
       ileArguments[  64,  4] = [@desc[:SQL_DESC_PRECISION] * 256 + @desc[:SQL_DESC_SCALE]].pack("l*")
     else
       ileArguments[  64,  4] = [@buffer.instance_variable_get(:@entity).size].pack("l*")
@@ -1279,7 +1279,7 @@ class Column
     ileArguments[  38,  2] = [SQLDescVals[:VALDESC_DECO_INT][:SQL_DESC_CONCISE_TYPE][@desc[:SQL_DESC_CONCISE_TYPE]]].pack("s*")
     ileArguments[  40,  8] = PAD_08
     ileArguments[  48, 16] = [ 0, tmpbuffer.to_i].pack("q*")
-    if @desc[:SQL_DESC_TYPE] == :SQL_DECIMAL || @desc[:SQL_DESC_TYPE] == :SQL_NUMERIC
+    if @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_DECIMAL || @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_NUMERIC
       ileArguments[  64,  4] = [@desc[:SQL_DESC_PRECISION] * 256 + @desc[:SQL_DESC_SCALE]].pack("l*")
     else
       ileArguments[  64,  4] = [tmpbuffer.instance_variable_get(:@entity).size].pack("l*")
@@ -1294,7 +1294,7 @@ class Column
     case
       when pcbValue[0, 4] == :SQL_NULL_DATA
         return nil
-      when @desc[:SQL_DESC_TYPE] == :SQL_DECIMAL || @desc[:SQL_DESC_TYPE] == :SQL_NUMERIC
+      when @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_DECIMAL || @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_NUMERIC
         l = @desc[:SQL_DESC_PRECISION]
         d = @desc[:SQL_DESC_SCALE]
         z = tmpbuffer[0, l+1].unpack("H*")[0]
@@ -1302,35 +1302,35 @@ class Column
         dec << '-' if z[-1] == 'f'
         dec << z[0, l-d] << '.' << z[l-d, d]
         return dec.to_f
-      when @desc[:SQL_DESC_TYPE] == :SQL_SMALLINT
+      when @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_SMALLINT
         return tmpbuffer[0, 2].unpack("s*")[0]
-      when @desc[:SQL_DESC_TYPE] == :SQL_INTEGER
+      when @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_INTEGER
         return tmpbuffer[0, 4].unpack("l*")[0]
-      when @desc[:SQL_DESC_TYPE] == :SQL_CHAR || @desc[:SQL_DESC_TYPE] == :SQL_DATE ||
-           @desc[:SQL_DESC_TYPE] == :SQL_TIME || @desc[:SQL_DESC_TYPE] == :SQL_TIMESTAMP
+      when @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_CHAR || @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_DATE ||
+           @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_TIME || @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_TIMESTAMP
         enc = trasco(@desc[:SQL_DESC_CCSID])
         return tmpbuffer[0, @desc[:SQL_DESC_LENGTH]].force_encoding(enc).encode('utf-8')
-      when @desc[:SQL_DESC_TYPE] == :SQL_WCHAR && pcbValue[0, 4] == SQL_NTS
+      when @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_WCHAR && pcbValue[0, 4] == SQL_NTS
         tbr = tmpbuffer[0, tmpbuffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
         @buffer[0, @buffer.instance_variable_get(:@entity).size] =
                   ZEROED[0, @buffer.instance_variable_get(:@entity).size] if @buffer.nil? == false
         return tbr
-      when @desc[:SQL_DESC_TYPE] == :SQL_WCHAR && pcbValue[0, 4] == SQL_NULL_HANDLE
+      when @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_WCHAR && pcbValue[0, 4] == SQL_NULL_HANDLE
         return tmpbuffer[2, 2*@desc[:SQL_DESC_LENGTH]].force_encoding('UTF-16BE').encode('utf-8')
-      when @desc[:SQL_DESC_TYPE] == :SQL_WCHAR
+      when @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_WCHAR
         puts "pcbValue: #{pcbValue[0, 4].unpack("l*")[0]}"
         return tmpbuffer[0, 2*@desc[:SQL_DESC_LENGTH]].force_encoding('UTF-16BE').encode('utf-8')
-      when @desc[:SQL_DESC_TYPE] == :SQL_WVARCHAR && pcbValue[0, 4] == SQL_NTS
+      when @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_WVARCHAR && pcbValue[0, 4] == SQL_NTS
         tbr = tmpbuffer[0, tmpbuffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
         @buffer[0, @buffer.instance_variable_get(:@entity).size] =
                     ZEROED[0, @buffer.instance_variable_get(:@entity).size] if @buffer.nil? == false
         return tbr
-      when @desc[:SQL_DESC_TYPE] == :SQL_WVARCHAR && pcbValue[0, 4] == SQL_NULL_HANDLE
+      when @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_WVARCHAR && pcbValue[0, 4] == SQL_NULL_HANDLE
         return tmpbuffer[2, 2*tmpbuffer[0, 2].unpack("s*")[0]].force_encoding('UTF-16BE').encode('utf-8')
-      when @desc[:SQL_DESC_TYPE] == :SQL_VARCHAR
+      when @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_VARCHAR
         enc = trasco(@desc[:SQL_DESC_CCSID])
         return tmpbuffer[2, tmpbuffer[0, 2].unpack("s*")[0]].force_encoding(enc).encode('utf-8')
-      when @desc[:SQL_DESC_TYPE] == :SQL_UNKNOWN_TYPE  && pcbValue[0, 4] == SQL_NTS
+      when @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_UNKNOWN_TYPE  && pcbValue[0, 4] == SQL_NTS
         tbr = tmpbuffer[0,  tmpbuffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
         tmpbuffer[0, tmpbuffer.instance_variable_get(:@entity).size] =
            ZEROED[0, tmpbuffer.instance_variable_get(:@entity).size]
@@ -1377,35 +1377,35 @@ class Param
     @desc
   end
   def bind
-    if @desc[:SQL_DESC_TYPE] == :SQL_CHAR
-      Desc.new(@hstmt).set(@ipar, :SQL_DESC_TYPE, :SQL_WCHAR)
+    if @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_CHAR
+      Desc.new(@hstmt).set(@ipar, :SQL_DESC_CONCISE_TYPE, :SQL_WCHAR)
       Desc.new(@hstmt).set(@ipar, :SQL_DESC_CCSID, 1200)
-      @desc[:SQL_DESC_TYPE] = :SQL_WCHAR
+      @desc[:SQL_DESC_CONCISE_TYPE] = :SQL_WCHAR
       @desc[:SQL_DESC_CCSID] = 1200
     end
-    if @desc[:SQL_DESC_TYPE] == :SQL_VARCHAR
-      Desc.new(@hstmt).set(@ipar, :SQL_DESC_TYPE, :SQL_WVARCHAR)
+    if @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_VARCHAR
+      Desc.new(@hstmt).set(@ipar, :SQL_DESC_CONCISE_TYPE, :SQL_WVARCHAR)
       Desc.new(@hstmt).set(@ipar, :SQL_DESC_CCSID, 1200)
-      @desc[:SQL_DESC_TYPE] = :SQL_WVARCHAR
+      @desc[:SQL_DESC_CONCISE_TYPE] = :SQL_WVARCHAR
       @desc[:SQL_DESC_CCSID] = 1200
     end
     SQLBindParameter(SQL_PARAM_INPUT)
   end
   def buffer= val
     case
-      when @desc[:SQL_DESC_TYPE] == :SQL_CHAR
+      when @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_CHAR
         l = val.length
         @pcbValue[0, 4] = [l].pack("l*")
         @buffer[0, l] = val.encode(trasco(@desc[:SQL_DESC_CCSID]))
-      when @desc[:SQL_DESC_TYPE] == :SQL_VARCHAR
+      when @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_VARCHAR
         l = val.length
         @buffer[0, 2] = [l].pack('s*')
         @buffer[2, l] = val.encode(trasco(@desc[:SQL_DESC_CCSID]))
-      when @desc[:SQL_DESC_TYPE] == :SQL_WCHAR
+      when @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_WCHAR
         l = val.length
         @pcbValue[0, 4] = [l].pack("l*")
         @buffer[0, l*2] = val.encode(trasco(@desc[:SQL_DESC_CCSID]))
-      when @desc[:SQL_DESC_TYPE] == :SQL_WVARCHAR
+      when @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_WVARCHAR
         l = val.length
         @buffer[0, 2] = [l].pack('s*')
         @buffer[2, l*2] = val.encode(trasco(@desc[:SQL_DESC_CCSID]))
@@ -1428,9 +1428,9 @@ class Param
     ileArguments[  32,  4] = @hstmt.handle
     ileArguments[  36,  2] = [@ipar].pack("s*")
     ileArguments[  38,  2] = iotype
-    ileArguments[  40,  2] = [SQLDescVals[:VALDESC_DECO][:SQL_DESC_TYPE][@desc[:SQL_DESC_TYPE]]].pack("s*")
+    ileArguments[  40,  2] = [SQLDescVals[:VALDESC_DECO][:SQL_DESC_CONCISE_TYPE][@desc[:SQL_DESC_CONCISE_TYPE]]].pack("s*")
   # ileArguments[  40,  2] = [99].pack("s*")
-    ileArguments[  42,  2] = [SQLDescVals[:VALDESC_DECO][:SQL_DESC_TYPE][@impl[:SQL_DESC_TYPE]]].pack("s*")
+    ileArguments[  42,  2] = [SQLDescVals[:VALDESC_DECO][:SQL_DESC_CONCISE_TYPE][@impl[:SQL_DESC_CONCISE_TYPE]]].pack("s*")
     ileArguments[  44,  4] = [@desc[:SQL_DESC_LENGTH]].pack("l*")  # da completare
     ileArguments[  48,  2] = [@desc[:SQL_DESC_SCALE]].pack("s*")
     ileArguments[  50, 14] = PAD_14
