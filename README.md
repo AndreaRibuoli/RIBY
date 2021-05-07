@@ -153,8 +153,24 @@ that generates this intriguing error during `prepare`:
  "Variabile NAME non definita o non utilizzabile per il codice causa 8."
 ```
 
-So **SQL42618** is a new trail to follow!
+We can reproduce the same error from QM query:
   
+```  
+                     Ulteriori informazioni sui messaggi                      
+                                                                              
+ID messaggio . . . . . :   SQL0312                                            
+Data invio . . . . . . :   07/05/21      Ora invio  . . . . . . :   08:53:50  
+                                                                              
+Messaggio . . . :   Variabile NAME non definita o non utilizzabile per il     
+  codice causa 8.                                                             
+                                                                              
+Causa  . . . : La variabile NAME appare nell'istruzione SQL, ma non è         
+  utilizzabile per il codice causa 8:                                         
+
+    8 -- La variabile host è specificata nell'SQL dinamico. Le variabili host 
+  non sono valide nell'SQL dinamico. Devono essere utilizzati, invece,        
+  contrassegni parametro.                                                     
+```
 
 ----
 ### 34. to customize descriptors
