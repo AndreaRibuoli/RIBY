@@ -17,7 +17,6 @@ pp s.error
 n = s.numcols
 pp s.error
 cols = []
-head = []
 n.times {|i|
   seq = i+1
   cols << Column.new(s, seq)
@@ -30,10 +29,9 @@ m.times {|i|
   pars << Param.new(s, seq)
 }
 pars.each { |f| f.bind }
-pp Desc.new(s).desc_data(1)
 pars[0].buffer= ARGV[3]
 s.execute
-records = [head]
+records = []
 while s.fetch == 0
   row = []
   cols.each { |f|
@@ -41,7 +39,7 @@ while s.fetch == 0
       row << f.buffer.to_s
     else
       puts "About to call 'get'"
-      row << f.get.to_s
+      row << f.get
     end
   }
   records << row
