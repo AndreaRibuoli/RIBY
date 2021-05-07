@@ -1332,8 +1332,8 @@ class Column
       when @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_CHAR || @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_DATE ||
            @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_TIME || @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_TIMESTAMP
         enc = trasco(@desc[:SQL_DESC_CCSID])
- #      return tmpbuffer[0, @desc[:SQL_DESC_LENGTH]].force_encoding(enc).encode('utf-8')
-        return tmpbuffer[0, pcbValue[0, 4].unpack('l')].force_encoding(enc).encode('utf-8')
+        puts "Lunghezza #{@desc[:SQL_DESC_LENGTH]} #{pcbValue[0, 4].unpack("l*")[0]}"
+        return tmpbuffer[0, @desc[:SQL_DESC_LENGTH]].force_encoding(enc).encode('utf-8')
       when @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_WCHAR && pcbValue[0, 4] == SQL_NTS
         tbr = tmpbuffer[0, tmpbuffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
         @buffer[0, @buffer.instance_variable_get(:@entity).size] =
