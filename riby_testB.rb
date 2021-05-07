@@ -35,12 +35,8 @@ records = []
 while s.fetch == 0
   row = []
   cols.each { |f|
-    if ARGV[4] == 'BIND'
-      row << f.buffer.to_s
-    else
-      puts "About to call 'get'"
-      row << f.get
-    end
+    row << f.buffer.to_s if ARGV[4] == 'BIND'
+    row << f.get.to_s    if ARGV[4] == 'GET'
   }
   records << row
 end
