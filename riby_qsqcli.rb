@@ -1161,7 +1161,6 @@ class Desc
       when (t = SQLDescVals[:VALDESC_DECO][fldi]) != nil
         return { fldi => t.key(buffer[0, 2].unpack("s")[0]) }
       when (t = SQLDescVals[:VALDESC_DECO_INT][fldi]) != nil
-        puts "searching for #{fldi} = #{buffer[0, 4].unpack('l')}"
         return { fldi => t.key(buffer[0, 4].unpack("l")[0]) }
       when (t = SQLDescVals[:VALDESC_SMALLINT][fldi]) != nil
         return { fldi => buffer[0, 2].unpack("s")[0] }
@@ -1278,7 +1277,7 @@ class Column
     ileArguments[   0, 32] = PAD_32
     ileArguments[  32,  4] = @hstmt.handle
     ileArguments[  36,  2] = [@icol].pack("s*")
-    ileArguments[  38,  2] = [SQLDescVals[:VALDESC_DECO_INT][:SQL_DESC_CONCISE_TYPE][@desc[:SQL_DESC_CONCISE_TYPE]]].pack("s*")
+    ileArguments[  38,  2] = [SQLDescVals[:VALDESC_DECO][:SQL_DESC_CONCISE_TYPE][@desc[:SQL_DESC_CONCISE_TYPE]]].pack("s*")
     ileArguments[  40,  8] = PAD_08
     ileArguments[  48, 16] = [ 0, tmpbuffer.to_i].pack("q*")
     if @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_DECIMAL || @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_NUMERIC
@@ -1430,9 +1429,9 @@ class Param
     ileArguments[  32,  4] = @hstmt.handle
     ileArguments[  36,  2] = [@ipar].pack("s*")
     ileArguments[  38,  2] = iotype
-    ileArguments[  40,  2] = [SQLDescVals[:VALDESC_DECO_INT][:SQL_DESC_CONCISE_TYPE][@desc[:SQL_DESC_CONCISE_TYPE]]].pack("s*")
+    ileArguments[  40,  2] = [SQLDescVals[:VALDESC_DECO][:SQL_DESC_CONCISE_TYPE][@desc[:SQL_DESC_CONCISE_TYPE]]].pack("s*")
   # ileArguments[  40,  2] = [99].pack("s*")
-    ileArguments[  42,  2] = [SQLDescVals[:VALDESC_DECO_INT][:SQL_DESC_CONCISE_TYPE][@impl[:SQL_DESC_CONCISE_TYPE]]].pack("s*")
+    ileArguments[  42,  2] = [SQLDescVals[:VALDESC_DECO][:SQL_DESC_CONCISE_TYPE][@impl[:SQL_DESC_CONCISE_TYPE]]].pack("s*")
     ileArguments[  44,  4] = [@desc[:SQL_DESC_LENGTH]].pack("l*")  # da completare
     ileArguments[  48,  2] = [@desc[:SQL_DESC_SCALE]].pack("s*")
     ileArguments[  50, 14] = PAD_14
