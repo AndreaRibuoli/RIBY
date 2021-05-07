@@ -1236,8 +1236,18 @@ class Column
     @icol
   end
   def bind
-    Desc.new(@hstmt, false).set(@icol, :SQL_DESC_CONCISE_TYPE, :SQL_WCHAR)    if @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_CHAR
-    Desc.new(@hstmt, false).set(@icol, :SQL_DESC_CONCISE_TYPE, :SQL_WVARCHAR) if @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_VARCHAR
+    if @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_CHAR
+      Desc.new(@hstmt, false).set(@icol, :SQL_DESC_CONCISE_TYPE, :SQL_WCHAR)
+      Desc.new(@hstmt, false).set(@icol, :SQL_DESC_CCSID, 1200)
+      @desc[:SQL_DESC_CONCISE_TYPE] = :SQL_WCHAR
+      @desc[:SQL_DESC_CCSID] = 1200
+    end
+    if @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_VARCHAR
+      Desc.new(@hstmt, false).set(@icol, :SQL_DESC_CONCISE_TYPE, :SQL_WVARCHAR)
+      Desc.new(@hstmt, false).set(@icol, :SQL_DESC_CCSID, 1200)
+      @desc[:SQL_DESC_CONCISE_TYPE] = :SQL_WVARCHAR
+      @desc[:SQL_DESC_CCSID] = 1200
+    end
     SQLBindCol()
   end
   def get
