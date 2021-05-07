@@ -1279,9 +1279,6 @@ class Column
     rc = ileArguments[ 16, 4].unpack('l')[0]
   end
   def SQLGetColW()
-    pp [@desc, @impl] if $VERBOSE == true
-    tmpbuffer    = INFObuffer.malloc
-    pcbValue     = SQLintsize.malloc
     if @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_CHAR
       Desc.new(@hstmt, false).set(@icol, :SQL_DESC_CONCISE_TYPE, :SQL_WCHAR)
       Desc.new(@hstmt, false).set(@icol, :SQL_DESC_CCSID, 1200)
@@ -1294,6 +1291,9 @@ class Column
       @desc[:SQL_DESC_CONCISE_TYPE] = :SQL_WVARCHAR
       @desc[:SQL_DESC_CCSID] = 1200
     end
+    pp [@desc, @impl] if $VERBOSE == true
+    tmpbuffer    = INFObuffer.malloc
+    pcbValue     = SQLintsize.malloc
     ileArguments = ILEarglist.malloc
     ileArguments[   0, 32] = PAD_32
     ileArguments[  32,  4] = @hstmt.handle
@@ -1310,6 +1310,7 @@ class Column
     ileArguments[  80, 16] = [0, pcbValue.to_i].pack("q*")
     Ilecallx.call(SQLApis['SQLGetCol'], ileArguments, SQLApiList['SQLGetCol'], - 5, 0)
     rc = ileArguments[ 16, 4].unpack('l')[0]
+    puts "SQLGetCol returned #{rc} on #{@desc}"
     return innerLogic(tmpbuffer, pcbValue)
   end
   def innerLogic(tmpbuffer, pcbValue)
