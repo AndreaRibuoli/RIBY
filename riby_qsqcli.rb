@@ -1115,7 +1115,6 @@ class Desc
   def desc_data(n)
     h = {}
     DESCS.each { |k,v|
-      puts "#{k} (#{v})"
       h.merge!(SQLGetDescFieldW(n, k))
     }
     return h
@@ -1319,7 +1318,6 @@ class Column
       when @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_WCHAR && pcbValue[0, 4] == SQL_NULL_HANDLE
         return tmpbuffer[2, 2*@desc[:SQL_DESC_LENGTH]].force_encoding('UTF-16BE').encode('utf-8')
       when @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_WCHAR
-        puts "pcbValue: #{pcbValue[0, 4].unpack("l*")[0]}"
         return tmpbuffer[0, 2*@desc[:SQL_DESC_LENGTH]].force_encoding('UTF-16BE').encode('utf-8')
       when @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_WVARCHAR && pcbValue[0, 4] == SQL_NTS
         tbr = tmpbuffer[0, tmpbuffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
