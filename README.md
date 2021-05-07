@@ -434,6 +434,8 @@ pp dci.desc_data(1)
 
 Further investigation is required!
 
+[NEXT-35](#35-to-enjoy-db2-encoding-support)
+
 ----
 ### 33. to find a role for columns
 
@@ -570,7 +572,7 @@ irb(main):015:0> end
 => nil
 irb(main):016:0>
 ```
-[NEXT-34(#34-to-customize-descriptors)
+[NEXT-34](#34-to-customize-descriptors)
 
 
 ### 32. to work hard for a fix

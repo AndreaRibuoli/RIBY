@@ -769,7 +769,7 @@ class Stmt
     SQL_DESC_SCALE:                   6,
     SQL_DESC_SEARCHABLE:             15,
     SQL_DESC_TYPE_NAME:              23,
-    SQL_DESC_TYPE4:                   2,
+    SQL_DESC_CONCISE_TYPE:            2,
     SQL_DESC_UNNAMED:                12,
     SQL_DESC_UPDATABLE:              16,
   }
@@ -1130,7 +1130,7 @@ class Desc
     SQL_DESC_NULLABLE:                8,
     SQL_DESC_PRECISION:               5,
     SQL_DESC_SCALE:                   6,
-    SQL_DESC_TYPE:                    2,
+    SQL_DESC_CONCISE_TYPE:            2,
     SQL_DESC_UNNAMED:                12
   }
   private
