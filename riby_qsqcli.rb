@@ -747,6 +747,7 @@ class Stmt
     }
     attrs_setting
   end
+=begin
   DESCS = {
 #   SQL_DESC_ALLOC_TYPE:             99,
     SQL_DESC_AUTO_INCREMENT:         14,
@@ -773,7 +774,8 @@ class Stmt
     SQL_DESC_UNNAMED:                12,
     SQL_DESC_UPDATABLE:              16,
   }
-  
+=end
+
   private
   ATTRS = {
     SQL_ATTR_APP_ROW_DESC:       10010,
