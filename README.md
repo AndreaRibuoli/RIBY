@@ -117,7 +117,7 @@ class Connect
 
 and consistently to forbid further setting (silently ignoring any attempt with public method):
 
-```
+``` ruby
   def attrs= hattrs
     hattrs.each { |k,v|
       next if (k == :SQL_ATTR_UCS2)
