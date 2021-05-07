@@ -75,14 +75,14 @@ in previous requests.
 ----
 ### 35. to enjoy DB2 encoding support
 
-I thank *Kevin Adler* (IBM) for providing a subtle hint on how to interpret the quite obscure **SQL\_ATTR\_UCS2**.
-I thought it was useless for me as I was using Wide APIs but it revealed itself as crucial in supporting string **parameter markers** transcoding.
+I thank *Kevin Adler* (IBM) for providing a subtle hint on how to interpret the quite obscure **SQL\_ATTR\_UCS2** connection attribute.
+I thought it was useless for me as I was using Wide APIs but it revealed itself crucial in supporting string **parameter markers** transcoding.
  
 In a previous post I explained how I leveraged Ruby's support for YAML files.
 One of the yaml file I created describes the nature of attributes (*SQL\_ATTR\_xxx*) and the actual options.
 I adopted Ruby **convention-over-configuration** approach in structuring its content.
 
-The definition of Ruby **Symbol** `:SQL_ATTR_UCS2` is inside the `:VALATTR_DECO` that groups the options requiring decoding. This means that when reading attributes the driver I am writing can handle Symbols rather than numbers:
+The definition of Ruby **Symbol** `:SQL_ATTR_UCS2` is inside the `:VALATTR_DECO` one that groups the options requiring decoding (implicitly instructing Ruby code). This means that having read these YAML file the driver can handle Symbols rather than numbers or constants:
 
 ``` yaml
 :VALATTR_DECO:
@@ -91,7 +91,7 @@ The definition of Ruby **Symbol** `:SQL_ATTR_UCS2` is inside the `:VALATTR_DECO`
     :SQL_TRUE: 1
 ``` 
 
-Although public documentation still mentions `SQL_FALSE` (0) and `SQL_TRUE` (1) as possible options a third one plays a role:
+Although public documentation still mentions `SQL_FALSE` (0) and `SQL_TRUE` (1) as possible options a third one plays the crucial role: **SQL\_UNIC\_DATA**
 
 ``` yaml
 :VALATTR_DECO:
@@ -101,7 +101,7 @@ Although public documentation still mentions `SQL_FALSE` (0) and `SQL_TRUE` (1) 
     :SQL_UNIC_DATA: 99
 ``` 
 
-This value is so relevant that I decided to hardcode its value *Connect* class *initialize* function:
+This value is so relevant that I decided to hardcode its setting in *Connect* class *initialize* function:
 
 ``` ruby
 class Connect
@@ -115,7 +115,7 @@ class Connect
   end
 ```
 
-and to forbid its setting (silently ignoring any attempt):
+and consistently to forbid further setting (silently ignoring any attempt with public method):
 
 ```
   def attrs= hattrs
@@ -137,15 +137,23 @@ In the previous post we noticed that the implementation descriptor for columns o
 :SQL_DESC_NAME=>"SALARY",
 ```
 
-<!---
+I wondered if parameters can also be passed a name so that they can be referenced in SQL statements.
+We are used to specify question marks (**?**) to denote values we can update after binding.
+The standard for *parameter markers* specify an alternative notation:
 
-You will be surprized to note that parameters can also return a name.
+``` sql
+select * from sample.employee where firstnme = :name
+```
 
-How that could be possible?
+that generates this intriguing error during `prepare`:
 
-We are used to specify question marks (**?**) to denote values we can provide dinamically on the repeated execution of a prepared statement. But the standard for *parameter markers* specify we can use an alternative notation:
---->
+```
+ "42618",
+ -312,
+ "Variabile NAME non definita o non utilizzabile per il codice causa 8."
+```
 
+So **SQL42618** is a new trail to follow!
   
 
 ----
