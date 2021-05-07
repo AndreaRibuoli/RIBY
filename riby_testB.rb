@@ -40,6 +40,7 @@ while s.fetch == 0
     if ARGV[4] == 'BIND'
       row << f.buffer.to_s
     else
+      puts "About to call 'get'"
       row << f.get.to_s
     end
   }
