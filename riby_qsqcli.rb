@@ -238,6 +238,7 @@ module RibyCli
     Ilecallx.call(SQLApis['SQLEndTran'], ileArguments, SQLApiList['SQLEndTran'], - 5, 0)
     return ileArguments[ 16, 4].unpack('l')[0]
   end
+  def trasco(ccsid) { 1200=>'UTF-16BE', 1208=>'utf-8', 37=>'IBM037', 280=>'IBM280', 1144=>'IBM1144' }[ccsid]; end
 end
 
 class Env
@@ -1305,9 +1306,7 @@ class Column
         return tmpbuffer[0, 4].unpack("l*")[0]
       when @desc[:SQL_DESC_TYPE] == :SQL_CHAR || @desc[:SQL_DESC_TYPE] == :SQL_DATE ||
            @desc[:SQL_DESC_TYPE] == :SQL_TIME || @desc[:SQL_DESC_TYPE] == :SQL_TIMESTAMP
-        enc = 'IBM037'  if @desc[:SQL_DESC_CCSID] == 37
-        enc = 'IBM280'  if @desc[:SQL_DESC_CCSID] == 280
-        enc = 'IBM1144' if @desc[:SQL_DESC_CCSID] == 1144
+        enc = trasco(@desc[:SQL_DESC_CCSID])
         return tmpbuffer[0, @desc[:SQL_DESC_LENGTH]].force_encoding(enc).encode('utf-8')
       when @desc[:SQL_DESC_TYPE] == :SQL_WCHAR && pcbValue[0, 4] == SQL_NTS
         tbr = tmpbuffer[0, tmpbuffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
@@ -1327,9 +1326,7 @@ class Column
       when @desc[:SQL_DESC_TYPE] == :SQL_WVARCHAR && pcbValue[0, 4] == SQL_NULL_HANDLE
         return tmpbuffer[2, 2*tmpbuffer[0, 2].unpack("s*")[0]].force_encoding('UTF-16BE').encode('utf-8')
       when @desc[:SQL_DESC_TYPE] == :SQL_VARCHAR
-        enc = 'IBM037'  if @desc[:SQL_DESC_CCSID] == 37
-        enc = 'IBM280'  if @desc[:SQL_DESC_CCSID] == 280
-        enc = 'IBM1144' if @desc[:SQL_DESC_CCSID] == 1144
+        enc = trasco(@desc[:SQL_DESC_CCSID])
         return tmpbuffer[2, tmpbuffer[0, 2].unpack("s*")[0]].force_encoding(enc).encode('utf-8')
       when @desc[:SQL_DESC_TYPE] == :SQL_UNKNOWN_TYPE  && pcbValue[0, 4] == SQL_NTS
         tbr = tmpbuffer[0,  tmpbuffer.instance_variable_get(:@entity).size].force_encoding('UTF-16BE').encode('utf-8').delete("\000")
@@ -1393,28 +1390,23 @@ class Param
     SQLBindParameter(SQL_PARAM_INPUT)
   end
   def buffer= val
-    enc = 'IBM037'   if @desc[:SQL_DESC_CCSID] == 37
-    enc = 'IBM280'   if @desc[:SQL_DESC_CCSID] == 280
-    enc = 'IBM1144'  if @desc[:SQL_DESC_CCSID] == 1144
-    enc = 'UTF-16BE' if @desc[:SQL_DESC_CCSID] == 1200
-    enc = 'utf-8'    if @desc[:SQL_DESC_CCSID] == 1208
     case
       when @desc[:SQL_DESC_TYPE] == :SQL_CHAR
         l = val.length
         @pcbValue[0, 4] = [l].pack("l*")
-        @buffer[0, l] = val.encode(enc)
+        @buffer[0, l] = val.encode(trasco(@desc[:SQL_DESC_CCSID]))
       when @desc[:SQL_DESC_TYPE] == :SQL_VARCHAR
         l = val.length
         @buffer[0, 2] = [l].pack('s*')
-        @buffer[2, l] = val.encode(enc)
+        @buffer[2, l] = val.encode(trasco(@desc[:SQL_DESC_CCSID]))
       when @desc[:SQL_DESC_TYPE] == :SQL_WCHAR
         l = val.length
         @pcbValue[0, 4] = [l].pack("l*")
-        @buffer[0, l*2] = val.encode(enc)
+        @buffer[0, l*2] = val.encode(trasco(@desc[:SQL_DESC_CCSID]))
       when @desc[:SQL_DESC_TYPE] == :SQL_WVARCHAR
         l = val.length
         @buffer[0, 2] = [l].pack('s*')
-        @buffer[2, l*2] = val.encode(enc)
+        @buffer[2, l*2] = val.encode(trasco(@desc[:SQL_DESC_CCSID]))
       else
     end
   end
