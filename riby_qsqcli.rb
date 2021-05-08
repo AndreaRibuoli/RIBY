@@ -1288,7 +1288,7 @@ class Column
   end
   def innerLogic(tmpbuffer, pcbValue)
     case
-      when pcbValue[0, 4] == :SQL_NULL_DATA
+      when pcbValue[0, 4] == SQL_NULL_DATA
         return nil
       when @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_DECIMAL || @desc[:SQL_DESC_CONCISE_TYPE] == :SQL_NUMERIC
         l = @desc[:SQL_DESC_PRECISION]
@@ -1330,7 +1330,7 @@ class Column
         tmpbuffer[0, tmpbuffer.instance_variable_get(:@entity).size] =
            ZEROED[0, tmpbuffer.instance_variable_get(:@entity).size]
         return tbr
-      when pcbValue[0, 4] == SQL_NULL_HANDLE
+      when pcbValue[0, 4].unpack("l*")[0] == 0
         pp @desc
         return tmpbuffer[0, 4].unpack('H*')
       ##  return tmpbuffer[2, @desc[:SQL_DESC_LENGTH]-2].force_encoding('IBM037').encode('utf-8').strip
