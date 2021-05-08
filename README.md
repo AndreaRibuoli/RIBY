@@ -172,6 +172,10 @@ Causa  . . . : La variabile NAME appare nell'istruzione SQL, ma non è
   contrassegni parametro.                                                     
 ```
 
+To check in your preferred spoken language use `DSPMSGD RANGE(SQL0312) MSGF(QSYS/QSQLMSG)`.
+
+
+
 ----
 ### 34. to customize descriptors
 
