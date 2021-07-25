@@ -4565,7 +4565,7 @@ $ RIBY/onceAgain chRootRibyPrv ruby-devel
 ----
 ### 3. to install Ruby 3.0
 
-In the previous steps we organized a confortable home for our Ruby installation. 
+In the previous steps we organized a comfortable home for our Ruby installation. 
 I organized a yum repository to host current and future builds of Ruby interpreter.
 
 To configure access to the mentioned repository we will use **git**:
