@@ -55,6 +55,7 @@ Let's go!
 33. [to find a role for columns](#33-to-find-a-role-for-columns)
 34. [to customize descriptors](#34-to-customize-descriptors)
 35. [to enjoy DB2 encoding support](#35-to-enjoy-db2-encoding-support)
+36. [to refresh the Ruby interpreter](#36-to-refresh-the-ruby-interpreter)
 
 <!---
 3X. [to customize subsystem](#3X-to-customize-subsystem)
@@ -70,7 +71,17 @@ There is a corresponding Environment attribute named **SQL\_ATTR\_SERVERMODE\_SU
 in previous requests.
 
 --->
+----
+### 36. to refresh the Ruby interpreter
 
+A new version of *Ruby* (**3.0.2**) is available:
+
+```
+bash-5.0$ ruby -v
+ruby 3.0.2p107 (2021-07-07 revision 0db68f0233) [powerpc-os400]
+```
+
+Easily installable from the repository. 
 
 ----
 ### 35. to enjoy DB2 encoding support
@@ -174,7 +185,7 @@ Causa  . . . : La variabile NAME appare nell'istruzione SQL, ma non è
 
 To check in your preferred spoken language use `DSPMSGD RANGE(SQL0312) MSGF(QSYS/QSQLMSG)`.
 
-
+[NEXT-36](#36-to-refresh-the-ruby-interpreter)
 
 ----
 ### 34. to customize descriptors
