@@ -81,14 +81,14 @@ Now we would like to introduce support for **SQLite**: *a relational database ma
  
 There is already a Ruby gem providing *Ruby bindings for the SQLite3 embedded database*: all we need to test is the ability of our interpreter to smoothly support its installation. The complex aspect here is that **sqlite3 gem** is not a *pure\-Ruby* gem but one of those *requiring compilation of C source code*.
 
-To prevent silly errors and be effective in our explanations let us focus on the newly created chroot environment 
+To be effective in our explanations let us focus on the newly created chroot environment 
 adapting it **to become a Ruby gems build-capable** one.
 
 By issuing `chroot /QOpenSys/chRootRiby302 /QOpenSys/pkgs/bin/bash` we are entering our chroot with **bash** shell.
 
 Once there, let us perform a `cd $HOME`.
 
-Assuming we will have to fine tune our environment we will first download the gem saving future transfers. 
+Assuming we will have to fine tune our environment we will first download the gem preventing future data transfers. 
 This is performed by issuing:
 
 ```
