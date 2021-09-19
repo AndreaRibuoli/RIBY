@@ -83,7 +83,7 @@ ruby 3.0.2p107 (2021-07-07 revision 0db68f0233) [powerpc-os400]
 
 Easily installable from the repository. 
 
-This is the log while creating a brand new chroot dedicated to Ruby 3.0.2 newly released build (refer to post [#4](#4-to-do-everything-once-again) to get acquainted with **onceAgain** script):
+Following is the log file obtained while creating a brand new chroot dedicated to Ruby 3.0.2. Refer to [post #4](#4-to-do-everything-once-again) to get acquainted with **onceAgain** script.
 
 ```
 bash-5.1$ RIBY/onceAgain chRootRiby302 ruby-devel
