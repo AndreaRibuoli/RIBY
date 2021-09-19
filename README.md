@@ -83,6 +83,911 @@ ruby 3.0.2p107 (2021-07-07 revision 0db68f0233) [powerpc-os400]
 
 Easily installable from the repository. 
 
+This is the log while creating a brand new chroot dedicated to Ruby 3.0.2 newly released build (refer to post [#4](#4-to-do-everything-once-again) to get acquainted with **onceAgain** script):
+
+```
+bash-5.1$ RIBY/onceAgain chRootRiby302 ruby-devel
+ibm                                                         | 3.6 kB  00:00     
+Setting up Install Process
+Package ibmichroot-2.1.3-1.noarch already installed and latest version
+Nothing to do
+
+  #####  #     # ######  ####### ####### ####### 
+ #     # #     # #     # #     # #     #    #    
+ #       #     # #     # #     # #     #    #    
+ #       ####### ######  #     # #     #    #    
+ #       #     # #   #   #     # #     #    #    
+ #     # #     # #    #  #     # #     #    #    
+  #####  #     # #     # ####### #######    #    
+                                                 
+  #####  ####### ####### #     # ######          
+ #     # #          #    #     # #     #         
+ #       #          #    #     # #     #         
+  #####  #####      #    #     # ######          
+       # #          #    #     # #               
+ #     # #          #    #     # #               
+  #####  #######    #     #####  #
+
+
+**********************
+Live IBM i session (changes made).
+**********************
+/QOpenSys/chRootRiby302
+/QOpenSys/chRootRiby302 Does not Exist
++++/QOpenSys/chRootRiby302 creation was successful!+++
+=====================================
+setting up based on /QOpenSys/pkgs/lib/ibmichroot/config/chroot_includes.lst
+=====================================
+action = :tar_dir
+mkdir -p /QOpenSys/chRootRiby302/QOpenSys/usr/include
+Using existing /QOpenSys/pkgs/lib/ibmichroot/config/include.tar
+PWD is: /QOpenSys/chRootRiby302/QOpenSys/usr
+Extracting the tar file  /QOpenSys/pkgs/lib/ibmichroot/config/include.tar
+=====================================
+setting up based on /QOpenSys/pkgs/lib/ibmichroot/config/chroot_minimal.lst
+=====================================
+action = :file
+action = :mkdir
+mkdir -p /QOpenSys/chRootRiby302/QOpenSys/usr/sbin
+mkdir -p /QOpenSys/chRootRiby302/QOpenSys/usr/bin
+mkdir -p /QOpenSys/chRootRiby302/QOpenSys/usr/lib
+mkdir -p /QOpenSys/chRootRiby302/QOpenSys/usr/include
+mkdir -p /QOpenSys/chRootRiby302/QOpenSys/usr/bin/X11
+mkdir -p /QOpenSys/chRootRiby302/QOpenSys/usr/lib/X11
+mkdir -p /QOpenSys/chRootRiby302/QOpenSys/var
+mkdir -p /QOpenSys/chRootRiby302/dev/pts
+mkdir -p /QOpenSys/chRootRiby302/dev/xti
+mkdir -p /QOpenSys/chRootRiby302/tmp
+mkdir -p /QOpenSys/chRootRiby302/home
+mkdir -p /QOpenSys/chRootRiby302/usr
+mkdir -p /QOpenSys/chRootRiby302/QOpenSys/usr/icu4c/lib
+mkdir -p /QOpenSys/chRootRiby302/QOpenSys/usr/lib/lex
+mkdir -p /QOpenSys/chRootRiby302/QOpenSys/usr/ccs/bin
+mkdir -p /QOpenSys/chRootRiby302/QOpenSys/usr/ccs/lib
+action = :mknod
+mknod /QOpenSys/chRootRiby302/dev/tty c 32945 0
+mknod /QOpenSys/chRootRiby302/dev/null c 32769 1
+mknod /QOpenSys/chRootRiby302/dev/zero c 32769 2
+mknod /QOpenSys/chRootRiby302/dev/urandom c 32954 0
+mknod /QOpenSys/chRootRiby302/dev/pts/0 c 32947 0
+mknod /QOpenSys/chRootRiby302/dev/pts/1 c 32947 1
+mknod /QOpenSys/chRootRiby302/dev/pts/2 c 32947 2
+mknod /QOpenSys/chRootRiby302/dev/pts/3 c 32947 3
+mknod /QOpenSys/chRootRiby302/dev/pts/4 c 32947 4
+mknod /QOpenSys/chRootRiby302/dev/pts/5 c 32947 5
+mknod /QOpenSys/chRootRiby302/dev/pts/6 c 32947 6
+mknod /QOpenSys/chRootRiby302/dev/pts/7 c 32947 7
+mknod /QOpenSys/chRootRiby302/dev/pts/8 c 32947 8
+mknod /QOpenSys/chRootRiby302/dev/pts/9 c 32947 9
+action = :cp
+cp /QOpenSys/usr/sbin/chroot /QOpenSys/chRootRiby302/QOpenSys/usr/sbin/chroot
+cp /QOpenSys/usr/sbin/dbx_server /QOpenSys/chRootRiby302/QOpenSys/usr/sbin/dbx_server
+cp /QOpenSys/usr/sbin/dump /QOpenSys/chRootRiby302/QOpenSys/usr/sbin/dump
+cp /QOpenSys/usr/sbin/execerror /QOpenSys/chRootRiby302/QOpenSys/usr/sbin/execerror
+cp /QOpenSys/usr/sbin/mknod /QOpenSys/chRootRiby302/QOpenSys/usr/sbin/mknod
+cp /QOpenSys/usr/sbin/restbyname /QOpenSys/chRootRiby302/QOpenSys/usr/sbin/restbyname
+cp /QOpenSys/usr/sbin/restore /QOpenSys/chRootRiby302/QOpenSys/usr/sbin/restore
+cp /QOpenSys/usr/sbin/slibclean /QOpenSys/chRootRiby302/QOpenSys/usr/sbin/slibclean
+cp /QOpenSys/usr/sbin/snapcore /QOpenSys/chRootRiby302/QOpenSys/usr/sbin/snapcore
+cp /QOpenSys/usr/sbin/syslogd /QOpenSys/chRootRiby302/QOpenSys/usr/sbin/syslogd
+cp /QOpenSys/usr/sbin/trace /QOpenSys/chRootRiby302/QOpenSys/usr/sbin/trace
+cp /QOpenSys/usr/bin/Rfile /QOpenSys/chRootRiby302/QOpenSys/usr/bin/Rfile
+cp /QOpenSys/usr/bin/admin /QOpenSys/chRootRiby302/QOpenSys/usr/bin/admin
+cp /QOpenSys/usr/bin/alias /QOpenSys/chRootRiby302/QOpenSys/usr/bin/alias
+cp /QOpenSys/usr/bin/apply /QOpenSys/chRootRiby302/QOpenSys/usr/bin/apply
+cp /QOpenSys/usr/bin/ar /QOpenSys/chRootRiby302/QOpenSys/usr/bin/ar
+cp /QOpenSys/usr/bin/as /QOpenSys/chRootRiby302/QOpenSys/usr/bin/as
+cp /QOpenSys/usr/bin/awk /QOpenSys/chRootRiby302/QOpenSys/usr/bin/awk
+cp /QOpenSys/usr/bin/banner /QOpenSys/chRootRiby302/QOpenSys/usr/bin/banner
+cp /QOpenSys/usr/bin/basename /QOpenSys/chRootRiby302/QOpenSys/usr/bin/basename
+cp /QOpenSys/usr/bin/bc /QOpenSys/chRootRiby302/QOpenSys/usr/bin/bc
+cp /QOpenSys/usr/bin/bdiff /QOpenSys/chRootRiby302/QOpenSys/usr/bin/bdiff
+cp /QOpenSys/usr/bin/bfs /QOpenSys/chRootRiby302/QOpenSys/usr/bin/bfs
+cp /QOpenSys/usr/bin/bsh /QOpenSys/chRootRiby302/QOpenSys/usr/bin/bsh
+cp /QOpenSys/usr/bin/cat /QOpenSys/chRootRiby302/QOpenSys/usr/bin/cat
+cp /QOpenSys/usr/bin/cb /QOpenSys/chRootRiby302/QOpenSys/usr/bin/cb
+cp /QOpenSys/usr/bin/chgrp /QOpenSys/chRootRiby302/QOpenSys/usr/bin/chgrp
+cp /QOpenSys/usr/bin/chmod /QOpenSys/chRootRiby302/QOpenSys/usr/bin/chmod
+cp /QOpenSys/usr/bin/chown /QOpenSys/chRootRiby302/QOpenSys/usr/bin/chown
+cp /QOpenSys/usr/bin/cksum /QOpenSys/chRootRiby302/QOpenSys/usr/bin/cksum
+cp /QOpenSys/usr/bin/clear /QOpenSys/chRootRiby302/QOpenSys/usr/bin/clear
+cp /QOpenSys/usr/bin/cmp /QOpenSys/chRootRiby302/QOpenSys/usr/bin/cmp
+cp /QOpenSys/usr/bin/colrm /QOpenSys/chRootRiby302/QOpenSys/usr/bin/colrm
+cp /QOpenSys/usr/bin/comb /QOpenSys/chRootRiby302/QOpenSys/usr/bin/comb
+cp /QOpenSys/usr/bin/comm /QOpenSys/chRootRiby302/QOpenSys/usr/bin/comm
+cp /QOpenSys/usr/bin/compress /QOpenSys/chRootRiby302/QOpenSys/usr/bin/compress
+cp /QOpenSys/usr/bin/cp /QOpenSys/chRootRiby302/QOpenSys/usr/bin/cp
+cp /QOpenSys/usr/bin/cpio /QOpenSys/chRootRiby302/QOpenSys/usr/bin/cpio
+cp /QOpenSys/usr/bin/csh /QOpenSys/chRootRiby302/QOpenSys/usr/bin/csh
+cp /QOpenSys/usr/bin/csplit /QOpenSys/chRootRiby302/QOpenSys/usr/bin/csplit
+cp /QOpenSys/usr/bin/cut /QOpenSys/chRootRiby302/QOpenSys/usr/bin/cut
+cp /QOpenSys/usr/bin/date /QOpenSys/chRootRiby302/QOpenSys/usr/bin/date
+cp /QOpenSys/usr/bin/dbx /QOpenSys/chRootRiby302/QOpenSys/usr/bin/dbx
+cp /QOpenSys/usr/bin/dc /QOpenSys/chRootRiby302/QOpenSys/usr/bin/dc
+cp /QOpenSys/usr/bin/dd /QOpenSys/chRootRiby302/QOpenSys/usr/bin/dd
+cp /QOpenSys/usr/bin/delta /QOpenSys/chRootRiby302/QOpenSys/usr/bin/delta
+cp /QOpenSys/usr/bin/df /QOpenSys/chRootRiby302/QOpenSys/usr/bin/df
+cp /QOpenSys/usr/bin/diff /QOpenSys/chRootRiby302/QOpenSys/usr/bin/diff
+cp /QOpenSys/usr/bin/diff3 /QOpenSys/chRootRiby302/QOpenSys/usr/bin/diff3
+cp /QOpenSys/usr/bin/dircmp /QOpenSys/chRootRiby302/QOpenSys/usr/bin/dircmp
+cp /QOpenSys/usr/bin/dirname /QOpenSys/chRootRiby302/QOpenSys/usr/bin/dirname
+cp /QOpenSys/usr/bin/dspcat /QOpenSys/chRootRiby302/QOpenSys/usr/bin/dspcat
+cp /QOpenSys/usr/bin/dspmsg /QOpenSys/chRootRiby302/QOpenSys/usr/bin/dspmsg
+cp /QOpenSys/usr/bin/du /QOpenSys/chRootRiby302/QOpenSys/usr/bin/du
+cp /QOpenSys/usr/bin/echo /QOpenSys/chRootRiby302/QOpenSys/usr/bin/echo
+cp /QOpenSys/usr/bin/ed /QOpenSys/chRootRiby302/QOpenSys/usr/bin/ed
+cp /QOpenSys/usr/bin/env /QOpenSys/chRootRiby302/QOpenSys/usr/bin/env
+cp /QOpenSys/usr/bin/ex /QOpenSys/chRootRiby302/QOpenSys/usr/bin/ex
+cp /QOpenSys/usr/bin/expand /QOpenSys/chRootRiby302/QOpenSys/usr/bin/expand
+cp /QOpenSys/usr/bin/expr /QOpenSys/chRootRiby302/QOpenSys/usr/bin/expr
+cp /QOpenSys/usr/bin/false /QOpenSys/chRootRiby302/QOpenSys/usr/bin/false
+cp /QOpenSys/usr/bin/file /QOpenSys/chRootRiby302/QOpenSys/usr/bin/file
+cp /QOpenSys/usr/bin/find /QOpenSys/chRootRiby302/QOpenSys/usr/bin/find
+cp /QOpenSys/usr/bin/fold /QOpenSys/chRootRiby302/QOpenSys/usr/bin/fold
+cp /QOpenSys/usr/bin/gencat /QOpenSys/chRootRiby302/QOpenSys/usr/bin/gencat
+cp /QOpenSys/usr/bin/get /QOpenSys/chRootRiby302/QOpenSys/usr/bin/get
+cp /QOpenSys/usr/bin/getconf /QOpenSys/chRootRiby302/QOpenSys/usr/bin/getconf
+cp /QOpenSys/usr/bin/getopt /QOpenSys/chRootRiby302/QOpenSys/usr/bin/getopt
+cp /QOpenSys/usr/bin/grep /QOpenSys/chRootRiby302/QOpenSys/usr/bin/grep
+cp /QOpenSys/usr/bin/head /QOpenSys/chRootRiby302/QOpenSys/usr/bin/head
+cp /QOpenSys/usr/bin/hostname /QOpenSys/chRootRiby302/QOpenSys/usr/bin/hostname
+cp /QOpenSys/usr/bin/iconv /QOpenSys/chRootRiby302/QOpenSys/usr/bin/iconv
+cp /QOpenSys/usr/bin/id /QOpenSys/chRootRiby302/QOpenSys/usr/bin/id
+cp /QOpenSys/usr/bin/indent /QOpenSys/chRootRiby302/QOpenSys/usr/bin/indent
+cp /QOpenSys/usr/bin/install /QOpenSys/chRootRiby302/QOpenSys/usr/bin/install
+cp /QOpenSys/usr/bin/java /QOpenSys/chRootRiby302/QOpenSys/usr/bin/java
+cp /QOpenSys/usr/bin/join /QOpenSys/chRootRiby302/QOpenSys/usr/bin/join
+cp /QOpenSys/usr/bin/kill /QOpenSys/chRootRiby302/QOpenSys/usr/bin/kill
+cp /QOpenSys/usr/bin/ksh /QOpenSys/chRootRiby302/QOpenSys/usr/bin/ksh
+cp /QOpenSys/usr/bin/ksh93 /QOpenSys/chRootRiby302/QOpenSys/usr/bin/ksh93
+cp /QOpenSys/usr/bin/ld /QOpenSys/chRootRiby302/QOpenSys/usr/bin/ld
+cp /QOpenSys/usr/bin/ldedit /QOpenSys/chRootRiby302/QOpenSys/usr/bin/ldedit
+cp /QOpenSys/usr/bin/lex /QOpenSys/chRootRiby302/QOpenSys/usr/bin/lex
+cp /QOpenSys/usr/bin/line /QOpenSys/chRootRiby302/QOpenSys/usr/bin/line
+cp /QOpenSys/usr/bin/ln /QOpenSys/chRootRiby302/QOpenSys/usr/bin/ln
+cp /QOpenSys/usr/bin/locale /QOpenSys/chRootRiby302/QOpenSys/usr/bin/locale
+cp /QOpenSys/usr/bin/locale64 /QOpenSys/chRootRiby302/QOpenSys/usr/bin/locale64
+cp /QOpenSys/usr/bin/logger /QOpenSys/chRootRiby302/QOpenSys/usr/bin/logger
+cp /QOpenSys/usr/bin/logname /QOpenSys/chRootRiby302/QOpenSys/usr/bin/logname
+cp /QOpenSys/usr/bin/look /QOpenSys/chRootRiby302/QOpenSys/usr/bin/look
+cp /QOpenSys/usr/bin/lorder /QOpenSys/chRootRiby302/QOpenSys/usr/bin/lorder
+cp /QOpenSys/usr/bin/ls /QOpenSys/chRootRiby302/QOpenSys/usr/bin/ls
+cp /QOpenSys/usr/bin/m4 /QOpenSys/chRootRiby302/QOpenSys/usr/bin/m4
+cp /QOpenSys/usr/bin/make /QOpenSys/chRootRiby302/QOpenSys/usr/bin/make
+cp /QOpenSys/usr/bin/makekey /QOpenSys/chRootRiby302/QOpenSys/usr/bin/makekey
+cp /QOpenSys/usr/bin/mkcatdefs /QOpenSys/chRootRiby302/QOpenSys/usr/bin/mkcatdefs
+cp /QOpenSys/usr/bin/mkdir /QOpenSys/chRootRiby302/QOpenSys/usr/bin/mkdir
+cp /QOpenSys/usr/bin/mkfifo /QOpenSys/chRootRiby302/QOpenSys/usr/bin/mkfifo
+cp /QOpenSys/usr/bin/more /QOpenSys/chRootRiby302/QOpenSys/usr/bin/more
+cp /QOpenSys/usr/bin/mv /QOpenSys/chRootRiby302/QOpenSys/usr/bin/mv
+cp /QOpenSys/usr/bin/newform /QOpenSys/chRootRiby302/QOpenSys/usr/bin/newform
+cp /QOpenSys/usr/bin/nice /QOpenSys/chRootRiby302/QOpenSys/usr/bin/nice
+cp /QOpenSys/usr/bin/nl /QOpenSys/chRootRiby302/QOpenSys/usr/bin/nl
+cp /QOpenSys/usr/bin/nm /QOpenSys/chRootRiby302/QOpenSys/usr/bin/nm
+cp /QOpenSys/usr/bin/nohup /QOpenSys/chRootRiby302/QOpenSys/usr/bin/nohup
+cp /QOpenSys/usr/bin/od /QOpenSys/chRootRiby302/QOpenSys/usr/bin/od
+cp /QOpenSys/usr/bin/pack /QOpenSys/chRootRiby302/QOpenSys/usr/bin/pack
+cp /QOpenSys/usr/bin/pagesize /QOpenSys/chRootRiby302/QOpenSys/usr/bin/pagesize
+cp /QOpenSys/usr/bin/paste /QOpenSys/chRootRiby302/QOpenSys/usr/bin/paste
+cp /QOpenSys/usr/bin/patch /QOpenSys/chRootRiby302/QOpenSys/usr/bin/patch
+cp /QOpenSys/usr/bin/pax /QOpenSys/chRootRiby302/QOpenSys/usr/bin/pax
+cp /QOpenSys/usr/bin/pcat /QOpenSys/chRootRiby302/QOpenSys/usr/bin/pcat
+cp /QOpenSys/usr/bin/pg /QOpenSys/chRootRiby302/QOpenSys/usr/bin/pg
+cp /QOpenSys/usr/bin/pr /QOpenSys/chRootRiby302/QOpenSys/usr/bin/pr
+cp /QOpenSys/usr/bin/printf /QOpenSys/chRootRiby302/QOpenSys/usr/bin/printf
+cp /QOpenSys/usr/bin/prs /QOpenSys/chRootRiby302/QOpenSys/usr/bin/prs
+cp /QOpenSys/usr/bin/ps /QOpenSys/chRootRiby302/QOpenSys/usr/bin/ps
+cp /QOpenSys/usr/bin/pwd /QOpenSys/chRootRiby302/QOpenSys/usr/bin/pwd
+cp /QOpenSys/usr/bin/qsh /QOpenSys/chRootRiby302/QOpenSys/usr/bin/qsh
+cp /QOpenSys/usr/bin/qsh_out /QOpenSys/chRootRiby302/QOpenSys/usr/bin/qsh_out
+cp /QOpenSys/usr/bin/ranlib /QOpenSys/chRootRiby302/QOpenSys/usr/bin/ranlib
+cp /QOpenSys/usr/bin/regcmp /QOpenSys/chRootRiby302/QOpenSys/usr/bin/regcmp
+cp /QOpenSys/usr/bin/rev /QOpenSys/chRootRiby302/QOpenSys/usr/bin/rev
+cp /QOpenSys/usr/bin/rm /QOpenSys/chRootRiby302/QOpenSys/usr/bin/rm
+cp /QOpenSys/usr/bin/rmdel /QOpenSys/chRootRiby302/QOpenSys/usr/bin/rmdel
+cp /QOpenSys/usr/bin/rtl_enable /QOpenSys/chRootRiby302/QOpenSys/usr/bin/rtl_enable
+cp /QOpenSys/usr/bin/runcat /QOpenSys/chRootRiby302/QOpenSys/usr/bin/runcat
+cp /QOpenSys/usr/bin/sccs /QOpenSys/chRootRiby302/QOpenSys/usr/bin/sccs
+cp /QOpenSys/usr/bin/sccsdiff /QOpenSys/chRootRiby302/QOpenSys/usr/bin/sccsdiff
+cp /QOpenSys/usr/bin/sdiff /QOpenSys/chRootRiby302/QOpenSys/usr/bin/sdiff
+cp /QOpenSys/usr/bin/sed /QOpenSys/chRootRiby302/QOpenSys/usr/bin/sed
+cp /QOpenSys/usr/bin/setmaps /QOpenSys/chRootRiby302/QOpenSys/usr/bin/setmaps
+cp /QOpenSys/usr/bin/size /QOpenSys/chRootRiby302/QOpenSys/usr/bin/size
+cp /QOpenSys/usr/bin/sleep /QOpenSys/chRootRiby302/QOpenSys/usr/bin/sleep
+cp /QOpenSys/usr/bin/sort /QOpenSys/chRootRiby302/QOpenSys/usr/bin/sort
+cp /QOpenSys/usr/bin/split /QOpenSys/chRootRiby302/QOpenSys/usr/bin/split
+cp /QOpenSys/usr/bin/strings /QOpenSys/chRootRiby302/QOpenSys/usr/bin/strings
+cp /QOpenSys/usr/bin/strip /QOpenSys/chRootRiby302/QOpenSys/usr/bin/strip
+cp /QOpenSys/usr/bin/stty /QOpenSys/chRootRiby302/QOpenSys/usr/bin/stty
+cp /QOpenSys/usr/bin/sum /QOpenSys/chRootRiby302/QOpenSys/usr/bin/sum
+cp /QOpenSys/usr/bin/system /QOpenSys/chRootRiby302/QOpenSys/usr/bin/system
+cp /QOpenSys/usr/bin/tab /QOpenSys/chRootRiby302/QOpenSys/usr/bin/tab
+cp /QOpenSys/usr/bin/tabs /QOpenSys/chRootRiby302/QOpenSys/usr/bin/tabs
+cp /QOpenSys/usr/bin/tail /QOpenSys/chRootRiby302/QOpenSys/usr/bin/tail
+cp /QOpenSys/usr/bin/tar /QOpenSys/chRootRiby302/QOpenSys/usr/bin/tar
+cp /QOpenSys/usr/bin/tee /QOpenSys/chRootRiby302/QOpenSys/usr/bin/tee
+cp /QOpenSys/usr/bin/termdef /QOpenSys/chRootRiby302/QOpenSys/usr/bin/termdef
+cp /QOpenSys/usr/bin/test /QOpenSys/chRootRiby302/QOpenSys/usr/bin/test
+cp /QOpenSys/usr/bin/tic /QOpenSys/chRootRiby302/QOpenSys/usr/bin/tic
+cp /QOpenSys/usr/bin/time /QOpenSys/chRootRiby302/QOpenSys/usr/bin/time
+cp /QOpenSys/usr/bin/touch /QOpenSys/chRootRiby302/QOpenSys/usr/bin/touch
+cp /QOpenSys/usr/bin/tput /QOpenSys/chRootRiby302/QOpenSys/usr/bin/tput
+cp /QOpenSys/usr/bin/tr /QOpenSys/chRootRiby302/QOpenSys/usr/bin/tr
+cp /QOpenSys/usr/bin/true /QOpenSys/chRootRiby302/QOpenSys/usr/bin/true
+cp /QOpenSys/usr/bin/tset /QOpenSys/chRootRiby302/QOpenSys/usr/bin/tset
+cp /QOpenSys/usr/bin/tsort /QOpenSys/chRootRiby302/QOpenSys/usr/bin/tsort
+cp /QOpenSys/usr/bin/tty /QOpenSys/chRootRiby302/QOpenSys/usr/bin/tty
+cp /QOpenSys/usr/bin/uname /QOpenSys/chRootRiby302/QOpenSys/usr/bin/uname
+cp /QOpenSys/usr/bin/unexpand /QOpenSys/chRootRiby302/QOpenSys/usr/bin/unexpand
+cp /QOpenSys/usr/bin/unget /QOpenSys/chRootRiby302/QOpenSys/usr/bin/unget
+cp /QOpenSys/usr/bin/unifdef /QOpenSys/chRootRiby302/QOpenSys/usr/bin/unifdef
+cp /QOpenSys/usr/bin/uniq /QOpenSys/chRootRiby302/QOpenSys/usr/bin/uniq
+cp /QOpenSys/usr/bin/unpack /QOpenSys/chRootRiby302/QOpenSys/usr/bin/unpack
+cp /QOpenSys/usr/bin/val /QOpenSys/chRootRiby302/QOpenSys/usr/bin/val
+cp /QOpenSys/usr/bin/vc /QOpenSys/chRootRiby302/QOpenSys/usr/bin/vc
+cp /QOpenSys/usr/bin/wc /QOpenSys/chRootRiby302/QOpenSys/usr/bin/wc
+cp /QOpenSys/usr/bin/what /QOpenSys/chRootRiby302/QOpenSys/usr/bin/what
+cp /QOpenSys/usr/bin/which /QOpenSys/chRootRiby302/QOpenSys/usr/bin/which
+cp /QOpenSys/usr/bin/xargs /QOpenSys/chRootRiby302/QOpenSys/usr/bin/xargs
+cp /QOpenSys/usr/bin/yacc /QOpenSys/chRootRiby302/QOpenSys/usr/bin/yacc
+cp /QOpenSys/usr/bin/yes /QOpenSys/chRootRiby302/QOpenSys/usr/bin/yes
+cp /QOpenSys/usr/lib/as400_libc.exp /QOpenSys/chRootRiby302/QOpenSys/usr/lib/as400_libc.exp
+cp /QOpenSys/usr/lib/crt0.o /QOpenSys/chRootRiby302/QOpenSys/usr/lib/crt0.o
+cp /QOpenSys/usr/lib/crt0_64.o /QOpenSys/chRootRiby302/QOpenSys/usr/lib/crt0_64.o
+cp /QOpenSys/usr/lib/crti.o /QOpenSys/chRootRiby302/QOpenSys/usr/lib/crti.o
+cp /QOpenSys/usr/lib/crti_64.o /QOpenSys/chRootRiby302/QOpenSys/usr/lib/crti_64.o
+cp /QOpenSys/usr/lib/glink.o /QOpenSys/chRootRiby302/QOpenSys/usr/lib/glink.o
+cp /QOpenSys/usr/lib/glink64.o /QOpenSys/chRootRiby302/QOpenSys/usr/lib/glink64.o
+cp /QOpenSys/usr/lib/lib.b /QOpenSys/chRootRiby302/QOpenSys/usr/lib/lib.b
+cp /QOpenSys/usr/lib/libC.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libC.a
+cp /QOpenSys/usr/lib/libC128.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libC128.a
+cp /QOpenSys/usr/lib/libICE.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libICE.a
+cp /QOpenSys/usr/lib/libIM.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libIM.a
+cp /QOpenSys/usr/lib/libMrm.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libMrm.a
+cp /QOpenSys/usr/lib/libPW.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libPW.a
+cp /QOpenSys/usr/lib/libSM.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libSM.a
+cp /QOpenSys/usr/lib/libUil.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libUil.a
+cp /QOpenSys/usr/lib/libX11.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libX11.a
+cp /QOpenSys/usr/lib/libXaw.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libXaw.a
+cp /QOpenSys/usr/lib/libXext.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libXext.a
+cp /QOpenSys/usr/lib/libXi.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libXi.a
+cp /QOpenSys/usr/lib/libXm.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libXm.a
+cp /QOpenSys/usr/lib/libXmu.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libXmu.a
+cp /QOpenSys/usr/lib/libXp.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libXp.a
+cp /QOpenSys/usr/lib/libXpm.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libXpm.a
+cp /QOpenSys/usr/lib/libXrender.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libXrender.a
+cp /QOpenSys/usr/lib/libXt.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libXt.a
+cp /QOpenSys/usr/lib/libXtst.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libXtst.a
+cp /QOpenSys/usr/lib/libbind.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libbind.a
+cp /QOpenSys/usr/lib/libbsd.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libbsd.a
+cp /QOpenSys/usr/lib/libc.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libc.a
+cp /QOpenSys/usr/lib/libc128.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libc128.a
+cp /QOpenSys/usr/lib/libcdebug.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libcdebug.a
+cp /QOpenSys/usr/lib/libcrypt.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libcrypt.a
+cp /QOpenSys/usr/lib/libcur.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libcur.a
+cp /QOpenSys/usr/lib/libdb400.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libdb400.a
+cp /QOpenSys/usr/lib/libdb400.exp /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libdb400.exp
+cp /QOpenSys/usr/lib/libdbm.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libdbm.a
+cp /QOpenSys/usr/lib/libdbx.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libdbx.a
+cp /QOpenSys/usr/lib/libdecNumber.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libdecNumber.a
+cp /QOpenSys/usr/lib/libdl.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libdl.a
+cp /QOpenSys/usr/lib/libg.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libg.a
+cp /QOpenSys/usr/lib/libg.exp /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libg.exp
+cp /QOpenSys/usr/lib/libgaimisc.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libgaimisc.a
+cp /QOpenSys/usr/lib/libgair4.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libgair4.a
+cp /QOpenSys/usr/lib/libi18n.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libi18n.a
+cp /QOpenSys/usr/lib/libiconv.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libiconv.a
+cp /QOpenSys/usr/lib/libl.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libl.a
+cp /QOpenSys/usr/lib/libld.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libld.a
+cp /QOpenSys/usr/lib/libm.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libm.a
+cp /QOpenSys/usr/lib/libnsl.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libnsl.a
+cp /QOpenSys/usr/lib/libpmapi.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libpmapi.a
+cp /QOpenSys/usr/lib/libpthdebug.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libpthdebug.a
+cp /QOpenSys/usr/lib/libpthreads.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libpthreads.a
+cp /QOpenSys/usr/lib/libpthreads_compat.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libpthreads_compat.a
+cp /QOpenSys/usr/lib/librtl.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/librtl.a
+cp /QOpenSys/usr/lib/libta400.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libta400.a
+cp /QOpenSys/usr/lib/libthread.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libthread.a
+cp /QOpenSys/usr/lib/libtli.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libtli.a
+cp /QOpenSys/usr/lib/libxcurses.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libxcurses.a
+cp /QOpenSys/usr/lib/libxlf90_r.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libxlf90_r.a
+cp /QOpenSys/usr/lib/libxlfpthrds_compat.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libxlfpthrds_compat.a
+cp /QOpenSys/usr/lib/libxlomp_ser.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libxlomp_ser.a
+cp /QOpenSys/usr/lib/libxlsmp.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libxlsmp.a
+cp /QOpenSys/usr/lib/libxti.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libxti.a
+cp /QOpenSys/usr/lib/liby.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/liby.a
+cp /QOpenSys/usr/lib/yaccpar /QOpenSys/chRootRiby302/QOpenSys/usr/lib/yaccpar
+cp /QOpenSys/usr/lib/X11/XKeysymDB /QOpenSys/chRootRiby302/QOpenSys/usr/lib/X11/XKeysymDB
+cp /QOpenSys/usr/lib/X11/XErrorDB /QOpenSys/chRootRiby302/QOpenSys/usr/lib/X11/XErrorDB
+cp /QOpenSys/usr/lib/bind /QOpenSys/chRootRiby302/QOpenSys/usr/lib/bind
+cp /QOpenSys/usr/lib/expreserve /QOpenSys/chRootRiby302/QOpenSys/usr/lib/expreserve
+cp /QOpenSys/usr/lib/exrecover /QOpenSys/chRootRiby302/QOpenSys/usr/lib/exrecover
+cp /QOpenSys/usr/lib/start32 /QOpenSys/chRootRiby302/QOpenSys/usr/lib/start32
+cp /QOpenSys/usr/lib/start64 /QOpenSys/chRootRiby302/QOpenSys/usr/lib/start64
+cp /QOpenSys/usr/lib/lex/ncform /QOpenSys/chRootRiby302/QOpenSys/usr/lib/lex/ncform
+cp /QOpenSys/usr/icu4c/lib/libicudata.a /QOpenSys/chRootRiby302/QOpenSys/usr/icu4c/lib/libicudata.a
+cp /QOpenSys/usr/icu4c/lib/libicui18n.a /QOpenSys/chRootRiby302/QOpenSys/usr/icu4c/lib/libicui18n.a
+cp /QOpenSys/usr/icu4c/lib/libicuio.a /QOpenSys/chRootRiby302/QOpenSys/usr/icu4c/lib/libicuio.a
+cp /QOpenSys/usr/icu4c/lib/libicule.a /QOpenSys/chRootRiby302/QOpenSys/usr/icu4c/lib/libicule.a
+cp /QOpenSys/usr/icu4c/lib/libiculx.a /QOpenSys/chRootRiby302/QOpenSys/usr/icu4c/lib/libiculx.a
+cp /QOpenSys/usr/icu4c/lib/libicutest.a /QOpenSys/chRootRiby302/QOpenSys/usr/icu4c/lib/libicutest.a
+cp /QOpenSys/usr/icu4c/lib/libicutu.a /QOpenSys/chRootRiby302/QOpenSys/usr/icu4c/lib/libicutu.a
+cp /QOpenSys/usr/icu4c/lib/libicuuc.a /QOpenSys/chRootRiby302/QOpenSys/usr/icu4c/lib/libicuuc.a
+cp /QOpenSys/usr/bin/X11/X /QOpenSys/chRootRiby302/QOpenSys/usr/bin/X11/X
+cp /QOpenSys/usr/bin/X11/aixterm /QOpenSys/chRootRiby302/QOpenSys/usr/bin/X11/aixterm
+cp /QOpenSys/usr/bin/X11/mkfontdir /QOpenSys/chRootRiby302/QOpenSys/usr/bin/X11/mkfontdir
+cp /QOpenSys/usr/bin/X11/mwm /QOpenSys/chRootRiby302/QOpenSys/usr/bin/X11/mwm
+cp /QOpenSys/usr/bin/X11/resize /QOpenSys/chRootRiby302/QOpenSys/usr/bin/X11/resize
+cp /QOpenSys/usr/bin/X11/rgb /QOpenSys/chRootRiby302/QOpenSys/usr/bin/X11/rgb
+cp /QOpenSys/usr/bin/X11/xauth /QOpenSys/chRootRiby302/QOpenSys/usr/bin/X11/xauth
+cp /QOpenSys/usr/bin/X11/xfs /QOpenSys/chRootRiby302/QOpenSys/usr/bin/X11/xfs
+cp /QOpenSys/usr/bin/X11/xhost /QOpenSys/chRootRiby302/QOpenSys/usr/bin/X11/xhost
+cp /QOpenSys/usr/bin/X11/xlsfonts /QOpenSys/chRootRiby302/QOpenSys/usr/bin/X11/xlsfonts
+cp /QOpenSys/usr/bin/X11/xmodmap /QOpenSys/chRootRiby302/QOpenSys/usr/bin/X11/xmodmap
+cp /QOpenSys/usr/bin/X11/xset /QOpenSys/chRootRiby302/QOpenSys/usr/bin/X11/xset
+cp /QOpenSys/usr/bin/X11/xterm /QOpenSys/chRootRiby302/QOpenSys/usr/bin/X11/xterm
+cp /QOpenSys/usr/bin/X11/xwd /QOpenSys/chRootRiby302/QOpenSys/usr/bin/X11/xwd
+cp /QOpenSys/usr/bin/X11/xwininfo /QOpenSys/chRootRiby302/QOpenSys/usr/bin/X11/xwininfo
+cp /QOpenSys/usr/bin/X11/xwud /QOpenSys/chRootRiby302/QOpenSys/usr/bin/X11/xwud
+cp /QOpenSys/usr/ccs/lib/aix.mk /QOpenSys/chRootRiby302/QOpenSys/usr/ccs/lib/aix.mk
+cp /QOpenSys/usr/ccs/lib/posix.mk /QOpenSys/chRootRiby302/QOpenSys/usr/ccs/lib/posix.mk
+cp /QOpenSys/usr/lib/libz.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libz.a
+cp /QOpenSys/usr/lib/libz.so /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libz.so
+cp /QOpenSys/usr/lib/libssl.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libssl.a
+cp /QOpenSys/usr/lib/libcrypto.a /QOpenSys/chRootRiby302/QOpenSys/usr/lib/libcrypto.a
+action = :cp_dir
+action = :tar_dir
+action = :ln_rel
+action = :ln
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/sbin /sbin
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin /bin
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib /lib
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/sbin /usr/sbin
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin /usr/bin
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib /usr/lib
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/include /usr/include
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/ccs /usr/ccs
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/sbin /QOpenSys/sbin
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin /QOpenSys/bin
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib /QOpenSys/lib
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/alias /QOpenSys/usr/bin/
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/alias /QOpenSys/usr/bin/bg
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/alias /QOpenSys/usr/bin/cd
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/alias /QOpenSys/usr/bin/command
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/alias /QOpenSys/usr/bin/fc
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/alias /QOpenSys/usr/bin/fg
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/alias /QOpenSys/usr/bin/getopts
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/alias /QOpenSys/usr/bin/hash
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/alias /QOpenSys/usr/bin/jobs
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/alias /QOpenSys/usr/bin/read
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/alias /QOpenSys/usr/bin/type
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/alias /QOpenSys/usr/bin/ulimit
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/alias /QOpenSys/usr/bin/umask
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/alias /QOpenSys/usr/bin/unalias
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/alias /QOpenSys/usr/bin/wait
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/ksh /QOpenSys/usr/bin/sh
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/rm /QOpenSys/usr/bin/rmdir
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/sbin/chroot /QOpenSys/usr/bin/chroot
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/sbin/dump /QOpenSys/usr/bin/dump
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/sbin/trace /QOpenSys/usr/bin/trace
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/sbin/trcoff /QOpenSys/usr/bin/trace
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/sbin/trcon /QOpenSys/usr/bin/trace
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/sbin/trcstop /QOpenSys/usr/bin/trace
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/libC128.a /QOpenSys/usr/lib/libC128_r.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/libC.a /QOpenSys/usr/lib/libC_r.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/libbsd.a /QOpenSys/usr/lib/libbsd_r.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/libc128.a /QOpenSys/usr/lib/libc_r.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/libc.a /QOpenSys/usr/lib/libc_r.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/libc.a /QOpenSys/usr/lib/libc_t.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/libxcurses.a /QOpenSys/usr/lib/libcurses.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/libm.a /QOpenSys/usr/lib/libm_r.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/libpthreads.a /QOpenSys/usr/lib/libpthread.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/libc.a /QOpenSys/usr/lib/libs.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/libtli.a /QOpenSys/usr/lib/libtli_r.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/icu4c/lib/libicudata.a /QOpenSys/usr/lib/libicudata.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/icu4c/lib/libicui18n.a /QOpenSys/usr/lib/libicui18n.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/icu4c/lib/libicuio.a /QOpenSys/usr/lib/libicuio.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/icu4c/lib/libicule.a /QOpenSys/usr/lib/libicule.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/icu4c/lib/libiculx.a /QOpenSys/usr/lib/libiculx.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/icu4c/lib/libicutest.a /QOpenSys/usr/lib/libicutest.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/icu4c/lib/libicutu.a /QOpenSys/usr/lib/libicutu.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/icu4c/lib/libicuuc.a /QOpenSys/usr/lib/libicuuc.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/ar /QOpenSys/usr/ccs/bin/ar
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/as /QOpenSys/usr/ccs/bin/as
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/bind /QOpenSys/usr/ccs/bin/bind
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/cb /QOpenSys/usr/ccs/bin/cb
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/dbx /QOpenSys/usr/ccs/bin/dbx
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/indent /QOpenSys/usr/ccs/bin/indent
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/ld /QOpenSys/usr/ccs/bin/ld
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/ldedit /QOpenSys/usr/ccs/bin/ldedit
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/lex /QOpenSys/usr/ccs/bin/lex
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/lorder /QOpenSys/usr/ccs/bin/lorder
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/m4 /QOpenSys/usr/ccs/bin/m4
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/make /QOpenSys/usr/ccs/bin/make
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/makekey /QOpenSys/usr/ccs/bin/makekey
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/nm /QOpenSys/usr/ccs/bin/nm
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/ranlib /QOpenSys/usr/ccs/bin/ranlib
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/regcmp /QOpenSys/usr/ccs/bin/regcmp
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/rtl_enable /QOpenSys/usr/ccs/bin/rtl_enable
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/size /QOpenSys/usr/ccs/bin/size
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/strings /QOpenSys/usr/ccs/bin/strings
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/strip /QOpenSys/usr/ccs/bin/strip
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/tsort /QOpenSys/usr/ccs/bin/tsort
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/bin/yacc /QOpenSys/usr/ccs/bin/yacc
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/ccs/lib/aix.mk /QOpenSys/usr/lib/aix.mk
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/crt0.o /QOpenSys/usr/ccs/lib/crt0.o
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/crt0_64.o /QOpenSys/usr/ccs/lib/crt0_64.o
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/crt0_r.o /QOpenSys/usr/ccs/lib/crt0_r.o
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/crti.o /QOpenSys/usr/ccs/lib/crti.o
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/crti_64.o /QOpenSys/usr/ccs/lib/crti_64.o
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/lex /QOpenSys/usr/ccs/lib/lex
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/libIM.a /QOpenSys/usr/ccs/lib/libIM.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/libc.a /QOpenSys/usr/ccs/lib/libc.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/libc_r.a /QOpenSys/usr/ccs/lib/libc_r.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/libxcurses.a /QOpenSys/usr/ccs/lib/libcurses.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/libdbm.a /QOpenSys/usr/ccs/lib/libdbm.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/libdbx.a /QOpenSys/usr/ccs/lib/libdbx.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/libdl.a /QOpenSys/usr/ccs/lib/libdl.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/libi18n.a /QOpenSys/usr/ccs/lib/libi18n.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/libl.a /QOpenSys/usr/ccs/lib/libl.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/libld.a /QOpenSys/usr/ccs/lib/libld.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/libm.a /QOpenSys/usr/ccs/lib/libm.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/libm_r.a /QOpenSys/usr/ccs/lib/libm_r.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/libpthdebug.a /QOpenSys/usr/ccs/lib/libpthdebug.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/libpthread.a /QOpenSys/usr/ccs/lib/libpthread.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/libpthreads.a /QOpenSys/usr/ccs/lib/libpthreads.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/libpthreads_compat.a /QOpenSys/usr/ccs/lib/libpthreads_compat.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/librtl.a /QOpenSys/usr/ccs/lib/librtl.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/libthread.a /QOpenSys/usr/ccs/lib/libthread.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/libxcurses.a /QOpenSys/usr/ccs/lib/libxcurses.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/liby.a /QOpenSys/usr/ccs/lib/liby.a
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/ccs/lib/posix.mk /QOpenSys/usr/lib/posix.mk
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/usr/lib/yaccpar /QOpenSys/usr/ccs/lib/yaccpar
+chroot /QOpenSys/chRootRiby302 ln -sf /QOpenSys/var /var
+action = :sh
+action = :chmod_dir
+chroot /QOpenSys/chRootRiby302 /QOpenSys/usr/bin/bsh -c "chmod -R 0666 /dev/*"
+chroot /QOpenSys/chRootRiby302 /QOpenSys/usr/bin/bsh -c "chmod -R 0766 /dev/pts/*"
+action = :chmod
+action = :chown_dir
+action = :chown
+action = :system
+
+To enter Your Chroot
+RUN: chroot /QOpenSys/chRootRiby302 /QOpenSys/usr/bin/sh
+
+
+DONE!
+ibm                                                         | 3.6 kB  00:00     
+ibm/primary_db                                              | 470 kB  00:00     
+Setting up Install Process
+Resolving Dependencies
+--> Running transaction check
+---> Package ca-certificates-mozilla.noarch 0:2019.2.32-0 will be installed
+--> Processing Dependency: /bin/sh for package: ca-certificates-mozilla-2019.2.32-0.noarch
+--> Processing Dependency: /QOpenSys/pkgs/bin/update-ca-certificates for package: ca-certificates-mozilla-2019.2.32-0.noarch
+---> Package yum.noarch 0:3.4.3-19 will be installed
+--> Processing Dependency: python(abi) = 2.7 for package: yum-3.4.3-19.noarch
+--> Processing Dependency: python2-iniparse for package: yum-3.4.3-19.noarch
+--> Processing Dependency: python2-urlgrabber for package: yum-3.4.3-19.noarch
+--> Processing Dependency: yum-metadata-parser for package: yum-3.4.3-19.noarch
+--> Processing Dependency: python2-rpm for package: yum-3.4.3-19.noarch
+--> Processing Dependency: /QOpenSys/pkgs/bin/python2 for package: yum-3.4.3-19.noarch
+--> Running transaction check
+---> Package ca-certificates.noarch 0:2_git20170807.10b2785-2 will be installed
+--> Processing Dependency: /QOpenSys/pkgs/bin/perl for package: ca-certificates-2_git20170807.10b2785-2.noarch
+--> Processing Dependency: /QOpenSys/pkgs/bin/bash for package: ca-certificates-2_git20170807.10b2785-2.noarch
+--> Processing Dependency: /QOpenSys/pkgs/bin/bash for package: ca-certificates-2_git20170807.10b2785-2.noarch
+--> Processing Dependency: p11-kit-trust for package: ca-certificates-2_git20170807.10b2785-2.noarch
+---> Package coreutils-pase-dummy.ppc 0:7.2-0 will be installed
+--> Processing Dependency: pase-libs = 7.2 for package: coreutils-pase-dummy-7.2-0.ppc
+---> Package python2.ppc64 0:2.7.18-5 will be installed
+--> Processing Dependency: libutil2 >= 0.7 for package: python2-2.7.18-5.ppc64
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libssl.so.1.1(shr_64.o)(ppc64) for package: python2-2.7.18-5.ppc64
+--> Processing Dependency: update-alternatives for package: python2-2.7.18-5.ppc64
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libsqlite3.so.0(shr_64.o)(ppc64) for package: python2-2.7.18-5.ppc64
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libbz2.so.1(shr_64.o)(ppc64) for package: python2-2.7.18-5.ppc64
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libexpat.so.1(shr_64.o)(ppc64) for package: python2-2.7.18-5.ppc64
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libcrypto.so.1.1(shr_64.o)(ppc64) for package: python2-2.7.18-5.ppc64
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libreadline.so.6(shr_64.o)(ppc64) for package: python2-2.7.18-5.ppc64
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libffi.so.6(shr_64.o)(ppc64) for package: python2-2.7.18-5.ppc64
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libncursesw.so.6(shr_64.o)(ppc64) for package: python2-2.7.18-5.ppc64
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libz.so.1(shr_64.o)(ppc64) for package: python2-2.7.18-5.ppc64
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libpanelw.so.6(shr_64.o)(ppc64) for package: python2-2.7.18-5.ppc64
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libutil.so.2(shr_64.o)(ppc64) for package: python2-2.7.18-5.ppc64
+--> Processing Dependency: update-alternatives for package: python2-2.7.18-5.ppc64
+---> Package python2-iniparse.noarch 0:0.4-2 will be installed
+---> Package python2-rpm.ppc64 0:4.13.1-12 will be installed
+--> Processing Dependency: rpm = 4.13.1-12 for package: python2-rpm-4.13.1-12.ppc64
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/librpmbuild.so.7(shr_64.o)(ppc64) for package: python2-rpm-4.13.1-12.ppc64
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/librpmsign.so.7(shr_64.o)(ppc64) for package: python2-rpm-4.13.1-12.ppc64
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/librpmio.so.7(shr_64.o)(ppc64) for package: python2-rpm-4.13.1-12.ppc64
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/librpm.so.7(shr_64.o)(ppc64) for package: python2-rpm-4.13.1-12.ppc64
+---> Package python2-urlgrabber.noarch 0:3.10.2-3 will be installed
+--> Processing Dependency: python2-pycurl for package: python2-urlgrabber-3.10.2-3.noarch
+---> Package yum-metadata-parser.ppc64 0:1.1.4-2 will be installed
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libxml2.so.2(shr_64.o)(ppc64) for package: yum-metadata-parser-1.1.4-2.ppc64
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libglib-2.0.so.0(shr_64.o)(ppc64) for package: yum-metadata-parser-1.1.4-2.ppc64
+--> Running transaction check
+---> Package bash.ppc64 0:5.1-1 will be installed
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libiconv.so.2(shr_64.o)(ppc64) for package: bash-5.1-1.ppc64
+---> Package libbz2-1.ppc64 0:1.0.6-15 will be installed
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libgcc_s.so.1(shr_64.o)(ppc64) for package: libbz2-1-1.0.6-15.ppc64
+---> Package libexpat1.ppc64 0:2.2.9-1 will be installed
+---> Package libffi6.ppc64 0:3.2.1-2 will be installed
+---> Package libglib-2_0-0.ppc64 0:2.52.0-4 will be installed
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libpcre.so.1(shr_64.o)(ppc64) for package: libglib-2_0-0-2.52.0-4.ppc64
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libintl.so.9(shr_64.o)(ppc64) for package: libglib-2_0-0-2.52.0-4.ppc64
+---> Package libncurses6.ppc64 0:6.0-8 will be installed
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libstdc++.so.6(shr_64.o)(ppc64) for package: libncurses6-6.0-8.ppc64
+--> Processing Dependency: ncurses-terminfo for package: libncurses6-6.0-8.ppc64
+---> Package libopenssl1_1.ppc64 0:1.1.1k-1 will be installed
+---> Package libreadline6.ppc64 0:6.3-5 will be installed
+---> Package libsqlite3-0.ppc64 0:3.32.3-1 will be installed
+---> Package libutil2.ppc64 0:0.10.0-1 will be installed
+---> Package libxml2-2.ppc64 0:2.9.4-5 will be installed
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/liblzma.so.5(shr_64.o)(ppc64) for package: libxml2-2-2.9.4-5.ppc64
+---> Package libz1.ppc64 0:1.2.11-3 will be installed
+---> Package p11-kit-trust.ppc64 0:0.23.14-1 will be installed
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libp11-kit.so.0(shr_64.o)(ppc64) for package: p11-kit-trust-0.23.14-1.ppc64
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libtasn1.so.6(shr_64.o)(ppc64) for package: p11-kit-trust-0.23.14-1.ppc64
+---> Package pase-libs-dummy.fat 0:7.2-0 will be installed
+---> Package perl.ppc64 0:5.24.1-4 will be installed
+---> Package python2-pycurl.ppc64 0:7.43.0-4 will be installed
+--> Processing Dependency: libcurl4 >= 7.65.3 for package: python2-pycurl-7.43.0-4.ppc64
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libcurl.so.4(shr_64.o)(ppc64) for package: python2-pycurl-7.43.0-4.ppc64
+---> Package rpm.ppc64 0:4.13.1-12 will be installed
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/liblua.so.5.3(shr_64.o)(ppc64) for package: rpm-4.13.1-12.ppc64
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libdb.so.4.8(shr_64.o)(ppc64) for package: rpm-4.13.1-12.ppc64
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libpopt.so.0(shr_64.o)(ppc64) for package: rpm-4.13.1-12.ppc64
+--> Processing Dependency: curl for package: rpm-4.13.1-12.ppc64
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libmagic.so.1(shr_64.o)(ppc64) for package: rpm-4.13.1-12.ppc64
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libarchive.so.13(shr_64.o)(ppc64) for package: rpm-4.13.1-12.ppc64
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libnss3.so(ppc64) for package: rpm-4.13.1-12.ppc64
+---> Package update-alternatives.ppc64 0:1.19.7-1 will be installed
+--> Running transaction check
+---> Package curl.ppc64 0:7.76.1-1 will be installed
+---> Package libarchive13.ppc64 0:3.3.3-1 will be installed
+---> Package libcurl4.ppc64 0:7.76.1-1 will be installed
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libssh2.so.1(shr_64.o)(ppc64) for package: libcurl4-7.76.1-1.ppc64
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libbrotlidec.so.1(shr_64.o)(ppc64) for package: libcurl4-7.76.1-1.ppc64
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libidn2.so.0(shr_64.o)(ppc64) for package: libcurl4-7.76.1-1.ppc64
+---> Package libdb48.ppc64 0:4.8.30-3 will be installed
+---> Package libgcc_s1.ppc64 0:6.3.0-29 will be installed
+---> Package libiconv2.ppc64 0:1.14-4 will be installed
+---> Package libintl9.ppc64 0:0.19.8-1 will be installed
+---> Package liblua5_3.ppc64 0:5.3.4-3 will be installed
+---> Package liblzma5.ppc64 0:5.2.3-4 will be installed
+---> Package libmagic1.ppc64 0:5.32-6 will be installed
+--> Processing Dependency: file-magic = 5.32 for package: libmagic1-5.32-6.ppc64
+---> Package libp11-kit0.ppc64 0:0.23.14-1 will be installed
+---> Package libpcre1.ppc64 0:8.43-0 will be installed
+---> Package libpopt0.ppc64 0:1.16-2 will be installed
+---> Package libstdcplusplus6.ppc64 0:6.3.0-29 will be installed
+---> Package libtasn1-6.ppc64 0:4.10-4 will be installed
+---> Package ncurses-terminfo.ppc64 0:6.0-8 will be installed
+---> Package nss.ppc64 0:3.30-6 will be installed
+--> Processing Dependency: nspr >= 4.13.0 for package: nss-3.30-6.ppc64
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libnspr4.so(ppc64) for package: nss-3.30-6.ppc64
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libplds4.so(ppc64) for package: nss-3.30-6.ppc64
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libplc4.so(ppc64) for package: nss-3.30-6.ppc64
+--> Running transaction check
+---> Package file-magic.ppc64 0:5.32-6 will be installed
+---> Package libbrotlidec1.ppc64 0:1.0.9-1 will be installed
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libbrotlicommon.so.1(shr_64.o)(ppc64) for package: libbrotlidec1-1.0.9-1.ppc64
+---> Package libidn2-0.ppc64 0:2.3.0-2 will be installed
+---> Package libssh2-1.ppc64 0:1.9.0-3 will be installed
+---> Package nspr.ppc64 0:4.13.1-4 will be installed
+--> Running transaction check
+---> Package libbrotlicommon1.ppc64 0:1.0.9-1 will be installed
+--> Finished Dependency Resolution
+
+Dependencies Resolved
+
+================================================================================
+ Package                    Arch      Version                      Repository
+                                                                           Size
+================================================================================
+Installing:
+ ca-certificates-mozilla    noarch    2019.2.32-0                  ibm    394 k
+ yum                        noarch    3.4.3-19                     ibm    1.2 M
+Installing for dependencies:
+ bash                       ppc64     5.1-1                        ibm    2.3 M
+ ca-certificates            noarch    2_git20170807.10b2785-2      ibm     12 k
+ coreutils-pase-dummy       ppc       7.2-0                        ibm     14 k
+ curl                       ppc64     7.76.1-1                     ibm    121 k
+ file-magic                 ppc64     5.32-6                       ibm    258 k
+ libarchive13               ppc64     3.3.3-1                      ibm    1.1 M
+ libbrotlicommon1           ppc64     1.0.9-1                      ibm     69 k
+ libbrotlidec1              ppc64     1.0.9-1                      ibm     34 k
+ libbz2-1                   ppc64     1.0.6-15                     ibm     89 k
+ libcurl4                   ppc64     7.76.1-1                     ibm    432 k
+ libdb48                    ppc64     4.8.30-3                     ibm    942 k
+ libexpat1                  ppc64     2.2.9-1                      ibm    202 k
+ libffi6                    ppc64     3.2.1-2                      ibm     34 k
+ libgcc_s1                  ppc64     6.3.0-29                     ibm    198 k
+ libglib-2_0-0              ppc64     2.52.0-4                     ibm    2.0 M
+ libiconv2                  ppc64     1.14-4                       ibm    827 k
+ libidn2-0                  ppc64     2.3.0-2                      ibm    266 k
+ libintl9                   ppc64     0.19.8-1                     ibm     40 k
+ liblua5_3                  ppc64     5.3.4-3                      ibm    250 k
+ liblzma5                   ppc64     5.2.3-4                      ibm    267 k
+ libmagic1                  ppc64     5.32-6                       ibm    204 k
+ libncurses6                ppc64     6.0-8                        ibm    1.5 M
+ libopenssl1_1              ppc64     1.1.1k-1                     ibm    2.0 M
+ libp11-kit0                ppc64     0.23.14-1                    ibm    2.1 M
+ libpcre1                   ppc64     8.43-0                       ibm    712 k
+ libpopt0                   ppc64     1.16-2                       ibm     72 k
+ libreadline6               ppc64     6.3-5                        ibm    477 k
+ libsqlite3-0               ppc64     3.32.3-1                     ibm    1.7 M
+ libssh2-1                  ppc64     1.9.0-3                      ibm    327 k
+ libstdcplusplus6           ppc64     6.3.0-29                     ibm    3.3 M
+ libtasn1-6                 ppc64     4.10-4                       ibm    101 k
+ libutil2                   ppc64     0.10.0-1                     ibm     19 k
+ libxml2-2                  ppc64     2.9.4-5                      ibm    1.9 M
+ libz1                      ppc64     1.2.11-3                     ibm     71 k
+ ncurses-terminfo           ppc64     6.0-8                        ibm    583 k
+ nspr                       ppc64     4.13.1-4                     ibm    646 k
+ nss                        ppc64     3.30-6                       ibm    6.6 M
+ p11-kit-trust              ppc64     0.23.14-1                    ibm    624 k
+ pase-libs-dummy            fat       7.2-0                        ibm    172 k
+ perl                       ppc64     5.24.1-4                     ibm     24 M
+ python2                    ppc64     2.7.18-5                     ibm     26 M
+ python2-iniparse           noarch    0.4-2                        ibm     29 k
+ python2-pycurl             ppc64     7.43.0-4                     ibm    220 k
+ python2-rpm                ppc64     4.13.1-12                    ibm    276 k
+ python2-urlgrabber         noarch    3.10.2-3                     ibm     73 k
+ rpm                        ppc64     4.13.1-12                    ibm    2.1 M
+ update-alternatives        ppc64     1.19.7-1                     ibm     84 k
+ yum-metadata-parser        ppc64     1.1.4-2                      ibm    217 k
+
+Transaction Summary
+================================================================================
+Install      50 Packages
+
+Total download size: 87 M
+Installed size: 328 M
+Downloading Packages:
+(1/50): bash-5.1-1.ibmi7.2.ppc64.rpm                        | 2.3 MB  00:01     
+(2/50): ca-certificates-2_git20170807.10b2785-2.ibmi7.2.noa |  12 kB  00:00     
+(3/50): ca-certificates-mozilla-2019.2.32-0.ibmi7.2.noarch. | 394 kB  00:00     
+(4/50): coreutils-pase-dummy-7.2-0.ibmi7.2.ppc.rpm          |  14 kB  00:00     
+(5/50): curl-7.76.1-1.ibmi7.2.ppc64.rpm                     | 121 kB  00:00     
+(6/50): file-magic-5.32-6.ibmi7.2.ppc64.rpm                 | 258 kB  00:00     
+(7/50): libarchive13-3.3.3-1.ibmi7.2.ppc64.rpm              | 1.1 MB  00:00     
+(8/50): libbrotlicommon1-1.0.9-1.ibmi7.2.ppc64.rpm          |  69 kB  00:00     
+(9/50): libbrotlidec1-1.0.9-1.ibmi7.2.ppc64.rpm             |  34 kB  00:00     
+(10/50): libbz2-1-1.0.6-15.ibmi7.2.ppc64.rpm                |  89 kB  00:00     
+(11/50): libcurl4-7.76.1-1.ibmi7.2.ppc64.rpm                | 432 kB  00:00     
+(12/50): libdb48-4.8.30-3.ibmi7.2.ppc64.rpm                 | 942 kB  00:00     
+(13/50): libexpat1-2.2.9-1.ibmi7.2.ppc64.rpm                | 202 kB  00:00     
+(14/50): libffi6-3.2.1-2.ibmi7.2.ppc64.rpm                  |  34 kB  00:00     
+(15/50): libgcc_s1-6.3.0-29.ibmi7.2.ppc64.rpm               | 198 kB  00:00     
+(16/50): libglib-2_0-0-2.52.0-4.ibmi7.2.ppc64.rpm           | 2.0 MB  00:01     
+(17/50): libiconv2-1.14-4.ibmi7.2.ppc64.rpm                 | 827 kB  00:00     
+(18/50): libidn2-0-2.3.0-2.ibmi7.2.ppc64.rpm                | 266 kB  00:00     
+(19/50): libintl9-0.19.8-1.ibmi7.2.ppc64.rpm                |  40 kB  00:00     
+(20/50): liblua5_3-5.3.4-3.ibmi7.2.ppc64.rpm                | 250 kB  00:00     
+(21/50): liblzma5-5.2.3-4.ibmi7.2.ppc64.rpm                 | 267 kB  00:00     
+(22/50): libmagic1-5.32-6.ibmi7.2.ppc64.rpm                 | 204 kB  00:00     
+(23/50): libncurses6-6.0-8.ibmi7.2.ppc64.rpm                | 1.5 MB  00:01     
+(24/50): libopenssl1_1-1.1.1k-1.ibmi7.2.ppc64.rpm           | 2.0 MB  00:01     
+(25/50): libp11-kit0-0.23.14-1.ibmi7.2.ppc64.rpm            | 2.1 MB  00:01     
+(26/50): libpcre1-8.43-0.ibmi7.2.ppc64.rpm                  | 712 kB  00:00     
+(27/50): libpopt0-1.16-2.ibmi7.2.ppc64.rpm                  |  72 kB  00:00     
+(28/50): libreadline6-6.3-5.ibmi7.2.ppc64.rpm               | 477 kB  00:00     
+(29/50): libsqlite3-0-3.32.3-1.ibmi7.2.ppc64.rpm            | 1.7 MB  00:01     
+(30/50): libssh2-1-1.9.0-3.ibmi7.2.ppc64.rpm                | 327 kB  00:00     
+(31/50): libstdcplusplus6-6.3.0-29.ibmi7.2.ppc64.rpm        | 3.3 MB  00:02     
+(32/50): libtasn1-6-4.10-4.ibmi7.2.ppc64.rpm                | 101 kB  00:00     
+(33/50): libutil2-0.10.0-1.ibmi7.2.ppc64.rpm                |  19 kB  00:00     
+(34/50): libxml2-2-2.9.4-5.ibmi7.2.ppc64.rpm                | 1.9 MB  00:01     
+(35/50): libz1-1.2.11-3.ibmi7.2.ppc64.rpm                   |  71 kB  00:00     
+(36/50): ncurses-terminfo-6.0-8.ibmi7.2.ppc64.rpm           | 583 kB  00:00     
+(37/50): nspr-4.13.1-4.ibmi7.2.ppc64.rpm                    | 646 kB  00:00     
+(38/50): nss-3.30-6.ibmi7.2.ppc64.rpm                       | 6.6 MB  00:05     
+(39/50): p11-kit-trust-0.23.14-1.ibmi7.2.ppc64.rpm          | 624 kB  00:00     
+(40/50): pase-libs-dummy-7.2-0.ibmi7.2.fat.rpm              | 172 kB  00:00     
+(41/50): perl-5.24.1-4.ibmi7.2.ppc64.rpm                    |  24 MB  00:19     
+(42/50): python2-2.7.18-5.ibmi7.2.ppc64.rpm                 |  26 MB  00:20     
+(43/50): python2-iniparse-0.4-2.ibmi7.2.noarch.rpm          |  29 kB  00:00     
+(44/50): python2-pycurl-7.43.0-4.ibmi7.2.ppc64.rpm          | 220 kB  00:00     
+(45/50): python2-rpm-4.13.1-12.ibmi7.2.ppc64.rpm            | 276 kB  00:00     
+(46/50): python2-urlgrabber-3.10.2-3.ibmi7.2.noarch.rpm     |  73 kB  00:00     
+(47/50): rpm-4.13.1-12.ibmi7.2.ppc64.rpm                    | 2.1 MB  00:01     
+(48/50): update-alternatives-1.19.7-1.ibmi7.2.ppc64.rpm     |  84 kB  00:00     
+(49/50): yum-3.4.3-19.ibmi7.2.noarch.rpm                    | 1.2 MB  00:00     
+(50/50): yum-metadata-parser-1.1.4-2.ibmi7.2.ppc64.rpm      | 217 kB  00:00     
+--------------------------------------------------------------------------------
+Total                                           1.2 MB/s |  87 MB     01:11     
+Running Transaction Check
+Running Transaction Test
+Transaction Test Succeeded
+Running Transaction
+  Installing : pase-libs-dummy-7.2-0.fat                                   1/50 
+  Installing : libgcc_s1-6.3.0-29.ppc64                                    2/50 
+  Installing : libz1-1.2.11-3.ppc64                                        3/50 
+  Installing : coreutils-pase-dummy-7.2-0.ppc                              4/50 
+  Installing : libiconv2-1.14-4.ppc64                                      5/50 
+  Installing : libopenssl1_1-1.1.1k-1.ppc64                                6/50 
+  Installing : libutil2-0.10.0-1.ppc64                                     7/50 
+  Installing : libsqlite3-0-3.32.3-1.ppc64                                 8/50 
+  Installing : libbz2-1-1.0.6-15.ppc64                                     9/50 
+  Installing : liblzma5-5.2.3-4.ppc64                                     10/50 
+  Installing : libffi6-3.2.1-2.ppc64                                      11/50 
+  Installing : libp11-kit0-0.23.14-1.ppc64                                12/50 
+  Installing : libxml2-2-2.9.4-5.ppc64                                    13/50 
+  Installing : libarchive13-3.3.3-1.ppc64                                 14/50 
+  Installing : libssh2-1-1.9.0-3.ppc64                                    15/50 
+  Installing : libidn2-0-2.3.0-2.ppc64                                    16/50 
+  Installing : libpopt0-1.16-2.ppc64                                      17/50 
+  Installing : libtasn1-6-4.10-4.ppc64                                    18/50 
+  Installing : p11-kit-trust-0.23.14-1.ppc64                              19/50 
+  Installing : libstdcplusplus6-6.3.0-29.ppc64                            20/50 
+  Installing : libdb48-4.8.30-3.ppc64                                     21/50 
+  Installing : libpcre1-8.43-0.ppc64                                      22/50 
+  Installing : liblua5_3-5.3.4-3.ppc64                                    23/50 
+  Installing : libexpat1-2.2.9-1.ppc64                                    24/50 
+  Installing : perl-5.24.1-4.ppc64                                        25/50 
+  Installing : libintl9-0.19.8-1.ppc64                                    26/50 
+  Installing : libglib-2_0-0-2.52.0-4.ppc64                               27/50 
+  Installing : libbrotlicommon1-1.0.9-1.ppc64                             28/50 
+  Installing : libbrotlidec1-1.0.9-1.ppc64                                29/50 
+  Installing : libcurl4-7.76.1-1.ppc64                                    30/50 
+  Installing : curl-7.76.1-1.ppc64                                        31/50 
+  Installing : update-alternatives-1.19.7-1.ppc64                         32/50 
+  Installing : nspr-4.13.1-4.ppc64                                        33/50 
+  Installing : nss-3.30-6.ppc64                                           34/50 
+  Installing : file-magic-5.32-6.ppc64                                    35/50 
+  Installing : libmagic1-5.32-6.ppc64                                     36/50 
+  Installing : ncurses-terminfo-6.0-8.ppc64                               37/50 
+  Installing : libncurses6-6.0-8.ppc64                                    38/50 
+  Installing : bash-5.1-1.ppc64                                           39/50 
+  Installing : ca-certificates-2_git20170807.10b2785-2.noarch             40/50 
+  Installing : rpm-4.13.1-12.ppc64                                        41/50 
+  Installing : libreadline6-6.3-5.ppc64                                   42/50 
+  Installing : python2-2.7.18-5.ppc64                                     43/50 
+update-alternatives: using /QOpenSys/pkgs/bin/python2.7 to provide /QOpenSys/pkgs/bin/python (python) in auto mode
+  Installing : python2-rpm-4.13.1-12.ppc64                                44/50 
+  Installing : python2-pycurl-7.43.0-4.ppc64                              45/50 
+  Installing : python2-urlgrabber-3.10.2-3.noarch                         46/50 
+  Installing : yum-metadata-parser-1.1.4-2.ppc64                          47/50 
+  Installing : python2-iniparse-0.4-2.noarch                              48/50 
+  Installing : yum-3.4.3-19.noarch                                        49/50 
+  Installing : ca-certificates-mozilla-2019.2.32-0.noarch                 50/50 
+
+Installed:
+  ca-certificates-mozilla.noarch 0:2019.2.32-0       yum.noarch 0:3.4.3-19      
+
+Dependency Installed:
+  bash.ppc64 0:5.1-1                                                            
+  ca-certificates.noarch 0:2_git20170807.10b2785-2                              
+  coreutils-pase-dummy.ppc 0:7.2-0                                              
+  curl.ppc64 0:7.76.1-1                                                         
+  file-magic.ppc64 0:5.32-6                                                     
+  libarchive13.ppc64 0:3.3.3-1                                                  
+  libbrotlicommon1.ppc64 0:1.0.9-1                                              
+  libbrotlidec1.ppc64 0:1.0.9-1                                                 
+  libbz2-1.ppc64 0:1.0.6-15                                                     
+  libcurl4.ppc64 0:7.76.1-1                                                     
+  libdb48.ppc64 0:4.8.30-3                                                      
+  libexpat1.ppc64 0:2.2.9-1                                                     
+  libffi6.ppc64 0:3.2.1-2                                                       
+  libgcc_s1.ppc64 0:6.3.0-29                                                    
+  libglib-2_0-0.ppc64 0:2.52.0-4                                                
+  libiconv2.ppc64 0:1.14-4                                                      
+  libidn2-0.ppc64 0:2.3.0-2                                                     
+  libintl9.ppc64 0:0.19.8-1                                                     
+  liblua5_3.ppc64 0:5.3.4-3                                                     
+  liblzma5.ppc64 0:5.2.3-4                                                      
+  libmagic1.ppc64 0:5.32-6                                                      
+  libncurses6.ppc64 0:6.0-8                                                     
+  libopenssl1_1.ppc64 0:1.1.1k-1                                                
+  libp11-kit0.ppc64 0:0.23.14-1                                                 
+  libpcre1.ppc64 0:8.43-0                                                       
+  libpopt0.ppc64 0:1.16-2                                                       
+  libreadline6.ppc64 0:6.3-5                                                    
+  libsqlite3-0.ppc64 0:3.32.3-1                                                 
+  libssh2-1.ppc64 0:1.9.0-3                                                     
+  libstdcplusplus6.ppc64 0:6.3.0-29                                             
+  libtasn1-6.ppc64 0:4.10-4                                                     
+  libutil2.ppc64 0:0.10.0-1                                                     
+  libxml2-2.ppc64 0:2.9.4-5                                                     
+  libz1.ppc64 0:1.2.11-3                                                        
+  ncurses-terminfo.ppc64 0:6.0-8                                                
+  nspr.ppc64 0:4.13.1-4                                                         
+  nss.ppc64 0:3.30-6                                                            
+  p11-kit-trust.ppc64 0:0.23.14-1                                               
+  pase-libs-dummy.fat 0:7.2-0                                                   
+  perl.ppc64 0:5.24.1-4                                                         
+  python2.ppc64 0:2.7.18-5                                                      
+  python2-iniparse.noarch 0:0.4-2                                               
+  python2-pycurl.ppc64 0:7.43.0-4                                               
+  python2-rpm.ppc64 0:4.13.1-12                                                 
+  python2-urlgrabber.noarch 0:3.10.2-3                                          
+  rpm.ppc64 0:4.13.1-12                                                         
+  update-alternatives.ppc64 0:1.19.7-1                                          
+  yum-metadata-parser.ppc64 0:1.1.4-2                                           
+
+Complete!
+andrearibuoli                                               | 2.9 kB  00:00     
+andrearibuoli/primary_db                                    |  14 kB  00:00     
+ibm                                                         | 3.6 kB  00:00     
+Setting up Install Process
+Resolving Dependencies
+--> Running transaction check
+---> Package ruby-devel.ppc64 0:3.0.2-1 will be installed
+--> Processing Dependency: ruby = 3.0.2-1 for package: ruby-devel-3.0.2-1.ppc64
+--> Running transaction check
+---> Package ruby.ppc64 0:3.0.2-1 will be installed
+--> Processing Dependency: libgdbm6 >= 1.18.1-1 for package: ruby-3.0.2-1.ppc64
+--> Processing Dependency: libgmp10 >= 5.1.3-13 for package: ruby-3.0.2-1.ppc64
+--> Processing Dependency: libyaml-0-2 >= 0.2.5-1 for package: ruby-3.0.2-1.ppc64
+--> Processing Dependency: libreadline8 >= 8.0-1 for package: ruby-3.0.2-1.ppc64
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libyaml-0.so.2(shr_64.o)(ppc64) for package: ruby-3.0.2-1.ppc64
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libreadline.so.8(shr_64.o)(ppc64) for package: ruby-3.0.2-1.ppc64
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libgdbm.so.6(shr_64.o)(ppc64) for package: ruby-3.0.2-1.ppc64
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/libgmp.so.10(shr_64.o)(ppc64) for package: ruby-3.0.2-1.ppc64
+--> Running transaction check
+---> Package libgdbm6.ppc64 0:1.18.1-1 will be installed
+---> Package libgmp10.ppc64 0:5.1.3-13 will be installed
+---> Package libreadline8.ppc64 0:8.1-2 will be installed
+---> Package libyaml-0-2.ppc64 0:0.2.5-1 will be installed
+--> Finished Dependency Resolution
+
+Dependencies Resolved
+
+================================================================================
+ Package             Arch         Version            Repository            Size
+================================================================================
+Installing:
+ ruby-devel          ppc64        3.0.2-1            andrearibuoli        336 k
+Installing for dependencies:
+ libgdbm6            ppc64        1.18.1-1           ibm                   61 k
+ libgmp10            ppc64        5.1.3-13           ibm                  664 k
+ libreadline8        ppc64        8.1-2              ibm                  533 k
+ libyaml-0-2         ppc64        0.2.5-1            ibm                  128 k
+ ruby                ppc64        3.0.2-1            andrearibuoli         24 M
+
+Transaction Summary
+================================================================================
+Install       6 Packages
+
+Total download size: 26 M
+Installed size: 104 M
+Downloading Packages:
+(1/6): libgdbm6-1.18.1-1.ibmi7.2.ppc64.rpm                  |  61 kB  00:00     
+(2/6): libgmp10-5.1.3-13.ibmi7.2.ppc64.rpm                  | 664 kB  00:00     
+(3/6): libreadline8-8.1-2.ibmi7.2.ppc64.rpm                 | 533 kB  00:00     
+(4/6): libyaml-0-2-0.2.5-1.ibmi7.2.ppc64.rpm                | 128 kB  00:00     
+(5/6): ruby-3.0.2-1.ibmi7.3.ppc64.rpm                       |  24 MB  00:13     
+(6/6): ruby-devel-3.0.2-1.ibmi7.3.ppc64.rpm                 | 336 kB  00:00     
+--------------------------------------------------------------------------------
+Total                                           1.8 MB/s |  26 MB     00:14     
+Running Transaction Check
+Running Transaction Test
+Transaction Test Succeeded
+Running Transaction
+  Installing : libyaml-0-2-0.2.5-1.ppc64                                    1/6 
+  Installing : libreadline8-8.1-2.ppc64                                     2/6 
+  Installing : libgdbm6-1.18.1-1.ppc64                                      3/6 
+  Installing : libgmp10-5.1.3-13.ppc64                                      4/6 
+  Installing : ruby-3.0.2-1.ppc64                                           5/6 
+  Installing : ruby-devel-3.0.2-1.ppc64                                     6/6 
+
+Installed:
+  ruby-devel.ppc64 0:3.0.2-1                                                    
+
+Dependency Installed:
+  libgdbm6.ppc64 0:1.18.1-1              libgmp10.ppc64 0:5.1.3-13              
+  libreadline8.ppc64 0:8.1-2             libyaml-0-2.ppc64 0:0.2.5-1            
+  ruby.ppc64 0:3.0.2-1                  
+
+Complete!
+ruby 3.0.2p107 (2021-07-07 revision 0db68f0233) [powerpc-os400]
+bash-5.1$ 
+```
+
 ----
 ### 35. to enjoy DB2 encoding support
 
