@@ -56,6 +56,7 @@ Let's go!
 34. [to customize descriptors](#34-to-customize-descriptors)
 35. [to enjoy DB2 encoding support](#35-to-enjoy-db2-encoding-support)
 36. [to refresh the Ruby interpreter](#36-to-refresh-the-ruby-interpreter)
+37. [to build Ruby gems requiring compilation](#37-to-build-ruby-gems-requiring-compilation)
 
 <!---
 3X. [to customize subsystem](#3X-to-customize-subsystem)
@@ -71,6 +72,427 @@ There is a corresponding Environment attribute named **SQL\_ATTR\_SERVERMODE\_SU
 in previous requests.
 
 --->
+----
+### 37. to build Ruby gems requiring compilation
+
+In the previous post we created a brand new PASE chroot environment to test the latest Ruby distribution (3.0.2).
+
+Now we would like to introduce support for **SQLite**: *a relational database management system contained in a C library*. 
+ 
+There is already a Ruby gem providing *Ruby bindings for the SQLite3 embedded database*: all we need to test is the ability of our interpreter to smoothly support its installation. The complex aspect here is that **sqlite3 gem** is not a *pure\-Ruby* gem but one of those *requiring compilation of C source code*.
+
+To prevent silly errors and be effective in our explanations let us focus on the newly created chroot environment 
+adapting it **to become a Ruby gems build-capable** one.
+
+By issuing `chroot /QOpenSys/chRootRiby302 /QOpenSys/pkgs/bin/bash` we are entering our chroot with **bash** shell.
+
+Once there, let us perform a `cd $HOME`.
+
+Assuming we will have to fine tune our environment we will first download the gem saving future transfers. 
+This is performed by issuing:
+
+```
+bash-5.1$ export PATH=/QOpenSys/pkgs/bin:$PATH
+bash-5.1$ gem fetch sqlite3
+Fetching sqlite3-1.4.2.gem
+Downloaded sqlite3-1.4.2
+```
+
+**first attempt**
+
+Now we simply execute:
+
+```
+bash-5.1$ gem install ./sqlite3-1.4.2.gem
+Building native extensions. This could take a while...
+ERROR:  Error installing ./sqlite3-1.4.2.gem:
+        ERROR: Failed to build gem native extension.
+
+    current directory: /QOpenSys/pkgs/lib/ruby/gems/3.0.0/gems/sqlite3-1.4.2/ext/sqlite3
+/QOpenSys/pkgs/bin/ruby -I /QOpenSys/pkgs/lib/ruby/3.0.0 -r ./siteconf20210919-691916-2eqcqv.rb extconf.rb
+checking for sqlite3.h... *** extconf.rb failed ***
+Could not create Makefile due to some reason, probably lack of necessary
+libraries and/or headers.  Check the mkmf.log file for more details.  You may
+need configuration options.
+
+Provided configuration options:
+        --with-opt-dir
+        --without-opt-dir
+        --with-opt-include
+        --without-opt-include=${opt-dir}/include
+        --with-opt-lib
+        --without-opt-lib=${opt-dir}/lib
+        --with-make-prog
+        --without-make-prog
+        --srcdir=.
+        --curdir
+        --ruby=/QOpenSys/pkgs/bin/$(RUBY_BASE_NAME)
+        --with-sqlcipher
+        --without-sqlcipher
+        --with-sqlite3-config
+        --without-sqlite3-config
+        --with-pkg-config
+        --without-pkg-config
+        --with-sqlcipher
+        --without-sqlcipher
+        --with-sqlite3-dir
+        --without-sqlite3-dir
+        --with-sqlite3-include
+        --without-sqlite3-include=${sqlite3-dir}/include
+        --with-sqlite3-lib
+        --without-sqlite3-lib=${sqlite3-dir}/lib
+/QOpenSys/pkgs/lib/ruby/3.0.0/mkmf.rb:471:in `try_do': The compiler failed to generate an executable file. (RuntimeError)
+You have to install development tools first.
+        from /QOpenSys/pkgs/lib/ruby/3.0.0/mkmf.rb:613:in `try_cpp'
+        from /QOpenSys/pkgs/lib/ruby/3.0.0/mkmf.rb:1177:in `block in find_header'
+        from /QOpenSys/pkgs/lib/ruby/3.0.0/mkmf.rb:971:in `block in checking_for'
+        from /QOpenSys/pkgs/lib/ruby/3.0.0/mkmf.rb:361:in `block (2 levels) in postpone'
+        from /QOpenSys/pkgs/lib/ruby/3.0.0/mkmf.rb:331:in `open'
+        from /QOpenSys/pkgs/lib/ruby/3.0.0/mkmf.rb:361:in `block in postpone'
+        from /QOpenSys/pkgs/lib/ruby/3.0.0/mkmf.rb:331:in `open'
+        from /QOpenSys/pkgs/lib/ruby/3.0.0/mkmf.rb:357:in `postpone'
+        from /QOpenSys/pkgs/lib/ruby/3.0.0/mkmf.rb:970:in `checking_for'
+        from /QOpenSys/pkgs/lib/ruby/3.0.0/mkmf.rb:1176:in `find_header'
+        from extconf.rb:68:in `<main>'
+
+To see why this extension failed to compile, please check the mkmf.log which can be found here:
+
+  /QOpenSys/pkgs/lib/ruby/gems/3.0.0/extensions/powerpc-unknown/3.0.0-static/sqlite3-1.4.2/mkmf.log
+
+extconf failed, exit code 1
+
+Gem files will remain installed in /QOpenSys/pkgs/lib/ruby/gems/3.0.0/gems/sqlite3-1.4.2 for inspection.
+Results logged to /QOpenSys/pkgs/lib/ruby/gems/3.0.0/extensions/powerpc-unknown/3.0.0-static/sqlite3-1.4.2/gem_make.out
+```
+ In the **mkmf.log** file we read:
+ 
+```
+package configuration for sqlite3 is not found
+``` 
+
+And in fact we first need to install sqlite as provided by IBM Rochester for IBM i:
+
+```
+bash-5.1$ yum list | grep sqlite
+libsqlite3-0.ppc64                        3.32.3-1                @ibm          
+sqlite3.ppc64                             3.32.3-1                ibm           
+sqlite3-devel.ppc64                       3.32.3-1                ibm      
+```
+ 
+```
+bash-5.1$ yum install libsqlite3 sqlite3-devel
+Setting up Install Process
+Package libsqlite3-0-3.32.3-1.ppc64 already installed and latest version
+Resolving Dependencies
+--> Running transaction check
+---> Package sqlite3-devel.ppc64 0:3.32.3-1 will be installed
+--> Finished Dependency Resolution
+
+Dependencies Resolved
+
+==========================================================================================================
+ Package                       Arch                  Version                    Repository           Size
+==========================================================================================================
+Installing:
+ sqlite3-devel                 ppc64                 3.32.3-1                   ibm                 160 k
+
+Transaction Summary
+==========================================================================================================
+Install       1 Package
+
+Total download size: 160 k
+Installed size: 602 k
+Is this ok [y/N]: y
+Downloading Packages:
+sqlite3-devel-3.32.3-1.ibmi7.2.ppc64.rpm                                           | 160 kB  00:00:00     
+Running Transaction Check
+Running Transaction Test
+Transaction Test Succeeded
+Running Transaction
+  Installing : sqlite3-devel-3.32.3-1.ppc64                                                           1/1 
+
+Installed:
+  sqlite3-devel.ppc64 0:3.32.3-1                                                                          
+
+Complete!
+``` 
+
+**second attempt**
+
+If we repeat previous attempt (`gem install ./sqlite3-1.4.2.gem`) we will experience the same error.
+By executing a `which gcc` we recognize no compiler has been installed!
+
+So let us first proceeed in this way:
+
+```
+bash-5.1$ yum install gcc                     
+Setting up Install Process
+Resolving Dependencies
+--> Running transaction check
+---> Package gcc.noarch 0:6-2 will be installed
+--> Processing Dependency: gcc6 = 6.3.0 for package: gcc-6-2.noarch
+--> Running transaction check
+---> Package gcc6-aix.fat 0:6.3.0-29 will be installed
+ibm/filelists_db                                                                   | 963 kB  00:00:00     
+--> Processing Dependency: gcc6-cpp-aix = 6.3.0-29 for package: gcc6-aix-6.3.0-29.fat
+--> Processing Dependency: /QOpenSys/pkgs/lib/libatomic.so.1 for package: gcc6-aix-6.3.0-29.fat
+andrearibuoli/filelists_db                                                         |  40 kB  00:00:00     
+--> Running transaction check
+---> Package gcc6-cpp-aix.fat 0:6.3.0-29 will be installed
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/aix/libgmp.a(libgmp.so.10)(ppc) for package: gcc6-cpp-aix-6.3.0-29.fat
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/aix/libmpc.a(libmpc.so.3)(ppc) for package: gcc6-cpp-aix-6.3.0-29.fat
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/aix/libmpfr.a(libmpfr.so.4)(ppc) for package: gcc6-cpp-aix-6.3.0-29.fat
+---> Package libatomic1.ppc64 0:6.3.0-29 will be installed
+--> Running transaction check
+---> Package gmp-aix.fat 0:5.1.3-14 will be installed
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/aix/libstdc++.a(libstdc++.so.6)(ppc) for package: gmp-aix-5.1.3-14.fat
+--> Processing Dependency: lib:/QOpenSys/pkgs/lib/aix/libgcc_s.a(shr.o)(ppc) for package: gmp-aix-5.1.3-14.fat
+---> Package libmpc-aix.fat 0:1.0.3-15 will be installed
+---> Package mpfr-aix.fat 0:3.1.2-13 will be installed
+--> Running transaction check
+---> Package libgcc-aix.fat 0:6.3.0-29 will be installed
+---> Package libstdcplusplus-aix.fat 0:6.3.0-29 will be installed
+--> Finished Dependency Resolution
+
+Dependencies Resolved
+
+==========================================================================================================
+ Package                           Arch                 Version                   Repository         Size
+==========================================================================================================
+Installing:
+ gcc                               noarch               6-2                       ibm               6.3 k
+Installing for dependencies:
+ gcc6-aix                          fat                  6.3.0-29                  ibm                25 M
+ gcc6-cpp-aix                      fat                  6.3.0-29                  ibm               8.2 M
+ gmp-aix                           fat                  5.1.3-14                  ibm               294 k
+ libatomic1                        ppc64                6.3.0-29                  ibm                60 k
+ libgcc-aix                        fat                  6.3.0-29                  ibm               189 k
+ libmpc-aix                        fat                  1.0.3-15                  ibm                63 k
+ libstdcplusplus-aix               fat                  6.3.0-29                  ibm               3.3 M
+ mpfr-aix                          fat                  3.1.2-13                  ibm               223 k
+
+Transaction Summary
+==========================================================================================================
+Install       9 Packages
+
+Total download size: 38 M
+Installed size: 126 M
+Is this ok [y/N]: y
+Downloading Packages:
+(1/9): gcc-6-2.ibmi7.2.noarch.rpm                                                  | 6.3 kB  00:00:00     
+(2/9): gcc6-aix-6.3.0-29.ibmi7.2.fat.rpm                                           |  25 MB  00:00:22     
+(3/9): gcc6-cpp-aix-6.3.0-29.ibmi7.2.fat.rpm                                       | 8.2 MB  00:00:07     
+(4/9): gmp-aix-5.1.3-14.ibmi7.2.fat.rpm                                            | 294 kB  00:00:00     
+(5/9): libatomic1-6.3.0-29.ibmi7.2.ppc64.rpm                                       |  60 kB  00:00:00     
+(6/9): libgcc-aix-6.3.0-29.ibmi7.2.fat.rpm                                         | 189 kB  00:00:00     
+(7/9): libmpc-aix-1.0.3-15.ibmi7.2.fat.rpm                                         |  63 kB  00:00:00     
+(8/9): libstdcplusplus-aix-6.3.0-29.ibmi7.2.fat.rpm                                | 3.3 MB  00:00:02     
+(9/9): mpfr-aix-3.1.2-13.ibmi7.2.fat.rpm                                           | 223 kB  00:00:00     
+----------------------------------------------------------------------------------------------------------
+Total                                                                     1.1 MB/s |  38 MB     00:34     
+Running Transaction Check
+Running Transaction Test
+Transaction Test Succeeded
+Running Transaction
+  Installing : libgcc-aix-6.3.0-29.fat                                                                1/9 
+  Installing : libstdcplusplus-aix-6.3.0-29.fat                                                       2/9 
+  Installing : gmp-aix-5.1.3-14.fat                                                                   3/9 
+  Installing : mpfr-aix-3.1.2-13.fat                                                                  4/9 
+  Installing : libmpc-aix-1.0.3-15.fat                                                                5/9 
+  Installing : gcc6-cpp-aix-6.3.0-29.fat                                                              6/9 
+  Installing : libatomic1-6.3.0-29.ppc64                                                              7/9 
+  Installing : gcc6-aix-6.3.0-29.fat                                                                  8/9 
+  Installing : gcc-6-2.noarch                                                                         9/9 
+
+Installed:
+  gcc.noarch 0:6-2                                                                                        
+
+Dependency Installed:
+  gcc6-aix.fat 0:6.3.0-29                 gcc6-cpp-aix.fat 0:6.3.0-29      gmp-aix.fat 0:5.1.3-14        
+  libatomic1.ppc64 0:6.3.0-29             libgcc-aix.fat 0:6.3.0-29        libmpc-aix.fat 0:1.0.3-15     
+  libstdcplusplus-aix.fat 0:6.3.0-29      mpfr-aix.fat 0:3.1.2-13         
+
+Complete!
+```
+
+**third attempt**
+
+If we repeat previous attempt (`gem install ./sqlite3-1.4.2.gem`) we will experience a new error.
+
+```
+collect2: fatal error: library libutil not found
+```
+
+We will fix by installing:
+
+```
+bash-5.1$ yum install libutil-devel
+Setting up Install Process
+Resolving Dependencies
+--> Running transaction check
+---> Package libutil-devel.ppc64 0:0.10.0-1 will be installed
+--> Finished Dependency Resolution
+
+Dependencies Resolved
+
+==========================================================================================================
+ Package                       Arch                  Version                    Repository           Size
+==========================================================================================================
+Installing:
+ libutil-devel                 ppc64                 0.10.0-1                   ibm                  10 k
+
+Transaction Summary
+==========================================================================================================
+Install       1 Package
+
+Total download size: 10 k
+Installed size: 6.1 k
+Is this ok [y/N]: y
+Downloading Packages:
+libutil-devel-0.10.0-1.ibmi7.2.ppc64.rpm                                           |  10 kB  00:00:00     
+Running Transaction Check
+Running Transaction Test
+Transaction Test Succeeded
+Running Transaction
+  Installing : libutil-devel-0.10.0-1.ppc64                                                           1/1 
+
+Installed:
+  libutil-devel.ppc64 0:0.10.0-1                                                                          
+
+Complete!
+```
+
+**forth attempt**
+
+If we repeat previous attempt (`gem install ./sqlite3-1.4.2.gem`) we will experience a new error.
+
+```
+collect2: fatal error: library libgmp not found
+```
+
+We fix by installing:
+
+```
+yum install gmp-devel
+```
+
+**fifth attempt**
+
+Now the error is related to missing mkdir
+
+```
+bash-5.1$ gem install ./sqlite3-1.4.2.gem 
+Building native extensions. This could take a while...
+ERROR:  Error installing ./sqlite3-1.4.2.gem:
+        ERROR: Failed to build gem native extension.
+
+    current directory: /QOpenSys/pkgs/lib/ruby/gems/3.0.0/gems/sqlite3-1.4.2/ext/sqlite3
+/QOpenSys/pkgs/bin/ruby -I /QOpenSys/pkgs/lib/ruby/3.0.0 -r ./siteconf20210919-693143-36t42d.rb extconf.rb
+checking for sqlite3.h... yes
+checking for pthread_create() in -lpthread... yes
+checking for -ldl... yes
+checking for sqlite3_libversion_number() in -lsqlite3... yes
+checking for rb_proc_arity()... yes
+checking for rb_integer_pack()... yes
+checking for sqlite3_initialize()... yes
+checking for sqlite3_backup_init()... yes
+checking for sqlite3_column_database_name()... yes
+checking for sqlite3_enable_load_extension()... yes
+checking for sqlite3_load_extension()... yes
+checking for sqlite3_open_v2()... yes
+checking for sqlite3_prepare_v2()... yes
+checking for sqlite3_int64 in sqlite3.h... yes
+checking for sqlite3_uint64 in sqlite3.h... yes
+creating Makefile
+
+current directory: /QOpenSys/pkgs/lib/ruby/gems/3.0.0/gems/sqlite3-1.4.2/ext/sqlite3
+make DESTDIR\= clean
+
+current directory: /QOpenSys/pkgs/lib/ruby/gems/3.0.0/gems/sqlite3-1.4.2/ext/sqlite3
+make DESTDIR\=
+compiling aggregator.c
+compiling backup.c
+compiling database.c
+database.c: In function 'exec_batch':
+database.c:726:57: warning: passing argument 3 of 'sqlite3_exec' from incompatible pointer type [-Wincompatible-pointer-types]
+     status = sqlite3_exec(ctx->db, StringValuePtr(sql), hash_callback_function, callback_ary, &errMsg);
+                                                         ^~~~~~~~~~~~~~~~~~~~~~
+In file included from ./sqlite3_ruby.h:25:0,
+                 from database.c:1:
+/QOpenSys/pkgs/include/sqlite3.h:402:16: note: expected 'int (*)(void *, int,  char **, char **)' but argument is of type 'int (*)(VALUE,  int,  char **, char **) {aka int (*)(long unsigned int,  int,  char **, char **)}'
+ SQLITE_API int sqlite3_exec(
+                ^~~~~~~~~~~~
+database.c:726:81: warning: passing argument 4 of 'sqlite3_exec' makes pointer from integer without a cast [-Wint-conversion]
+     status = sqlite3_exec(ctx->db, StringValuePtr(sql), hash_callback_function, callback_ary, &errMsg);
+                                                                                 ^~~~~~~~~~~~
+In file included from ./sqlite3_ruby.h:25:0,
+                 from database.c:1:
+/QOpenSys/pkgs/include/sqlite3.h:402:16: note: expected 'void *' but argument is of type 'VALUE {aka long unsigned int}'
+ SQLITE_API int sqlite3_exec(
+                ^~~~~~~~~~~~
+database.c:728:57: warning: passing argument 3 of 'sqlite3_exec' from incompatible pointer type [-Wincompatible-pointer-types]
+     status = sqlite3_exec(ctx->db, StringValuePtr(sql), regular_callback_function, callback_ary, &errMsg);
+                                                         ^~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from ./sqlite3_ruby.h:25:0,
+                 from database.c:1:
+/QOpenSys/pkgs/include/sqlite3.h:402:16: note: expected 'int (*)(void *, int,  char **, char **)' but argument is of type 'int (*)(VALUE,  int,  char **, char **) {aka int (*)(long unsigned int,  int,  char **, char **)}'
+ SQLITE_API int sqlite3_exec(
+                ^~~~~~~~~~~~
+database.c:728:84: warning: passing argument 4 of 'sqlite3_exec' makes pointer from integer without a cast [-Wint-conversion]
+     status = sqlite3_exec(ctx->db, StringValuePtr(sql), regular_callback_function, callback_ary, &errMsg);
+                                                                                    ^~~~~~~~~~~~
+In file included from ./sqlite3_ruby.h:25:0,
+                 from database.c:1:
+/QOpenSys/pkgs/include/sqlite3.h:402:16: note: expected 'void *' but argument is of type 'VALUE {aka long unsigned int}'
+ SQLITE_API int sqlite3_exec(
+                ^~~~~~~~~~~~
+compiling exception.c
+compiling sqlite3.c
+compiling statement.c
+linking shared-object sqlite3/sqlite3_native.so
+Target "all" is up to date.
+
+current directory: /QOpenSys/pkgs/lib/ruby/gems/3.0.0/gems/sqlite3-1.4.2/ext/sqlite3
+make DESTDIR\= install
+/QOpenSys/pkgs/bin/mkdir: not found
+
+make: The error code from the last command is 1.
+
+
+Stop.
+
+make install failed, exit code 2
+
+Gem files will remain installed in /QOpenSys/pkgs/lib/ruby/gems/3.0.0/gems/sqlite3-1.4.2 for inspection.
+Results logged to /QOpenSys/pkgs/lib/ruby/gems/3.0.0/extensions/powerpc-unknown/3.0.0-static/sqlite3-1.4.2/gem_make.out
+```
+ 
+To solve this king of issues a useful trick is using `provides` yum sub\-command:
+
+```
+bash-5.1$ yum provides /QOpenSys/pkgs/bin/mkdir
+coreutils-gnu-8.25-6.ppc64 : GNU coreutils
+Repo        : ibm
+Matched from:
+Filename    : /QOpenSys/pkgs/bin/mkdir
+```  
+ 
+so we perform a `yum install coreutils-gnu`
+
+**sixth attempt**
+
+And we finally have a successful install:
+
+```
+bash-5.1$ gem install ./sqlite3-1.4.2.gem
+Building native extensions. This could take a while...
+Successfully installed sqlite3-1.4.2
+Parsing documentation for sqlite3-1.4.2
+Installing ri documentation for sqlite3-1.4.2
+Done installing documentation for sqlite3 after 1 seconds
+1 gem installed
+```
+ 
 ----
 ### 36. to refresh the Ruby interpreter
 
@@ -987,6 +1409,8 @@ Complete!
 ruby 3.0.2p107 (2021-07-07 revision 0db68f0233) [powerpc-os400]
 bash-5.1$ 
 ```
+
+[NEXT-37](#37-to-build-ruby-gems-requiring-compilation)
 
 ----
 ### 35. to enjoy DB2 encoding support
