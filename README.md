@@ -57,6 +57,7 @@ Let's go!
 35. [to enjoy DB2 encoding support](#35-to-enjoy-db2-encoding-support)
 36. [to refresh the Ruby interpreter](#36-to-refresh-the-ruby-interpreter)
 37. [to build Ruby gems requiring compilation](#37-to-build-ruby-gems-requiring-compilation)
+38. [to test SQLite3 Ruby integration](#38-to-test-sqlite3-ruby-integration)
 
 <!---
 3X. [to customize subsystem](#3X-to-customize-subsystem)
@@ -72,6 +73,315 @@ There is a corresponding Environment attribute named **SQL\_ATTR\_SERVERMODE\_SU
 in previous requests.
 
 --->
+----
+### 38. to test SQLite3 Ruby integration
+
+Executing gems' tests is a fundamental step in verifying the installation of crucial Ruby components.
+This is expecially true if the platform (i.e. `powerpc\-os400`) was unknown to the developers.
+
+Usually testing poses extra requirements. We continue previous post session unpacking the gem content and 
+changing the current directory: 
+
+```
+bash-5.1$ gem unpack ./sqlite3-1.4.2.gem
+Unpacked gem: '/home/ANDREARIB/sqlite3-1.4.2'
+bash-5.1$ cd ./sqlite3-1.4.2
+```
+
+By executing repeated attempts of the `rake test` command we will experience errors like this:
+
+```
+. . .
+Caused by:
+LoadError: cannot load such file -- hoe
+. . .
+```
+
+Indirectly we will be instructed to perform the following `gem install` commands:
+
+```
+bash-5.1$ gem install hoe
+Fetching hoe-3.23.0.gem
+Successfully installed hoe-3.23.0
+Parsing documentation for hoe-3.23.0
+Installing ri documentation for hoe-3.23.0
+Done installing documentation for hoe after 0 seconds
+1 gem installed
+```
+
+```
+bash-5.1$ gem install rake-compiler
+Fetching rake-compiler-1.1.1.gem
+Successfully installed rake-compiler-1.1.1
+Parsing documentation for rake-compiler-1.1.1
+Installing ri documentation for rake-compiler-1.1.1
+Done installing documentation for rake-compiler after 2 seconds
+1 gem installed
+```
+
+```
+bash-5.1$ gem install mini_portile
+Fetching mini_portile-0.6.2.gem
+Successfully installed mini_portile-0.6.2
+Parsing documentation for mini_portile-0.6.2
+Installing ri documentation for mini_portile-0.6.2
+Done installing documentation for mini_portile after 0 seconds
+1 gem installed
+```
+
+Now we are finally able to execute the test suite.
+Following is the full log, but we are actually looking for this final report:
+
+
+**267 runs, 440 assertions, 0 failures, 0 errors, 1 skips**
+
+
+Here's the full log:
+
+```
+bash-5.1$ rake test
+DEPRECATED: Please switch readme to hash format for urls.
+  Only defining 'home' url.
+  This will be removed on or after 2020-10-28.
+mkdir -p tmp/powerpc-os400/sqlite3_native/3.0.2
+cd tmp/powerpc-os400/sqlite3_native/3.0.2
+/QOpenSys/pkgs/bin/ruby -I. ../../../../ext/sqlite3/extconf.rb
+checking for sqlite3.h... yes
+checking for pthread_create() in -lpthread... yes
+checking for -ldl... yes
+checking for sqlite3_libversion_number() in -lsqlite3... yes
+checking for rb_proc_arity()... yes
+checking for rb_integer_pack()... yes
+checking for sqlite3_initialize()... yes
+checking for sqlite3_backup_init()... yes
+checking for sqlite3_column_database_name()... yes
+checking for sqlite3_enable_load_extension()... yes
+checking for sqlite3_load_extension()... yes
+checking for sqlite3_open_v2()... yes
+checking for sqlite3_prepare_v2()... yes
+checking for sqlite3_int64 in sqlite3.h... yes
+checking for sqlite3_uint64 in sqlite3.h... yes
+creating Makefile
+cd -
+cd tmp/powerpc-os400/sqlite3_native/3.0.2
+/QOpenSys/usr/bin/make
+compiling ../../../../ext/sqlite3/aggregator.c
+compiling ../../../../ext/sqlite3/backup.c
+compiling ../../../../ext/sqlite3/database.c
+../../../../ext/sqlite3/database.c: In function 'exec_batch':
+../../../../ext/sqlite3/database.c:726:57: warning: passing argument 3 of 'sqlite3_exec' from incompatible pointer type [-Wincompatible-pointer-types]
+     status = sqlite3_exec(ctx->db, StringValuePtr(sql), hash_callback_function, callback_ary, &errMsg);
+                                                         ^~~~~~~~~~~~~~~~~~~~~~
+In file included from ../../../../ext/sqlite3/sqlite3_ruby.h:25:0,
+                 from ../../../../ext/sqlite3/database.c:1:
+/QOpenSys/pkgs/include/sqlite3.h:402:16: note: expected 'int (*)(void *, int,  char **, char **)' but argument is of type 'int (*)(VALUE,  int,  char **, char **) {aka int (*)(long unsigned int,  int,  char **, char **)}'
+ SQLITE_API int sqlite3_exec(
+                ^~~~~~~~~~~~
+../../../../ext/sqlite3/database.c:726:81: warning: passing argument 4 of 'sqlite3_exec' makes pointer from integer without a cast [-Wint-conversion]
+     status = sqlite3_exec(ctx->db, StringValuePtr(sql), hash_callback_function, callback_ary, &errMsg);
+                                                                                 ^~~~~~~~~~~~
+In file included from ../../../../ext/sqlite3/sqlite3_ruby.h:25:0,
+                 from ../../../../ext/sqlite3/database.c:1:
+/QOpenSys/pkgs/include/sqlite3.h:402:16: note: expected 'void *' but argument is of type 'VALUE {aka long unsigned int}'
+ SQLITE_API int sqlite3_exec(
+                ^~~~~~~~~~~~
+../../../../ext/sqlite3/database.c:728:57: warning: passing argument 3 of 'sqlite3_exec' from incompatible pointer type [-Wincompatible-pointer-types]
+     status = sqlite3_exec(ctx->db, StringValuePtr(sql), regular_callback_function, callback_ary, &errMsg);
+                                                         ^~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from ../../../../ext/sqlite3/sqlite3_ruby.h:25:0,
+                 from ../../../../ext/sqlite3/database.c:1:
+/QOpenSys/pkgs/include/sqlite3.h:402:16: note: expected 'int (*)(void *, int,  char **, char **)' but argument is of type 'int (*)(VALUE,  int,  char **, char **) {aka int (*)(long unsigned int,  int,  char **, char **)}'
+ SQLITE_API int sqlite3_exec(
+                ^~~~~~~~~~~~
+../../../../ext/sqlite3/database.c:728:84: warning: passing argument 4 of 'sqlite3_exec' makes pointer from integer without a cast [-Wint-conversion]
+     status = sqlite3_exec(ctx->db, StringValuePtr(sql), regular_callback_function, callback_ary, &errMsg);
+                                                                                    ^~~~~~~~~~~~
+In file included from ../../../../ext/sqlite3/sqlite3_ruby.h:25:0,
+                 from ../../../../ext/sqlite3/database.c:1:
+/QOpenSys/pkgs/include/sqlite3.h:402:16: note: expected 'void *' but argument is of type 'VALUE {aka long unsigned int}'
+ SQLITE_API int sqlite3_exec(
+                ^~~~~~~~~~~~
+compiling ../../../../ext/sqlite3/exception.c
+compiling ../../../../ext/sqlite3/sqlite3.c
+compiling ../../../../ext/sqlite3/statement.c
+linking shared-object sqlite3/sqlite3_native.so
+Target "all" is up to date.
+cd -
+mkdir -p tmp/powerpc-os400/stage/lib/sqlite3
+cp .gemtest tmp/powerpc-os400/stage/.gemtest
+cp .travis.yml tmp/powerpc-os400/stage/.travis.yml
+cp API_CHANGES.rdoc tmp/powerpc-os400/stage/API_CHANGES.rdoc
+cp CHANGELOG.rdoc tmp/powerpc-os400/stage/CHANGELOG.rdoc
+cp ChangeLog.cvs tmp/powerpc-os400/stage/ChangeLog.cvs
+cp Gemfile tmp/powerpc-os400/stage/Gemfile
+cp LICENSE tmp/powerpc-os400/stage/LICENSE
+cp Manifest.txt tmp/powerpc-os400/stage/Manifest.txt
+cp README.rdoc tmp/powerpc-os400/stage/README.rdoc
+cp Rakefile tmp/powerpc-os400/stage/Rakefile
+cp appveyor.yml tmp/powerpc-os400/stage/appveyor.yml
+mkdir -p tmp/powerpc-os400/stage/ext/sqlite3
+cp ext/sqlite3/aggregator.c tmp/powerpc-os400/stage/ext/sqlite3/aggregator.c
+cp ext/sqlite3/aggregator.h tmp/powerpc-os400/stage/ext/sqlite3/aggregator.h
+cp ext/sqlite3/backup.c tmp/powerpc-os400/stage/ext/sqlite3/backup.c
+cp ext/sqlite3/backup.h tmp/powerpc-os400/stage/ext/sqlite3/backup.h
+cp ext/sqlite3/database.c tmp/powerpc-os400/stage/ext/sqlite3/database.c
+cp ext/sqlite3/database.h tmp/powerpc-os400/stage/ext/sqlite3/database.h
+cp ext/sqlite3/exception.c tmp/powerpc-os400/stage/ext/sqlite3/exception.c
+cp ext/sqlite3/exception.h tmp/powerpc-os400/stage/ext/sqlite3/exception.h
+cp ext/sqlite3/extconf.rb tmp/powerpc-os400/stage/ext/sqlite3/extconf.rb
+cp ext/sqlite3/sqlite3.c tmp/powerpc-os400/stage/ext/sqlite3/sqlite3.c
+cp ext/sqlite3/sqlite3_ruby.h tmp/powerpc-os400/stage/ext/sqlite3/sqlite3_ruby.h
+cp ext/sqlite3/statement.c tmp/powerpc-os400/stage/ext/sqlite3/statement.c
+cp ext/sqlite3/statement.h tmp/powerpc-os400/stage/ext/sqlite3/statement.h
+mkdir -p tmp/powerpc-os400/stage/faq
+cp faq/faq.rb tmp/powerpc-os400/stage/faq/faq.rb
+cp faq/faq.yml tmp/powerpc-os400/stage/faq/faq.yml
+cp lib/sqlite3.rb tmp/powerpc-os400/stage/lib/sqlite3.rb
+cp lib/sqlite3/constants.rb tmp/powerpc-os400/stage/lib/sqlite3/constants.rb
+cp lib/sqlite3/database.rb tmp/powerpc-os400/stage/lib/sqlite3/database.rb
+cp lib/sqlite3/errors.rb tmp/powerpc-os400/stage/lib/sqlite3/errors.rb
+cp lib/sqlite3/pragmas.rb tmp/powerpc-os400/stage/lib/sqlite3/pragmas.rb
+cp lib/sqlite3/resultset.rb tmp/powerpc-os400/stage/lib/sqlite3/resultset.rb
+cp lib/sqlite3/statement.rb tmp/powerpc-os400/stage/lib/sqlite3/statement.rb
+cp lib/sqlite3/translator.rb tmp/powerpc-os400/stage/lib/sqlite3/translator.rb
+cp lib/sqlite3/value.rb tmp/powerpc-os400/stage/lib/sqlite3/value.rb
+cp lib/sqlite3/version.rb tmp/powerpc-os400/stage/lib/sqlite3/version.rb
+mkdir -p tmp/powerpc-os400/stage/rakelib
+cp rakelib/faq.rake tmp/powerpc-os400/stage/rakelib/faq.rake
+cp rakelib/gem.rake tmp/powerpc-os400/stage/rakelib/gem.rake
+cp rakelib/native.rake tmp/powerpc-os400/stage/rakelib/native.rake
+cp rakelib/vendor_sqlite3.rake tmp/powerpc-os400/stage/rakelib/vendor_sqlite3.rake
+cp setup.rb tmp/powerpc-os400/stage/setup.rb
+mkdir -p tmp/powerpc-os400/stage/test
+cp test/helper.rb tmp/powerpc-os400/stage/test/helper.rb
+cp test/test_backup.rb tmp/powerpc-os400/stage/test/test_backup.rb
+cp test/test_collation.rb tmp/powerpc-os400/stage/test/test_collation.rb
+cp test/test_database.rb tmp/powerpc-os400/stage/test/test_database.rb
+cp test/test_database_flags.rb tmp/powerpc-os400/stage/test/test_database_flags.rb
+cp test/test_database_readonly.rb tmp/powerpc-os400/stage/test/test_database_readonly.rb
+cp test/test_database_readwrite.rb tmp/powerpc-os400/stage/test/test_database_readwrite.rb
+cp test/test_deprecated.rb tmp/powerpc-os400/stage/test/test_deprecated.rb
+cp test/test_encoding.rb tmp/powerpc-os400/stage/test/test_encoding.rb
+cp test/test_integration.rb tmp/powerpc-os400/stage/test/test_integration.rb
+cp test/test_integration_aggregate.rb tmp/powerpc-os400/stage/test/test_integration_aggregate.rb
+cp test/test_integration_open_close.rb tmp/powerpc-os400/stage/test/test_integration_open_close.rb
+cp test/test_integration_pending.rb tmp/powerpc-os400/stage/test/test_integration_pending.rb
+cp test/test_integration_resultset.rb tmp/powerpc-os400/stage/test/test_integration_resultset.rb
+cp test/test_integration_statement.rb tmp/powerpc-os400/stage/test/test_integration_statement.rb
+cp test/test_result_set.rb tmp/powerpc-os400/stage/test/test_result_set.rb
+cp test/test_sqlite3.rb tmp/powerpc-os400/stage/test/test_sqlite3.rb
+cp test/test_statement.rb tmp/powerpc-os400/stage/test/test_statement.rb
+cp test/test_statement_execute.rb tmp/powerpc-os400/stage/test/test_statement_execute.rb
+install -c tmp/powerpc-os400/sqlite3_native/3.0.2/sqlite3_native.so lib/sqlite3/sqlite3_native.so
+cp tmp/powerpc-os400/sqlite3_native/3.0.2/sqlite3_native.so tmp/powerpc-os400/stage/lib/sqlite3/sqlite3_native.so
+Run options: --seed 19055
+
+# Running:
+
+......./home/ANDREARIB/sqlite3-1.4.2/test/test_database.rb:93:in `test_execute_with_type_translation_and_hash' is calling SQLite3::Database#type_translation=
+SQLite3::Database#type_translation= is deprecated and will be removed
+in version 2.0.0.
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:75:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:75:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:77:in `register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:78:in `register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:86:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:86:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:86:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:86:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:86:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:86:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:86:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:92:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:92:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:92:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:92:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:92:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:97:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:97:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:97:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:106:in `register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+...................../home/ANDREARIB/sqlite3-1.4.2/test/test_database.rb:87:in `test_get_first_row_with_type_translation_and_hash_results' is calling SQLite3::Database#type_translation=
+SQLite3::Database#type_translation= is deprecated and will be removed
+in version 2.0.0.
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:75:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:75:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:77:in `register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:78:in `register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:86:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:86:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:86:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:86:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:86:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:86:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:86:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:92:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:92:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:92:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:92:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:92:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:97:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:97:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:97:in `block in register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/translator.rb:106:in `register_default_translators' is calling `add_translator`.
+Built in translators are deprecated and will be removed in version 2.0.0
+........................................................./home/ANDREARIB/sqlite3-1.4.2/test/test_statement.rb:130:in `test_bind_blob' is calling SQLite3::ResultSet::ArrayWithTypesAndFields#types.  This method will be removed in
+sqlite3 version 2.0.0, please call the `types` method on the SQLite3::ResultSet
+object that created this object
+................................................................................................./home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/resultset.rb:65:in `[]' is calling SQLite3::ResultSet::HashWithTypesAndFields#fields.  This method will be removed in
+sqlite3 version 2.0.0, please call the `columns` method on the SQLite3::ResultSet
+object that created this object
+/home/ANDREARIB/sqlite3-1.4.2/lib/sqlite3/resultset.rb:65:in `[]' is calling SQLite3::ResultSet::HashWithTypesAndFields#fields.  This method will be removed in
+sqlite3 version 2.0.0, please call the `columns` method on the SQLite3::ResultSet
+object that created this object
+..............................................................S......................
+
+Finished in 4.090406s, 65.2747 runs/s, 107.5688 assertions/s.
+
+267 runs, 440 assertions, 0 failures, 0 errors, 1 skips
+
+You have skipped tests. Run with --verbose for details.
+```
+
 ----
 ### 37. to build Ruby gems requiring compilation
 
@@ -492,6 +802,8 @@ Installing ri documentation for sqlite3-1.4.2
 Done installing documentation for sqlite3 after 1 seconds
 1 gem installed
 ```
+
+[NEXT-38](#38-to-test-sqlite3-ruby-integration)
  
 ----
 ### 36. to refresh the Ruby interpreter
