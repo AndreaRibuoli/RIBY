@@ -77,7 +77,7 @@ in previous requests.
 ### 38. to test SQLite3 Ruby integration
 
 Executing gems' tests is a fundamental step in verifying the installation of crucial Ruby components.
-This is expecially true if the platform (i.e. `powerpc\-os400`) was unknown to the developers.
+This is expecially true if the platform (i.e. `powerpc-os400`) was unknown to the developers.
 
 Usually testing poses extra requirements. We continue previous post session unpacking the gem content and 
 changing the current directory: 
