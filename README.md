@@ -268,7 +268,7 @@ New jekyll site installed in /home/AndreaRibuoli/my-awesome-site.
 bash-5.1$ 
 ```
 
-But another failure is waiting. This is a known issue when using Jekyll in Ruby 3.0. Historically Ruby distributions always included **WEBrick** (*a flexible, pure-Ruby HTTP server toolkit*) in the standard libray. 
+But another failure is waiting. This is a known issue when using Jekyll in Ruby 3.0. Historically Ruby distributions always included **WEBrick** (*a flexible, pure-Ruby HTTP server toolkit*) in the standard library. 
 
 With Ruby 3.0 [from the announcement](https://www.ruby-lang.org/en/news/2020/12/25/ruby-3-0-0-released/):
 
