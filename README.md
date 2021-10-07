@@ -195,7 +195,7 @@ Successfully installed jekyll-4.2.1
 28 gems installed
 ``` 
 
-Everytime we read `Building native extensions. This could take a while...` a C/C++ build occurred having as a final object a **.so** file providing a performant extension for the Ruby language. Each we find the message in the log the gem involved (`Successfully installed`) is the one that follows.
+Everytime we read `Building native extensions. This could take a while...` a C/C++ build occurred having as a final object a **.so** file providing a performant extension for the Ruby language. For each message in the log, the gem involved (`Successfully installed`) is the one that follows.
 
 We can double check this point by lisitng the powerpc\-os400 gem extensions:
 
