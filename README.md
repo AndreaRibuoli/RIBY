@@ -287,7 +287,7 @@ Bundler *provides a consistent environment for Ruby projects by tracking and ins
 The point is that Bundler prevents you to use a gem if not explicitely declared in the project's **Gemfile**. It actually controls that the version of each dependency matches with that in **Gemfile.lock**.
 
 As soon as WEBrick was part of the standard library distribution it was required by Jekyll without an entry in the Gemfiles it creates.
-Right now ([it will possibly be fixed in the near future]()) we will add it manually:
+Right now ([it will possibly be fixed in the near future](https://github.com/jekyll/jekyll/issues/8523)) we will add it manually:
 
 ```
 cd my-awesome-site
