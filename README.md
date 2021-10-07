@@ -276,6 +276,9 @@ With Ruby 3.0 [from the announcement](https://www.ruby-lang.org/en/news/2020/12/
   The following libraries are no longer bundled gems or standard libraries.   
   Install the corresponding gems to use these features.   
   . . . 
+  -  webrick
+  . . . 
+  
 ```   
 
 This is why we added `webrick` among the gems to be installed with `jekyll`.
