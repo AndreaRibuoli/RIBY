@@ -212,7 +212,7 @@ drwxrwxr-x 3 110 0 8192 ott  7 09:25 ..
 
 We have to refrain from using **Jekyll** right now. It is installed but will fail in our environment. Let us first instruct **ffi** gem on the existence of *powerpc\-os400*!
 
-I will brutally adopt these steps right now:
+I will brutally adopt these steps (for the moment):
 
 ```
 cd /QOpenSys/pkgs/lib/ruby/gems/3.0.0/gems/ffi-1.15.4/lib/ffi/platform
