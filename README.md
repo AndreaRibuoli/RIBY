@@ -197,7 +197,7 @@ Successfully installed jekyll-4.2.1
 
 Everytime we read `Building native extensions. This could take a while...` a C/C++ build occurred having as a final object a **.so** file providing a performant extension for the Ruby language. For each message in the log, the gem involved (`Successfully installed`) is the one that follows.
 
-We can double check this point by lisitng the powerpc\-os400 gem extensions:
+We can double check this point by listing the powerpc\-os400 gem extensions:
 
 ```
 ls -la /QOpenSys/pkgs/lib/ruby/gems/3.0.0/extensions/powerpc-os400/3.0.0
