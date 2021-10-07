@@ -291,7 +291,7 @@ Right now ([it will possibly be fixed in the near future](https://github.com/jek
 
 ```
 cd my-awesome-site
-echo 'require "webrick"' >> Gemfile
+echo 'gem "webrick"' >> Gemfile
 bundle install
 ```
 
