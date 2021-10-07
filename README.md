@@ -58,6 +58,7 @@ Let's go!
 36. [to refresh the Ruby interpreter](#36-to-refresh-the-ruby-interpreter)
 37. [to build Ruby gems requiring compilation](#37-to-build-ruby-gems-requiring-compilation)
 38. [to test SQLite3 Ruby integration](#38-to-test-sqlite3-ruby-integration)
+39. [to transform plain text into static websites](#39-to-transform-plain-text-into-static-websites)
 
 <!---
 3X. [to customize subsystem](#3X-to-customize-subsystem)
@@ -73,6 +74,254 @@ There is a corresponding Environment attribute named **SQL\_ATTR\_SERVERMODE\_SU
 in previous requests.
 
 --->
+
+----
+### 39. to transform plain text into static websites
+
+Ruby ecosystem offers a number of useful utilities. So let us test our most recent build to provide real support in **IBM i PASE**.
+
+We will first learn how to really perform a **scratch install** of Ruby.
+
+We know that by performing a `yum remove ruby` we will remove *ruby* and *ruby\-devel* as soon as ruby is a pre-requisite for ruby\-devel. 
+
+The fact is that these operations will not empty the `/QOpenSys/pkgs/lib/ruby` directory: we will find there all the gems installed via `gem install` commands.
+
+To really get rid of everything that has to do with Ruby installation perform:
+
+```
+yum remove ruby
+```
+
+and
+
+```
+rm -r /QOpenSys/pkgs/lib/ruby
+``` 
+
+I suggest to proceed this way because the most recent builds I am distributing for IBM i PASE shifted towards a shared **libruby.so** approach (`--enable-shared`). *Important:* be aware that performing a `rm -r` can be **very** dangerous, so be careful!
+
+Once the two steps are performed we can start again a fresh new installation:
+
+```
+yum install ruby-devel
+```
+
+And now we will install a new set of gems triggered by the dependency chain defined for each of the packages we are interested in. 
+
+**Before** issuing:
+
+```
+gem install webrick bundler jekyll
+```
+
+we need to consider something we explained for *SQLite3* in previous posts:
+some of the required gems could require a real build, i.e. will compile resources from C/C++ source code.
+
+As soon as nobody else than me \-probably\- tried to package a `powerpc-os400` version of the Ruby interpreter, we need to help a bit in order for this king of magic to succeed.
+ 
+You will prodeed this way:
+
+```
+export OBJECT_MODE=64
+gem install webrick bundler jekyll --no-document
+```
+
+The `--no-document` option disable documentation generation saving time in our tests.
+
+We will be amused to notice that the command completes successfully:
+
+```
+bash-5.1$ gem install webrick bundler jekyll --no-document
+Fetching webrick-1.7.0.gem
+Successfully installed webrick-1.7.0
+Fetching bundler-2.2.28.gem
+Successfully installed bundler-2.2.28
+Fetching pathutil-0.16.2.gem
+Fetching unicode-display_width-1.8.0.gem
+Fetching liquid-4.0.3.gem
+Fetching forwardable-extended-2.6.0.gem
+Fetching safe_yaml-1.0.5.gem
+Fetching rouge-3.26.1.gem
+Fetching terminal-table-2.0.0.gem
+Fetching mercenary-0.4.0.gem
+Fetching kramdown-2.3.1.gem
+Fetching kramdown-parser-gfm-1.1.0.gem
+Fetching ffi-1.15.4.gem
+Fetching rb-inotify-0.10.1.gem
+Fetching rb-fsevent-0.11.0.gem
+Fetching listen-3.7.0.gem
+Fetching jekyll-watch-2.2.1.gem
+Fetching sassc-2.4.0.gem
+Fetching jekyll-sass-converter-2.1.0.gem
+Fetching concurrent-ruby-1.1.9.gem
+Fetching i18n-1.8.10.gem
+Fetching http_parser.rb-0.6.0.gem
+Fetching eventmachine-1.2.7.gem
+Fetching em-websocket-0.5.2.gem
+Fetching colorator-1.1.0.gem
+Fetching public_suffix-4.0.6.gem
+Fetching addressable-2.8.0.gem
+Fetching jekyll-4.2.1.gem
+Successfully installed unicode-display_width-1.8.0
+Successfully installed terminal-table-2.0.0
+Successfully installed safe_yaml-1.0.5
+Successfully installed rouge-3.26.1
+Successfully installed forwardable-extended-2.6.0
+Successfully installed pathutil-0.16.2
+Successfully installed mercenary-0.4.0
+Successfully installed liquid-4.0.3
+Successfully installed kramdown-2.3.1
+Successfully installed kramdown-parser-gfm-1.1.0
+Building native extensions. This could take a while...
+Successfully installed ffi-1.15.4
+Successfully installed rb-inotify-0.10.1
+Successfully installed rb-fsevent-0.11.0
+Successfully installed listen-3.7.0
+Successfully installed jekyll-watch-2.2.1
+Building native extensions. This could take a while...
+Successfully installed sassc-2.4.0
+Successfully installed jekyll-sass-converter-2.1.0
+Successfully installed concurrent-ruby-1.1.9
+Successfully installed i18n-1.8.10
+Building native extensions. This could take a while...
+Successfully installed http_parser.rb-0.6.0
+Building native extensions. This could take a while...
+Successfully installed eventmachine-1.2.7
+Successfully installed em-websocket-0.5.2
+Successfully installed colorator-1.1.0
+Successfully installed public_suffix-4.0.6
+Successfully installed addressable-2.8.0
+Successfully installed jekyll-4.2.1
+28 gems installed
+``` 
+
+Everytime we read `Building native extensions. This could take a while...` a C/C++ build occurred having as a final object a **.so** file providing a performant extension for the Ruby language. Each we find the message in the log the gem involved (`Successfully installed`) is the one that follows.
+
+We can double check this point by lisitng the powerpc\-os400 gem extensions:
+
+```
+ls -la /QOpenSys/pkgs/lib/ruby/gems/3.0.0/extensions/powerpc-os400/3.0.0
+total 48
+drwxrwxr-x 2 110 0 8192 ott  7 09:30 eventmachine-1.2.7
+drwxrwxr-x 2 110 0 8192 ott  7 09:25 ffi-1.15.4
+drwxrwxr-x 2 110 0 8192 ott  7 09:30 http_parser.rb-0.6.0
+drwxrwxr-x 3 110 0 8192 ott  7 09:29 sassc-2.4.0
+drwxrwxr-x 6 110 0 8192 ott  7 09:30 .
+drwxrwxr-x 3 110 0 8192 ott  7 09:25 ..
+``` 
+
+We have to refrain from using **Jekyll** right now. It is installed but will fail in our environment. Let us first instruct **ffi** gem on the existence of *powerpc\-os400*!
+
+I will brutally adopt these steps right now:
+
+```
+cd /QOpenSys/pkgs/lib/ruby/gems/3.0.0/gems/ffi-1.15.4/lib/ffi/platform
+mkdir powerpc-os400
+cp powerpc-aix/types.conf powerpc-os400/
+cd $HOME
+```  
+
+We can finally follow the instructions from [Jekyll web site](https://jekyllrb.com)
+
+```
+bash-5.1$ jekyll new my-awesome-site
+Running bundle install in /home/AndreaRibuoli/my-awesome-site... 
+  Bundler: Fetching gem metadata from https://rubygems.org/..........
+  Bundler: Resolving dependencies...
+  Bundler: Using public_suffix 4.0.6
+  Bundler: Using bundler 2.2.28
+  Bundler: Using colorator 1.1.0
+  Bundler: Using concurrent-ruby 1.1.9
+  Bundler: Using eventmachine 1.2.7
+  Bundler: Using http_parser.rb 0.6.0
+  Bundler: Using ffi 1.15.4
+  Bundler: Using forwardable-extended 2.6.0
+  Bundler: Using rb-fsevent 0.11.0
+  Bundler: Using rexml 3.2.5
+  Bundler: Using liquid 4.0.3
+  Bundler: Using mercenary 0.4.0
+  Bundler: Using rouge 3.26.1
+  Bundler: Using safe_yaml 1.0.5
+  Bundler: Using unicode-display_width 1.8.0
+  Bundler: Using addressable 2.8.0
+  Bundler: Using i18n 1.8.10
+  Bundler: Using em-websocket 0.5.2
+  Bundler: Using pathutil 0.16.2
+  Bundler: Using kramdown 2.3.1
+  Bundler: Using terminal-table 2.0.0
+  Bundler: Using kramdown-parser-gfm 1.1.0
+  Bundler: Using sassc 2.4.0
+  Bundler: Using rb-inotify 0.10.1
+  Bundler: Using jekyll-sass-converter 2.1.0
+  Bundler: Using listen 3.7.0
+  Bundler: Using jekyll-watch 2.2.1
+  Bundler: Using jekyll 4.2.1
+  Bundler: Fetching jekyll-feed 0.15.1
+  Bundler: Fetching jekyll-seo-tag 2.7.1
+  Bundler: Installing jekyll-feed 0.15.1
+  Bundler: Installing jekyll-seo-tag 2.7.1
+  Bundler: Fetching minima 2.5.1
+  Bundler: Installing minima 2.5.1
+  Bundler: Bundle complete! 6 Gemfile dependencies, 31 gems now installed.
+  Bundler: Use `bundle info [gemname]` to see where a bundled gem is installed.
+New jekyll site installed in /home/AndreaRibuoli/my-awesome-site. 
+bash-5.1$ 
+```
+
+But another failure is waiting. This is a known issue when using Jekyll in Ruby 3.0. Historically Ruby distributions always included **WEBrick**, *a flexible, pure-Ruby HTTP server toolkit* in the standard libray. 
+
+With Ruby 3.0 [from the announcement](https://www.ruby-lang.org/en/news/2020/12/25/ruby-3-0-0-released/):
+
+```
+  The following libraries are no longer bundled gems or standard libraries.   
+  Install the corresponding gems to use these features.   
+  . . . 
+```   
+
+This is why we added `webrick` among the gems to be installed with `jekyll`.
+But Jekyll also use **Bundler**. 
+Bundler *provides a consistent environment for Ruby projects by tracking and installing the exact gems and versions that are needed*. 
+The point is that Bundler prevents you to use a gem if not explicitely declared in the project's **Gemfile**. It actually controls that the version of each dependency matches with that in **Gemfile.lock**.
+
+As soon as WEBrick was part of the standard library distribution it was required by Jekyll without an entry in the Gemfiles it creates.
+Right now ([it will possibly be fixed in the near future]()) we will add it manually:
+
+```
+cd my-awesome-site
+echo 'require "webrick"' >> Gemfile
+bundle install
+```
+
+We will notice the number of gems bundled increments by one and webrick is among them:
+
+```
+...
+Using webrick 1.7.0
+...
+Using minima 2.5.1
+Bundle complete! 7 Gemfile dependencies, 32 gems now installed.
+Use `bundle info [gemname]` to see where a bundled gem is installed.
+```
+
+We can start serving and enjoy Jekyll clever design.
+Connect with a browser using the `--host` and `--port` setting.
+Next time we will learn how to integrate Jekyll with native **IBM i** leveraging its **Auto-regenaration** feature.
+
+```
+bash-5.1$ bundle exec jekyll serve --host 10.0.0.10 --port 4000
+Configuration file: /home/AndreaRibuoli/my-awesome-site/_config.yml
+            Source: /home/AndreaRibuoli/my-awesome-site
+       Destination: /home/AndreaRibuoli/my-awesome-site/_site
+ Incremental build: disabled. Enable with --incremental
+      Generating... 
+       Jekyll Feed: Generating feed for posts
+                    done in 0.979 seconds.
+ Auto-regeneration: enabled for '/home/AndreaRibuoli/my-awesome-site'
+    Server address: http://10.0.0.10:4000/
+  Server running... press ctrl-c to stop.
+```
+
+
 ----
 ### 38. to test SQLite3 Ruby integration
 
@@ -381,6 +630,8 @@ Finished in 4.090406s, 65.2747 runs/s, 107.5688 assertions/s.
 
 You have skipped tests. Run with --verbose for details.
 ```
+
+[NEXT-39](#39-to-transform-plain-text-into-static-websites)
 
 ----
 ### 37. to build Ruby gems requiring compilation
