@@ -80,9 +80,9 @@ in previous requests.
 
 Ruby ecosystem offers a number of useful utilities. So let us test our most recent build to provide real support in **IBM i PASE**.
 
-We will first learn how to really perform a **scratch install** of Ruby.
+We will first learn how to perform a **scratch install** of Ruby.
 
-We know that by performing a `yum remove ruby` we will remove *ruby* and *ruby\-devel* as soon as ruby is a pre-requisite for ruby\-devel. 
+We know that issuing `yum remove ruby` we will remove *ruby* and *ruby\-devel* as soon as *ruby* is a pre-requisite for *ruby\-devel*. 
 
 The fact is that these operations will not empty the `/QOpenSys/pkgs/lib/ruby` directory: we will find there all the gems installed via `gem install` commands.
 
