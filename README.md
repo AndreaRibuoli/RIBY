@@ -119,7 +119,7 @@ some of the required gems could require a real build, i.e. will compile resource
 
 As soon as nobody else than me \-probably\- tried to package a `powerpc-os400` version of the Ruby interpreter, we need to help a bit in order for this kind of magic to succeed.
  
-You will prodeed this way:
+You will proceed this way:
 
 ```
 export OBJECT_MODE=64
