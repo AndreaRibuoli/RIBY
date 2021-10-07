@@ -282,7 +282,7 @@ With Ruby 3.0 [from the announcement](https://www.ruby-lang.org/en/news/2020/12/
 ```   
 
 This is why we added `webrick` among the gems to be installed with `jekyll`.
-But Jekyll also use **Bundler**. 
+But Jekyll also uses **Bundler**. 
 Bundler *provides a consistent environment for Ruby projects by tracking and installing the exact gems and versions that are needed*. 
 The point is that Bundler prevents you to use a gem if not explicitely declared in the project's **Gemfile**. It actually controls that the version of each dependency matches with that in **Gemfile.lock**.
 
