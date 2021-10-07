@@ -117,7 +117,7 @@ gem install webrick bundler jekyll
 we need to consider something we explained for *SQLite3* in previous posts:
 some of the required gems could require a real build, i.e. will compile resources from C/C++ source code.
 
-As soon as nobody else than me \-probably\- tried to package a `powerpc-os400` version of the Ruby interpreter, we need to help a bit in order for this king of magic to succeed.
+As soon as nobody else than me \-probably\- tried to package a `powerpc-os400` version of the Ruby interpreter, we need to help a bit in order for this kind of magic to succeed.
  
 You will prodeed this way:
 
