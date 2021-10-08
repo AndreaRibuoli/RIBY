@@ -1,0 +1,10 @@
+"OVRPRTF FILE(stdout) TOFILE(qsysprt) SPLFNAME(newpost)"
+say '---'
+say 'layout: post'
+say 'title:  "Lunga vita!"'
+say 'date:   2021-10-16 15:00:00 +0200'
+say 'categories: ibm as400'
+say '---'
+say 'In diversi siti e a più riprese si è dibattuto'
+say ' circa le possibilità di sopravvivenza della piattaforma'
+say ' oggi nota come **IBM i**.'
