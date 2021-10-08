@@ -31,13 +31,13 @@
                           OUTPUT(*NONE) ALWRTVSRC(*NO) 
              MONMSG     MSGID(CPF0000)
              ENDDO
-             CRTRPGMOD  MODULE(&BLDLIB/WDUMP) SRCFILE(&SRCLIB/QRPGLESRC)
-             MONMSG     MSGID(CPF0000)
-             CRTRPGMOD  MODULE(&BLDLIB/WDUMP2) SRCFILE(&SRCLIB/QRPGLESRC)
-             MONMSG     MSGID(CPF0000)
-             CRTSRVPGM  SRVPGM(&TGTLIB/RIBY_SRV) MODULE((&BLDLIB/WDUMP) +
-                        (&BLDLIB/WDUMP2)) +
-                        EXPORT(*SRCFILE) SRCFILE(&SRCLIB/QSRVSRC)
-             MONMSG     MSGID(CPF0000)
+        /*   CRTRPGMOD  MODULE(&BLDLIB/WDUMP) SRCFILE(&SRCLIB/QRPGLESRC)   */
+        /*   MONMSG     MSGID(CPF0000)                                     */
+        /*   CRTRPGMOD  MODULE(&BLDLIB/WDUMP2) SRCFILE(&SRCLIB/QRPGLESRC)  */
+        /*   MONMSG     MSGID(CPF0000)                                     */
+        /*   CRTSRVPGM  SRVPGM(&TGTLIB/RIBY_SRV) MODULE((&BLDLIB/WDUMP) +  */
+        /*                (&BLDLIB/WDUMP2)) +                              */
+        /*                EXPORT(*SRCFILE) SRCFILE(&SRCLIB/QSRVSRC)        */
+        /*   MONMSG     MSGID(CPF0000)                                     */
 RETURN:      ENDPGM
 
