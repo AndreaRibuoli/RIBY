@@ -59,6 +59,7 @@ Let's go!
 37. [to build Ruby gems requiring compilation](#37-to-build-ruby-gems-requiring-compilation)
 38. [to test SQLite3 Ruby integration](#38-to-test-sqlite3-ruby-integration)
 39. [to transform plain text into static websites](#39-to-transform-plain-text-into-static-websites)
+40. [to install Rails](#40-to-install-rails)
 
 <!---
 3X. [to customize subsystem](#3X-to-customize-subsystem)
@@ -74,6 +75,42 @@ There is a corresponding Environment attribute named **SQL\_ATTR\_SERVERMODE\_SU
 in previous requests.
 
 --->
+
+----
+### 40. to install Rails
+
+![](Railsintro.png)
+
+It is time to finally play with Rails.
+
+The installation is plain, only remember the `export OBJECT_MODE=64` to help the native binary tools adopt the `X64` mode.
+
+Before executing `rails new` command, perform the following patches.
+
+
+In the `railties` Gemfile templates:
+
+```
+/QOpenSys/pkgs/lib/ruby/gems/3.0.0/gems/railties-6.1.4.1/lib/rails/generators/rails/app/templates/Gemfile.tt
+/QOpenSys/pkgs/lib/ruby/gems/3.0.0/gems/railties-6.1.4.1/lib/rails/generators/rails/plugin/templates/Gemfile.tt
+```
+
+replace:
+
+`gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]`
+
+with:
+
+`gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby, :ruby]`
+
+
+Now proceed with `rails new blog`
+
+Then change directory entering the newly created `blog` one and execute:
+
+`bin/rails server -p 3010 -b 0.0.0.0`
+
+Enjoy practicing with Rails on IBM i!
 
 ----
 ### 39. to transform plain text into static websites
@@ -324,6 +361,7 @@ Configuration file: /home/AndreaRibuoli/my-awesome-site/_config.yml
   Server running... press ctrl-c to stop.
 ```
 
+[NEXT-40](#40-to-install-rails)
 
 ----
 ### 38. to test SQLite3 Ruby integration
