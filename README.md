@@ -89,6 +89,8 @@ ruby 3.0.3p157 (2021-11-24 revision 3fb7d2cadc) [powerpc-os400]
 
 Use `yum upgrade ruby ruby-devel`
 
+This release includes [security fixes](https://www.ruby-lang.org/en/news/2021/11/24/ruby-3-0-3-released/).
+
 
 ----
 ### 40. to install Rails
