@@ -60,6 +60,7 @@ Let's go!
 38. [to test SQLite3 Ruby integration](#38-to-test-sqlite3-ruby-integration)
 39. [to transform plain text into static websites](#39-to-transform-plain-text-into-static-websites)
 40. [to install Rails](#40-to-install-rails)
+41. [to upgrade Ruby](#41-to-upgrade-ruby)
 
 <!---
 3X. [to customize subsystem](#3X-to-customize-subsystem)
@@ -75,6 +76,19 @@ There is a corresponding Environment attribute named **SQL\_ATTR\_SERVERMODE\_SU
 in previous requests.
 
 --->
+
+----
+### 41. to upgrade Ruby
+
+A new version of *Ruby* (**3.0.3**) is available:
+
+```
+bash-5.1$ ruby -v
+ruby 3.0.3p157 (2021-11-24 revision 3fb7d2cadc) [powerpc-os400]
+```
+
+Use `yum upgrade ruby ruby-devel`
+
 
 ----
 ### 40. to install Rails
@@ -111,6 +125,8 @@ Then change directory entering the newly created `blog` one and execute:
 `bin/rails server -p 3010 -b 0.0.0.0`
 
 Enjoy practicing with Rails on IBM i!
+
+[NEXT-41](#41-to-upgrade-ruby)
 
 ----
 ### 39. to transform plain text into static websites
