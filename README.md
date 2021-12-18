@@ -61,7 +61,7 @@ Let's go!
 39. [to transform plain text into static websites](#39-to-transform-plain-text-into-static-websites)
 40. [to install Rails](#40-to-install-rails)
 41. [to upgrade Ruby](#41-to-upgrade-ruby)
-42. [to install Rails7](#42-to-install-rails7)
+42. [to install Rails 7](#42-to-install-rails-7)
 
 <!---
 3X. [to customize subsystem](#3X-to-customize-subsystem)
@@ -99,7 +99,7 @@ Use `yum upgrade ruby ruby-devel`
 
 This release includes [security fixes](https://www.ruby-lang.org/en/news/2021/11/24/ruby-3-0-3-released/).
 
-[NEXT-42](#41-to-install-rails7)
+[NEXT-42](#42-to-install-rails-7)
 
 ----
 ### 40. to install Rails
