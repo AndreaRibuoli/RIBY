@@ -183,6 +183,7 @@ Stay tuned!
 
 ![](Rails7.png)
 
+[NEXT-43](#43-to-fill-the-gap)
 
 ----
 ### 41. to upgrade Ruby
