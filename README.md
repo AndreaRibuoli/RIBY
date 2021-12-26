@@ -62,6 +62,7 @@ Let's go!
 40. [to install Rails](#40-to-install-rails)
 41. [to upgrade Ruby](#41-to-upgrade-ruby)
 42. [to install Rails 7](#42-to-install-rails-7)
+43. [to fill the gap](#43-to-fill-the-gap)
 
 <!---
 3X. [to customize subsystem](#3X-to-customize-subsystem)
@@ -78,6 +79,105 @@ in previous requests.
 
 --->
 
+
+----
+### 43. to fill the gap
+
+"There is nothing so practical as a good theory" (Kurt Lewin) is an aphorism that perfectly applies to **ActiveRecord**'s workings.
+
+Today I will investigate how to integrate Rails to IBM i DB2 by means of my previous experiments in using Ruby (and fiddle) 
+to access SQL Wide APIs as provided by IBM i QSQCLI service program. 
+
+The interesting aspect of this integration effort is how the abstract class `AbstractAdapter` has been designed:
+all the actual database Rails adapters follow the interface laid down in that class.
+
+To grasp the idea, let us perform the following grep commands:
+ 
+```
+ cd /QOpenSys/pkgs/lib/ruby/gems/3.0.0/gems/activerecord-7.0.0/lib/active_record/connection_adapters/abstract
+ echo "**** database_statements.rb ****"              
+ grep -1 'raise NotImplementedError' database_statements.rb   
+ echo "***** schema_statements.rb *****"            
+ grep -1 'raise NotImplementedError' schema_statements.rb
+```
+
+This is what we get:
+
+```
+**** database_statements.rb ****
+      def write_query?(sql)
+        raise NotImplementedError
+      end
+--
+      def execute(sql, name = nil)
+        raise NotImplementedError
+      end
+--
+      def exec_query(sql, name = "SQL", binds = [], prepare: false)
+        raise NotImplementedError
+      end
+--
+      def explain(arel, binds = []) # :nodoc:
+        raise NotImplementedError
+      end
+***** schema_statements.rb *****
+      def indexes(table_name)
+        raise NotImplementedError, "#indexes is not implemented"
+      end
+--
+      def rename_table(table_name, new_name)
+        raise NotImplementedError, "rename_table is not implemented"
+      end
+--
+      def change_column(table_name, column_name, type, **options)
+        raise NotImplementedError, "change_column is not implemented"
+      end
+--
+      def change_column_default(table_name, column_name, default_or_changes)
+        raise NotImplementedError, "change_column_default is not implemented"
+      end
+--
+      def change_column_null(table_name, column_name, null, default = nil)
+        raise NotImplementedError, "change_column_null is not implemented"
+      end
+--
+      def rename_column(table_name, column_name, new_column_name)
+        raise NotImplementedError, "rename_column is not implemented"
+      end
+--
+      def foreign_keys(table_name)
+        raise NotImplementedError, "foreign_keys is not implemented"
+      end
+--
+      def check_constraints(table_name)
+        raise NotImplementedError
+      end
+--
+      def change_table_comment(table_name, comment_or_changes)
+        raise NotImplementedError, "#{self.class} does not support changing table comments"
+      end
+--
+      def change_column_comment(table_name, column_name, comment_or_changes)
+        raise NotImplementedError, "#{self.class} does not support changing column comments"
+      end
+--
+        def data_source_sql(name = nil, type: nil)
+          raise NotImplementedError
+        end
+--
+        def quoted_scope(name = nil, type: nil)
+          raise NotImplementedError
+        end
+```
+
+Writing a Rails adapter for a specific database grossly means:
+
+* defining a new class that inherits its behavior from the *AbstractAdapter* and 
+* providing an implementation for the listed methods 
+
+Many other aspects will be required but we have a few days to relax and enjoy using **Rails 7 with IBM i DB2**.
+
+Stay tuned!
 
 ----
 ### 42. to install Rails 7
