@@ -83,12 +83,11 @@ in previous requests.
 ----
 ### 43. to fill the gap
 
-"There is nothing so practical as a good theory" (Kurt Lewin) is an aphorism that perfectly applies to **ActiveRecord**'s workings.
+ *"There is nothing so practical as a good theory"* (Kurt Lewin) is an aphorism that perfectly applies to **ActiveRecord**'s workings.
 
-Today I will investigate how to integrate Rails to IBM i DB2 by means of my previous experiments in using Ruby (and fiddle) 
-to access SQL Wide APIs as provided by IBM i QSQCLI service program. 
+Today I will investigate how to integrate Rails to IBM i DB2 by means of my previous experiments in using Ruby (and **fiddle**) to access **SQL Wide API**s as provided by IBM i QSQCLI service program. 
 
-The interesting aspect of this integration effort is how the abstract class `AbstractAdapter` has been designed:
+The interesting aspect of this integration effort is learning how the abstract class `AbstractAdapter` had been designed by Rails creator (*David Heinemeir Hansson*):
 all the actual database Rails adapters follow the interface laid down in that class.
 
 To grasp the idea, let us perform the following grep commands:
