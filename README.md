@@ -102,7 +102,7 @@ In our example it is set to 'PROVA':
 default_schema: 'PROVA'
 ```
 
-This means that there are other SQL statement that are actually executed. So, for example, in order to implement the `begin_db_transaction` I had to plug in the exact SQL consistent with IBM i DB2 dialect. The provided (ActiveRecord) one does nothing and is expected to be replaced.   
+This means that there are other SQL statement that are actually executed. So, for example, in order to implement the `begin_db_transaction` I had to plug in the exact SQL consistent with IBM i DB2 dialect. The provided (ActiveRecord) one does nothing and is expected to be overridden.   
 
 ``` ruby
       def begin_db_transaction()    end
