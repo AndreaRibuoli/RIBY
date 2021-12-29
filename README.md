@@ -95,14 +95,26 @@ We can inspect the content of the table just created:
 ![base](stilnovo.png)
 
 Why the file named *NUOVA* is created inside the library name d *PROVA*? All the database aspects of Rails project are configured by means of the YAML file named *config/database.yml*.
-One of these parameters in this file is `default_schema`.
+One of the parameters in this file is `default_schema`.
 In our example it is set to 'PROVA':
 
 ``` yaml
 default_schema: 'PROVA'
 ```
 
+This means that there are other SQL statement that are actually executed. So, for example, in order to implement the `begin_db_transaction` I had to plug in the exact SQL consistent with IBM i DB2 dialect. The provided (ActiveRecord) one does nothing and is expected to be replaced.   
 
+``` ruby
+      def begin_db_transaction()    end
+
+
+      def begin_isolated_db_transaction(isolation)
+        raise ActiveRecord::TransactionIsolationError, "adapter does not support setting transaction isolation"
+      end
+
+      def commit_db_transaction()   end
+
+```
 
 
 ----
