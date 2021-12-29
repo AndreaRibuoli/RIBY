@@ -63,6 +63,7 @@ Let's go!
 41. [to upgrade Ruby](#41-to-upgrade-ruby)
 42. [to install Rails 7](#42-to-install-rails-7)
 43. [to fill the gap](#43-to-fill-the-gap)
+44. [to understand ActiveRecord basic concepts](#44-to-understand-activerecord-basic-concepts)
 
 <!---
 3X. [to customize subsystem](#3X-to-customize-subsystem)
@@ -78,6 +79,30 @@ There is a corresponding Environment attribute named **SQL\_ATTR\_SERVERMODE\_SU
 in previous requests.
 
 --->
+
+----
+### 44. to understand ActiveRecord basic concepts
+
+Let us suppose to have a simple Rails 7 project configured for our brand new Rails adapter.
+By using Rails console we can get rid of all the infrastructure and use the database 
+connection directly. 
+The methods I am referring to are directly provided by the `ActiveRecord::Base#connection` class:
+
+![base](base_connection.png)
+
+We can inspect the content of the table just created:
+
+![base](stilnovo.png)
+
+Why the file named *NUOVA* is created inside the library name d *PROVA*? All the database aspects of Rails project are configured by means of the YAML file named *config/database.yml*.
+One of these parameters in this file is `default_schema`.
+In our example it is set to 'PROVA':
+
+``` yaml
+default_schema: 'PROVA'
+```
+
+
 
 
 ----
