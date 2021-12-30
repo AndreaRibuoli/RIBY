@@ -161,6 +161,59 @@ There are two aspects worth mentioning in adopting **READ COMMITTED**:
 * SELECT **does see** the effects of previous updates executed within our own transaction **even though they are not yet committed**
 * repeated SELECTs within a single transaction **can see different data** if other transactions commit changes after the execution of our first SELECT.
 
+We can specify the desired **isolation level** for each transaction:
+
+``` ruby
+bash-5.1$ bin/rails console < lista5.cmd
+Loading development environment (Rails 7.0.0)
+Switch to inspect mode.
+ActiveRecord::Base.connection.select_all("select * from nuova")
+   (1.7ms)  SET SCHEMA PROVA
+   (33.5ms)  select * from nuova
+
+#<ActiveRecord::Result:0x0000000188398f80
+ @column_types={},
+ @columns=[],
+ @hash_rows=nil,
+ @rows=[["Guido     ", "Cavalcanti"], ["Dante     ", "Alighieri "]]>
+ActiveRecord::Base.connection.commit_db_transaction()
+   (1.1ms)  COMMIT
+   (0.8ms)  SET TRANSACTION ISOLATION LEVEL NO COMMIT
+0
+ActiveRecord::Base.connection.begin_isolated_db_transaction(:serializable)
+   (0.7ms)  SET TRANSACTION ISOLATION LEVEL SERIALIZABLE
+0
+ActiveRecord::Base.connection.execute("drop table nuova")
+   (106.7ms)  drop table nuova
+0
+ActiveRecord::Base.connection.rollback_db_transaction()
+   (15.2ms)  ROLLBACK
+   (0.6ms)  SET TRANSACTION ISOLATION LEVEL NO COMMIT
+0
+ActiveRecord::Base.connection.begin_isolated_db_transaction(:serializable)
+   (0.4ms)  SET TRANSACTION ISOLATION LEVEL SERIALIZABLE
+0
+ActiveRecord::Base.connection.execute("insert into nuova values('Francesco', 'Petrarca')")
+   (24.0ms)  insert into nuova values('Francesco', 'Petrarca')
+0
+ActiveRecord::Base.connection.commit_db_transaction()
+   (0.7ms)  COMMIT
+   (0.7ms)  SET TRANSACTION ISOLATION LEVEL NO COMMIT
+0
+ActiveRecord::Base.connection.select_all("select * from nuova")
+   (33.1ms)  select * from nuova
+
+#<ActiveRecord::Result:0x00000001858a1890
+ @column_types={},
+ @columns=[],
+ @hash_rows=nil,
+ @rows=
+  [["Guido     ", "Cavalcanti"],
+   ["Dante     ", "Alighieri "],
+   ["Francesco ", "Petrarca  "]]>
+quit
+bash-5.1$ 
+```
 
 ----
 ### 43. to fill the gap
