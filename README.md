@@ -313,6 +313,8 @@ Many other aspects will be required but we have a few days to relax and enjoy us
 
 Stay tuned!
 
+[NEXT-44](#44-to-understand-activerecord-basic-concepts)
+
 ----
 ### 42. to install Rails 7
 
