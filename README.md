@@ -156,6 +156,12 @@ Following is the current implementation of these method in the development versi
       end      
 ```
 
+There are two aspects worth mentioning in adopting **READ COMMITTED**:
+
+* SELECT **does see** the effects of previous updates executed within our own transaction **even though they are not yet committed**
+* repeated SELECTs within a single transaction **can see different data** if other transactions commit changes after the execution of our first SELECT.
+
+
 ----
 ### 43. to fill the gap
 
