@@ -94,7 +94,7 @@ We can inspect the content of the table just created:
 
 ![base](stilnovo.png)
 
-Why the file named *NUOVA* is created inside the library name d *PROVA*? All the database aspects of Rails project are configured by means of the YAML file named *config/database.yml*.
+Why the file named *NUOVA* is created inside the library named *PROVA*? All the database aspects of Rails project are configured by means of the YAML file named *config/database.yml*.
 One of the parameters in this file is `default_schema`.
 In our example it is set to 'PROVA':
 
