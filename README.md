@@ -116,6 +116,45 @@ This means that there are other SQL statement that are actually executed. So, fo
 
 ```
 
+Following is the current implementation of these method in the development version of my
+*pure\-Ruby DB2 for i Rails adapter*:
+
+``` ruby
+      #
+      # Active Record's default behavior is to autocommit SQL statements. 
+      # By using begin_isolated_db_transaction or begin_db_transaction
+      # we are suspending this mode (- per connection -) and taking care
+      # of re-establishing it once COMMIT (or ROLLBACK) are performed
+      #
+      # Multiple commit_db_transaction will not work as multiple sql COMMITs:    
+      # the autocommit mode will be re-established at the first COMMIT
+      # 
+          
+      def begin_isolated_db_transaction(isolation)                                                              
+        @connection.attrs={ :SQL_ATTR_AUTOCOMMIT => :SQL_FALSE }                                               
+        execute("SET TRANSACTION ISOLATION LEVEL #{transaction_isolation_levels.fetch(isolation)}")
+      end
+
+      def begin_db_transaction  
+        @connection.attrs={ :SQL_ATTR_AUTOCOMMIT => :SQL_FALSE }
+        execute("SET TRANSACTION ISOLATION LEVEL READ COMMITTED")  
+      end
+        
+      def commit_db_transaction               
+        execute("COMMIT")
+        set_initial_isolation_autocommit      
+      end                                     
+                                              
+      def exec_rollback_db_transaction             
+        execute("ROLLBACK")
+        set_initial_isolation_autocommit      
+      end            
+
+      def set_initial_isolation_autocommit                             
+        @connection.attrs={ :SQL_ATTR_AUTOCOMMIT => :SQL_TRUE }       
+        execute("SET TRANSACTION ISOLATION LEVEL NO COMMIT")         
+      end      
+```
 
 ----
 ### 43. to fill the gap
