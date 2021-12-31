@@ -173,7 +173,7 @@ ActiveRecord::Base.connection.select_all("select * from nuova")
 
 #<ActiveRecord::Result:0x0000000188398f80
  @column_types={},
- @columns=[],
+ @columns=["NOME", "COGNOME"],
  @hash_rows=nil,
  @rows=[["Guido     ", "Cavalcanti"], ["Dante     ", "Alighieri "]]>
 ActiveRecord::Base.connection.commit_db_transaction()
@@ -205,7 +205,7 @@ ActiveRecord::Base.connection.select_all("select * from nuova")
 
 #<ActiveRecord::Result:0x00000001858a1890
  @column_types={},
- @columns=[],
+ @columns=["NOME", "COGNOME"],
  @hash_rows=nil,
  @rows=
   [["Guido     ", "Cavalcanti"],
