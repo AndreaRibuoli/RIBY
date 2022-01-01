@@ -64,6 +64,7 @@ Let's go!
 42. [to install Rails 7](#42-to-install-rails-7)
 43. [to fill the gap](#43-to-fill-the-gap)
 44. [to understand ActiveRecord basic concepts](#44-to-understand-activerecord-basic-concepts)
+45. [to gather more info](#45-to-gather-more-info)
 
 <!---
 3X. [to customize subsystem](#3X-to-customize-subsystem)
@@ -79,6 +80,47 @@ There is a corresponding Environment attribute named **SQL\_ATTR\_SERVERMODE\_SU
 in previous requests.
 
 --->
+
+----
+### 45. to gather more info
+
+The methods required by transaction handling (shown in the previous post)  use `execute()` method to perform SQL statements: this is one of the 
+methods listed in the first post describing the abstract adapter:
+
+``` ruby
+def execute(sql, name = nil)
+  raise NotImplementedError
+end
+```
+
+it is reimplemented for the DB2 for i environment in this way:
+
+``` ruby
+def execute(sql, name = nil)                    
+  log(sql, name) do                             
+    stmt = Stmt.new!(@connection)       
+    stmt.execdirect!(sql)
+  end                                           
+end
+```
+
+The verbosity of the actual logging is tuned by a specific Rails application's variable. We can edit `config/application.rb` and change the `config.log_level` value from `:warn` to `:debug`: 
+
+``` ruby
+module Prova
+  class Application < Rails::Application
+    . . .
+    config.log_level = :debug
+    . . .
+  end
+end
+```
+
+This is what we get:
+
+![base](base_connection_3.png)  
+
+where we can see all the SQL commands actually submitted.
 
 ----
 ### 44. to understand ActiveRecord basic concepts
