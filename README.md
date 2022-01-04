@@ -346,7 +346,7 @@ We can specify the desired **isolation level** for each transaction:
 
 ![base](base_connection_2.png)
 
-[NEXT-45](#45-to-gather-more-info)]
+[NEXT-45](#45-to-gather-more-info)
 
 ----
 ### 43. to fill the gap
