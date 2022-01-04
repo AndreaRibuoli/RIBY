@@ -65,6 +65,7 @@ Let's go!
 43. [to fill the gap](#43-to-fill-the-gap)
 44. [to understand ActiveRecord basic concepts](#44-to-understand-activerecord-basic-concepts)
 45. [to gather more info](#45-to-gather-more-info)
+46. [to prepare for the worst](#46-to-prepare-for-the-worst)
 
 <!---
 3X. [to customize subsystem](#3X-to-customize-subsystem)
@@ -80,6 +81,142 @@ There is a corresponding Environment attribute named **SQL\_ATTR\_SERVERMODE\_SU
 in previous requests.
 
 --->
+
+
+----
+### 46. to prepare for the worst
+
+DB2, and IBM's software in general, has always been strong in error message handling. 
+
+Today I will focus on how to retain granularity of DB engine error messages once overall control is given to Rails ActiveRecord's framework.
+
+This is the classical area where source code turns ugly!
+
+In the latest post I mentioned the implementation of **execute** method:
+
+``` ruby
+def execute(sql, name = nil)                    
+  log(sql, name) do                             
+    stmt = Stmt.new!(@connection)       
+    stmt.execdirect!(sql)
+  end                                           
+end
+```
+
+it uses two methods from the **Stmt** class with names ending with an exclamation mark (**!**).
+This follows the convention that in case of error they will *raise* an **Exception** (*boom* methods).  
+Now let us try dropping a table that does not exist.
+
+This is what we get:
+
+```
+Loading development environment (Rails 7.0.0)
+irb(main):001:0> ActiveRecord::Base.connection.execute("drop table nuova2")
+   (2.3ms)  SET SCHEMA PROVA2
+   (2.7ms)  drop table nuova2
+/QOpenSys/pkgs/lib/ruby/gems/3.0.0/gems/ribydb-1.0.0/lib/active_record/connection_adapters/ribydb/riby_qsqcli.rb:750:in `execdirect!': StandardErrorQSQ:  (ActiveRecord::StatementInvalid)
+Stmt#execdirect method failure:
+NUOVA2 in PROVA2 di tipo *FILE non trovato. (CLASS_CODE 42; SQLSTATE 42704; SQLCODE -204)
+/QOpenSys/pkgs/lib/ruby/gems/3.0.0/gems/ribydb-1.0.0/lib/active_record/connection_adapters/ribydb/riby_qsqcli.rb:750:in `execdirect!':  (StandardErrorQSQ)
+Stmt#execdirect method failure:
+NUOVA2 in PROVA2 di tipo *FILE non trovato. (CLASS_CODE 42; SQLSTATE 42704; SQLCODE -204)
+``` 
+
+Our exception, class **StandardErrorQSQ**, is converted into an **ActiveRecord::StatementInvalid** one.
+Following this hint we can find the following Ruby code inside *ActiveRecord*:
+
+``` ruby
+        def translate_exception(exception, message:, sql:, binds:)
+          # override in derived class
+          case exception
+          when RuntimeError
+            exception
+          else
+            ActiveRecord::StatementInvalid.new(message, sql: sql, binds: binds)
+          end
+        end
+```
+
+So we are supposed to *override* the `translate_exception` method in order to support our own exceptions.
+The objective is to remap DB2 error messages into specific *ActiveRecord* exceptions which are all descendants of `ActiveRecord::ActiveRecordError` that, on its turn, is a subclass of Ruby Standard Library's `StandardError`.
+
+This is the resulting tree:
+
+```
+StandardError
+`-- ActiveRecordError 
+    |-- ActiveJobRequiredError                      
+    |-- SubclassNotFound                            
+    |-- AssociationTypeMismatch                     
+    |-- SerializationTypeMismatch                   
+    |-- AdapterNotSpecified                         
+    |-- TableNotSpecified                           
+    |-- AdapterNotFound                             
+    |-- ReadOnlyError                               
+    |-- RecordNotFound                              
+    |-- RecordNotSaved                              
+    |-- RecordNotDestroyed                          
+    |-- SoleRecordExceeded                          
+    |-- PreparedStatementInvalid                    
+    |-- StaleObjectError                            
+    |-- ConfigurationError                          
+    |-- ReadOnlyRecord                              
+    |-- StrictLoadingViolationError                 
+    |-- Rollback                                    
+    |-- DangerousAttributeError                     
+    |-- AttributeAssignmentError                    
+    |-- MultiparameterAssignmentErrors              
+    |-- UnknownPrimaryKey                           
+    |-- ImmutableRelation                           
+    |-- IrreversibleOrderError                      
+    |-- UnknownAttributeReference                   
+    |-- TransactionIsolationError                   
+    |-- AsynchronousQueryInsideTransactionError     
+    |-- ConnectionNotEstablished                    
+    |   |-- DatabaseConnectionError                     
+    |   `-- ConnectionTimeoutError                      
+    |       `-- ExclusiveConnectionTimeoutError         
+    `-- StatementInvalid                            
+        |-- MismatchedForeignKey                        
+        |-- NotNullViolation                            
+        |-- ValueTooLong                                
+        |-- RangeError                                  
+        |-- NoDatabaseError                             
+        |-- DatabaseAlreadyExists                       
+        |-- PreparedStatementCacheExpired               
+        |-- LockWaitTimeout                             
+        |-- WrappedDatabaseException                    
+        |   |-- RecordNotUnique                          
+        |   `-- InvalidForeignKey                       
+        |-- TransactionRollbackError                    
+        |   |-- SerializationFailure                
+        |   `-- Deadlocked                            
+        `-- QueryAborted                                
+            |-- StatementTimeout                   
+            |-- QueryCanceled                  
+            `-- AdapterTimeout                  
+```
+
+By introducing our specific `translate_exception` method we can identify the appropriate ActiveRecord exception
+to map to. We will base our decision on the SQLSTATE value.
+
+In the example SQLSTATE 42704 will determine the **ArgumentError** exception:
+
+```
+Loading development environment (Rails 7.0.0)
+Switch to inspect mode.
+ActiveRecord::Base.connection.execute("drop table nuova2")
+   (3.9ms)  SET SCHEMA PROVA2
+   (2.9ms)  drop table nuova2
+/QOpenSys/pkgs/lib/ruby/gems/3.0.0/gems/ribydb-1.0.0/lib/active_record/connection_adapters/ribydb/riby_qsqcli.rb:750:in `execdirect!': StandardErrorQSQ:  (ArgumentError)
+Stmt#execdirect method failure:
+NUOVA2 in PROVA2 di tipo *FILE non trovato. (CLASS_CODE 42; SQLSTATE 42704; SQLCODE -204)
+/QOpenSys/pkgs/lib/ruby/gems/3.0.0/gems/ribydb-1.0.0/lib/active_record/connection_adapters/ribydb/riby_qsqcli.rb:750:in `execdirect!':  (StandardErrorQSQ)
+Stmt#execdirect method failure:
+NUOVA2 in PROVA2 di tipo *FILE non trovato. (CLASS_CODE 42; SQLSTATE 42704; SQLCODE -204)
+```
+
+
 
 ----
 ### 45. to gather more info
@@ -121,6 +258,8 @@ This is what we get:
 ![base](base_connection_3.png)  
 
 where we can see all the SQL commands actually submitted.
+
+[NEXT-46](#46-to-prepare-for-the-worst)
 
 ----
 ### 44. to understand ActiveRecord basic concepts
@@ -207,6 +346,7 @@ We can specify the desired **isolation level** for each transaction:
 
 ![base](base_connection_2.png)
 
+[NEXT-45](#45-to-gather-more-info)]
 
 ----
 ### 43. to fill the gap
