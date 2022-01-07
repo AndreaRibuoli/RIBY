@@ -66,6 +66,7 @@ Let's go!
 44. [to understand ActiveRecord basic concepts](#44-to-understand-activerecord-basic-concepts)
 45. [to gather more info](#45-to-gather-more-info)
 46. [to prepare for the worst](#46-to-prepare-for-the-worst)
+47. [to extend coverage](#47-to-extend-coverage)
 
 <!---
 3X. [to customize subsystem](#3X-to-customize-subsystem)
@@ -81,6 +82,108 @@ There is a corresponding Environment attribute named **SQL\_ATTR\_SERVERMODE\_SU
 in previous requests.
 
 --->
+
+----
+### 47. to extend coverage
+
+
+Armed with the support of native error messages we can identify which ActiveRecord's default methods require overriding.
+One example is the `create_savepoint` method that is failing as is:
+
+```
+bash-5.1$ bin/rails console 
+Loading development environment (Rails 7.0.0)
+irb(main):001:0> ActiveRecord::Base.connection.create_savepoint('WILLFAIL')
+   (2.1ms)  SET SCHEMA PROVA2
+  TRANSACTION (2.1ms)  SAVEPOINT WILLFAIL
+/QOpenSys/pkgs/lib/ruby/gems/3.0.0/gems/ribydb-1.0.0/lib/active_record/connection_adapters/ribydb/riby_qsqcli.rb:750:in `execdirect!': StandardErrorQSQ:  (ActiveRecord::StatementInvalid)
+Stmt#execdirect method failure:
+Token <FINE-ISTRUZIONI> non valido. Token validi: ON UNIQUE. (CLASS_CODE 42; SQLSTATE 42601; SQLCODE -104)
+/QOpenSys/pkgs/lib/ruby/gems/3.0.0/gems/ribydb-1.0.0/lib/active_record/connection_adapters/ribydb/riby_qsqcli.rb:750:in `execdirect!':  (StandardErrorQSQ)
+Stmt#execdirect method failure:
+Token <FINE-ISTRUZIONI> non valido. Token validi: ON UNIQUE. (CLASS_CODE 42; SQLSTATE 42601; SQLCODE -104)
+```
+
+We fix the problem after checking the syntax of `SAVEPOINT` verb in *SQL Reference* manual:
+
+``` ruby
+module ActiveRecord                                                           
+  module ConnectionAdapters                                                   
+    module Savepoints                                                         
+        
+      def create_savepoint(name = current_savepoint_name)                            
+        execute("SAVEPOINT #{name} ON ROLLBACK RETAIN CURSORS", "TRANSACTION")        
+      end                                                                            
+                                                                                     
+    end                                          
+  end                                            
+end                                              
+```
+
+With the following sequence of commands we test SAVEPOINT support:
+
+``` ruby
+ActiveRecord::Base.connection.begin_db_transaction
+ActiveRecord::Base.connection.execute("INSERT INTO NUOVA VALUES('Guido', 'Guinizelli')")
+ActiveRecord::Base.connection.create_savepoint('WILLNOTFAIL')
+ActiveRecord::Base.connection.execute('DROP TABLE NUOVA')
+ActiveRecord::Base.connection.exec_query('SELECT * FROM NUOVA')
+ActiveRecord::Base.connection.exec_rollback_to_savepoint('WILLNOTFAIL')
+ActiveRecord::Base.connection.exec_query('SELECT * FROM NUOVA')
+ActiveRecord::Base.connection.rollback_db_transaction
+quit
+```
+
+The select after the DROP TABLE will fail but the one after `exec_rollback_to_savepoint` will succeed and will show
+the effect of the initial insert ( `["Guido     ", "Guinizelli"]` ) although this will not be persisted given the 
+final `rollback_db_transaction`.
+
+```
+bash-5.1$ bin/rails console < ../prova/lista8.cmd 
+Loading development environment (Rails 7.0.0)
+Switch to inspect mode.
+ActiveRecord::Base.connection.begin_db_transaction
+   (2.1ms)  SET SCHEMA PROVA2
+   (1.5ms)  SET TRANSACTION ISOLATION LEVEL READ COMMITTED
+0
+ActiveRecord::Base.connection.execute("INSERT INTO NUOVA VALUES('Guido', 'Guinizelli')")
+   (12.1ms)  INSERT INTO NUOVA VALUES('Guido', 'Guinizelli')
+0
+ActiveRecord::Base.connection.create_savepoint('WILLNOTFAIL')
+  TRANSACTION (1.4ms)  SAVEPOINT WILLNOTFAIL ON ROLLBACK RETAIN CURSORS
+0
+ActiveRecord::Base.connection.execute('DROP TABLE NUOVA')
+   (8.2ms)  DROP TABLE NUOVA
+0
+ActiveRecord::Base.connection.exec_query('SELECT * FROM NUOVA')
+  SQL (1.9ms)  SELECT * FROM NUOVA
+/QOpenSys/pkgs/lib/ruby/gems/3.0.0/gems/ribydb-1.0.0/lib/active_record/connection_adapters/ribydb/database_statements.rb:36:in `block in exec_query': StandardErrorQSQ:  (ActiveRecord::StatementInvalid)
+Stmt#prepare method failure:
+NUOVA in PROVA2 di tipo *FILE non trovato. (CLASS_CODE 42; SQLSTATE 42704; SQLCODE -204)
+/QOpenSys/pkgs/lib/ruby/gems/3.0.0/gems/ribydb-1.0.0/lib/active_record/connection_adapters/ribydb/database_statements.rb:36:in `block in exec_query':  (StandardErrorQSQ)
+Stmt#prepare method failure:
+NUOVA in PROVA2 di tipo *FILE non trovato. (CLASS_CODE 42; SQLSTATE 42704; SQLCODE -204)
+ActiveRecord::Base.connection.exec_rollback_to_savepoint('WILLNOTFAIL')
+  TRANSACTION (4.4ms)  ROLLBACK TO SAVEPOINT WILLNOTFAIL
+0
+ActiveRecord::Base.connection.exec_query('SELECT * FROM NUOVA')
+  SQL (57.9ms)  SELECT * FROM NUOVA
+
+#<ActiveRecord::Result:0x000000018655c058
+ @column_types={},
+ @columns=["NOME", "COGNOME"],
+ @hash_rows=nil,
+ @rows=
+  [["Guido     ", "Cavalcanti"],
+   ["Dante     ", "Alighieri "],
+   ["Guido     ", "Guinizelli"]]>
+ActiveRecord::Base.connection.rollback_db_transaction
+   (9.9ms)  ROLLBACK
+   (1.5ms)  SET TRANSACTION ISOLATION LEVEL NO COMMIT
+0
+quit
+```
+
 
 
 ----
@@ -216,6 +319,7 @@ Stmt#execdirect method failure:
 NUOVA2 in PROVA2 di tipo *FILE non trovato. (CLASS_CODE 42; SQLSTATE 42704; SQLCODE -204)
 ```
 
+[NEXT-47](#47-to-extend-coverage)
 
 
 ----
