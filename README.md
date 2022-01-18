@@ -104,7 +104,7 @@ Now we need to define the methods that are otherwise raising the `NotImplemented
 Gradually filling this gap we will discover that issuing `bin/rails db:migrate` the `log/development.log` file 
 will record the CREATE statement for 2 files: they will support ActiveRecord's **migrations**. 
 
-Rails **models** are persisted into DB2 tables while Rails **associations** will map to *primary key \- foreign key* relationships.
+Rails **models** are persisted into DB2 tables while Rails **associations** will map to *primary key-foreign key* relationships.
  
 It is crucial for us to understand the role of **foreign keys** in Active Record.
 
