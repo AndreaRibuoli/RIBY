@@ -166,7 +166,7 @@ We fix by defining:
 Now we have a first successful CREATE:
 
 ``` sql
-CREATE TABLE schema_migrations (version VARCHAR(40) NOT NULL PRIMARY KEY
+CREATE TABLE schema_migrations (version VARCHAR(40) NOT NULL PRIMARY KEY)
 ```
 
 And soon another failing one:
