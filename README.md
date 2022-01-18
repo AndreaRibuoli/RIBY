@@ -112,7 +112,7 @@ From [RAILSGUIDES](https://guides.rubyonrails.org/v7.0.0/association_basics.html
 
 *In Rails, an **association** is a connection between two Active Record models.* 
 
-*by declaring that one model `belongs_to` another, you instruct Rails to maintain **Primary Key\–Foreign Key** information between instances of the two models*
+*by declaring that one model `belongs_to` another, you instruct Rails to maintain **Primary Key–Foreign Key** information between instances of the two models*
 
 We will try to understand this mechanism and the requirements it poses on our Rails adapter.
 Specifically we will derive from the following simple few Ruby lines: 
