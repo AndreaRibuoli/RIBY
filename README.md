@@ -88,7 +88,7 @@ in previous requests.
 ### 49. to lay the table
 
 Rails offers the ability to define (and refine) the definition of an application table (*model*) by means of **migrations**.
-These are chunks of Ruby code in source files inside `db/migrate` sub\-directory following a naming convention that implies an order of execution. These changes can be upplied or unapplied in a way that follows the development stages.
+These are chunks of Ruby code in source files inside `db/migrate` sub\-directory following a naming convention that implies an order of execution. These changes can be applied or unapplied in a way that follows the development stages.
 
 The fundamental aspect is that by managing a DB2 table through Rails we are actually playing with **a sub\-class of the ActiveRecord class**. 
  
