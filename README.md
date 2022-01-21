@@ -68,6 +68,7 @@ Let's go!
 46. [to prepare for the worst](#46-to-prepare-for-the-worst)
 47. [to extend coverage](#47-to-extend-coverage)
 48. [to engage in object relational mapping](#48-to-engage-in-object-relational-mapping)
+49. [to lay the table](#49-to-lay-the-table)
 
 <!---
 3X. [to customize subsystem](#3X-to-customize-subsystem)
@@ -83,6 +84,121 @@ There is a corresponding Environment attribute named **SQL\_ATTR\_SERVERMODE\_SU
 in previous requests.
 
 --->
+----
+### 49. to lay the table
+
+Rails offers the ability to define (and refine) the definition of an application table (*model*) by means of **migrations**.
+These are chuncks of Ruby code in source files inside `db/migrate` sub\-directory following a naming convention that implies an order of execution. These changes can be upplied or unapplied in a way that follows the development stages.
+
+The fundamental aspect is that by managing a DB2 table through Rails we are actually playing with **a sub\-class of the ActiveRecord class**. 
+ 
+ 
+In our preliminary attempts we are still be hitting a number of errors that will require Ruby programming activity.
+
+Just after the creation of `schema_migrations` and `ar_internal_metadata` tables we will fail with:
+
+```
+NoMethodError: undefined method `column_definitions'
+```
+
+By using the `--trace` option we can identify where the error occurs. It is in the abstract adapter class inside 
+`columns method`:
+
+``` ruby
+# Returns an array of +Column+ objects for the table specified by +table_name+.   
+def columns(table_name)                                                           
+  table_name = table_name.to_s                                                    
+  column_definitions(table_name).map do |field|                                   
+    new_column_from_field(table_name, field)                                      
+  end                                                                             
+end                                                                               
+```
+
+*column_definitions* and *new_column_from_field* methods are supposed to be offered by our embryonic adapter that 
+is expected to extract back (from the database manager) detailed information about the columns of one of the tables just created.
+As stated these info are to be returned as an array of instances of the **ActiveRecord::ConnectionAdapters::Column** class.
+
+For the sake of clarity I will temporarily adopt a **black box** approach implementing a `column_definitions` method that will simply raise an exception, letting us know which is the `table_name` being queried:   
+
+``` ruby
+def column_definitions(table_name) 
+  raise "missing column_definitions for table_name='#{table_name}'"
+end 
+```
+
+as expected, this is one of the only two tables ActiveRecord creates for its own sake:
+
+```
+bash-5.1$ bin/rails db:migrate --trace
+** Invoke db:migrate (first_time)
+** Invoke db:load_config (first_time)
+** Invoke environment (first_time)
+** Execute environment
+** Execute db:load_config
+** Execute db:migrate
+rails aborted!
+missing column_definitions for table_name='ar_internal_metadata'
+```
+
+Excuse me for this *slow* introduction but I like to describe a *by experiment* method, that everyone can follow.
+
+From a version of Rails to a newer one things may be subject to changes and it could be very useful to promptly verify
+if previous assumptions still hold true. 
+
+The `specifications` embodied in the abstract adapter are not frozen and Rails Core team has total freedom in introducing a change even it that enhancement de**rails** your independent adapter! 
+
+On the other hand, ActiveRecord provides three *concrete* adapters (for *MySQL*, *PostgreSQL* and *SQLite3*) and it will surely be useful to study the source code of those implementations. 
+These are necessarily in synch with the current specifications. 
+
+
+Let us focus on the `ActiveRecord::ConnectionAdapters::Column` class initializer.
+
+In March 2016 the initializer changed from:
+
+``` ruby
+def initialize(name, default, sql_type_metadata = nil, null = true, default_function = nil, collation = nil)
+```
+
+to
+
+``` ruby
+def initialize(name, default, sql_type_metadata = nil, null = true, table_name = nil, default_function = nil, collation = nil)
+``` 
+
+the `table_name` (fifth parameter) was added (*"Passing table_name to Column#initialize to avoid instance_variable_set"*).
+
+
+In April 2016 support for specifying `comment`s for tables was added and the initializer changed again:
+
+``` ruby
+def initialize(name, default, sql_type_metadata = nil, null = true, table_name = nil, default_function = nil, collation = nil, comment = nil)
+```
+
+in the same timeframe a new change occurred *to switch to keyword arguments where possible*:
+
+``` ruby
+def initialize(name, default, sql_type_metadata = nil, null = true, table_name = nil, default_function = nil, collation = nil, comment: nil) 
+```
+
+In October 2017 an anonymous double splat operator (`**`) was introduced to enable passing through extra keyword arguments for specific concrete adapters:
+
+``` ruby
+def initialize(name, default, sql_type_metadata = nil, null = true, table_name = nil, default_function = nil, collation = nil, comment: nil, **)
+```
+
+In April 2019 `table_name` was removed because a cleaner approach was identified in handling the 2016's issue:
+ 
+``` ruby
+def initialize(name, default, sql_type_metadata = nil, null = true, default_function = nil, collation: nil, comment: nil, **)
+``` 
+
+This is actually the version in use nowadays.
+
+I think that navigating GitHub's **history** has been useful... despite the slight feeling of **anarchy**.
+
+It was a cold shower for me, too!  
+
+ 
 ----
 ### 48. to engage in object relational mapping
 
@@ -204,6 +320,7 @@ CREATE TABLE ar_internal_metadata (key         VARCHAR(40) NOT NULL PRIMARY KEY,
 
 A rather boring activity awaits us!
 
+[NEXT-49](#49-to-lay-the-table)
  
 ----
 ### 47. to extend coverage
