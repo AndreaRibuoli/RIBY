@@ -116,7 +116,7 @@ end
 
 *column_definitions* and *new_column_from_field* methods are supposed to be offered by our embryonic adapter that 
 is expected to extract back (from the database manager) detailed information about the columns of one of the tables just created.
-As stated these info are to be returned as an array of instances of the **ActiveRecord::ConnectionAdapters::Column** class.
+As stated, these info are to be returned as an array of instances of the **ActiveRecord::ConnectionAdapters::Column** class.
 
 For the sake of clarity I will temporarily adopt a **black box** approach implementing a `column_definitions` method that will simply raise an exception, letting us know which is the `table_name` being queried:   
 
