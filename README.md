@@ -198,7 +198,7 @@ def initialize(name, default, sql_type_metadata = nil, null = true,
                default_function = nil, collation: nil, comment: nil, **)
 ``` 
 
-This is actually the version in use nowadays.
+At the same time `collation` was tranformed into a keyword argument. This is the version currently in use (**v7**).
 
 I think that navigating GitHub's **history** has been useful... despite the slight feeling of **anarchy**.
 
