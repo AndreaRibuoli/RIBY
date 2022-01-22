@@ -102,7 +102,7 @@ NoMethodError: undefined method `column_definitions'
 ```
 
 By using the `--trace` option we can identify where the error occurs. It is in the abstract adapter class inside 
-`columns method`:
+`columns` method:
 
 ``` ruby
 # Returns an array of +Column+ objects for the table specified by +table_name+.   
