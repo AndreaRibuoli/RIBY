@@ -121,6 +121,34 @@ Note the INSERT statement over **ar\_internal\_metadata**:
   <span class="ansi1"></span><span class="ansi1 ansi35"> (1.9ms)</span>  <span class="ansi1"></span><span class="ansi1 ansi35">SET SCHEMA PROVA</span>
 </pre>
 
+If we repeat the migration the log differs:
+
+
+<pre class="ansi2html-content">
+  <span class="ansi1"></span><span class="ansi1 ansi35"> (2.0ms)</span>  <span class="ansi1"></span><span class="ansi1 ansi35">SET SCHEMA PROVA</span>
+  <span class="ansi1"></span><span class="ansi1 ansi35">SQL (44.6ms)</span>  <span class="ansi1"></span><span class="ansi1 ansi34">SELECT DBIFLD, DBIDFT FROM qsys.qadbilfi WHERE dbiLIB = 'PROVA' AND LOWER(DBILFI) = 'ar_internal_metadata' ORDER BY DBIPOS</span>
+  <span class="ansi1"></span><span class="ansi1 ansi36">ActiveRecord::InternalMetadata Load (61.5ms)</span>  <span class="ansi1"></span><span class="ansi1 ansi34">SELECT ar_internal_metadata.* FROM ar_internal_metadata WHERE ar_internal_metadata.key = 'environment' LIMIT 1</span>
+  <span class="ansi1"></span><span class="ansi1 ansi35"> (1.2ms)</span>  <span class="ansi1"></span><span class="ansi1 ansi35">SET TRANSACTION ISOLATION LEVEL READ COMMITTED</span>
+  <span class="ansi1"></span><span class="ansi1 ansi36">ActiveRecord::InternalMetadata Update (30.5ms)</span>  <span class="ansi1"></span><span class="ansi1 ansi33">UPDATE ar_internal_metadata SET value = 'development', updated_at = '2022-01-22 17:20:29.639939' WHERE ar_internal_metadata.key IS NULL</span>
+  <span class="ansi1"></span><span class="ansi1 ansi35"> (7.2ms)</span>  <span class="ansi1"></span><span class="ansi1 ansi35">COMMIT</span>
+  <span class="ansi1"></span><span class="ansi1 ansi35"> (1.5ms)</span>  <span class="ansi1"></span><span class="ansi1 ansi35">SET TRANSACTION ISOLATION LEVEL NO COMMIT</span>
+  <span class="ansi1"></span><span class="ansi1 ansi35"> (2.0ms)</span>  <span class="ansi1"></span><span class="ansi1 ansi35">SET SCHEMA PROVA</span>
+  <span class="ansi1"></span><span class="ansi1 ansi35">SQL (39.6ms)</span>  <span class="ansi1"></span><span class="ansi1 ansi34">SELECT DBIFLD, DBIDFT FROM qsys.qadbilfi WHERE dbiLIB = 'PROVA' AND LOWER(DBILFI) = 'schema_migrations' ORDER BY DBIPOS</span>
+  <span class="ansi1"></span><span class="ansi1 ansi36">ActiveRecord::SchemaMigration Pluck (15.0ms)</span>  <span class="ansi1"></span><span class="ansi1 ansi34">SELECT schema_migrations.version FROM schema_migrations ORDER BY schema_migrations.version ASC</span>
+</pre>
+
+I adopted `LOWER()` SQL function to identify the name of the table being searched:
+
+``` ruby
+" ... LOWER(DBILFI) = '#{table_name}' ... "
+```
+
+When ActiveRecord generates the SQL statements to CREATE TABLE *ar\_internal\_metadata* (or *schema\_migrations*) the name is passed as is
+so that DB2 creates a table having the upper case version of the name: **AR\_INTERNAL\_METADATA**. We also know that IBM i operating system 
+will identify the table with another name **AR_IN00001** having only the first 5 characters in common with the original (SQL) name.
+
+Similarly, *schema\_migrations* becomes **SCHEMA\_MIGRATIONS**, ending up in **SCHEM00001**. 
+
 ----
 ### 49. to lay the table
 
