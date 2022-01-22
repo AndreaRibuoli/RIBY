@@ -241,6 +241,7 @@ I think that navigating GitHub's **history** has been useful... despite the slig
 
 It was a cold shower for me, too!  
 
+[NEXT-50](#50-to-fill-the-gaps)
  
 ----
 ### 48. to engage in object relational mapping
