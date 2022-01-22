@@ -69,6 +69,7 @@ Let's go!
 47. [to extend coverage](#47-to-extend-coverage)
 48. [to engage in object relational mapping](#48-to-engage-in-object-relational-mapping)
 49. [to lay the table](#49-to-lay-the-table)
+50. [to fill the gaps](#50-to-fill-the-gaps)
 
 <!---
 3X. [to customize subsystem](#3X-to-customize-subsystem)
@@ -84,6 +85,42 @@ There is a corresponding Environment attribute named **SQL\_ATTR\_SERVERMODE\_SU
 in previous requests.
 
 --->
+----
+### 50. to fill the gaps
+
+By implementing *column\_definitions*, *new\_column\_from\_field* (and *data\_source\_sql* methods) we are finally able to
+complete an initial `bin/rails db:migrate`.
+
+For the pair *column\_definitions* \- *new\_column\_from\_field* I sketched a simple interaction with **QSYS/QADBILFI**,
+the *data\_source\_sql* \-on its turn\- is using **QSYS/QADBXLFI**.
+
+``` ruby
+def column_definitions(table_name)
+  exec_query("SELECT DBIFLD, DBIDFT FROM qsys.qadbilfi WHERE dbiLIB = '#{@connection_options[:default_schema]}' AND LOWER(DBILFI) = '#{table_name}' ORDER BY DBIPOS") 
+end
+```
+
+``` ruby
+def new_column_from_field(table_name, field) 
+  Column.new(field["DBIFLD"].downcase.strip, field["DBIDFT"]) 
+end
+```
+
+Note the INSERT statement over **ar\_internal\_metadata**:
+
+<pre class="ansi2html-content">
+  <span class="ansi1"></span><span class="ansi1 ansi35"> (2.1ms)</span>  <span class="ansi1"></span><span class="ansi1 ansi35">SET SCHEMA PROVA</span>
+  <span class="ansi1"></span><span class="ansi1 ansi35"> (114.6ms)</span>  <span class="ansi1"></span><span class="ansi1 ansi35">CREATE TABLE schema_migrations (version varchar(80) NOT NULL PRIMARY KEY)</span>
+  <span class="ansi1"></span><span class="ansi1 ansi35"> (107.5ms)</span>  <span class="ansi1"></span><span class="ansi1 ansi35">CREATE TABLE ar_internal_metadata (key varchar(80) NOT NULL PRIMARY KEY, value varchar(80), created_at timestamp NOT NULL, updated_at timestamp NOT NULL)</span>
+  <span class="ansi1"></span><span class="ansi1 ansi35">SQL (50.5ms)</span>  <span class="ansi1"></span><span class="ansi1 ansi34">SELECT DBIFLD, DBIDFT FROM qsys.qadbilfi WHERE dbiLIB = 'PROVA' AND LOWER(DBILFI) = 'ar_internal_metadata' ORDER BY DBIPOS</span>
+  <span class="ansi1"></span><span class="ansi1 ansi36">ActiveRecord::InternalMetadata Load (50.4ms)</span>  <span class="ansi1"></span><span class="ansi1 ansi34">SELECT ar_internal_metadata.* FROM ar_internal_metadata WHERE ar_internal_metadata.key = 'environment' LIMIT 1</span>
+  <span class="ansi1"></span><span class="ansi1 ansi35"> (1.1ms)</span>  <span class="ansi1"></span><span class="ansi1 ansi35">SET TRANSACTION ISOLATION LEVEL READ COMMITTED</span>
+  <span class="ansi1"></span><span class="ansi1 ansi36">ActiveRecord::InternalMetadata Create (6.5ms)</span>  <span class="ansi1"></span><span class="ansi1 ansi32">INSERT INTO ar_internal_metadata (key, value, created_at, updated_at) VALUES ('environment', 'development', '2022-01-22 10:23:28.705860', '2022-01-22 10:23:28.705860')</span>
+  <span class="ansi1"></span><span class="ansi1 ansi35"> (2.1ms)</span>  <span class="ansi1"></span><span class="ansi1 ansi35">COMMIT</span>
+  <span class="ansi1"></span><span class="ansi1 ansi35"> (1.1ms)</span>  <span class="ansi1"></span><span class="ansi1 ansi35">SET TRANSACTION ISOLATION LEVEL NO COMMIT</span>
+  <span class="ansi1"></span><span class="ansi1 ansi35"> (1.9ms)</span>  <span class="ansi1"></span><span class="ansi1 ansi35">SET SCHEMA PROVA</span>
+</pre>
+
 ----
 ### 49. to lay the table
 
@@ -114,7 +151,7 @@ def columns(table_name)
 end                                                                               
 ```
 
-*column_definitions* and *new_column_from_field* methods are supposed to be offered by our embryonic adapter that 
+*column\_definitions* and *new\_column\_from\_field* methods are supposed to be offered by our embryonic adapter that 
 is expected to extract back (from the database manager) detailed information about the columns of one of the tables just created.
 As stated, these info are to be returned as an array of instances of the **ActiveRecord::ConnectionAdapters::Column** class.
 
