@@ -156,13 +156,15 @@ Let us focus on the `ActiveRecord::ConnectionAdapters::Column` class initializer
 In March 2016 the initializer changed from:
 
 ``` ruby
-def initialize(name, default, sql_type_metadata = nil, null = true, default_function = nil, collation = nil)
+def initialize(name, default, sql_type_metadata = nil, null = true, 
+               default_function = nil, collation = nil)
 ```
 
 to
 
 ``` ruby
-def initialize(name, default, sql_type_metadata = nil, null = true, table_name = nil, default_function = nil, collation = nil)
+def initialize(name, default, sql_type_metadata = nil, null = true,
+               table_name = nil, default_function = nil, collation = nil)
 ``` 
 
 the `table_name` (fifth parameter) was added (*"Passing table_name to Column#initialize to avoid instance_variable_set"*).
@@ -171,25 +173,29 @@ the `table_name` (fifth parameter) was added (*"Passing table_name to Column#ini
 In April 2016 support for specifying `comment`s for tables was added and the initializer changed again:
 
 ``` ruby
-def initialize(name, default, sql_type_metadata = nil, null = true, table_name = nil, default_function = nil, collation = nil, comment = nil)
+def initialize(name, default, sql_type_metadata = nil, null = true, 
+               table_name = nil, default_function = nil, collation = nil, comment = nil)
 ```
 
 in the same timeframe a new change occurred *to switch to keyword arguments where possible*:
 
 ``` ruby
-def initialize(name, default, sql_type_metadata = nil, null = true, table_name = nil, default_function = nil, collation = nil, comment: nil) 
+def initialize(name, default, sql_type_metadata = nil, null = true, 
+               table_name = nil, default_function = nil, collation = nil, comment: nil) 
 ```
 
 In October 2017 an anonymous double splat operator (`**`) was introduced to enable passing through extra keyword arguments for specific concrete adapters:
 
 ``` ruby
-def initialize(name, default, sql_type_metadata = nil, null = true, table_name = nil, default_function = nil, collation = nil, comment: nil, **)
+def initialize(name, default, sql_type_metadata = nil, null = true, 
+               table_name = nil, default_function = nil, collation = nil, comment: nil, **)
 ```
 
 In April 2019 `table_name` was removed because a cleaner approach was identified in handling the 2016's issue:
  
 ``` ruby
-def initialize(name, default, sql_type_metadata = nil, null = true, default_function = nil, collation: nil, comment: nil, **)
+def initialize(name, default, sql_type_metadata = nil, null = true, 
+               default_function = nil, collation: nil, comment: nil, **)
 ``` 
 
 This is actually the version in use nowadays.
