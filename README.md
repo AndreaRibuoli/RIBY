@@ -145,7 +145,7 @@ Excuse me for this *slow* introduction but I like to describe a *by experiment* 
 From a version of Rails to a newer one things may be subject to changes and it could be very useful to promptly verify
 if previous assumptions still hold true. 
 
-The `specifications` embodied in the abstract adapter are not frozen and Rails Core team has total freedom in introducing a change even it that enhancement de**rails** your independent adapter! 
+The **specifications** embodied in the abstract adapter are not frozen and Rails Core team has total freedom in introducing a change even it that enhancement de**rails** your independent adapter! 
 
 On the other hand, ActiveRecord provides three *concrete* adapters (for *MySQL*, *PostgreSQL* and *SQLite3*) and it will surely be useful to study the source code of those implementations. 
 These are necessarily in synch with the current specifications. 
