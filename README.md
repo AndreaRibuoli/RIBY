@@ -145,7 +145,7 @@ I adopted `LOWER()` SQL function to identify the name of the table being searche
 
 When ActiveRecord generates the SQL statements to CREATE TABLE *ar\_internal\_metadata* (or *schema\_migrations*) the name is passed as is
 so that DB2 creates a table having the upper case version of the name: **AR\_INTERNAL\_METADATA**. We also know that IBM i operating system 
-will identify the table with another name **AR_IN00001** having only the first 5 characters in common with the original (SQL) name.
+will identify the table with another name, **AR_IN00001**, having only the first 5 characters in common with the original (SQL) name.
 
 Similarly, *schema\_migrations* becomes **SCHEMA\_MIGRATIONS**, ending up in **SCHEM00001**. 
 
