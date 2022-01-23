@@ -210,7 +210,7 @@ rails aborted!
 NotImplementedError: foreign_keys is not implemented
 ```
 
-So we iteratively prodeed in filling the gaps.
+So we iteratively proceed in filling the gaps.
 
 
 ----
