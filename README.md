@@ -149,6 +149,70 @@ will identify the table with another name, **AR_IN00001**, having only the first
 
 Similarly, *schema\_migrations* becomes **SCHEMA\_MIGRATIONS**, ending up in **SCHEM00001**. 
 
+Following the Rails Guides we can proceed with generators:
+
+``` shell
+bash-5.1$ bin/rails generate migration CreateProducts
+      invoke  active_record
+      create    db/migrate/20220123101634_create_products.rb
+```
+
+We can manually edit this file:
+
+``` ruby      
+class CreateProducts < ActiveRecord::Migration[7.0]
+  def change
+    create_table :products do |t|
+
+      t.timestamps
+    end
+  end
+end
+```
+
+adding few lines:
+
+``` ruby      
+class CreateProducts < ActiveRecord::Migration[7.0]
+  def change
+    create_table :products do |t|
+      t.string :nome
+      t.string :cognome
+
+      t.timestamps
+    end
+  end
+end
+```
+
+If we launch migrations we discover a new **NotImplementedError**:
+
+``` shell
+bash-5.1$ bin/rails db:migrate --trace
+** Invoke db:migrate (first_time)
+** Invoke db:load_config (first_time)
+** Invoke environment (first_time)
+** Execute environment
+** Execute db:load_config
+** Execute db:migrate
+== 20220123101634 CreateProducts: migrating ===================================
+-- create_table(:products)
+   -> 0.0780s
+   -> 0 rows
+== 20220123101634 CreateProducts: migrated (0.0782s) ==========================
+
+** Invoke db:_dump (first_time)
+** Execute db:_dump
+** Invoke db:schema:dump (first_time)
+** Invoke db:load_config 
+** Execute db:schema:dump
+rails aborted!
+NotImplementedError: foreign_keys is not implemented
+```
+
+So we iteratively prodeed in filling the gaps.
+
+
 ----
 ### 49. to lay the table
 
