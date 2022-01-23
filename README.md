@@ -88,11 +88,11 @@ in previous requests.
 ----
 ### 50. to fill the gaps
 
-By implementing *column\_definitions*, *new\_column\_from\_field* (and *data\_source\_sql* methods) we are finally able to
+By implementing *column\_definitions*, *new\_column\_from\_field* (and *data\_source\_sql*) methods we are finally able to
 complete an initial `bin/rails db:migrate`.
 
-For the pair *column\_definitions* \- *new\_column\_from\_field* I sketched a simple interaction with **QSYS/QADBILFI**,
-the *data\_source\_sql* \-on its turn\- is using **QSYS/QADBXLFI**.
+For the pair *column\_definitions* \- *new\_column\_from\_field* I sketched a simple interaction with **QSYS/QADBILFI**.
+The *data\_source\_sql* \-on its turn\- is using **QSYS/QADBXLFI**.
 
 ``` ruby
 def column_definitions(table_name)
