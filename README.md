@@ -163,7 +163,7 @@ where, similarly to previous handling of *ActiveRecord::ConnectionAdapters::Colu
 
 Actually ForeignKeyDefinition is a Ruby Struct ( the Ruby **Struct** class generates new subclasses that hold 
 a set of members and their values ) receiving 3 keyword parameters: `:from_table`, `:to_table`, and `:options`.
-The **option** is a *Hash* prepared to manage:
+The **options** parameter is a *Hash* prepared to manage:
 
 * a `:name`, 
 * a `:column`, 
