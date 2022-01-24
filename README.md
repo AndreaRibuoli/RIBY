@@ -146,7 +146,32 @@ ID         BINARY      18  0       8         1        Entrambi ID
   Valore predefinito . . . . . . . . . . :     Nessuno                         
 ``` 
 
+Having solved the issue with `primary_key` we are faced with the `foreign_keys is not implemented` error.
 
+We are assigned another implementation task:
+
+``` ruby
+      # Returns an array of foreign keys for the given table.
+      # The foreign keys are represented as ForeignKeyDefinition objects.
+      def foreign_keys(table_name)
+        raise NotImplementedError, "foreign_keys is not implemented"
+      end
+```
+
+where, similarly to previous handling of *ActiveRecord::ConnectionAdapters::Column* objects, we have to search for
+**ForeignKeyDefinition** class.
+
+Actually ForeignKeyDefinition is a Ruby Struct ( the Ruby **Struct** class generates new subclasses that hold 
+a set of members and their values ) receiving 3 keyword parameters: `:from_table`, `:to_table`, and `:options`.
+The **option** is a *Hash* expected to define:
+
+* a `:name`, 
+* a `:column`, 
+* a `:primary_key` that, when missing, defaults to **id**
+* an `:on_delete` SQL clause
+* an `:on_update` SQL clause
+* a `:deferrable` attribute
+* a `validate` boolean
 
 
 ----
