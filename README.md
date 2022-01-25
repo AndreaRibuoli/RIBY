@@ -73,6 +73,8 @@ Let's go!
 51. [to address key points](#51-to-address-key-points)
 
 <!---
+52. [to bolt a new route](#52-to-bolt-a-new-route)
+
 3X. [to customize subsystem](#3X-to-customize-subsystem)
 
 ----
@@ -85,7 +87,12 @@ This obviously holds true only when SERVER MODE is active.
 There is a corresponding Environment attribute named **SQL\_ATTR\_SERVERMODE\_SUBSYSTEM** that we were not retrieving 
 in previous requests.
 
+----
+
+### 52. to bolt a new route
+
 --->
+
 ----
 
 ### 51. to address key points
@@ -173,6 +180,28 @@ The **options** parameter is a *Hash* prepared to manage:
 * a `:deferrable` attribute
 * a `validate` boolean
 
+
+To finally have a migration processed I had to fix the handling of *SQL\_TIMESTAMP* parameters when passed by Rails through `binds`, i.e. after a **prepare** statement like:
+
+`INSERT INTO ar_internal_metadata (key, value, created_at, updated_at) VALUES (?, ?, ?, ?)`
+
+This required the use of `Time#strftime` to reformat how the timestamp is written in order to be accepted by DB2.
+I will also have to verify if **SQL_ATTR_TIMESTAMP_PREC** actually plays a role because it doesn't seem so.
+
+
+``` shell
+== 20220123101634 CreateProducts: migrating ===================================
+-- create_table(:products)
+   -> 0.0944s
+   -> 0 rows
+== 20220123101634 CreateProducts: migrated (0.0946s) ==========================
+```
+
+![](ar_internal_metadata.png)
+
+![](schema_migrations.png)
+
+We are still far from a minimal Rails functionality, but now we know how and where to focus attention.
 
 ----
 ### 50. to fill the gaps
