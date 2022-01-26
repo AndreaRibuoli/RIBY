@@ -188,6 +188,8 @@ To finally have a migration processed I had to fix the handling of *SQL\_TIMESTA
 This required the use of `Time#strftime` to reformat how the timestamp is written in order to be accepted by DB2.
 I will also have to verify if **SQL_ATTR_TIMESTAMP_PREC** actually plays a role because it doesn't seem so.
 
+*Note*: *Prepared Statements with Parameterized Queries* are the best defence against **SQL Injection vulnerabilities**
+
 
 ``` shell
 == 20220123101634 CreateProducts: migrating ===================================
