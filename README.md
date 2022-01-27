@@ -71,10 +71,10 @@ Let's go!
 49. [to lay the table](#49-to-lay-the-table)
 50. [to fill the gaps](#50-to-fill-the-gaps)
 51. [to address key points](#51-to-address-key-points)
-
-<!---
 52. [to bolt a new route](#52-to-bolt-a-new-route)
 
+
+<!---
 3X. [to customize subsystem](#3X-to-customize-subsystem)
 
 ----
@@ -89,9 +89,38 @@ in previous requests.
 
 ----
 
+--->
+
 ### 52. to bolt a new route
 
---->
+Introducing the following definition for *change\_table\_comment* method: 
+
+``` ruby
+        def change_table_comment(table_name, comment_or_changes)
+          clear_cache!
+          execute "COMMENT ON TABLE #{quote_table_name(table_name)} IS #{quote(comment_or_changes)}"
+          execute "LABEL   ON TABLE #{quote_table_name(table_name)} IS #{quote(comment_or_changes)}"  
+        end
+```
+
+we are able to support the comment option for tables. 
+Using the save value also in `LABEL ON` SQL statement allows us to set the table **TEXT**.
+
+``` ruby
+class CreateProducts < ActiveRecord::Migration[7.0]
+  def change
+    create_table :products, if_not_exists: false, comment: "Products table" do |t|
+      t.string :title
+      t.string :description
+      t.integer :price
+
+      t.timestamps
+    end
+  end
+end
+```
+
+![](table_text.png) 
 
 ----
 
