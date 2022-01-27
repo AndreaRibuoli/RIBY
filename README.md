@@ -104,7 +104,7 @@ Introducing the following definition for *change\_table\_comment* method:
 ```
 
 we are able to support the comment option for tables. 
-Using the save value also in `LABEL ON` SQL statement allows us to set the table **TEXT**.
+Using the same value also in `LABEL ON` SQL statement allows us to set the table **TEXT**.
 
 ``` ruby
 class CreateProducts < ActiveRecord::Migration[7.0]
