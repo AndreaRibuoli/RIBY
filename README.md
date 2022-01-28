@@ -122,6 +122,36 @@ end
 
 ![](table_text.png) 
 
+In a similar fashion we are able to define `change_column_comment` method:
+
+``` ruby
+def change_column_comment(table_name, column_name, comment_or_changes)
+  clear_cache!
+  execute "COMMENT ON COLUMN #{quote_table_name(table_name)}.#{quote_column_name(column_name)} IS #{quote(comment_or_changes)}"
+  execute "LABEL   ON COLUMN #{quote_table_name(table_name)}.#{quote_column_name(column_name)} TEXT IS #{quote(comment_or_changes)}"
+end
+```
+
+so that changing the migration file in this way:
+
+``` ruby
+class CreateProducts < ActiveRecord::Migration[7.0]
+  def change
+    create_table :products, if_not_exists: false, comment: "Tabella prodotti" do |t|
+      t.string :title,        comment: "titolo"
+      t.string :description,  comment: "descrizione"
+      t.integer :price,       comment: "prezzo"
+        
+      t.timestamps
+    end
+  end
+end
+```
+
+we obtain:
+
+![](column_text.png)
+
 ----
 
 ### 51. to address key points
