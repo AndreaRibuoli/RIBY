@@ -152,6 +152,92 @@ we obtain:
 
 ![](column_text.png)
 
+
+We can let Rails define **associations** with **generate** sub\-commands: 
+
+
+``` shell
+bash-5.1$ bin/rails generate scaffold Review product:references visits:integer
+      invoke  active_record
+      create    db/migrate/20220128134219_create_reviews.rb
+      create    app/models/review.rb
+      invoke    test_unit
+      create      test/models/review_test.rb
+      create      test/fixtures/reviews.yml
+      invoke  resource_route
+       route    resources :reviews
+      invoke  scaffold_controller
+      create    app/controllers/reviews_controller.rb
+      invoke    erb
+      create      app/views/reviews
+      create      app/views/reviews/index.html.erb
+      create      app/views/reviews/edit.html.erb
+      create      app/views/reviews/show.html.erb
+      create      app/views/reviews/new.html.erb
+      create      app/views/reviews/_form.html.erb
+      create      app/views/reviews/_review.html.erb
+      invoke    resource_route
+      invoke    test_unit
+      create      test/controllers/reviews_controller_test.rb
+      create      test/system/reviews_test.rb
+      invoke    helper
+      create      app/helpers/reviews_helper.rb
+      invoke      test_unit
+      invoke    jbuilder
+      create      app/views/reviews/index.json.jbuilder
+      create      app/views/reviews/show.json.jbuilder
+      create      app/views/reviews/_review.json.jbuilder
+```
+
+And we can create **foreign keys** repeating the `rails db:migrate` 
+(I have manually dropped all the resources previously created) 
+
+
+``` shell
+== 20220126143513 CreateProducts: migrating ===================================
+-- create_table(:products, {:if_not_exists=>true, :comment=>"Tabella prodotti"})
+   -> 0.1506s
+   -> 0 rows
+== 20220126143513 CreateProducts: migrated (0.1509s) ==========================
+
+== 20220128134219 CreateReviews: migrating ====================================
+-- create_table(:reviews)
+   -> 0.1677s
+   -> 0 rows
+== 20220128134219 CreateReviews: migrated (0.1679s) ===========================
+```
+
+From **DSPFD PROVA2/REVIEWS** we read:
+
+```
+Vincolo . . . . . . . . . . . . . . :     CST        FK_RAILS_BEDD9094D4  
+  Ripristino percorso accesso . . . . . . . :        *AFTIPL              
+  Forzare percorso accesso con chiave . . . :        *NO                  
+  La chiave deve essere univoca . . . . . . :        *NO                  
+  Percorso accesso registrato su giornale . :        *NO                  
+  Percorso accesso valido . . . . . . . . . :        *YES                 
+  Numero di voci percorso accesso . . . . :                   0           
+  Dimensione percorso accesso . . . . . . . :                 155648      
+  Letture logiche percorso accesso. . . . :                               
+  Letture fisiche percorso accesso . . . . :                              
+```
+
+From `WRKPFCST FILE(PROVA2/*ALL)` we read:
+
+```
+                                                                  In    
+                                                                attesa  
+                                                                  di    
+Opz  Restriz.       File        Libreria    Tipo      Stato    controllo
+     Q_PROVA2_A  >  AR_IN00001  PROVA2      *PRIKEY                     
+     Q_PROVA2_P  >  PRODUCTS    PROVA2      *PRIKEY                     
+     Q_PROVA2_R  >  REVIEWS     PROVA2      *PRIKEY                     
+     FK_RAILS_B  >  REVIEWS     PROVA2      *REFCST   EST/ENB     NO    
+     Q_PROVA2_S  >  SCHEM00001  PROVA2      *PRIKEY                     
+```  
+
+
+
 ----
 
 ### 51. to address key points
