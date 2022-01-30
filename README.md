@@ -194,7 +194,7 @@ irb(main):010:0> p.save!
 irb(main):011:0> 
 ```
 
-in the last statement I had to fix the innner logic in order to be able to set `price4` to **nil** in
+in the last statement I had to fix the inner logic in order to be able to set `price4` to **nil** in
 parametrized prepared statements: this required the appropriate setting of `SQL_NULL_DATA`.
 
 
