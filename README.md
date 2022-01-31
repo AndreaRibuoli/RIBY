@@ -257,10 +257,9 @@ irb(main):011:0>
 in the last statement I had to fix the inner logic in order to be able to set `price4` to **nil** in
 parametrized prepared statements: this required the appropriate setting of `SQL_NULL_DATA`.
 
-
 Support for other SQL data types needs to be addressed. Stay tuned!
 
---->
+[NEXT-54](#54-to_support_sql_decimals)
 
 ### 52. to bolt a new route
 
