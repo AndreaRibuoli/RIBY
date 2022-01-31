@@ -73,7 +73,7 @@ Let's go!
 51. [to address key points](#51-to-address-key-points)
 52. [to bolt a new route](#52-to-bolt-a-new-route)
 53. [to refine conventions over configurations](#53-to-refine-conventions-over-configurations)
-
+54. [to support SQL decimals](#54-to_support_sql_decimals)
 
 <!---
 3X. [to customize subsystem](#3X-to-customize-subsystem)
@@ -88,9 +88,69 @@ This obviously holds true only when SERVER MODE is active.
 There is a corresponding Environment attribute named **SQL\_ATTR\_SERVERMODE\_SUBSYSTEM** that we were not retrieving 
 in previous requests.
 
+--->
 ----
 
---->
+### 54. to support SQL decimals
+
+I finally introduced **SQL DECIMAL** support: this means admittinging IBM i ubiquitous **packed decimals** in Rails migrations.
+
+``` ruby
+class CreateProducts < ActiveRecord::Migration[7.0]
+  def change
+    create_table :products, if_not_exists: true, comment: "Products table" do |t|
+      t.string   :title,                         comment: "Title"
+      t.string   :description, limit: 256,       comment: "Description"
+      t.decimal  :price, precision: 9, scale: 2, comment: "Price"
+        
+      t.timestamps
+    end
+  end
+end
+```
+
+``` shell
+irb(main):014:0> quit
+bash-5.1$ bin/rails db:migrate
+== 20220126143513 CreateProducts: migrating ===================================
+-- create_table(:products, {:if_not_exists=>true, :comment=>"Products table"})
+   -> 0.1564s                                                 
+   -> 0 rows                                                  
+== 20220126143513 CreateProducts: migrated (0.1566s) ==========================
+                                                              
+== 20220128134219 CreateReviews: migrating ====================================
+-- create_table(:reviews)
+   -> 0.2231s
+   -> 0 rows
+== 20220128134219 CreateReviews: migrated (0.2234s) ===========================
+```
+
+![](with_decimal.png)
+
+This required refinements in the *SQLBindParameter* Ruby integration as soon as binding SQL_DECIMAL type
+asked for special treatment of **precision** and **scale**.
+Also retaining the opportunity to set such fields to NULL in parametrized UPDATEs revealed few tricky bugs.
+
+
+``` ruby
+#<Product:0x0000000187c58c98                                  
+ id: 1,                                                       
+ title: "Ruby 7",                                             
+ description: nil,                                            
+ price: 31.98,                                                
+ created_at: 2022-01-31 16:28:22.026573 UTC,                  
+ updated_at: 2022-01-31 16:28:22.026573 UTC>                  
+irb(main):012:0> p.save!
+   (2.2ms)  SET TRANSACTION ISOLATION LEVEL READ COMMITTED
+  Product Update (52.5ms)  UPDATE products SET price = ?, updated_at = ? WHERE products.id = ?
+   (10.7ms)  COMMIT                                          
+   (1.1ms)  SET TRANSACTION ISOLATION LEVEL NO COMMIT        
+=> true                                                      
+irb(main):013:0> 
+
+```
+
+![](update_decimal.png)
 
 ### 53. to refine conventions over configurations
 
