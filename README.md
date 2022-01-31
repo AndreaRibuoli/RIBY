@@ -73,7 +73,7 @@ Let's go!
 51. [to address key points](#51-to-address-key-points)
 52. [to bolt a new route](#52-to-bolt-a-new-route)
 53. [to refine conventions over configurations](#53-to-refine-conventions-over-configurations)
-54. [to support SQL decimals](#54-to_support_sql_decimals)
+54. [to support SQL decimals](#54-to-support-sql-decimals)
 
 <!---
 3X. [to customize subsystem](#3X-to-customize-subsystem)
@@ -259,7 +259,7 @@ parametrized prepared statements: this required the appropriate setting of `SQL_
 
 Support for other SQL data types needs to be addressed. Stay tuned!
 
-[NEXT-54](#54-to_support_sql_decimals)
+[NEXT-54](#54-to-support-sql-decimals)
 
 ### 52. to bolt a new route
 
