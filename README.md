@@ -93,7 +93,7 @@ in previous requests.
 
 ### 54. to support SQL decimals
 
-I finally introduced **SQL DECIMAL** support: this means admittinging IBM i ubiquitous **packed decimals** in Rails migrations.
+I finally introduced **SQL DECIMAL** support: this means admitting IBM i ubiquitous **packed decimals** in Rails migrations.
 
 ``` ruby
 class CreateProducts < ActiveRecord::Migration[7.0]
