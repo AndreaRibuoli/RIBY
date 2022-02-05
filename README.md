@@ -75,6 +75,7 @@ Let's go!
 53. [to refine conventions over configurations](#53-to-refine-conventions-over-configurations)
 54. [to support SQL decimals](#54-to-support-sql-decimals)
 55. [to support character large objects](#55-to-support-character-large-objects)
+56. [to support native encodings](#56-to-support-native-encodings)
 
 <!---
 3X. [to customize subsystem](#3X-to-customize-subsystem)
@@ -90,11 +91,100 @@ There is a corresponding Environment attribute named **SQL\_ATTR\_SERVERMODE\_SU
 in previous requests.
 
 --->
+
+### 56. to support native encodings
+
+In the ASCII character set the character encoded by the number 26 (`1A` hex) is a **substitute character**
+and was used in place of a character recognized to be invalid. Unicode inherited this character from
+ASCII (`U+001A`), actually preferring the replacement character `U+FFFD` to represent un\-decodable inputs when possible.
+
+In my ActiveRecord driver I generally opted to ask DB2 to perform conversions from the CCSID of a table field to Unicode (actually the 16bit Big Endian *slang* \-or `UTF-16BE` in Ruby terminology\-). 
+Ruby strings (from version 1.9) are encoding\-aware and support conversions:
+
+``` ruby
+bash-5.1$ irb
+irb(main):001:0> s = "Novità"
+=> "Novità"
+irb(main):002:0> s.encoding
+=> #<Encoding:UTF-8>
+irb(main):003:0> 
+```
+
+Years ago I provided the Ruby Core Team two patches to introduce support for **EBCDIC** CCSID 37 and CCSID 280 (the *Italian* code page). Only the first was accepted. It was included in Ruby starting with version 2.3. This US EBCDIC encoding was named **IBM037**. This meant that in my MacBook Pro I had later been able to perform Ruby scripts like the following:
+
+```
+irb(main):001:0> s = 'QSRDSSPC.1'
+=> "QSRDSSPC.1"
+irb(main):002:0> s.encoding
+=> #<Encoding:UTF-8>
+irb(main):003:0> s.encode('IBM037')
+=> "\xD8\xE2\xD9\xC4\xE2\xE2\xD7\xC3\x4B\xF1"
+irb(main):004:0> 
+```  
+
+In parametrized **SQL INSERT** statements when describing parameters to hold string variables for columns, the CCSID is by default the one the field has on the IBM i. This means we would need a conversion from UTF8 to the specific CCSID. But we can modify the description itself by specifying `CCSID 1200`. 
+This way we will be allowed to perform a standard convertion from `UTF-8` to `UTF-16BE` and let IBM i DB2 take care of targetting the specific national encoding (280 or 1144 in Italy).
+This is the approach I took in the adapter when SQL types are CHAR and VARCHAR.
+
+This has a side\-effect.
+
+``` 
+irb(main):003:0> p.title = 'New €'
+=> "New €"
+irb(main):004:0> p.save!
+   (8.9ms)  SET TRANSACTION ISOLATION LEVEL READ COMMITTED
+  Product Update (165.2ms)  UPDATE products SET title = ?, updated_at = ? WHERE products.id = ?                                                       
+   (3.6ms)  COMMIT                                           
+   (2.8ms)  SET TRANSACTION ISOLATION LEVEL NO COMMIT        
+=> true                                                      
+irb(main):005:0> 
+```
+
+By reading back the VARCHAR the actual content is:
+
+```
+title: "New \u001A"
+```
+
+The CCSID of `title` field does not have a code point for the `€` sign 
+so that it is replaced with hex `3F` value: the **EBCDIC substitute character**.
+This is why reading back it from DB2 we receive the Unicode codepoint `U+001A`.
+
+I was not satisfied by this compromise. 
+
+I introduced a setting in `database.yml` that control this aspect.
+By setting:
+
+``` yaml
+  signal_replaced_char: true
+```
+
+the warning messages of **SQLSTATE 01517**: 
+
+  *A character that could not be converted was replaced with a substitute character.*
+  
+is forced to raise an exception that Rails ActiveRecord will control inducing a *ROLLBACK*.
+Activating this setting we gain total control on inserts involving VARCHARs: only strings 
+having all characters mappable into the CCSID of the field will be accepted.
+
+``` 
+irb(main):002:0> p.title = 'New €'
+=> "New €"
+irb(main):003:0> p.save!
+   (2.5ms)  SET TRANSACTION ISOLATION LEVEL READ COMMITTED
+  Product Update (42.3ms)  UPDATE products SET title = ?, updated_at = ? WHERE products.id = ?
+   (4.7ms)  ROLLBACK                            
+   (1.4ms)  SET TRANSACTION ISOLATION LEVEL NO COMMIT
+/QOpenSys/pkgs/lib/ruby/gems/3.0.0/gems/ribydb-1.0.0/lib/active_record/connection_adapters/ribydb/database_statements.rb:54:in `block in exec_query': StandardErrorQSQ:  (ActiveRecord::RecordNotSaved)
+Stmt#execute method failure:
+La conversione del carattere risulta in una sostituzione dei caratteri. (CLASS_CODE 01; SQLSTATE 01517; SQLCODE 335)
+```
+      
 ----
 
 ### 55. to support character large objects
 
-*Large Objects* (**LOB**s) are a set of datatypes designed to hold large amounts of data. 
+*Large OBjects* (**LOB**s) are a set of datatypes designed to hold large amounts of data. 
 The logical mapping of ActiveRecord's `:text` migration type in IBM i DB2 is the 
 *Character Large OBject* **CLOB** SQL type. With the latest changes in my pure-Ruby adapter I introduced 
 a preliminary support for SQL **CLOB** data type in this role. 
