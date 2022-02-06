@@ -92,6 +92,8 @@ in previous requests.
 
 --->
 
+----
+
 ### 56. to support native encodings
 
 In the ASCII character set the character encoded by the number 26 (`1A` hex) is a **substitute character**
@@ -152,7 +154,7 @@ This is why reading back it from DB2 we receive the Unicode codepoint `U+001A`.
 
 I was not satisfied by this compromise. 
 
-I introduced a setting in `database.yml` that control this aspect.
+I introduced a setting in `database.yml` that controls this aspect.
 By setting:
 
 ``` yaml
