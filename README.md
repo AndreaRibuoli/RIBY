@@ -76,6 +76,7 @@ Let's go!
 54. [to support SQL decimals](#54-to-support-sql-decimals)
 55. [to support character large objects](#55-to-support-character-large-objects)
 56. [to support native encodings](#56-to-support-native-encodings)
+57. [to enhance native encoding setting](#57-to-enhance-native-encoding-setting)
 
 <!---
 3X. [to customize subsystem](#3X-to-customize-subsystem)
@@ -91,6 +92,110 @@ There is a corresponding Environment attribute named **SQL\_ATTR\_SERVERMODE\_SU
 in previous requests.
 
 --->
+----
+
+### 57. to enhance native encoding setting
+
+If we modify our migration file adding `ccsid: 1144` to the definition of the *title*
+column 
+
+``` ruby
+class CreateProducts < ActiveRecord::Migration[7.0]
+  def change
+    create_table :products, if_not_exists: true, comment: "Products table" do |t|
+      t.string   :title, ccsid: 1144,            comment: "Title"
+      t.text     :description, limit: 4096,      comment: "Description"
+      t.decimal  :price, precision: 9, scale: 2, comment: "Price"
+        
+      t.timestamps
+    end
+  end
+end
+```  
+
+nothing occurs by recreating our tables with `bin/rails db:migrate` on a brand new library:
+
+```
+== 20220126143513 CreateProducts: migrating ===================================
+-- create_table(:products, {:if_not_exists=>true, :comment=>"Products table"})
+   -> 0.2470s
+   -> 0 rows
+== 20220126143513 CreateProducts: migrated (0.2473s) ==========================
+
+== 20220128134219 CreateReviews: migrating ====================================
+-- create_table(:reviews)
+   -> 0.2662s
+   -> 0 rows
+== 20220128134219 CreateReviews: migrated (0.2664s) ===========================
+```
+
+If we patch our `type_to_sql` function in this way:
+
+``` ruby
+def type_to_sql(type, limit: nil, precision: nil, scale: nil, ** options) # :nodoc:
+          puts "from type_to_sql #{options}" if type == :string
+          case type.to_s
+```
+
+by repeating the migration we get:          
+
+```
+== 20220126143513 CreateProducts: migrating ===================================
+-- create_table(:products, {:if_not_exists=>true, :comment=>"Products table"})
+from type_to_sql {:ccsid=>1144, :comment=>"Title", :primary_key=>false}
+   -> 0.1595s
+   -> 0 rows
+== 20220126143513 CreateProducts: migrated (0.1598s) ==========================
+```
+
+So the ActiveRecord's framework wisely provides us the ability to take advantage
+of extra qualifiers for columns. And we can decide to extend the *string* type 
+handling **CCSID** in create statements:
+
+``` ruby
+when "string"
+  limit = native_database_types[:string][:limit] if limit.nil? 
+  if options[:ccsid].nil?
+    "varchar(#{limit})" 
+  else    
+    "varchar(#{limit}) ccsid #{options[:ccsid]}" 
+  end
+```
+
+Now repeating a clean migration, from DSPFFD we get:
+
+```
+TITLE      CHAR           40      42         9        Entrambi TITLE        
+  Testo del campo . . . . . . . . . . . . . :  Title                        
+  Campo lungh. variabile - Lunghezza assegn. : Nessuna                      
+  Consente il valore nullo                                                  
+  Identificativo serie caratteri  codificati:   1144                        
+```
+
+We can set `signal_replaced_char: true` in *database.yml* and perform:
+
+``` ruby
+bash-5.1$ bin/rails console
+Loading development environment (Rails 7.0.1)
+irb(main):001:0> p = Product.new
+. . .
+=> #<Product:0x0000000187a76ec0 id: nil, title: nil, description: nil, price: nil, created_at: nil, updated_at: nil>
+irb(main):002:0> p.title = 'New €'
+=> "New €"
+irb(main):003:0> p.save!
+   (1.7ms)  SET TRANSACTION ISOLATION LEVEL READ COMMITTED
+  Product Create (175.9ms)  SELECT id FROM FINAL TABLE (INSERT INTO products (title, description, price, created_at, updated_at) VALUES (?, ?, ?, ?, ?))
+   (5.3ms)  COMMIT                                                     
+   (1.6ms)  SET TRANSACTION ISOLATION LEVEL NO COMMIT                  
+=> true                                                                
+irb(main):004:0> 
+```
+
+CCSID 1144 supports the € sign:
+
+![](neweuro.png)
+
+We are in full control of native encodings! 
 
 ----
 
