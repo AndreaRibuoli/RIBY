@@ -77,6 +77,7 @@ Let's go!
 55. [to support character large objects](#55-to-support-character-large-objects)
 56. [to support native encodings](#56-to-support-native-encodings)
 57. [to enhance native encoding setting](#57-to-enhance-native-encoding-setting)
+58. [to adopt Unicode](#57-to-adopt-unicode)
 
 <!---
 3X. [to customize subsystem](#3X-to-customize-subsystem)
@@ -92,6 +93,63 @@ There is a corresponding Environment attribute named **SQL\_ATTR\_SERVERMODE\_SU
 in previous requests.
 
 --->
+----
+
+### 58  to adopt Unicode
+
+Applying to `:text` migration type the same approach we used with `:string` one,  we are offered an interesting opportunity:
+
+``` ruby
+class CreateProducts < ActiveRecord::Migration[7.0]
+  def change
+    create_table :products, if_not_exists: true, comment: "Products table" do |t|
+      t.string   :title, ccsid: 1144,                    comment: "Title"
+      t.text     :description, limit: 4096, ccsid:1208,  comment: "Description"
+      t.decimal  :price, precision: 9, scale: 2,         comment: "Price"
+        
+      t.timestamps
+    end
+  end
+end
+```
+
+Value **1208** is the IBM i CCSID for **UTF\-8**. 
+
+```
+DESCR00001 CLOB         4096      30        51        Entrambi DESCRIPTION      
+  Testo del campo . . . . . . . . . . . . . :  Description                      
+  Nome alternativo  . . . . . . . . . . . . :                                   
+      DESCRIPTION                                                               
+  Lunghezza assegnata . . . . . . . . . . . :      0                            
+  Consente il valore nullo                                                      
+  Identificativo serie caratteri  codificati:   1208                            
+  Conversione UCS2 o Unicode . . . . . . :     *CONVERT                         
+  Normalizzazione dati . . . . . . . . . . . : No                               
+```
+
+We are now able to write (e read back) a string with characters belonging to various languages:
+
+```
+bash-5.1$ bin/rails console
+Loading development environment (Rails 7.0.1)
+. . .
+=>                                                                     
+#<Product:0x000000018511d998                                           
+...                                                                    
+irb(main):002:0> p.description = "οἶκος товарищ, まつもとゆきひろ"
+=> "οἶκος товарищ, まつもとゆきひろ"
+irb(main):003:0> p.save!
+   (1.7ms)  SET TRANSACTION ISOLATION LEVEL READ COMMITTED
+  Product Create (122.5ms)  SELECT id FROM FINAL TABLE (INSERT INTO products (title, description, price, created_at, updated_at) VALUES (?, ?, ?, ?, ?))                 
+   (5.0ms)  COMMIT                                                     
+   (1.4ms)  SET TRANSACTION ISOLATION LEVEL NO COMMIT                  
+=> true                                                                
+irb(main):004:0>
+```
+
+![](ccsid1208.png)
+
+
 ----
 
 ### 57. to enhance native encoding setting
