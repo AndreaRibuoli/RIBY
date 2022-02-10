@@ -156,7 +156,7 @@ By now we provide a method that **does not drop and create** the *schema* (libra
       end
 ```
 
-This way we could start addressing issues already present in our sketched DB2 integration.
+This way I can start addressing issues still present in my sketched DB2 integration.
 
 Enabling Rails test framework would be extremely beneficial should I progress in this task.
 
