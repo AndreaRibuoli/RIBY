@@ -77,7 +77,8 @@ Let's go!
 55. [to support character large objects](#55-to-support-character-large-objects)
 56. [to support native encodings](#56-to-support-native-encodings)
 57. [to enhance native encoding setting](#57-to-enhance-native-encoding-setting)
-58. [to adopt Unicode](#57-to-adopt-unicode)
+58. [to adopt Unicode](#58-to-adopt-unicode)
+59. [to test testing](#59-to-test-testing)
 
 <!---
 3X. [to customize subsystem](#3X-to-customize-subsystem)
@@ -93,6 +94,72 @@ There is a corresponding Environment attribute named **SQL\_ATTR\_SERVERMODE\_SU
 in previous requests.
 
 --->
+----
+
+### 59  to test testing
+
+Despite preparing the database for testing, our driver does not provide the required **rake** tasks. 
+
+```
+bash-5.1$ bin/rails db:migrate RAILS_ENV=test
+== 20220126143513 CreateProducts: migrating ===================================
+-- create_table(:products, {:if_not_exists=>true, :comment=>"Products table"})
+   -> 0.1550s
+   -> 0 rows
+== 20220126143513 CreateProducts: migrated (0.1553s) ==========================
+
+bash-5.1$ bin/rails test
+rails aborted!
+ActiveRecord::Tasks::DatabaseNotSupported: Rake tasks not supported by 'xxxxxx' adapter
+```
+
+using the `--trace` option we discover that the error occurs within method `class_for_adapter`
+defined in `lib/active_record/tasks/database_tasks.rb`:
+
+``` ruby
+def class_for_adapter(adapter)
+  _key, task = @tasks.reverse_each.detect { |pattern, _task| adapter[pattern] }
+  unless task
+    raise DatabaseNotSupported, "Rake tasks not supported by '#{adapter}' adapter"
+  end
+  task.is_a?(String) ? task.constantize : task
+end
+```
+
+`@tasks` is a hash where each adapter **registers** itself specifying the class
+providing its own specialized methods. Created the required empty envelop, 
+just in order to register ourself, we get:
+
+```
+bash-5.1$ bin/rails db:test:load --trace
+** Invoke db:test:load (first_time)
+** Invoke db:test:purge (first_time)
+** Invoke db:load_config (first_time)
+** Invoke environment (first_time)
+** Execute environment
+** Execute db:load_config
+** Invoke db:check_protected_environments (first_time)
+** Invoke db:load_config 
+** Execute db:check_protected_environments
+** Execute db:test:purge
+rails aborted!
+NoMethodError: undefined method 'purge' for ...
+```
+
+By now we provide a method that **does not drop and create** the *schema* (library) (as usually expected by Rails ... and quite dangerous inside any IBM i):
+
+``` ruby
+      def purge
+        clear_active_connections!
+      # drop
+      # create true
+      end
+```
+
+This way we could start addressing issues already present in our sketched DB2 integration.
+
+Enabling Rails test framework would be extremely beneficial should I progress in this task.
+
 ----
 
 ### 58  to adopt Unicode
