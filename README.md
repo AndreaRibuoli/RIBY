@@ -79,6 +79,7 @@ Let's go!
 57. [to enhance native encoding setting](#57-to-enhance-native-encoding-setting)
 58. [to adopt Unicode](#58-to-adopt-unicode)
 59. [to test testing](#59-to-test-testing)
+60. [to review initial assumptions](#60-to-review-initial-assumptions)
 
 <!---
 3X. [to customize subsystem](#3X-to-customize-subsystem)
@@ -95,8 +96,98 @@ in previous requests.
 
 --->
 ----
+### 60.  to review initial assumptions
 
-### 59  to test testing
+In addressing the way testing is provided in current version of Rails we discover that
+**parallel testing** is supported (via processes or threads).
+This posed new requirements on the adapter. 
+
+The first one was a fundamental issue specific of PASE integration. I thank *Calvin Buckley* and *Kevin Adler* for providing useful hints. I will provide here [a modified version](playing_space_pointers_fork.rb) of the script I introduced in [post numer 10](#10-to-move-around-tagged-pointers).
+
+``` ruby
+  . . .
+  fork do  
+    rc = ilesymx.call(ILEfunction, ileloadx.call('QSYS/QP2USER', 1), 'Qp2malloc')
+    rc = ilecallx.call(ILEfunction, ILEarguments, ['FFF8FFF50000'].pack("H*"), 16, 0)
+    raise "ILE system failed with rc=#{rc}" if rc != 0
+  end    
+  rc = ilesymx.call(ILEfunction, ileloadx.call('QSYS/QP2USER', 1), 'Qp2malloc')
+  rc = ilecallx.call(ILEfunction, ILEarguments, ['FFF8FFF50000'].pack("H*"), 16, 0)
+  raise "ILE system failed with rc=#{rc}" if rc != 0
+```
+
+I we anticipate the ileloadx and ilesymx before the fork 
+
+``` ruby 
+  rc = ilesymx.call(ILEfunction, ileloadx.call('QSYS/QP2USER', 1), 'Qp2malloc')
+  fork do  
+  # rc = ilesymx.call(ILEfunction, ileloadx.call('QSYS/QP2USER', 1), 'Qp2malloc')
+    rc = ilecallx.call(ILEfunction, ILEarguments, ['FFF8FFF50000'].pack("H*"), 16, 0)
+    raise "ILE system failed with rc=#{rc}" if rc != 0
+    puts "Child  #{Process.pid}: ILE system failed with rc=#{rc}" if rc != 0
+    puts "Child  #{Process.pid}: PASE pointer #{PASEreturn[0, 8].unpack("H*")}"    
+    puts "Child  #{Process.pid}: ILE SPP      #{ILEreturn[0, 16].unpack("H*")}"
+    puts "Child  #{Process.pid}: _CVTSPP      [\"#{cvtspp.call(ILEreturn).to_s(16).rjust(16,'0')}\"]"
+  end    
+# rc = ilesymx.call(ILEfunction, ileloadx.call('QSYS/QP2USER', 1), 'Qp2malloc')
+  rc = ilecallx.call(ILEfunction, ILEarguments, ['FFF8FFF50000'].pack("H*"), 16, 0)
+```
+
+the child ilecallx will miserably fail in an unrecoverable **Segmentation fault** 
+
+```
+./playing_space_pointers_fork.rb:36: [BUG] Segmentation fault at 0x0000000000000000
+ruby 3.0.3p157 (2021-11-24 revision 3fb7d2cadc) [powerpc-os400]
+
+-- Control frame information -----------------------------------------------
+c:0005 p:---- s:0029 e:000028 CFUNC  :call
+c:0004 p:0034 s:0020 e:000019 BLOCK  ./playing_space_pointers_fork.rb:36 [FINISH]
+c:0003 p:---- s:0017 e:000016 CFUNC  :fork
+c:0002 p:0672 s:0013 E:001068 EVAL   ./playing_space_pointers_fork.rb:34 [FINISH]
+c:0001 p:0000 s:0003 E:001980 (none) [FINISH]
+
+-- Ruby level backtrace information ----------------------------------------
+./playing_space_pointers_fork.rb:34:in `<main>'
+./playing_space_pointers_fork.rb:34:in `fork'
+./playing_space_pointers_fork.rb:36:in `block in <main>'
+./playing_space_pointers_fork.rb:36:in `call'
+```
+
+This required a review to the original organization of the code. Now a module method 
+performs the required setting. This method is conditionally called in `connect` when
+the Process ID differs from the previously cached one.
+
+Solved this issue, a second *semantic* one emerged.
+
+I was used to configure **database.yml** something like this:
+
+``` ruby
+  . . .
+  database: '*LOCAL'
+  . . . 
+  default_schema: 'PROVA3'
+  . . .
+  signal_replaced_char: true
+```
+
+Now, when parallel testing through processes (the default) gets triggered the framework fails 
+in finding `*LOCAL-0` and `*LOCAL-1` databases!
+
+This is documented [here](https://guides.rubyonrails.org/testing.html#parallel-testing-with-processes):
+
+*When parallelizing tests, Active Record automatically handles creating a database and loading the schema into the database for each process. The databases will be suffixed with the number corresponding to the worker. For example, if you have 2 workers the tests will create test-database-0 and test-database-1 respectively.
+If the number of workers passed is 1 or fewer the processes will not be forked and the tests will not be parallelized and the tests will use the original test-database database.*
+
+I opted for changing my use of `:database` in favor of a more IBM i specific symbol: `:rdbdire`
+
+Unfortunately, parallelizing tests over the *same DB* and the *same schema* does not to guarantee the conditions implied in the Rails auto-generated test matrixes. This means I am back to the original status but with a much more solid consciousness:
+
+```
+PARALLEL_WORKERS=1 bin/rails test
+``` 
+
+----
+### 59.  to test testing
 
 Despite preparing the database for testing, our driver does not provide the required **rake** tasks. 
 
@@ -160,9 +251,11 @@ This way I can start addressing issues still present in my sketched DB2 integrat
 
 Enabling Rails test framework would be extremely beneficial should I progress in this task.
 
+[NEXT-60](#60-to-review-initial-assumptions)
+
 ----
 
-### 58  to adopt Unicode
+### 58.  to adopt Unicode
 
 Applying to `:text` migration type the same approach we used with `:string` one,  we are offered an interesting opportunity:
 
@@ -216,6 +309,7 @@ irb(main):004:0>
 
 ![](ccsid1208.png)
 
+[NEXT-59](#59-to-test-testing)
 
 ----
 
@@ -322,6 +416,8 @@ CCSID 1144 supports the € sign:
 
 We are in full control of native encodings! 
 
+[NEXT-58](#58-to-adopt-unicode)
+
 ----
 
 ### 56. to support native encodings
@@ -411,6 +507,8 @@ irb(main):003:0> p.save!
 Stmt#execute method failure:
 La conversione del carattere risulta in una sostituzione dei caratteri. (CLASS_CODE 01; SQLSTATE 01517; SQLCODE 335)
 ```
+
+[NEXT-57](#57-to-enhance-native-encoding-setting)  
       
 ----
 
@@ -455,6 +553,8 @@ CREATE OR REPLACE TABLE products (
 ```
 
 ![](clob.png)
+
+[NEXT-56](#56-to-support-native-encodings)
 
 ----
 
@@ -518,6 +618,8 @@ irb(main):013:0>
 ```
 
 ![](update_decimal.png)
+
+[NEXT-55](#55-to-support-character-large-objects)
 
 ### 53. to refine conventions over configurations
 
