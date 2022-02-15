@@ -116,7 +116,7 @@ The first one was a fundamental issue specific of PASE integration. I thank *Cal
   raise "ILE system failed with rc=#{rc}" if rc != 0
 ```
 
-If we anticipate the ileloadx and ilesymx before the fork 
+If we anticipate the ileloadx and ilesymx calls before the fork 
 
 ``` ruby 
   rc = ilesymx.call(ILEfunction, ileloadx.call('QSYS/QP2USER', 1), 'Qp2malloc')
