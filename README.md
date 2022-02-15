@@ -180,7 +180,7 @@ If the number of workers passed is 1 or fewer the processes will not be forked a
 
 I opted for changing my use of `:database` in favor of a more IBM i specific symbol: `:rdbdire`
 
-Unfortunately, parallelizing tests over the *same DB* and the *same schema* does not to guarantee the conditions implied in the Rails auto-generated test matrixes. This means I am back to the original status but with a much more solid consciousness:
+Unfortunately, parallelizing tests over the *same DB* and the *same schema* does not guarantee the conditions implied in the Rails auto-generated test matrixes. This means I am back to the original status but with a much more solid consciousness:
 
 ```
 PARALLEL_WORKERS=1 bin/rails test
