@@ -96,7 +96,7 @@ in previous requests.
 
 --->
 ----
-### 60.  to review initial assumptions
+### 60. to review initial assumptions
 
 In addressing the way testing is provided in current version of Rails we discover that
 **parallel testing** is supported (via processes or threads).
@@ -187,7 +187,7 @@ PARALLEL_WORKERS=1 bin/rails test
 ``` 
 
 ----
-### 59.  to test testing
+### 59. to test testing
 
 Despite preparing the database for testing, our driver does not provide the required **rake** tasks. 
 
@@ -255,7 +255,7 @@ Enabling Rails test framework would be extremely beneficial should I progress in
 
 ----
 
-### 58.  to adopt Unicode
+### 58. to adopt Unicode
 
 Applying to `:text` migration type the same approach we used with `:string` one,  we are offered an interesting opportunity:
 
