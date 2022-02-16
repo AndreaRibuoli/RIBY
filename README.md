@@ -171,7 +171,7 @@ I was used to configure **database.yml** something like this:
 ```
 
 Now, when parallel testing through processes (the default) gets triggered the framework fails 
-in finding `*LOCAL-0` and `*LOCAL-1` databases!
+searching for `*LOCAL-0` and `*LOCAL-1` databases!
 
 This is documented [here](https://guides.rubyonrails.org/testing.html#parallel-testing-with-processes):
 
