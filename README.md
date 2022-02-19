@@ -110,10 +110,12 @@ The first one was a fundamental issue specific of PASE integration. I thank *Cal
     rc = ilesymx.call(ILEfunction, ileloadx.call('QSYS/QP2USER', 1), 'Qp2malloc')
     rc = ilecallx.call(ILEfunction, ILEarguments, ['FFF8FFF50000'].pack("H*"), 16, 0)
     raise "ILE system failed with rc=#{rc}" if rc != 0
+    puts "Child  #{Process.pid}: _CVTSPP      [\"#{cvtspp.call(ILEreturn).to_s(16).rjust(16,'0')}\"]"
   end    
   rc = ilesymx.call(ILEfunction, ileloadx.call('QSYS/QP2USER', 1), 'Qp2malloc')
   rc = ilecallx.call(ILEfunction, ILEarguments, ['FFF8FFF50000'].pack("H*"), 16, 0)
   raise "ILE system failed with rc=#{rc}" if rc != 0
+  puts "Parent #{Process.pid}: _CVTSPP      [\"#{cvtspp.call(ILEreturn).to_s(16).rjust(16,'0')}\"]"
 ```
 
 If we anticipate the ileloadx and ilesymx calls before the fork 
@@ -124,13 +126,12 @@ If we anticipate the ileloadx and ilesymx calls before the fork
   # rc = ilesymx.call(ILEfunction, ileloadx.call('QSYS/QP2USER', 1), 'Qp2malloc')
     rc = ilecallx.call(ILEfunction, ILEarguments, ['FFF8FFF50000'].pack("H*"), 16, 0)
     raise "ILE system failed with rc=#{rc}" if rc != 0
-    puts "Child  #{Process.pid}: ILE system failed with rc=#{rc}" if rc != 0
-    puts "Child  #{Process.pid}: PASE pointer #{PASEreturn[0, 8].unpack("H*")}"    
-    puts "Child  #{Process.pid}: ILE SPP      #{ILEreturn[0, 16].unpack("H*")}"
     puts "Child  #{Process.pid}: _CVTSPP      [\"#{cvtspp.call(ILEreturn).to_s(16).rjust(16,'0')}\"]"
   end    
 # rc = ilesymx.call(ILEfunction, ileloadx.call('QSYS/QP2USER', 1), 'Qp2malloc')
   rc = ilecallx.call(ILEfunction, ILEarguments, ['FFF8FFF50000'].pack("H*"), 16, 0)
+  raise "ILE system failed with rc=#{rc}" if rc != 0
+  puts "Parent #{Process.pid}: _CVTSPP      [\"#{cvtspp.call(ILEreturn).to_s(16).rjust(16,'0')}\"]"
 ```
 
 the child ilecallx will miserably fail in an unrecoverable **Segmentation fault** 

@@ -30,9 +30,9 @@ cvtspp     = Fiddle::Function.new( preload['_CVTSPP'],
   ILEarguments[32, 8]  = [size.to_s(16).rjust(16,'0')].pack("H*")
   ILEarguments[40, 0]  = ['0'.rjust(16,'0')].pack("H*")
   ILEarguments[48, 16] = [PASEreturn.to_i.to_s(16).rjust(32,'0')].pack("H*")
-  rc = ilesymx.call(ILEfunction, ileloadx.call('QSYS/QP2USER', 1), 'Qp2malloc')
+#  rc = ilesymx.call(ILEfunction, ileloadx.call('QSYS/QP2USER', 1), 'Qp2malloc')
   fork do  
-#    rc = ilesymx.call(ILEfunction, ileloadx.call('QSYS/QP2USER', 1), 'Qp2malloc')
+    rc = ilesymx.call(ILEfunction, ileloadx.call('QSYS/QP2USER', 1), 'Qp2malloc')
     rc = ilecallx.call(ILEfunction, ILEarguments, ['FFF8FFF50000'].pack("H*"), 16, 0)
     raise "ILE system failed with rc=#{rc}" if rc != 0
     puts "Child  #{Process.pid}: ILE system failed with rc=#{rc}" if rc != 0
@@ -40,7 +40,7 @@ cvtspp     = Fiddle::Function.new( preload['_CVTSPP'],
     puts "Child  #{Process.pid}: ILE SPP      #{ILEreturn[0, 16].unpack("H*")}"
     puts "Child  #{Process.pid}: _CVTSPP      [\"#{cvtspp.call(ILEreturn).to_s(16).rjust(16,'0')}\"]"
   end    
-#  rc = ilesymx.call(ILEfunction, ileloadx.call('QSYS/QP2USER', 1), 'Qp2malloc')
+  rc = ilesymx.call(ILEfunction, ileloadx.call('QSYS/QP2USER', 1), 'Qp2malloc')
   rc = ilecallx.call(ILEfunction, ILEarguments, ['FFF8FFF50000'].pack("H*"), 16, 0)
   raise "ILE system failed with rc=#{rc}" if rc != 0
   puts "Parent #{Process.pid}: ILE system failed with rc=#{rc}" if rc != 0
