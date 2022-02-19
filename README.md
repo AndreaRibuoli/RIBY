@@ -111,14 +111,29 @@ The first one was a fundamental issue specific of PASE integration. I thank *Cal
     rc = ilecallx.call(ILEfunction, ILEarguments, ['FFF8FFF50000'].pack("H*"), 16, 0)
     raise "ILE system failed with rc=#{rc}" if rc != 0
     puts "Child  #{Process.pid}: _CVTSPP      [\"#{cvtspp.call(ILEreturn).to_s(16).rjust(16,'0')}\"]"
+    . . .
   end    
   rc = ilesymx.call(ILEfunction, ileloadx.call('QSYS/QP2USER', 1), 'Qp2malloc')
   rc = ilecallx.call(ILEfunction, ILEarguments, ['FFF8FFF50000'].pack("H*"), 16, 0)
   raise "ILE system failed with rc=#{rc}" if rc != 0
   puts "Parent #{Process.pid}: _CVTSPP      [\"#{cvtspp.call(ILEreturn).to_s(16).rjust(16,'0')}\"]"
+  . . .
 ```
 
-If we anticipate the ileloadx and ilesymx calls before the fork 
+```
+bash-5.1$ ./playing_space_pointers_fork.rb 20
+Parent 179: PASE pointer ["00000001801d9e10"]
+Child  180: PASE pointer ["00000001801d9e10"]
+Parent 179: ILE SPP      ["800000000000000000008016b01d9e10"]
+Parent 179: _CVTSPP      ["00000001801d9e10"]
+Child  180: ILE SPP      ["800000000000000000008011701d9e10"]
+Child  180: _CVTSPP      ["00000001801d9e10"]
+```
+
+we notice that while **private addresses** (remember original *PASE* acronym!) of the two processes
+are the same they translate to different ILE pointers.
+
+If we anticipate the *ileloadx* and *ilesymx* calls before the fork 
 
 ``` ruby 
   rc = ilesymx.call(ILEfunction, ileloadx.call('QSYS/QP2USER', 1), 'Qp2malloc')
