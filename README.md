@@ -80,6 +80,7 @@ Let's go!
 58. [to adopt Unicode](#58-to-adopt-unicode)
 59. [to test testing](#59-to-test-testing)
 60. [to review initial assumptions](#60-to-review-initial-assumptions)
+61. [to serve a Rails application](#61-to-serve-a-rails-application)
 
 <!---
 3X. [to customize subsystem](#3X-to-customize-subsystem)
@@ -95,6 +96,247 @@ There is a corresponding Environment attribute named **SQL\_ATTR\_SERVERMODE\_SU
 in previous requests.
 
 --->
+----
+
+### 61. to serve a Rails application
+
+Here we are finally able to use IBM i **to test**:
+
+```
+Running 7 tests in a single process (parallelization threshold is 50)
+Run options: --seed 49470
+
+# Running:
+
+.......
+
+Finished in 1.982210s, 3.5314 runs/s, 4.5404 assertions/s.
+7 runs, 9 assertions, 0 failures, 0 errors, 0 skips
+```
+
+and **to serve** the development of a Rails 7 rudimentary application
+
+```
+bash-5.1$ bin/rails server -p 3010 -b 10.0.0.10
+=> Booting Puma
+=> Rails 7.0.2.2 application starting in development 
+=> Run `bin/rails server --help` for more startup options
+Puma starting in single mode...
+* Puma version: 5.6.2 (ruby 3.0.3-p157) ("Birdie's Version")
+*  Min threads: 5
+*  Max threads: 5
+*  Environment: development
+*          PID: 263
+* Listening on http://10.0.0.10:3010
+Use Ctrl-C to stop
+Started GET "/" for 10.0.0.8 at 2022-02-21 10:26:53 +0100
+Cannot render console from 10.0.0.8! Allowed networks: 127.0.0.0/127.255.255.255, ::1
+   (2.6ms)  SET SCHEMA PROVA4
+  SQL (25.6ms)  SELECT LOWER(RTRIM(DBILFL)) AS DBILFL, DBIDFT FROM qsys.qadbilfi WHERE dbiLIB = 'PROVA4' AND LOWER(DBILFI) = 'schema_migrations' ORDER BY DBIPOS
+  ActiveRecord::SchemaMigration Pluck (9.1ms)  SELECT schema_migrations.version FROM schema_migrations ORDER BY schema_migrations.version ASC
+Processing by Rails::WelcomeController#index as HTML
+  Rendering /QOpenSys/pkgs/lib/ruby/gems/3.0.0/gems/railties-7.0.2.2/lib/rails/templates/rails/welcome/index.html.erb
+  Rendered /QOpenSys/pkgs/lib/ruby/gems/3.0.0/gems/railties-7.0.2.2/lib/rails/templates/rails/welcome/index.html.erb (Duration: 17.0ms | Allocations: 759)
+Completed 200 OK in 83ms (Views: 29.8ms | ActiveRecord: 0.0ms | Allocations: 6701)
+
+
+Started GET "/product" for 10.0.0.8 at 2022-02-21 10:27:05 +0100
+Cannot render console from 10.0.0.8! Allowed networks: 127.0.0.0/127.255.255.255, ::1
+  
+ActionController::RoutingError (No route matches [GET] "/product"):
+  
+Started GET "/products" for 10.0.0.8 at 2022-02-21 10:27:31 +0100
+Cannot render console from 10.0.0.8! Allowed networks: 127.0.0.0/127.255.255.255, ::1
+Processing by ProductsController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering products/index.html.erb within layouts/application
+  Product Load (71.6ms)  SELECT products.* FROM products
+  ↳ app/views/products/index.html.erb:6
+  SQL (49.0ms)  SELECT LOWER(RTRIM(DBILFL)) AS DBILFL, DBIDFT FROM qsys.qadbilfi WHERE dbiLIB = 'PROVA4' AND LOWER(DBILFI) = 'products' ORDER BY DBIPOS
+  ↳ app/views/products/index.html.erb:6
+  Rendered products/_product.html.erb (Duration: 1.2ms | Allocations: 300)
+  Rendered products/_product.html.erb (Duration: 0.1ms | Allocations: 24)
+  Rendered products/index.html.erb within layouts/application (Duration: 217.9ms | Allocations: 55113)
+  Rendered layout layouts/application.html.erb (Duration: 1661.4ms | Allocations: 154592)
+Completed 200 OK in 1671ms (Views: 1483.1ms | ActiveRecord: 182.0ms | Allocations: 156633)
+
+
+Started GET "/products/980190962" for 10.0.0.8 at 2022-02-21 10:27:39 +0100
+Cannot render console from 10.0.0.8! Allowed networks: 127.0.0.0/127.255.255.255, ::1
+Processing by ProductsController#show as HTML
+  Parameters: {"id"=>"980190962"}
+  Product Load (42.6ms)  SELECT products.* FROM products WHERE products.id = ? LIMIT ?
+  ↳ app/controllers/products_controller.rb:63:in `set_product'
+  Rendering layout layouts/application.html.erb
+  Rendering products/show.html.erb within layouts/application
+  Rendered products/_product.html.erb (Duration: 0.2ms | Allocations: 29)
+  Rendered products/show.html.erb within layouts/application (Duration: 4.7ms | Allocations: 917)
+  Rendered layout layouts/application.html.erb (Duration: 13.4ms | Allocations: 3065)
+Completed 200 OK in 72ms (Views: 14.6ms | ActiveRecord: 42.6ms | Allocations: 34118)
+
+
+Started GET "/products/980190962/edit" for 10.0.0.8 at 2022-02-21 10:27:44 +0100
+Cannot render console from 10.0.0.8! Allowed networks: 127.0.0.0/127.255.255.255, ::1
+Processing by ProductsController#edit as HTML
+  Parameters: {"id"=>"980190962"}
+  Product Load (42.2ms)  SELECT products.* FROM products WHERE products.id = ? LIMIT ?
+  ↳ app/controllers/products_controller.rb:63:in `set_product'
+  Rendering layout layouts/application.html.erb
+  Rendering products/edit.html.erb within layouts/application
+  Rendered products/_form.html.erb (Duration: 29.2ms | Allocations: 4700)
+  Rendered products/edit.html.erb within layouts/application (Duration: 31.9ms | Allocations: 5079)
+  Rendered layout layouts/application.html.erb (Duration: 40.3ms | Allocations: 7242)
+Completed 200 OK in 88ms (Views: 41.5ms | ActiveRecord: 42.2ms | Allocations: 36313)
+
+
+Started PATCH "/products/980190962" for 10.0.0.8 at 2022-02-21 10:28:22 +0100
+Cannot render console from 10.0.0.8! Allowed networks: 127.0.0.0/127.255.255.255, ::1
+Processing by ProductsController#update as TURBO_STREAM
+  Parameters: {"authenticity_token"=>"[FILTERED]", "product"=>{"title"=>"Rails 7", "description"=>"àèìòù €€", "price"=>"29.99"}, "commit"=>"Update Product", "id"=>"980190962"}
+  Product Load (42.1ms)  SELECT products.* FROM products WHERE products.id = ? LIMIT ?
+  ↳ app/controllers/products_controller.rb:63:in `set_product'
+   (1.3ms)  SET TRANSACTION ISOLATION LEVEL READ COMMITTED
+  ↳ app/controllers/products_controller.rb:40:in `block in update'
+  Product Update (72.1ms)  UPDATE products SET title = ?, description = ?, price = ?, updated_at = ? WHERE products.id = ?
+  ↳ app/controllers/products_controller.rb:40:in `block in update'
+   (3.5ms)  COMMIT
+  ↳ app/controllers/products_controller.rb:40:in `block in update'
+   (1.4ms)  SET TRANSACTION ISOLATION LEVEL NO COMMIT
+  ↳ app/controllers/products_controller.rb:40:in `block in update'
+Redirected to http://10.0.0.10:3010/products/980190962
+Completed 302 Found in 136ms (ActiveRecord: 120.3ms | Allocations: 52438)
+
+
+Started GET "/products/980190962" for 10.0.0.8 at 2022-02-21 10:28:22 +0100
+Cannot render console from 10.0.0.8! Allowed networks: 127.0.0.0/127.255.255.255, ::1
+Processing by ProductsController#show as TURBO_STREAM
+  Parameters: {"id"=>"980190962"}
+  Product Load (28.6ms)  SELECT products.* FROM products WHERE products.id = ? LIMIT ?
+  ↳ app/controllers/products_controller.rb:63:in `set_product'
+  Rendering layout layouts/application.html.erb
+  Rendering products/show.html.erb within layouts/application
+  Rendered products/_product.html.erb (Duration: 0.2ms | Allocations: 28)
+  Rendered products/show.html.erb within layouts/application (Duration: 2.7ms | Allocations: 626)
+  Rendered layout layouts/application.html.erb (Duration: 35.3ms | Allocations: 2767)
+Completed 200 OK in 69ms (Views: 36.4ms | ActiveRecord: 28.6ms | Allocations: 31829)
+
+
+Started GET "/products" for 10.0.0.8 at 2022-02-21 10:28:27 +0100
+Cannot render console from 10.0.0.8! Allowed networks: 127.0.0.0/127.255.255.255, ::1
+Processing by ProductsController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering products/index.html.erb within layouts/application
+  Product Load (50.9ms)  SELECT products.* FROM products
+  ↳ app/views/products/index.html.erb:6
+  Rendered products/_product.html.erb (Duration: 0.2ms | Allocations: 25)
+  Rendered products/_product.html.erb (Duration: 0.1ms | Allocations: 24)
+  Rendered products/index.html.erb within layouts/application (Duration: 56.3ms | Allocations: 23001)
+  Rendered layout layouts/application.html.erb (Duration: 64.7ms | Allocations: 25078)
+Completed 200 OK in 67ms (Views: 15.0ms | ActiveRecord: 50.9ms | Allocations: 25423)
+
+
+Started GET "/products/new" for 10.0.0.8 at 2022-02-21 10:28:38 +0100
+Cannot render console from 10.0.0.8! Allowed networks: 127.0.0.0/127.255.255.255, ::1
+Processing by ProductsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering products/new.html.erb within layouts/application
+  Rendered products/_form.html.erb (Duration: 4.3ms | Allocations: 1155)
+  Rendered products/new.html.erb within layouts/application (Duration: 6.4ms | Allocations: 1439)
+  Rendered layout layouts/application.html.erb (Duration: 14.9ms | Allocations: 3490)
+Completed 200 OK in 18ms (Views: 16.0ms | ActiveRecord: 0.0ms | Allocations: 3940)
+
+
+Started POST "/products" for 10.0.0.8 at 2022-02-21 10:29:11 +0100
+Cannot render console from 10.0.0.8! Allowed networks: 127.0.0.0/127.255.255.255, ::1
+Processing by ProductsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token"=>"[FILTERED]", "product"=>{"title"=>"Riby development", "description"=>"Prove di spiegazioni ", "price"=>"21.50"}, "commit"=>"Create Product"}
+   (1.8ms)  SET TRANSACTION ISOLATION LEVEL READ COMMITTED
+  ↳ app/controllers/products_controller.rb:27:in `block in create'
+  Product Create (65.4ms)  SELECT id FROM FINAL TABLE (INSERT INTO products (title, description, price, created_at, updated_at) VALUES (?, ?, ?, ?, ?))
+  ↳ app/controllers/products_controller.rb:27:in `block in create'
+   (4.3ms)  COMMIT
+  ↳ app/controllers/products_controller.rb:27:in `block in create'
+   (1.1ms)  SET TRANSACTION ISOLATION LEVEL NO COMMIT
+  ↳ app/controllers/products_controller.rb:27:in `block in create'
+Redirected to http://10.0.0.10:3010/products/980190966
+Completed 302 Found in 86ms (ActiveRecord: 72.6ms | Allocations: 25727)
+
+
+Started GET "/products/980190966" for 10.0.0.8 at 2022-02-21 10:29:11 +0100
+Cannot render console from 10.0.0.8! Allowed networks: 127.0.0.0/127.255.255.255, ::1
+Processing by ProductsController#show as TURBO_STREAM
+  Parameters: {"id"=>"980190966"}
+  Product Load (33.0ms)  SELECT products.* FROM products WHERE products.id = ? LIMIT ?
+  ↳ app/controllers/products_controller.rb:63:in `set_product'
+  Rendering layout layouts/application.html.erb
+  Rendering products/show.html.erb within layouts/application
+  Rendered products/_product.html.erb (Duration: 0.2ms | Allocations: 25)
+  Rendered products/show.html.erb within layouts/application (Duration: 2.5ms | Allocations: 523)
+  Rendered layout layouts/application.html.erb (Duration: 10.0ms | Allocations: 2574)
+Completed 200 OK in 48ms (Views: 11.0ms | ActiveRecord: 33.0ms | Allocations: 31552)
+
+
+Started GET "/products" for 10.0.0.8 at 2022-02-21 10:29:13 +0100
+Cannot render console from 10.0.0.8! Allowed networks: 127.0.0.0/127.255.255.255, ::1
+Processing by ProductsController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering products/index.html.erb within layouts/application
+  Product Load (27.0ms)  SELECT products.* FROM products
+  ↳ app/views/products/index.html.erb:6
+  Rendered products/_product.html.erb (Duration: 0.2ms | Allocations: 25)
+  Rendered products/_product.html.erb (Duration: 0.1ms | Allocations: 24)
+  Rendered products/_product.html.erb (Duration: 0.2ms | Allocations: 24)
+  Rendered products/index.html.erb within layouts/application (Duration: 32.7ms | Allocations: 23216)
+  Rendered layout layouts/application.html.erb (Duration: 40.6ms | Allocations: 25286)
+Completed 200 OK in 43ms (Views: 14.6ms | ActiveRecord: 27.0ms | Allocations: 25627)
+
+
+Started GET "/products/980190966" for 10.0.0.8 at 2022-02-21 10:29:24 +0100
+Cannot render console from 10.0.0.8! Allowed networks: 127.0.0.0/127.255.255.255, ::1
+Processing by ProductsController#show as HTML
+  Parameters: {"id"=>"980190966"}
+  Product Load (31.4ms)  SELECT products.* FROM products WHERE products.id = ? LIMIT ?
+  ↳ app/controllers/products_controller.rb:63:in `set_product'
+  Rendering layout layouts/application.html.erb
+  Rendering products/show.html.erb within layouts/application
+  Rendered products/_product.html.erb (Duration: 0.2ms | Allocations: 25)
+  Rendered products/show.html.erb within layouts/application (Duration: 2.6ms | Allocations: 504)
+  Rendered layout layouts/application.html.erb (Duration: 10.6ms | Allocations: 2547)
+Completed 200 OK in 47ms (Views: 11.7ms | ActiveRecord: 31.4ms | Allocations: 31552)
+
+
+Started DELETE "/products/980190966" for 10.0.0.8 at 2022-02-21 10:29:29 +0100
+Cannot render console from 10.0.0.8! Allowed networks: 127.0.0.0/127.255.255.255, ::1
+Processing by ProductsController#destroy as TURBO_STREAM
+  Parameters: {"authenticity_token"=>"[FILTERED]", "id"=>"980190966"}
+  Product Load (30.7ms)  SELECT products.* FROM products WHERE products.id = ? LIMIT ?
+  ↳ app/controllers/products_controller.rb:63:in `set_product'
+   (0.9ms)  SET TRANSACTION ISOLATION LEVEL READ COMMITTED
+  ↳ app/controllers/products_controller.rb:52:in `destroy'
+  Product Destroy (51.2ms)  DELETE FROM products WHERE products.id = ?
+  ↳ app/controllers/products_controller.rb:52:in `destroy'
+   (9.0ms)  COMMIT
+  ↳ app/controllers/products_controller.rb:52:in `destroy'
+   (1.1ms)  SET TRANSACTION ISOLATION LEVEL NO COMMIT
+  ↳ app/controllers/products_controller.rb:52:in `destroy'
+Redirected to http://10.0.0.10:3010/products
+Completed 302 Found in 106ms (ActiveRecord: 92.8ms | Allocations: 36532)
+
+
+Started GET "/products" for 10.0.0.8 at 2022-02-21 10:29:29 +0100
+Cannot render console from 10.0.0.8! Allowed networks: 127.0.0.0/127.255.255.255, ::1
+Processing by ProductsController#index as TURBO_STREAM
+  Rendering layout layouts/application.html.erb
+  Rendering products/index.html.erb within layouts/application
+  Product Load (29.2ms)  SELECT products.* FROM products
+  ↳ app/views/products/index.html.erb:6
+  Rendered products/_product.html.erb (Duration: 0.2ms | Allocations: 25)
+  Rendered products/_product.html.erb (Duration: 0.1ms | Allocations: 24)
+  Rendered products/index.html.erb within layouts/application (Duration: 34.4ms | Allocations: 23005)
+  Rendered layout layouts/application.html.erb (Duration: 42.2ms | Allocations: 25082)
+Completed 200 OK in 45ms (Views: 14.1ms | ActiveRecord: 29.2ms | Allocations: 25428)
+```
+
 ----
 ### 60. to review initial assumptions
 
@@ -201,6 +443,8 @@ Unfortunately, parallelizing tests over the *same DB* and the *same schema* does
 ```
 PARALLEL_WORKERS=1 bin/rails test
 ``` 
+
+[NEXT-61](#61-to-serve-a-rails-application)
 
 ----
 ### 59. to test testing
