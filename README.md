@@ -81,6 +81,7 @@ Let's go!
 59. [to test testing](#59-to-test-testing)
 60. [to review initial assumptions](#60-to-review-initial-assumptions)
 61. [to serve a Rails application](#61-to-serve-a-rails-application)
+62. [to change perspectives](#62-to-change-perspectives)
 
 <!---
 3X. [to customize subsystem](#3X-to-customize-subsystem)
@@ -95,7 +96,105 @@ This obviously holds true only when SERVER MODE is active.
 There is a corresponding Environment attribute named **SQL\_ATTR\_SERVERMODE\_SUBSYSTEM** that we were not retrieving 
 in previous requests.
 
+| mnemonic | value | description |
+|:-------- |:-----:|:----------- |
+| QP2\_ARG\_END | 0 |The end of the list of argument type values. |
+| QP2\_ARG\_WORD | -1 |   A 4-byte signed or unsigned integer, or a structure or union no longer than four bytes. This value is allowed only when calling a procedure in a 32-bit IBM PASE for i program. |
+| QP2\_ARG\_DWORD | -2 |   An 8-byte signed or unsigned integer, or a structure or union no longer than eight bytes. This value is allowed only when calling a procedure in a 64-bit IBM PASE for i program. |
+| QP2\_ARG\_FLOAT32 | -3 |   A 4-byte floating point number. |
+| QP2\_ARG\_FLOAT64 | -4 |   An 8-byte floating point number. |
+| QP2\_ARG\_PTR32 | -5 |   A 4-byte pointer. The value in the arglist buffer is passed unchanged unless its high-order bits (excluding the lower 16 bits) match the corresponding part of constant QP2\_ARG\_PTR\_TOSTACK (0x0fff0000). In that case, the arglist value is changed to the memory address used for a copy of the buf area plus an offset in the lower 16 bits of the arglist value, and the updated value is passed to the IBM PASE for i procedure. QP2\_ARG\_PTR32 is allowed only when calling a procedure in a 32-bit IBM PASE for i program. |
+| QP2\_ARG\_PTR64 | -6 |   An 8-byte pointer. The value in the arglist buffer is passed unchanged unless its high-order bits (excluding the lower 16 bits) match the corresponding part of constant QP2\_ARG\_PTR\_TOSTACK (0x000000000fff0000). In that case, the arglist value is changed to the memory address used for a copy of the buf area plus an offset in the lower 16 bits of the arglist value, and the updated value is passed to the IBM PASE for i procedure. QP2\_ARG\_PTR64 is allowed only when calling a procedure in a 64-bit IBM PASE for i program. |
+| QP2\_ARG\_TS64 | -7 |   An 8-byte teraspace pointer (must be 8-byte aligned). The value in the arglist buffer is converted to an IBM PASE for i 32-bit or 64-bit IBM PASE for i memory address that is passed as the argument value. The argument passed to the IBM PASE for i function is zero if the teraspace pointer addresses memory at teraspace offset zero, or -1 if the pointer addresses storage the IBM PASE for i program cannot reference. |
+| QP2\_ARG\_SPCPTR | -8 |   A 16-byte space pointer (must be 16-byte aligned). The value in the arglist buffer is converted to an IBM PASE for i 32-bit or 64-bit IBM PASE for i memory address that is passed as the argument value. The argument passed to the IBM PASE for i function is zero if the 16-byte pointer is not a valid space pointer, or -1 if the pointer addresses storage the IBM PASE for i program cannot reference. |
+| QP2\_ARG\_FLOAT128 | -9 |   A 16-byte floating point number. |
+
+
 --->
+
+### 62. to change perspectives
+
+Today we will look at **PASE\-ILE** interaction the other way around.
+
+We will try to answer a general question:
+
+*which are the services IBM i provides to an ILE native program in order for it 
+to launch a PASE program or to call a PASE shared library entry function?*.  
+
+Surprisingly, the core API in these two scenarios is the same: [**Qp2RunPase**](https://www.ibm.com/docs/en/i/7.4?topic=ssw_ibm_i_74/apis/qp2runpase.htm).
+
+I am saying this because when we want to call a PASE shared library entry function **we still
+need to call Qp2RunPase()**. In this scenario we are supposed to call a special PASE program that is
+expected to execute another of the **extra APIs** that IBM i PASE adds to AIX **libc.a**:
+[_RETURN(): Return Without Exiting IBM PASE for i](https://www.ibm.com/docs/en/i/7.4?topic=ssw_ibm_i_74/apis/pase__return.htm).
+
+I do not consider me a *hacker*, but the obvious thing a curious mind will do is to dump the
+two programs (32-bit and 64-bit versions) IBM i provides for the job.
+
+The 64-bit version uses the following libc.a entries:  
+
+```
+bash-5.1$ dump -X64 -Tv /QOpenSys/usr/lib/start64
+
+/QOpenSys/usr/lib/start64:
+
+                        ***Sezione loader***
+
+                        ***lInfo tabella simbolo loader***
+[Indice]             Valore      Sezione     IMEX Sclass Tipo           Nome IMPid
+
+[0]     0x00000000    undef      IMP     RW EXTref libc.a(shr_64.o) errno
+[1]     0x00000000    undef      IMP     DS EXTref libc.a(shr_64.o) _RETURN
+[2]     0x00000000    undef      IMP     DS EXTref libc.a(shr_64.o) __mod_init
+[3]     0x00000000    undef      IMP     DS EXTref libc.a(shr_64.o) getenv
+[4]     0x00000000    undef      IMP     DS EXTref libc.a(shr_64.o) exit
+[5]     0x00000000    undef      IMP     DS EXTref libc.a(shr_64.o) perror
+[6]     0x00000000    undef      IMP     DS EXTref libc.a(shr_64.o) execv
+[7]     0x00000000    undef      IMP     DS EXTref libc.a(shr_64.o) putenv
+[8]     0x00000000    undef      IMP     RW EXTref libc.a(shr_64.o) __crt0v
+[9]     0x00000000    undef      IMP     RW EXTref libc.a(shr_64.o) __malloc_user_defined_name
+[10]    0x00000000    undef      IMP     RW EXTref libpthreads.a(shr_xpg5_64.o) __n_pthreads
+[11]    0x00000000    undef      IMP     DS EXTref libpthreads.a(shr_xpg5_64.o) __pth_init
+[12]    0x00000000    undef      IMP     RW EXTref libpthreads.a(shr_xpg5_64.o) __pthread
+[13]    0x20000888    .data    ENTpt     DS SECdef        [noIMid] __start
+```
+
+The 32-bit version uses a similar list:  
+
+```
+bash-5.1$ dump -Tv /QOpenSys/usr/lib/start32
+
+/QOpenSys/usr/lib/start32:
+
+                        ***Sezione loader***
+
+                        ***lInfo tabella simbolo loader***
+[Indice]             Valore      Sezione     IMEX Sclass Tipo           Nome IMPid
+
+[0]     0x00000000    undef      IMP     RW EXTref   libc.a(shr.o) errno
+[1]     0x00000000    undef      IMP     DS EXTref   libc.a(shr.o) _RETURN
+[2]     0x00000000    undef      IMP     DS EXTref   libc.a(shr.o) exit
+[3]     0x00000000    undef      IMP     DS EXTref   libc.a(shr.o) getenv
+[4]     0x00000000    undef      IMP     DS EXTref   libc.a(shr.o) perror
+[5]     0x00000000    undef      IMP     DS EXTref   libc.a(shr.o) execv
+[6]     0x00000000    undef      IMP     DS EXTref   libc.a(shr.o) putenv
+[7]     0x00000000    undef      IMP     DS EXTref   libc.a(shr.o) __mod_init
+[8]     0x00000000    undef      IMP     RW EXTref   libc.a(shr.o) __crt0v
+[9]     0x00000000    undef      IMP     RW EXTref   libc.a(shr.o) __malloc_user_defined_name
+[10]    0x00000000    undef      IMP     DS EXTref libpthreads.a(shr_xpg5.o) __pth_init
+[11]    0x00000000    undef      IMP     RW EXTref libpthreads.a(shr_xpg5.o) __pthread
+[12]    0x200007cc    .data    ENTpt     DS SECdef        [noIMid] __start
+```
+
+Besides **\_RETURN()** we notice the presence of **getenv()**, **putenv()** and **execv()**.
+It is possible that the PASE\_THREAD\_ATTACH environment variable is set if missing, thus
+requiring a subsequent new invocation (*execv*) of exactly the same start program.
+
+Our first goal will be writing our simple start32.c and start64.c programs and then
+refine our logic in an incremental fashion. 
+
+Meet you soon!
+
 ----
 
 ### 61. to serve a Rails application
