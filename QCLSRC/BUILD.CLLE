@@ -39,8 +39,8 @@
         /*                (&BLDLIB/WDUMP2)) +                              */
         /*                EXPORT(*SRCFILE) SRCFILE(&SRCLIB/QSRVSRC)        */
         /*   MONMSG     MSGID(CPF0000)                                     */
-             CRTCLMOD   MODULE(&BLDLIB/QP2TEST) +
-                          SRCFILE(&SRCLIB/QCLSRC) SRCMBR(QP2TEST) +
+             CRTCLMOD   MODULE(&BLDLIB/QP2_TEST) +
+                          SRCFILE(&SRCLIB/QCLSRC) SRCMBR(QP2_TEST) +
                           INCFILE(&SRCLIB/QCLSRC) +
                           OUTPUT(*PRINT) ALWRTVSRC(*NO)
 RETURN:      ENDPGM
