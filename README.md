@@ -194,7 +194,7 @@ option set:
  defined, and **/usr/lib:/lib** otherwise.*
 
 With this minimal setting we should be able to dynamically refer to **PASE/AIX libc.a** shared
-library functions from ILE using a set of specific ILE APIs: **Qp2dlopen**, **Qp2dlsym**, and 
+library functions from ILE using a set of specific ILE APIs: [**Qp2dlopen**](https://www.ibm.com/docs/en/i/7.4?topic=ssw_ibm_i_74/apis/qp2dlopen.htm), **Qp2dlsym**, and 
 **Qp2CallPase**.   
 
 ----
