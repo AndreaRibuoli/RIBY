@@ -83,11 +83,10 @@ Let's go!
 61. [to serve a Rails application](#61-to-serve-a-rails-application)
 62. [to change perspectives](#62-to-change-perspectives)
 63. [to grow consciousness](#63-to-grow-consciousness)
+64. [to load or not](#64-to-load-or-not)
 
 
 <!---
-
-64. [to load or not](#64-to-load-or-not)
 
 3X. [to customize subsystem](#3X-to-customize-subsystem)
 
@@ -116,6 +115,7 @@ in previous requests.
 | QP2\_ARG\_SPCPTR | -8 |   A 16-byte space pointer (must be 16-byte aligned). The value in the arglist buffer is converted to an IBM PASE for i 32-bit or 64-bit IBM PASE for i memory address that is passed as the argument value. The argument passed to the IBM PASE for i function is zero if the 16-byte pointer is not a valid space pointer, or -1 if the pointer addresses storage the IBM PASE for i program cannot reference. |
 | QP2\_ARG\_FLOAT128 | -9 |   A 16-byte floating point number. |
 
+--->
 
 
 ### 64. to load or not
@@ -151,6 +151,11 @@ Why? It can be adopted in every IBM i system where PASE (option **33** of SS1) i
 no licensed ILE compiler is required.
 
 
+First of all let us organize ILE Command Languace source code leveraging the **INCLUDE** 
+operator. We will have a three source files:
+
+##### QP2_VARS.CLLE
+ 
 ```
 DCL VAR(&PATHNAME)   TYPE(*CHAR) LEN(51)  
 DCL VAR(&SYMBOLNAME) TYPE(*PTR)  ADDRESS(*NULL)
@@ -162,6 +167,8 @@ DCL VAR(&PASE_ENV)   TYPE(*PTR)  ADDRESS(*NULL)
 DCL VAR(&RETURNVAL)  TYPE(*INT)
 ```
 
+##### QP2RUNPASE.CLLE
+
 ```
 CALLPRC PRC('Qp2RunPase')   +
   PARM((&PATHNAME)          +
@@ -172,6 +179,8 @@ CALLPRC PRC('Qp2RunPase')   +
        (&PASE_ARGV)         +
        (&PASE_ENV)            ) RTNVAL(&RETURNVAL)
 ```
+
+##### QP2_TEST.CLLE
 
 ```
 PGM        PARM(&PATH)
@@ -185,7 +194,67 @@ INCLUDE    SRCMBR(QP2RUNPASE)
 DMPCLPGM
 ENDPGM
 ```
---->
+
+There are still elements to be fixed but let us check whta gets dumped omitting the &PATH parameter:
+
+```
+CALL PGM(RIBY/QP2_TEST)
+```
+
+```
+Nome lavoro . . . . . . . :   QPADEV0009  Nome utente . . . . . . . :   ANDREA       Numero lavoro . . . . . . :   159683          
+Nome programma  . . . . . :   QP2_TEST    Libreria  . . . . . . . . :   RIBY         Istruzione. . . . . . . . :   2304            
+Nome modulo . . . . . . . :   QP2_TEST    Nome procedura  . . . . . :   QP2_TEST                                                   
+                                                             Messaggi                                                              
+            ID                                    Testo                   Da                           A                           
+Ora         Messaggio           Sev       Tipo    Messaggio               programma        Inst.       programma        Inst.      
+181943      MCH3601             40        ESC     Puntatore non impostato                  *N          QP2_TEST         *N         
+                                                   per ubicazione di rife                                                          
+                                                  rimento.                                                                         
+                                                            Variabili                                                              
+Variabile              Tipo        Lunghezza      Valore                         Valore in esadecimali                             
+                                                   *...+....1....+....2....+     * . . . + . . . . 1 . . . . + . . . . 2 . . . . + 
+&NULL                    *CHAR            1       ' '                            00                                                
+&PASE_ARGV               *PTR            16                                      8000000000000000C4202669D50013D0                  
+&PASE_CCSID              *INT             4        1208                          000004B8                                          
+&PASE_ENV                *PTR            16                                      00000000000000000000000000000000                  
+&PATH                    *CHAR                    *Non indirizzabile                                                               
+&PATHNAME                *CHAR           51       '/QOpenSys/lib/start64    '    61D8D6978595E2A8A26193898261A2A38199A3F6F400404040 
+                                    +26           '                         '    40404040404040404040404040404040404040404040404040 
+                                    +51           ' '                            40                                                
+&RETURNVAL               *INT             4       -2                             FFFFFFFE                                          
+&SYMBOLDATA              *PTR            16                                      00000000000000000000000000000000                  
+&SYMBOLNAME              *PTR            16                                      00000000000000000000000000000000                  
+&SYMDATALEN              *UINT            4        0                             00000000                                          
+```
+
+In this case &PATHNAME defaults to */QOpenSys/lib/start64* and &RETURNVAL **correctly** 
+is set to **-2** meaning 
+
+* **QP2RUNPASE\_RETURN\_NOEXIT** (-2)  
+
+*The IBM PASE for i program returned without exiting (by calling the IBM PASE for i _RETURN function).*
+
+We will refine the code (to handle the end of PASE in the job) but we can finally test if 
+our simple example is working as expected:
+                                                            
+```
+CALL PGM(RIBY/QP2_TEST) PARM('pro_start64                                       ')
+```
+
+Yes! We also verify that our PASE executable is retrieved from the current directory 
+(no absolute path was specified):
+
+```
+&PATH                    *CHAR           50       'pro_start64              ' 
+                                    +26           '                         ' 
+&PATHNAME                *CHAR           51       'pro_start64              ' 
+                                    +26           '                         ' 
+                                    +51           ' '                         
+&RETURNVAL               *INT             4       -2                          
+```
+
+
 
 ----
 
