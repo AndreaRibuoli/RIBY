@@ -84,7 +84,11 @@ Let's go!
 62. [to change perspectives](#62-to-change-perspectives)
 63. [to grow consciousness](#63-to-grow-consciousness)
 
+
 <!---
+
+64. [to load or not](#64-to-load-or-not)
+
 3X. [to customize subsystem](#3X-to-customize-subsystem)
 
 ../bin/gcc -maix64 -Wl,-bnolibpath -Wl,-blibpath:/QOpenSys/riby/lib:/usr/lib:/lib -o paseoss_start64 /tmp/paseoss_start32.c
@@ -113,7 +117,77 @@ in previous requests.
 | QP2\_ARG\_FLOAT128 | -9 |   A 16-byte floating point number. |
 
 
+
+### 64. to load or not
+
+**Qp2dlopen** is described in this way: *dynamically loads an IBM® i PASE module by calling 
+the IBM PASE for i **dlopen()** function*.
+
+Does it make any sense to explicitly load **libc.a** when it already had been during 
+the *Qp2RunPase* stage? 
+
+Assuming **Qp2dlsym** is based on the IBM PASE for i **dlsym()** function let us read 
+about it on the [AIX online documentation](https://www.ibm.com/docs/en/aix/7.2?topic=d-dlsym-subroutine).
+
+We discover three special values in *dlfcn.h* include file:
+
+``` C
+#define RTLD_DEFAULT        ((void *)(-1)) /* start dlsym() symbol search from
+                                              the executable module. */
+#define RTLD_MYSELF         ((void *)(-2)) /* start dlsym() symbol search from
+                                              the module calling dlsym(). */
+#define RTLD_NEXT           ((void *)(-3)) /* start dlsym() symbol search from
+                                              the module after the module
+                                              which called dlsym(). */
+```
+
+So let us first test a direct use of *Qp2dlsym* with no previous call to *Qp2dlopen*.
+This way we will check if the use of those special \-negative\- values (in place of values
+returned by *Qp2dlopen*) is supported or not.
+
+We will also use these ILE APIs from **ILE CL**: a quite unusual approach.
+
+Why? It can be adopted in every IBM i system where PASE (option **33** of SS1) is installed:
+no licensed ILE compiler is required.
+
+
+```
+DCL VAR(&PATHNAME)   TYPE(*CHAR) LEN(51)  
+DCL VAR(&SYMBOLNAME) TYPE(*PTR)  ADDRESS(*NULL)
+DCL VAR(&SYMBOLDATA) TYPE(*PTR)  ADDRESS(*NULL)
+DCL VAR(&SYMDATALEN) TYPE(*UINT) VALUE(0)
+DCL VAR(&PASE_CCSID) TYPE(*INT)  VALUE(1208)
+DCL VAR(&PASE_ARGV   TYPE(*PTR)  ADDRESS(&PATHNAME)
+DCL VAR(&PASE_ENV)   TYPE(*PTR)  ADDRESS(*NULL)
+DCL VAR(&RETURNVAL)  TYPE(*INT)
+```
+
+```
+CALLPRC PRC('Qp2RunPase')   +
+  PARM((&PATHNAME)          +
+       (&SYMBOLNAME *BYVAL) +
+       (&SYMBOLDATA *BYVAL) +
+       (&SYMDATALEN *BYVAL) +
+       (&PASE_CCSID *BYVAL) +
+       (&PASE_ARGV)         +
+       (&PASE_ENV)            ) RTNVAL(&RETURNVAL)
+```
+
+```
+PGM        PARM(&PATH)
+DCL        VAR(&PATH)  TYPE(*CHAR) LEN(50)  
+DCL        VAR(&NULL)  TYPE(*CHAR) LEN(1)  VALUE(X'00')  
+INCLUDE    SRCMBR(QP2_VARS)
+CHGVAR     VAR(&PATHNAME) VALUE(&PATH)
+MONMSG     MSGID(MCH3601) EXEC(CHGVAR VAR(&PATHNAME) VALUE('/QOpenSys/lib/start64'))
+CHGVAR     VAR(&PATHNAME) VALUE(&PATHNAME *TCAT &NULL)
+INCLUDE    SRCMBR(QP2RUNPASE)
+DMPCLPGM
+ENDPGM
+```
 --->
+
+----
 
 ### 63. to grow consciousness
 

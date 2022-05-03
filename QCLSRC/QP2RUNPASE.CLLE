@@ -1,0 +1,8 @@
+CALLPRC PRC('Qp2RunPase')   +
+  PARM((&PATHNAME)          +
+       (&SYMBOLNAME *BYVAL) +
+       (&SYMBOLDATA *BYVAL) +
+       (&SYMDATALEN *BYVAL) +
+       (&PASE_CCSID *BYVAL) +
+       (&PASE_ARGV)         +
+       (&PASE_ENV)            ) RTNVAL(&RETURNVAL)
