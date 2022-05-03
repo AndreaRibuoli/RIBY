@@ -42,6 +42,7 @@
              CRTCLMOD   MODULE(&BLDLIB/QP2_TEST) +
                           SRCFILE(&SRCLIB/QCLSRC) SRCMBR(QP2_TEST) +
                           INCFILE(&SRCLIB/QCLSRC) +
-                          OUTPUT(*PRINT) ALWRTVSRC(*NO)
+                          OUTPUT(*NONE) ALWRTVSRC(*NO)
+             CRTPGM     PGM(&TGTLIB/QP2_TEST) MODULE(&BLDLIB/QP2_TEST)
 RETURN:      ENDPGM
 
