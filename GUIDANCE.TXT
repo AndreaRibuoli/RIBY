@@ -1,7 +1,10 @@
 QCLSRC    BUILD     CLLE      Installation ILE CL
 QCLSRC    QP2_VARS  CLLE      ILE CL declared variables
+QCLSRC    QP2_VARS2 CLLE      ILE CL declared variables
 QCLSRC    QP2_TEST  CLLE      ILE CL Tester
+QCLSRC    QP2_TEST2 CLLE      ILE CL Tester
 QCLSRC    QP2RUNPASECLLE      ILE CL Qp2RunPase
+QCLSRC    QP2DLSYM  CLLE      ILE CL Qp2dlsym
 QREXSRC   JEKYLL    REXX      Print new post
 QSRVSRC   RIBY_SRV  BND       Bind Service Program file
 QRPGLESRC WDUMP_H   RPGLE     Test Utility header 
