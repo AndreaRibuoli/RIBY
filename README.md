@@ -340,6 +340,8 @@ With this minimal setting we should be able to dynamically refer to **PASE/AIX l
 library functions from ILE using a set of specific ILE APIs: [**Qp2dlopen**](https://www.ibm.com/docs/en/i/7.4?topic=ssw_ibm_i_74/apis/qp2dlopen.htm), [**Qp2dlsym**](https://www.ibm.com/docs/en/i/7.4?topic=ssw_ibm_i_74/apis/qp2dlsym.htm), and 
 [**Qp2CallPase**](https://www.ibm.com/docs/en/i/7.4?topic=ssw_ibm_i_74/apis/qp2callpase.htm).   
 
+[NEXT-64](#64-to-load-or-not)
+
 ----
 
 ### 62. to change perspectives
