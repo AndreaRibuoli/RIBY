@@ -195,7 +195,7 @@ DMPCLPGM
 ENDPGM
 ```
 
-There are still elements to be fixed but let us check whta gets dumped omitting the &PATH parameter:
+There are still elements to be fixed but let us check what gets dumped omitting the &PATH parameter:
 
 ```
 CALL PGM(RIBY/QP2_TEST)
