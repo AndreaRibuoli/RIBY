@@ -1,0 +1,4 @@
+CALLPRC PRC('Qp2dlopen')      +
+  PARM((&SHL_PATH_P *BYVAL)   +
+       (&FLAGS      *BYVAL)   +
+       (&CCSID      *BYVAL)   ) RTNVAL(&ID)

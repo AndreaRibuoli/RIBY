@@ -1,0 +1,1 @@
+CALLPRC PRC('Qp2dlerror')     RTNVAL(&ERR_P)
