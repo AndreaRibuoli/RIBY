@@ -132,7 +132,7 @@ If the value of *file* is NULL, dlopen() returns a **global symbol object** hand
 This object will provide access (via the *dlsym* calls that follow) to the symbols exported from:
 
 * The main application, and dependent shared libraries for the main application that were loaded at **program start-up** and
-* The set of shared libraries loaded using dlopen() with the **RTLD_GLOBAL** flag. This set of DLLs can change dynamically as other DLLs are opened and closed.
+* The set of shared libraries loaded using dlopen() with the **RTLD_GLOBAL** flag. This set of shared libraries can change dynamically as other shared libraries are opened and closed.
 
 So we can test using *Qp2dlopen* with the *file* parameter set to NULL. 
 Our prolegomenon program depends on **libc.a** (because of _RETURN()) so that libc.a has surely 
@@ -250,7 +250,7 @@ We can also verify that our PASE executable is retrieved from the current direct
 &RETURNVAL               *INT             4       -2                          
 ```
 
-
+Now we will extend the logic (*QP2\_TEST2*) introducing support for *Qp2dlopen* and *Qp2dlsym*.
 
 ----
 
