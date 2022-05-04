@@ -261,7 +261,7 @@ As explained before, the `INCLUDE SRCMBR(QP2DLOPEN)` is commented out because
 initializing &ID to (-1) has the same effect (*libc.a* is already loaded and dlopen() 
 can be omitted):
 
-##### QP2_TEST2
+##### QP2_TEST2.CLLE
 
 ```
            PGM        PARM(&PATH &NAME)
