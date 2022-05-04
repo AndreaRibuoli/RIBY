@@ -126,17 +126,22 @@ the IBM PASE for i **dlopen()** function*.
 Does it make any sense to explicitly load **libc.a** when it already had been during 
 the *Qp2RunPase* stage? No.
 
-If we test a direct use of *Qp2dlsym* with **no previous call** to *Qp2dlopen* we will not succeed.
 
-If the value of *file* is NULL, dlopen() returns a **global symbol object** handle. 
+If the value of *path* is NULL, dlopen() returns a **global symbol object** handle. 
 This object will provide access (via the *dlsym* calls that follow) to the symbols exported from:
 
 * The main application, and dependent shared libraries for the main application that were loaded at **program start-up** and
 * The set of shared libraries loaded using dlopen() with the **RTLD_GLOBAL** flag. This set of shared libraries can change dynamically as other shared libraries are opened and closed.
 
-So we can test using *Qp2dlopen* with the *file* parameter set to NULL. 
+So we can test using *Qp2dlopen* with the *path* parameter set to NULL. 
+
 Our prolegomenon program depends on **libc.a** (because of _RETURN()) so that libc.a has surely 
-been loaded at program start-up when we called *Qp2RunPase*.
+been loaded at program start-up when we called *Qp2RunPase*!
+
+If we test a direct use of *Qp2dlsym* **with no previous call** to *Qp2dlopen* we can
+succeed, too.
+
+
 
 Let us go one step at a time.
 
@@ -251,6 +256,40 @@ We can also verify that our PASE executable is retrieved from the current direct
 ```
 
 Now we will extend the logic (*QP2\_TEST2*) introducing support for *Qp2dlopen* and *Qp2dlsym*.
+
+As explained before, the `INCLUDE SRCMBR(QP2DLOPEN)` is commented out because 
+initializing &ID to (-1) has the same effect (*libc.a* is already loaded and dlopen() 
+can be omitted):
+
+##### QP2_TEST2
+
+```
+           PGM        PARM(&PATH &NAME)
+           DCL        VAR(&PATH)  TYPE(*CHAR) LEN(50)
+           DCL        VAR(&NAME)  TYPE(*CHAR) LEN(30)
+           DCL        VAR(&NULL)  TYPE(*CHAR) LEN(1)  VALUE(X'00')
+           INCLUDE    SRCMBR(QP2_VARS)
+           INCLUDE    SRCMBR(QP2_VARS2)
+           CHGVAR     VAR(&PATHNAME) VALUE(&PATH *TCAT &NULL)
+           INCLUDE    SRCMBR(QP2RUNPASE)
+/*         INCLUDE    SRCMBR(QP2DLOPEN) */
+           CHGVAR     VAR(&EXP_NAME) VALUE(&NAME *TCAT &NULL)
+           INCLUDE    SRCMBR(QP2DLSYM)
+           IF         COND(&RETURNPTR *EQ *NULL)  THEN(DO)
+           INCLUDE    SRCMBR(QP2DLERROR)
+           IF         COND(&ERR_P *NE *NULL) THEN(DO)
+           SNDPGMMSG  MSG(&MSG)
+           GOTO       CMDLBL(FINE)
+           ENDDO
+           ENDDO
+FINE:      DMPCLPGM
+           ENDPGM
+```
+
+```
+CALL PGM(RIBY/QP2_TEST2) PARM('/QOpenSys/usr/lib/start64                         ' 
+                              'atoi                          ')
+```
 
 ----
 
