@@ -291,6 +291,36 @@ CALL PGM(RIBY/QP2_TEST2) PARM('/QOpenSys/usr/lib/start64                        
                               'atoi                          ')
 ```
 
+```
+                                                            Variabili                                                             
+Variabile              Tipo        Lunghezza      Valore                         Valore in esadecimali                            
+                                                   *...+....1....+....2....+     * . . . + . . . . 1 . . . . + . . . . 2 . . . . +
+&CCSID                   *INT             4        0                             00000000                                         
+&ERR_P                   *PTR            16                                      00000000000000000000000000000000                 
+&EXP_NAME                *CHAR           31       'atoi                     '    81A39689004040404040404040404040404040404040404040
+                                    +26           '      '                       404040404040                                     
+&ID                      *INT             8       -1                             FFFFFFFFFFFFFFFF                                 
+&MSG                     *CHAR                    *Non indirizzabile                                                              
+&NAME                    *CHAR           30       'atoi                     '    81A39689404040404040404040404040404040404040404040
+                                    +26           '     '                        4040404040                                       
+&NULL                    *CHAR            1       ' '                            00                                               
+&PASE_ARGV               *PTR            16                                      8000000000000000CD0E5E9B2B0013C0                 
+&PASE_CCSID              *INT             4        1208                          000004B8                                         
+&PASE_ENV                *PTR            16                                      00000000000000000000000000000000                 
+&PATH                    *CHAR           50       '/QOpenSys/usr/lib/start64'    61D8D6978595E2A8A261A4A2996193898261A2A38199A3F6F4
+                                    +26           '                         '    40404040404040404040404040404040404040404040404040
+&PATHNAME                *CHAR           51       '/QOpenSys/usr/lib/start64'    61D8D6978595E2A8A261A4A2996193898261A2A38199A3F6F4
+                                    +26           '                         '    00404040404040404040404040404040404040404040404040
+                                    +51           ' '                            40                               
+&RETURNED                *INT             8        648518346344825472            0900000000350280                 
+&RETURNPTR               *PTR            16                                      80000000000000000000801280083248 
+&RETURNVAL               *INT             4       -2                             FFFFFFFE                         
+&SYMBOLDATA              *PTR            16                                      00000000000000000000000000000000 
+&SYMBOLNAME              *PTR            16                                      00000000000000000000000000000000 
+&SYMDATALEN              *UINT            4        0                             00000000                         
+&SYMPASE                 *PTR            16                                      09001000A00832480000000000000000 
+```
+
 ----
 
 ### 63. to grow consciousness
