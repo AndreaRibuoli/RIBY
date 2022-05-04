@@ -140,7 +140,7 @@ been loaded at program start-up when we called *Qp2RunPase*.
 
 Let us go one step at a time.
 
-First of all we will use the **Qp2\***ILE APIs from **ILE CL**: a quite unusual approach!
+First of all we will use the **Qp2** ILE APIs from **ILE CL**: a quite unusual approach!
 Why? It can be adopted in every IBM i system where PASE (option **33** of SS1) is installed:
 no licensed ILE compiler is required.
 
