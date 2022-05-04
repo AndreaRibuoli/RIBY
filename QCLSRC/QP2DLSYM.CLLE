@@ -1,5 +1,5 @@
 CALLPRC PRC('Qp2dlsym')     +
   PARM((&ID       *BYVAL)   +
-       (&FUNCT_NAME)        +
+       (&EXP_NAME)          +
        (&CCSID    *BYVAL)   +
        (&SYMPASE)           ) RTNVAL(&RETURNPTR)
