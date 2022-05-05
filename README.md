@@ -140,7 +140,7 @@ uint64 locate_message(ILEpointer *ptr4ile) {
 
 We will use a valid build of GCC that is capable of creating shared libraries for 64-bit and 32-bit as well.
 We will also use a GCC build that adopts AIX fat libraries (both 64-bit and 32-bit versions are provided in each **.a** file).
-We will also copy this **libgcc_s.a** in our current library.
+We will also copy this **libgcc_s.a** in our current directory.
 
 <!---
 export PATH=/QOpenSys/riby/bin:$PATH
