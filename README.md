@@ -132,7 +132,7 @@ Let us build *prolegomenon_add.c* as the initial source code for a shared librar
 static char secret_message[] = { 131, 150, 164, 147, 132, 64, 168, 150, 164, 64, 130, 
                                  133, 147, 137, 133, 165, 133, 64, 137, 163, 111 };
 
-int locate_message(ILEpointer *ptr4ile) {
+uint64 locate_message(ILEpointer *ptr4ile) {
   _SETSPP(ptr4ile, secret_message);
   return(sizeof(secret_message));
 }
@@ -166,7 +166,17 @@ gcc -maix64 -Wl,-bnolibpath -Wl,-blibpath:.:/usr/lib:/lib -L. -lpro -o pro_start
 ```
 
 The new version of our tester will call **Qp2EndPase** so that we can test in sequence the 64bit version
-and the 32bit one.
+and the 32bit one. It will also set the value of &ID supporting the 32-bit option:
+
+**64bit**
+```
+&ID                      *INT             8       -1                             FFFFFFFFFFFFFFFF 
+```
+
+**32bit**
+```
+&ID                      *INT             8        4294967295                    00000000FFFFFFFF 
+```
 
 ##### QP2_TEST3.CLLE
 
@@ -179,6 +189,11 @@ and the 32bit one.
            INCLUDE    SRCMBR(QP2_VARS2)
            CHGVAR     VAR(&PATHNAME) VALUE(&PATH *TCAT &NULL)
            INCLUDE    SRCMBR(QP2RUNPASE)
+           INCLUDE    SRCMBR(QP2PTRSIZE)
+           IF         COND(&PTR_SIZE *EQ 4) +
+                        THEN(CHGVAR VAR(&ID) VALUE(4294967295))
+           IF         COND(&PTR_SIZE *EQ 8) +
+                        THEN(CHGVAR VAR(&ID) VALUE(-1))
            CHGVAR     VAR(&EXP_NAME) VALUE(&NAME *TCAT &NULL)
            INCLUDE    SRCMBR(QP2DLSYM)
            IF         COND(&RETURNPTR *EQ *NULL)  THEN(DO)
@@ -188,7 +203,7 @@ and the 32bit one.
            GOTO       CMDLBL(FINE)
            ENDDO
            ENDDO
-FINE:      
+FINE:
            DMPCLPGM
            INCLUDE    SRCMBR(QP2ENDPASE)
            ENDPGM
