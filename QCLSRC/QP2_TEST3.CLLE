@@ -6,7 +6,12 @@
            INCLUDE    SRCMBR(QP2_VARS2)
            CHGVAR     VAR(&PATHNAME) VALUE(&PATH *TCAT &NULL)
            INCLUDE    SRCMBR(QP2RUNPASE)
-           INCLUDE    SRCMBR(QP2DLOPEN)
+           INCLUDE    SRCMBR(QP2PTRSIZE)
+           IF         COND(&PTR_SIZE *EQ 4) +
+                        THEN(CHGVAR VAR(&ID) VALUE(4294967295))
+           IF         COND(&PTR_SIZE *EQ 8) +
+                        THEN(CHGVAR VAR(&ID) VALUE(-1))
+/*         INCLUDE    SRCMBR(QP2DLOPEN)  */
            CHGVAR     VAR(&EXP_NAME) VALUE(&NAME *TCAT &NULL)
            INCLUDE    SRCMBR(QP2DLSYM)
            IF         COND(&RETURNPTR *EQ *NULL)  THEN(DO)
@@ -18,6 +23,6 @@
            ENDDO
 FINE:
            DMPCLPGM
-           INCLUDE    SRCMBR(QP2DLCLOSE)
+/*         INCLUDE    SRCMBR(QP2DLCLOSE)  */
            INCLUDE    SRCMBR(QP2ENDPASE)
            ENDPGM

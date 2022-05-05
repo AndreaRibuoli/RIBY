@@ -1,0 +1,1 @@
+CALLPRC    PRC('Qp2ptrsize') RTNVAL(&PTR_SIZE)
