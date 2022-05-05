@@ -84,6 +84,7 @@ Let's go!
 62. [to change perspectives](#62-to-change-perspectives)
 63. [to grow consciousness](#63-to-grow-consciousness)
 64. [to load or not](#64-to-load-or-not)
+65. [to enjoy the discovery process](#65-to-enjoy-the-discovery-process)
 
 
 <!---
@@ -119,6 +120,82 @@ in previous requests.
 
 ----
 
+### 65. to enjoy the discovery process
+
+In the previous post we focused on accessing the PASE exports through the *global symbol object* handle.
+This means there are other options at hand: today we will experiment a few of them.
+
+Let us build *prolegomenon_add.c* as the initial source code for a shared library:
+
+``` C
+#include <as400_protos.h>
+static char secret_message[] = { 131, 150, 164, 147, 132, 64, 168, 150, 164, 64, 130, 
+                                 133, 147, 137, 133, 165, 133, 64, 137, 163, 111 };
+
+int locate_message(ILEpointer *ptr4ile) {
+  _SETSPP(ptr4ile, secret_message);
+  return(sizeof(secret_message));
+}
+``` 
+
+We will use a valid build of GCC that is capable of creating shared libraries for 64-bit and 32-bit as well.
+We will also use a GCC build that adopts AIX fat libraries (both 64-bit and 32-bit versions are provided in each **.a** file).
+We will also copy this **libgcc_s.a** in our current library.
+
+<!---
+export PATH=/QOpenSys/riby/bin:$PATH
+rm shr.o
+rm shr_64.o
+rm libpro.a
+---->
+
+```
+gcc -maix64 -Wl,-bnolibpath -shared -o libpro.so prolegomenon_add.c
+mv libpro.so shr_64.o
+gcc -maix32 -Wl,-bnolibpath -shared -o libpro.so prolegomenon_add.c
+mv libpro.so shr.o
+ar -X32 -q libpro.a  shr.o
+ar -X64 -q libpro.a  shr_64.o
+```
+
+We are now able to linkedit our prolegomena so that libpro.a gets loaded during program start\-up:
+
+```
+gcc -maix32 -Wl,-bnolibpath -Wl,-blibpath:.:/usr/lib:/lib -L. -lpro -o pro_start32 prolegomenon.c
+gcc -maix64 -Wl,-bnolibpath -Wl,-blibpath:.:/usr/lib:/lib -L. -lpro -o pro_start64 prolegomenon.c
+```
+
+The new version of our tester will call **Qp2EndPase** so that we can test in sequence the 64bit version
+and the 32bit one.
+
+##### QP2_TEST3.CLLE
+
+```
+           PGM        PARM(&PATH &NAME)
+           DCL        VAR(&PATH)  TYPE(*CHAR) LEN(50)
+           DCL        VAR(&NAME)  TYPE(*CHAR) LEN(30)
+           DCL        VAR(&NULL)  TYPE(*CHAR) LEN(1)  VALUE(X'00')
+           INCLUDE    SRCMBR(QP2_VARS)
+           INCLUDE    SRCMBR(QP2_VARS2)
+           CHGVAR     VAR(&PATHNAME) VALUE(&PATH *TCAT &NULL)
+           INCLUDE    SRCMBR(QP2RUNPASE)
+           CHGVAR     VAR(&EXP_NAME) VALUE(&NAME *TCAT &NULL)
+           INCLUDE    SRCMBR(QP2DLSYM)
+           IF         COND(&RETURNPTR *EQ *NULL)  THEN(DO)
+           INCLUDE    SRCMBR(QP2DLERROR)
+           IF         COND(&ERR_P *NE *NULL) THEN(DO)
+           SNDPGMMSG  MSG(&MSG)
+           GOTO       CMDLBL(FINE)
+           ENDDO
+           ENDDO
+FINE:      
+           DMPCLPGM
+           INCLUDE    SRCMBR(QP2ENDPASE)
+           ENDPGM
+```
+
+
+----
 
 ### 64. to load or not
 
@@ -132,7 +209,7 @@ the *Qp2RunPase* stage? No.
 If the value of *path* is NULL, dlopen() returns a **global symbol object** handle. 
 This object will provide access (via the *dlsym* calls that follow) to the symbols exported from:
 
-* The main application, and dependent shared libraries for the main application that were loaded at **program start-up** and
+* The main application, and dependent shared libraries for the main application that were loaded at **program start\-up** and
 * The set of shared libraries loaded using dlopen() with the **RTLD_GLOBAL** flag. This set of shared libraries can change dynamically as other shared libraries are opened and closed.
 
 So we can test using *Qp2dlopen* with the *path* parameter set to NULL. 

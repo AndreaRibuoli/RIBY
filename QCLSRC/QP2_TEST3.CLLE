@@ -1,0 +1,21 @@
+           PGM        PARM(&PATH &NAME)
+           DCL        VAR(&PATH)  TYPE(*CHAR) LEN(50)
+           DCL        VAR(&NAME)  TYPE(*CHAR) LEN(30)
+           DCL        VAR(&NULL)  TYPE(*CHAR) LEN(1)  VALUE(X'00')
+           INCLUDE    SRCMBR(QP2_VARS)
+           INCLUDE    SRCMBR(QP2_VARS2)
+           CHGVAR     VAR(&PATHNAME) VALUE(&PATH *TCAT &NULL)
+           INCLUDE    SRCMBR(QP2RUNPASE)
+           CHGVAR     VAR(&EXP_NAME) VALUE(&NAME *TCAT &NULL)
+           INCLUDE    SRCMBR(QP2DLSYM)
+           IF         COND(&RETURNPTR *EQ *NULL)  THEN(DO)
+           INCLUDE    SRCMBR(QP2DLERROR)
+           IF         COND(&ERR_P *NE *NULL) THEN(DO)
+           SNDPGMMSG  MSG(&MSG)
+           GOTO       CMDLBL(FINE)
+           ENDDO
+           ENDDO
+FINE:
+           DMPCLPGM
+           INCLUDE    SRCMBR(QP2ENDPASE)
+           ENDPGM
