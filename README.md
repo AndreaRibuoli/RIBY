@@ -222,7 +222,7 @@ The `SNDPGMMSG MSG(%SST(&SECRET 1 &BUF))` instruction will emit the secret messa
 To summarize:
 
 * we created a fat shared library (32 and 64-bit version modes) 
-* we linkedit it to the corresponding main() issuing the \_RETURN() call
+* we linkedit it to the corresponding main() issuing the `_RETURN()` call
 * we offered ILE CL the opportunity to run each program via Qp2RunPase 
 * from ILE CL we identified the PASE function entry via Qp2dlsym (no dynamic load involved)
 * from ILE CL we called the PASE function 
