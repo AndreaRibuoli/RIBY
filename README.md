@@ -219,7 +219,7 @@ resolve making it pointing to the secret message.
 
 The `SNDPGMMSG MSG(%SST(&SECRET 1 &BUF))` instruction will emit the secret message.
 
-To summurize:
+To summarize:
 
 * we created a fat shared library (32 and 64-bit version modes) 
 * we linkedit it to the corresponding main() issuing the \_RETURN() call
