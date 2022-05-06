@@ -208,7 +208,7 @@ FINE:
            INCLUDE    SRCMBR(QP2ENDPASE)
            ENDPGM
 ```
-<!----
+
 Now we are able to access from ILE the PASE function that we introduced in the shared library bundled to *pro\_start64* and 
 *pro\_start32* executables. To call such a function we need to prepare few elements as described in [*Qp2CallPase documentation*](https://www.ibm.com/docs/en/i/7.4?topic=ssw_ibm_i_74/apis/qp2callpase.htm). 
 
@@ -216,7 +216,62 @@ We will stick in adopting ILE CL (even if ILE C is obviously more suited to prep
 
 To call *locate_message* function we first need to allocate memory for an ILE pointer that the *\SETSPP()* call will 
 resolve making it pointing to the secret message.
------> 
+
+The `SNDPGMMSG MSG(%SST(&SECRET 1 &BUF))` instruction will emit the secret message.
+
+To summurize:
+
+* we created a fat shared library (32 and 64-bit version modes) 
+* we linkedit it to the corresponding main() issuing the \_RETURN() call
+* we offered ILE CL the opportunity to run each program via Qp2RunPase 
+* from ILE CL we identified the PASE function entry via Qp2dlsym (no dynamic load involved)
+* from ILE CL we called the PASE function 
+* receiving back the ILE address of the PASE memory with the secret message
+
+No copy occurred. 
+
+In case of a big buffer, content will not be moved around. 
+ 
+![](couldyou.png)  
+
+##### QP2_TEST4.CLLE
+
+```
+           PGM        PARM(&PATH &NAME)
+           DCL        VAR(&PATH)  TYPE(*CHAR) LEN(50)
+           DCL        VAR(&NAME)  TYPE(*CHAR) LEN(30)
+           DCL        VAR(&NULL)  TYPE(*CHAR) LEN(1)  VALUE(X'00')
+           INCLUDE    SRCMBR(QP2_VARS)
+           INCLUDE    SRCMBR(QP2_VARS2)
+           CHGVAR     VAR(&PATHNAME) VALUE(&PATH *TCAT &NULL)
+           INCLUDE    SRCMBR(QP2RUNPASE)
+           INCLUDE    SRCMBR(QP2PTRSIZE)
+           IF         COND(&PTR_SIZE *EQ 4) THEN(CHGVAR VAR(&ID) VALUE(4294967295))
+           IF         COND(&PTR_SIZE *EQ 8) THEN(CHGVAR VAR(&ID) VALUE(-1))
+           CHGVAR     VAR(&EXP_NAME) VALUE(&NAME *TCAT &NULL)
+           INCLUDE    SRCMBR(QP2DLSYM)
+           IF         COND(&RETURNPTR *EQ *NULL)  THEN(DO)
+           INCLUDE    SRCMBR(QP2DLERROR)
+           IF         COND(&ERR_P *NE *NULL) THEN(DO)
+           SNDPGMMSG  MSG(&MSG)
+           GOTO       CMDLBL(FINE)
+           ENDDO
+           ENDDO
+           INCLUDE    SRCMBR(QP2MALLOC)
+           IF         COND(&PTR_SIZE *EQ 4) THEN(CHGVAR VAR(&FIRST) VALUE(-5))
+           IF         COND(&PTR_SIZE *EQ 8) THEN(CHGVAR VAR(&FIRST) VALUE(-6))
+           IF         COND(&PTR_SIZE *EQ 4) THEN(CHGVAR VAR(&MEMORY_P32) VALUE(&MEM_PASE32))
+           IF         COND(&PTR_SIZE *EQ 8) THEN(CHGVAR VAR(&MEMORY_P64) VALUE(&MEM_PASE64))
+           CHGVAR     VAR(&RESULTTYPE) VALUE(-2)
+           INCLUDE    SRCMBR(QP2CALL2)
+           CHGVAR     VAR(&PRO_PTR) VALUE(&MEMORY)
+           SNDPGMMSG  MSG(%SST(&SECRET 1 &BUF))
+FINE:
+           DMPCLPGM
+           INCLUDE    SRCMBR(QP2ENDPASE)
+           ENDPGM
+
+```
 
 
 ----
