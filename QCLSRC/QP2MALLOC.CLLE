@@ -1,0 +1,4 @@
+CALLPRC    PRC('Qp2malloc')         +
+           PARM((&SIZE     *BYVAL)  +
+                (&MEM_PASE)         +
+                (*)                 ) RTNVAL(&MEMORY_P)

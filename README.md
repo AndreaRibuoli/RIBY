@@ -208,6 +208,15 @@ FINE:
            INCLUDE    SRCMBR(QP2ENDPASE)
            ENDPGM
 ```
+<!----
+Now we are able to access from ILE the PASE function that we introduced in the shared library bundled to *pro\_start64* and 
+*pro\_start32* executables. To call such a function we need to prepare few elements as described in [*Qp2CallPase documentation*](https://www.ibm.com/docs/en/i/7.4?topic=ssw_ibm_i_74/apis/qp2callpase.htm). 
+
+We will stick in adopting ILE CL (even if ILE C is obviously more suited to prepare this kind of structures in memory).
+
+To call *locate_message* function we first need to allocate memory for an ILE pointer that the *\SETSPP()* call will 
+resolve making it pointing to the secret message.
+-----> 
 
 
 ----

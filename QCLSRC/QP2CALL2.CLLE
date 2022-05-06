@@ -1,0 +1,7 @@
+CALLPRC    PRC('Qp2CallPase2')       +
+           PARM((&TARGET)            +
+                (&ARGLIST)           +
+                (&SIGNATURE)         +
+                (&RESULTTYPE *BYVAL) +
+                (&BUF)               +
+                (&BUFLENIN   *BYVAL) ) RTNVAL(&RTCD)
