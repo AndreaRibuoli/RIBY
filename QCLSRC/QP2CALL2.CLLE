@@ -4,4 +4,4 @@ CALLPRC    PRC('Qp2CallPase2')       +
                 (&SIGNATURE)         +
                 (&RESULTTYPE *BYVAL) +
                 (&BUF)               +
-                (&BUFLENIN   *BYVAL) ) RTNVAL(&RTCD)
+                (&BUFLENIN   *BYVAL) ) RTNVAL(&RETURNVAL)
