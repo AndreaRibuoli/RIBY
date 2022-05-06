@@ -214,7 +214,7 @@ Now we are able to access from ILE the PASE function that we introduced in the s
 
 We will stick in adopting ILE CL (even if ILE C is obviously more suited to prepare this kind of structures in memory).
 
-To call *locate_message* function we first need to allocate memory for an ILE pointer that the *\SETSPP()* call will 
+To call *locate_message* function we first need to allocate memory for an ILE pointer that the *\_SETSPP()* call will 
 resolve making it pointing to the secret message.
 
 The `SNDPGMMSG MSG(%SST(&SECRET 1 &BUF))` instruction will emit the secret message.
