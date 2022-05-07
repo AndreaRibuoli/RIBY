@@ -479,6 +479,8 @@ Variabile              Tipo        Lunghezza      Valore                        
 &SYMPASE                 *PTR            16                                      09001000A00832480000000000000000 
 ```
 
+[NEXT-65](#65-to-enjoy-the-discovery-process)
+
 ----
 
 ### 63. to grow consciousness
