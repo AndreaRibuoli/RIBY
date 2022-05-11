@@ -20,7 +20,7 @@
            GOTO       CMDLBL(FINE)
            ENDDO
            ENDDO
-           SNDPGMMSG  MSG(%SST(&TARGET_RAW 3 &TARGET_LEN)
+           SNDPGMMSG  MSG(%SST(&TARGET_RAW 3 &TARGET_LEN))
 FINE:
            DMPCLPGM
            INCLUDE    SRCMBR(QP2ENDPASE)
