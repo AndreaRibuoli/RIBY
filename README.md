@@ -85,10 +85,10 @@ Let's go!
 63. [to grow consciousness](#63-to-grow-consciousness)
 64. [to load or not](#64-to-load-or-not)
 65. [to enjoy the discovery process](#65-to-enjoy-the-discovery-process)
+66. [to share data](#66-to-share-data)
 
 <!---
 
-66. [to share data](#66-to-share-data)
 
 
 3X. [to customize subsystem](#3X-to-customize-subsystem)
@@ -120,8 +120,6 @@ in previous requests.
 
 --->
 
-<!----
-
 ### 66. to share data
 
 Let us modify *prolegomenon_add.c* (and recreate our **libpro.a** shared library) introducing a *public\_message*:
@@ -132,7 +130,7 @@ static char secret_message[] = { 131, 150, 164, 147, 132, 64, 168, 150, 164, 64,
                                  133, 147, 137, 133, 165, 133, 64, 137, 163, 111 };
 
 char public_message[]        = { 0, 20, 227, 136, 133, 162, 133, 64, 129, 153, 133, 
-                                 64, 135, 150, 150, 132, 64, 149, 133, 166, 162, 90};
+                                 64, 135, 150, 150, 132, 64, 149, 133, 166, 162, 75};
 
 uint64 locate_message(ILEpointer *ptr4ile) {
   _SETSPP(ptr4ile, secret_message);
@@ -154,7 +152,54 @@ A question arises: *can we use data exported by a PASE shared library from ILE?*
 
 Let us find out.
 
----->
+```
+           PGM        PARM(&PATH &NAME)
+           DCL        VAR(&PATH)  TYPE(*CHAR) LEN(50)
+           DCL        VAR(&NAME)  TYPE(*CHAR) LEN(30)
+           DCL        VAR(&NULL)  TYPE(*CHAR) LEN(1)  VALUE(X'00')
+           INCLUDE    SRCMBR(QP2_VARS)
+           INCLUDE    SRCMBR(QP2_VARS2)
+           DCL VAR(&TARGET_RAW)  TYPE(*CHAR) STG(*BASED) LEN(30) BASPTR(&RETURNPTR)
+           DCL VAR(&TARGET_LEN)  TYPE(*INT)  STG(*BASED) LEN(2) BASPTR(&RETURNPTR)
+           CHGVAR     VAR(&PATHNAME) VALUE(&PATH *TCAT &NULL)
+           INCLUDE    SRCMBR(QP2RUNPASE)
+           INCLUDE    SRCMBR(QP2PTRSIZE)
+           IF         COND(&PTR_SIZE *EQ 4) THEN(CHGVAR VAR(&ID) VALUE(4294967295))
+           IF         COND(&PTR_SIZE *EQ 8) THEN(CHGVAR VAR(&ID) VALUE(-1))
+           CHGVAR     VAR(&EXP_NAME) VALUE(&NAME *TCAT &NULL)
+           INCLUDE    SRCMBR(QP2DLSYM)
+           IF         COND(&RETURNPTR *EQ *NULL)  THEN(DO)
+           INCLUDE    SRCMBR(QP2DLERROR)
+           IF         COND(&ERR_P *NE *NULL) THEN(DO)
+           SNDPGMMSG  MSG(&MSG)
+           GOTO       CMDLBL(FINE)
+           ENDDO
+           ENDDO
+           SNDPGMMSG  MSG(%SST(&TARGET_RAW 3 &TARGET_LEN))
+FINE:
+           DMPCLPGM
+           INCLUDE    SRCMBR(QP2ENDPASE)
+           ENDPGM
+
+```
+
+```
+ Scelta o comando                                                               
+ ===> CALL PGM(RIBY/QP2_TEST5) PARM('pro_start64                                
+       ' 'public_message                ')                                      
+ F3=Fine   F4=Richiesta     F9=Duplicaz.   F12=Annull.                          
+ F13=Supporto informativo   F23=Impostazione menu iniziale                      
+ These are good news.                                                           
+```
+
+```
+ Scelta o comando                                                               
+ ===> CALL PGM(RIBY/QP2_TEST5) PARM('pro_start32                                
+       ' 'public_message                ')                                      
+ F3=Fine   F4=Richiesta     F9=Duplicaz.   F12=Annull.                          
+ F13=Supporto informativo   F23=Impostazione menu iniziale                      
+ These are good news.                                                           
+```
 
 
 ----
@@ -312,6 +357,7 @@ FINE:
 
 ```
 
+[NEXT-66](#66-to-share-data)
 
 ----
 
