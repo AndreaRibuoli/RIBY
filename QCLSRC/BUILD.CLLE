@@ -59,5 +59,10 @@
                           INCFILE(&SRCLIB/QCLSRC) +
                           OUTPUT(*NONE) ALWRTVSRC(*NO)
              CRTPGM     PGM(&TGTLIB/QP2_TEST4) MODULE(&BLDLIB/QP2_TEST4)
+             CRTCLMOD   MODULE(&BLDLIB/QP2_TEST5) +
+                          SRCFILE(&SRCLIB/QCLSRC) SRCMBR(QP2_TEST5) +
+                          INCFILE(&SRCLIB/QCLSRC) +
+                          OUTPUT(*NONE) ALWRTVSRC(*NO)
+             CRTPGM     PGM(&TGTLIB/QP2_TEST5) MODULE(&BLDLIB/QP2_TEST5)
 RETURN:      ENDPGM
 
