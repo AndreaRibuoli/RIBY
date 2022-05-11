@@ -86,8 +86,10 @@ Let's go!
 64. [to load or not](#64-to-load-or-not)
 65. [to enjoy the discovery process](#65-to-enjoy-the-discovery-process)
 
-
 <!---
+
+66. [to share data](#66-to-share-data)
+
 
 3X. [to customize subsystem](#3X-to-customize-subsystem)
 
@@ -117,6 +119,43 @@ in previous requests.
 | QP2\_ARG\_FLOAT128 | -9 |   A 16-byte floating point number. |
 
 --->
+
+<!----
+
+### 66. to share data
+
+Let us modify *prolegomenon_add.c* (and recreate our **libpro.a** shared library) introducing a *public\_message*:
+
+``` C
+#include <as400_protos.h>
+static char secret_message[] = { 131, 150, 164, 147, 132, 64, 168, 150, 164, 64, 130, 
+                                 133, 147, 137, 133, 165, 133, 64, 137, 163, 111 };
+
+char public_message[]        = { 0, 20, 227, 136, 133, 162, 133, 64, 129, 153, 133, 
+                                 64, 135, 150, 150, 132, 64, 149, 133, 166, 162, 90};
+
+uint64 locate_message(ILEpointer *ptr4ile) {
+  _SETSPP(ptr4ile, secret_message);
+  return(sizeof(secret_message));
+}
+``` 
+
+If we dump libpro.a filtering for *message* content we notice that while *secret\_message* is not
+exported *public_message* definitely **is**.
+
+```
+bash-5.1$ dump -X64 -Tv libpro.a | grep message 
+[5]     0x20000580    .data      EXP     RW   Ldef        [noIMid] public_message
+[9]     0x200006b8    .data      EXP     DS   Ldef        [noIMid] locate_message
+bash-5.1$ 
+```
+
+A question arises: *can we use data exported by a PASE shared library from ILE?*
+
+Let us find out.
+
+---->
+
 
 ----
 
