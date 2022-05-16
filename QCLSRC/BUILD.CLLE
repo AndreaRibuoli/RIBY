@@ -67,17 +67,17 @@
              CRTCLMOD   MODULE(&BLDLIB/QP2_SET) +
                           SRCFILE(&SRCLIB/QCLSRC) SRCMBR(QP2_SET) +
                           INCFILE(&SRCLIB/QCLSRC) +
-                          ALWRTVSRC(*NO)
+                          OUTPUT(*NONE) ALWRTVSRC(*NO)
              CRTPGM     PGM(&TGTLIB/QP2_SET) MODULE(&BLDLIB/QP2_SET)
              CRTCLMOD   MODULE(&BLDLIB/QP2_TEST6) +
                           SRCFILE(&SRCLIB/QCLSRC) SRCMBR(QP2_TEST6) +
                           INCFILE(&SRCLIB/QCLSRC) +
-                          ALWRTVSRC(*NO)
+                          OUTPUT(*NONE) ALWRTVSRC(*NO)
              CRTPGM     PGM(&TGTLIB/QP2_TEST6) MODULE(&BLDLIB/QP2_TEST6)
              CRTCLMOD   MODULE(&BLDLIB/QP2_UNSET) +
                           SRCFILE(&SRCLIB/QCLSRC) SRCMBR(QP2_UNSET) +
                           INCFILE(&SRCLIB/QCLSRC) +
-                          ALWRTVSRC(*NO)
+                          OUTPUT(*NONE) ALWRTVSRC(*NO)
              CRTPGM     PGM(&TGTLIB/QP2_UNSET) MODULE(&BLDLIB/QP2_UNSET)
 RETURN:      ENDPGM
 
