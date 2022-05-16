@@ -169,8 +169,6 @@ The middle one can be executed multiple times between the other two.
            DCL        VAR(&NULL)  TYPE(*CHAR) LEN(1)  VALUE(X'00')
            INCLUDE    SRCMBR(QP2_VARS)
            INCLUDE    SRCMBR(QP2_VARS2)
-           DCL VAR(&TARGET_RAW)  TYPE(*CHAR) STG(*BASED) LEN(30) BASPTR(&RETURNPTR)
-           DCL VAR(&TARGET_LEN)  TYPE(*INT)  STG(*BASED) LEN(2) BASPTR(&RETURNPTR)
            INCLUDE    SRCMBR(QP2PTRSIZE)
            IF         COND(&PTR_SIZE *EQ 4) THEN(CHGVAR VAR(&ID) VALUE(4294967295))
            IF         COND(&PTR_SIZE *EQ 8) THEN(CHGVAR VAR(&ID) VALUE(-1))
@@ -183,7 +181,15 @@ The middle one can be executed multiple times between the other two.
            GOTO       CMDLBL(FINE)
            ENDDO
            ENDDO
-           SNDPGMMSG  MSG(%SST(&TARGET_RAW 3 &TARGET_LEN))
+           INCLUDE    SRCMBR(QP2MALLOC)
+           IF         COND(&PTR_SIZE *EQ 4) THEN(CHGVAR VAR(&FIRST) VALUE(-5))
+           IF         COND(&PTR_SIZE *EQ 8) THEN(CHGVAR VAR(&FIRST) VALUE(-6))
+           IF         COND(&PTR_SIZE *EQ 4) THEN(CHGVAR VAR(&MEMORY_P32) VALUE(&MEM_PASE32))
+           IF         COND(&PTR_SIZE *EQ 8) THEN(CHGVAR VAR(&MEMORY_P64) VALUE(&MEM_PASE64))
+           CHGVAR     VAR(&RESULTTYPE) VALUE(-2)
+           INCLUDE    SRCMBR(QP2CALL2)
+           CHGVAR     VAR(&PRO_PTR) VALUE(&MEMORY)
+           SNDPGMMSG  MSG(%SST(&SECRET 1 &BUF))
 FINE:
            DMPCLPGM
            ENDPGM
@@ -307,6 +313,7 @@ FINE:
  These are good news.                                                           
 ```
 
+[NEXT-67](#67-to-allocate-dynamically)
 
 ----
 
