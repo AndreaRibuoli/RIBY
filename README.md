@@ -90,7 +90,6 @@ Let's go!
 <!---
 
 
-
 3X. [to customize subsystem](#3X-to-customize-subsystem)
 
 ../bin/gcc -maix64 -Wl,-bnolibpath -Wl,-blibpath:/QOpenSys/riby/lib:/usr/lib:/lib -o paseoss_start64 /tmp/paseoss_start32.c
@@ -117,6 +116,86 @@ in previous requests.
 | QP2\_ARG\_TS64 | -7 |   An 8-byte teraspace pointer (must be 8-byte aligned). The value in the arglist buffer is converted to an IBM PASE for i 32-bit or 64-bit IBM PASE for i memory address that is passed as the argument value. The argument passed to the IBM PASE for i function is zero if the teraspace pointer addresses memory at teraspace offset zero, or -1 if the pointer addresses storage the IBM PASE for i program cannot reference. |
 | QP2\_ARG\_SPCPTR | -8 |   A 16-byte space pointer (must be 16-byte aligned). The value in the arglist buffer is converted to an IBM PASE for i 32-bit or 64-bit IBM PASE for i memory address that is passed as the argument value. The argument passed to the IBM PASE for i function is zero if the 16-byte pointer is not a valid space pointer, or -1 if the pointer addresses storage the IBM PASE for i program cannot reference. |
 | QP2\_ARG\_FLOAT128 | -9 |   A 16-byte floating point number. |
+
+
+
+### 67. to allocate dynamically
+
+Let us modify *prolegomenon_add.c* again introducing a pointer for the secret\_message rather than an array of bytes.
+We will be allocating memory (dynamically) for the actual message every time *locate\_message* function gets called:
+
+``` C
+#include <stdlib.h>
+#include <as400_protos.h>
+static char *secret_message;
+
+char public_message[]        = { 0, 20, 227, 136, 133, 162, 133, 64, 129, 153, 133, 
+                                 64, 135, 150, 150, 132, 64, 149, 133, 166, 162, 75};
+
+uint64 locate_message(ILEpointer *ptr4ile) {
+  #define MESSAGE_LEN 21
+  secret_message = (char *)malloc(MESSAGE_LEN);
+  secret_message[ 0] = 131; secret_message[ 1] = 150; secret_message[ 2] = 164; secret_message[ 3] = 147;
+  secret_message[ 4] = 132; secret_message[ 5] =  64; secret_message[ 6] = 168; secret_message[ 7] = 150;
+  secret_message[ 8] = 164; secret_message[ 9] =  64; secret_message[10] = 130; secret_message[11] = 133;
+  secret_message[12] = 147; secret_message[13] = 137; secret_message[14] = 133; secret_message[15] = 165;
+  secret_message[16] = 133; secret_message[17] =  64; secret_message[18] = 137; secret_message[19] = 163;
+  secret_message[20] = 111;  
+  _SETSPP(ptr4ile, secret_message);
+  return(MESSAGE_LEN);
+}
+``` 
+
+We will also create three indipendent ILE CL programs
+
+
+#### QP2_SET
+```
+           PGM        PARM(&PATH)
+           DCL        VAR(&PATH)  TYPE(*CHAR) LEN(50)
+           DCL        VAR(&NULL)  TYPE(*CHAR) LEN(1)  VALUE(X'00')
+           INCLUDE    SRCMBR(QP2_VARS)
+           INCLUDE    SRCMBR(QP2_VARS2)
+           CHGVAR     VAR(&PATHNAME) VALUE(&PATH *TCAT &NULL)
+           INCLUDE    SRCMBR(QP2RUNPASE)
+           ENDPGM
+```
+
+#### QP2_TEST6
+```
+           PGM        PARM(&NAME)
+           DCL        VAR(&NAME)  TYPE(*CHAR) LEN(30)
+           DCL        VAR(&NULL)  TYPE(*CHAR) LEN(1)  VALUE(X'00')
+           INCLUDE    SRCMBR(QP2_VARS)
+           INCLUDE    SRCMBR(QP2_VARS2)
+           DCL VAR(&TARGET_RAW)  TYPE(*CHAR) STG(*BASED) LEN(30) BASPTR(&RETURNPTR)
+           DCL VAR(&TARGET_LEN)  TYPE(*INT)  STG(*BASED) LEN(2) BASPTR(&RETURNPTR)
+           INCLUDE    SRCMBR(QP2PTRSIZE)
+           IF         COND(&PTR_SIZE *EQ 4) THEN(CHGVAR VAR(&ID) VALUE(4294967295))
+           IF         COND(&PTR_SIZE *EQ 8) THEN(CHGVAR VAR(&ID) VALUE(-1))
+           CHGVAR     VAR(&EXP_NAME) VALUE(&NAME *TCAT &NULL)
+           INCLUDE    SRCMBR(QP2DLSYM)
+           IF         COND(&RETURNPTR *EQ *NULL)  THEN(DO)
+           INCLUDE    SRCMBR(QP2DLERROR)
+           IF         COND(&ERR_P *NE *NULL) THEN(DO)
+           SNDPGMMSG  MSG(&MSG)
+           GOTO       CMDLBL(FINE)
+           ENDDO
+           ENDDO
+           SNDPGMMSG  MSG(%SST(&TARGET_RAW 3 &TARGET_LEN))
+FINE:
+           DMPCLPGM
+           ENDPGM
+```
+
+#### QP2_UNSET
+```
+           PGM        
+           INCLUDE    SRCMBR(QP2_VARS)
+           INCLUDE    SRCMBR(QP2ENDPASE)
+           ENDPGM
+```
+
 
 --->
 
@@ -182,6 +261,7 @@ FINE:
            ENDPGM
 
 ```
+
 
 ```
  Scelta o comando                                                               

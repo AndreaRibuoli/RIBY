@@ -1,0 +1,4 @@
+           PGM
+           INCLUDE    SRCMBR(QP2_VARS)
+           INCLUDE    SRCMBR(QP2ENDPASE)
+           ENDPGM

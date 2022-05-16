@@ -1,0 +1,23 @@
+           PGM        PARM(&NAME)
+           DCL        VAR(&NAME)  TYPE(*CHAR) LEN(30)
+           DCL        VAR(&NULL)  TYPE(*CHAR) LEN(1)  VALUE(X'00')
+           INCLUDE    SRCMBR(QP2_VARS)
+           INCLUDE    SRCMBR(QP2_VARS2)
+           DCL VAR(&TARGET_RAW)  TYPE(*CHAR) STG(*BASED) LEN(30) BASPTR(&RETURNPTR)
+           DCL VAR(&TARGET_LEN)  TYPE(*INT)  STG(*BASED) LEN(2) BASPTR(&RETURNPTR)
+           INCLUDE    SRCMBR(QP2PTRSIZE)
+           IF         COND(&PTR_SIZE *EQ 4) THEN(CHGVAR VAR(&ID) VALUE(4294967295))
+           IF         COND(&PTR_SIZE *EQ 8) THEN(CHGVAR VAR(&ID) VALUE(-1))
+           CHGVAR     VAR(&EXP_NAME) VALUE(&NAME *TCAT &NULL)
+           INCLUDE    SRCMBR(QP2DLSYM)
+           IF         COND(&RETURNPTR *EQ *NULL)  THEN(DO)
+           INCLUDE    SRCMBR(QP2DLERROR)
+           IF         COND(&ERR_P *NE *NULL) THEN(DO)
+           SNDPGMMSG  MSG(&MSG)
+           GOTO       CMDLBL(FINE)
+           ENDDO
+           ENDDO
+           SNDPGMMSG  MSG(%SST(&TARGET_RAW 3 &TARGET_LEN))
+FINE:
+           DMPCLPGM
+           ENDPGM
