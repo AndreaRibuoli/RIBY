@@ -86,6 +86,7 @@ Let's go!
 64. [to load or not](#64-to-load-or-not)
 65. [to enjoy the discovery process](#65-to-enjoy-the-discovery-process)
 66. [to share data](#66-to-share-data)
+67. [to allocate dynamically](#67-to-allocate-dynamically)
 
 <!---
 
@@ -118,6 +119,8 @@ in previous requests.
 | QP2\_ARG\_FLOAT128 | -9 |   A 16-byte floating point number. |
 
 
+--->
+
 
 ### 67. to allocate dynamically
 
@@ -126,6 +129,7 @@ We will be allocating memory (dynamically) for the actual message every time *lo
 
 ``` C
 #include <stdlib.h>
+#include <string.h>
 #include <as400_protos.h>
 static char *secret_message;
 
@@ -134,19 +138,18 @@ char public_message[]        = { 0, 20, 227, 136, 133, 162, 133, 64, 129, 153, 1
 
 uint64 locate_message(ILEpointer *ptr4ile) {
   #define MESSAGE_LEN 21
+  static char origin[] = { 131, 150, 164, 147, 132, 64, 168, 150, 164, 64, 130, 
+                           133, 147, 137, 133, 165, 133, 64, 137, 163, 111 }; 
   secret_message = (char *)malloc(MESSAGE_LEN);
-  secret_message[ 0] = 131; secret_message[ 1] = 150; secret_message[ 2] = 164; secret_message[ 3] = 147;
-  secret_message[ 4] = 132; secret_message[ 5] =  64; secret_message[ 6] = 168; secret_message[ 7] = 150;
-  secret_message[ 8] = 164; secret_message[ 9] =  64; secret_message[10] = 130; secret_message[11] = 133;
-  secret_message[12] = 147; secret_message[13] = 137; secret_message[14] = 133; secret_message[15] = 165;
-  secret_message[16] = 133; secret_message[17] =  64; secret_message[18] = 137; secret_message[19] = 163;
-  secret_message[20] = 111;  
+  memcpy(secret_message, origin, MESSAGE_LEN);
   _SETSPP(ptr4ile, secret_message);
   return(MESSAGE_LEN);
 }
 ``` 
 
-We will also create three indipendent ILE CL programs
+We will also create three indipendent ILE CL programs. 
+The first will perform the **Qp2RunPase**, the third the **Qp2EndPase**.
+The middle one can be executed multiple times between the other two.
 
 
 #### QP2_SET
@@ -196,8 +199,29 @@ FINE:
            ENDPGM
 ```
 
+```
+CALL RIBY/QP2_SET PARM('pro_start64                                       ')
+CALL RIBY/QP2_TEST6 PARM('locate_message                ') 
+CALL RIBY/QP2_TEST6 PARM('locate_message                ') 
+CALL RIBY/QP2_TEST6 PARM('locate_message                ') 
+CALL RIBY/QP2_UNSET                  
+```
 
---->
+Everything is kept in place by the **\_RETURN()** API so that the subsequent executions of QP2\_TEST6
+will trigger the PASE **malloc()** consuming memory we are not freeing.
+
+```
+&MEMORY_P64              *INT             8        6442506800                    000000018000DA30
+```
+ 
+```
+&MEMORY_P64              *INT             8        6442506896                    000000018000DA90 
+``` 
+
+```
+&MEMORY_P64              *INT             8        6442506992                    000000018000DAF0
+```
+
 
 ### 66. to share data
 
