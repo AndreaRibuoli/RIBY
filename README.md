@@ -128,23 +128,21 @@ Let us modify *prolegomenon_add.c* again introducing a pointer for the secret\_m
 We will be allocating memory (dynamically) for the actual message every time *locate\_message* function gets called:
 
 ``` C
-#include <stdlib.h>
-#include <string.h>
-#include <as400_protos.h>
-static char *secret_message;
-
-char public_message[]        = { 0, 20, 227, 136, 133, 162, 133, 64, 129, 153, 133, 
-                                 64, 135, 150, 150, 132, 64, 149, 133, 166, 162, 75};
-
-uint64 locate_message(ILEpointer *ptr4ile) {
-  #define MESSAGE_LEN 21
-  static char origin[] = { 131, 150, 164, 147, 132, 64, 168, 150, 164, 64, 130, 
-                           133, 147, 137, 133, 165, 133, 64, 137, 163, 111 }; 
-  secret_message = (char *)malloc(MESSAGE_LEN);
-  memcpy(secret_message, origin, MESSAGE_LEN);
-  _SETSPP(ptr4ile, secret_message);
-  return(MESSAGE_LEN);
-}
+    #include <stdlib.h>
+    #include <string.h>
+    #include <as400_protos.h>
+    static char *secret_message;
+    char public_message[]        = { 0, 20, 227, 136, 133, 162, 133, 64, 129, 153, 133, 
+                                    64, 135, 150, 150, 132, 64, 149, 133, 166, 162, 75};
+    uint64 locate_message(ILEpointer *ptr4ile) {
+      #define MESSAGE_LEN 21
+      static char origin[] = { 131, 150, 164, 147, 132, 64, 168, 150, 164, 64, 130, 
+                               133, 147, 137, 133, 165, 133, 64, 137, 163, 111 }; 
+      secret_message = (char *)malloc(MESSAGE_LEN);
+      memcpy(secret_message, origin, MESSAGE_LEN);
+      _SETSPP(ptr4ile, secret_message);
+      return(MESSAGE_LEN);
+    }
 ``` 
 
 We will also create three indipendent ILE CL programs. 
@@ -222,6 +220,10 @@ will trigger the PASE **malloc()** consuming memory we are not freeing.
 &MEMORY_P64              *INT             8        6442506992                    000000018000DAF0
 ```
 
+
+Let us adopt the 64bit GCC version provided by the team working for Open Source on IBM i.
+
+![](steps.png) 
 
 ### 66. to share data
 
@@ -703,10 +705,10 @@ bash-5.1$
 This will be our second version of **prolegomenon.c**
 
 ``` C
-#include <as400_protos.h>
-int main(int argc, char **argv) {
-  _RETURN();
-}
+    #include <as400_protos.h>
+    int main(int argc, char **argv) {
+      _RETURN();
+    }
 ```
 
 that will compile smoothly:
