@@ -87,6 +87,7 @@ Let's go!
 65. [to enjoy the discovery process](#65-to-enjoy-the-discovery-process)
 66. [to share data](#66-to-share-data)
 67. [to allocate dynamically](#67-to-allocate-dynamically)
+68. [to summarize](#68-to-summarize)
 
 <!---
 
@@ -121,6 +122,33 @@ in previous requests.
 
 --->
 
+### 68. to summarize
+
+We have studied how to use ILE service programs from PASE. 
+We have studied how to use PASE shared libraries from ILE.
+
+But there is asymmetry: 
+
+* PASE statements naturally handle teraspace-enabled memory only, 
+* ILE statements have access to the single-level store **plus** the temporary private teraspace memory reserved by the operating system for the job.
+
+Starting with V4R4 a fraction of the total single-level storage **was reserved** for teraspaces: that is why the *private* adjective is accurate despite the single-level store rooting. 
+
+But teraspaces also support **memory mapping**. 
+
+In practice there are two kinds of address space objects: regions and actual memory objects.
+
+A **region** defines a range of addresses and can, in practice, implement a container of memory objects **and** other regions.
+The main advantage being that this mapping permits noncontiguous single-level objects to be viewed (through the teraspace) as contiguous. 
+
+Can we access this functionality programmatically? Is everything hidden by the implementation of ILE compilers?
+
+This is the topic I would like to document in the coming posts.
+I will also investigate the impacts of **shared memory** as provided by teraspaces.
+  
+So, stay tuned!
+
+----
 
 ### 67. to allocate dynamically
 
@@ -230,6 +258,10 @@ will trigger the PASE **malloc()** consuming memory we are not freeing.
 Let us adopt the 64bit GCC version provided by the team working for Open Source on IBM i.
 
 ![](steps.png) 
+
+[NEXT-68](#68-to-summarize)
+
+----
 
 ### 66. to share data
 
