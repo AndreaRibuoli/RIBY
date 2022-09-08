@@ -242,7 +242,7 @@ Once XMLSERVILE was installed on my system I had the opportunity to develop a
 demonstrative integration to `XMLSTOREDP` service program.
 
 It is called [*invoke_xmlsrv.rb*](invoke_xmlsrv.rb) 
-and reads the XML file provided ([*sample.xml*](sample.xml) performing the procedure call (*iPLUG4K*).
+and reads the XML file provided ([*sample.xml*](sample.xml)) performing the procedure call (*iPLUG4K*).
 
 It also demonstrates how to use **Nokogiri gem** to parse the returned XML content.
 
