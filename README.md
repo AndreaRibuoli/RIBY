@@ -134,7 +134,7 @@ to GitHub.
 
 I am referring to [**XMLSERVICE**](https://github.com/IBM/xmlservice) project.
 
-During my involvement with **PowerRuby** I had little involvement with XMLSERVICE,
+During my involvement with **PowerRuby** I had little experience with XMLSERVICE,
 my role was simply packaging XMLSERVICE inside the savefiles for the `RSTLICPGM`\-styled PowerRuby installation. 
 
 This February I was invited by *Alan Seiden* to his Slack community and I was pleased to have been induced to 
