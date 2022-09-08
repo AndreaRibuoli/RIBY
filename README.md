@@ -88,6 +88,7 @@ Let's go!
 66. [to share data](#66-to-share-data)
 67. [to allocate dynamically](#67-to-allocate-dynamically)
 68. [to summarize](#68-to-summarize)
+69. [to wander about](#69-to-wander-about)
 
 <!---
 
@@ -123,6 +124,151 @@ in previous requests.
 --->
 ----
 
+### 69. to wander about
+
+"... is like a master of a house, who brings out of his treasure what is new and what is old" (Matthew 13:52)
+
+Years ago *Tony Cairns* -working at IBM- architected and developed an RPG ILE service program that became 
+quite known among IBM i Open Source sympathizers. After Tony's retirement, IBM's Open Source team moved the project 
+to GitHub. 
+
+I am referring to [**XMLSERVICE**](https://github.com/IBM/xmlservice) project.
+
+During my involvement with **PowerRuby** I had little involvement with XMLSERVICE,
+my role was simply packaging XMLSERVICE inside the savefiles for the `RSTLICPGM`\-styled PowerRuby installation. 
+
+This February I was invited by *Alan Seiden* to his Slack community and I was pleased to have been induced to 
+deepen my knowledge of *XMLSERVICE*. Actually the focus of the *Slack channel* I am now involved with is **toolkit**.
+Once faced with issues reported in GitHub's related repositories I decided to take the challenge.
+
+Instead of accepting existing build logic (requiring **Python** and **GNU make**) I decided to re\-package XMLSERVICE 
+adopting a tool of my own \-called **PASERIE**\- that I developed along the years. 
+This tool is not open\-sourced (it costed me too much time to be development in order for this to occur!).
+ 
+I internally called this new repository XMLSERV**ILE**: I like the idea that this is a *"servile"* effort to reduce dependencies
+of a project on tools that are not strictly needed.    
+
+My own IBM i system has no development tools installed: nonetheless I created a comfortable development environment by means of Open Source portings and private native software.
+
+When I re\-engineer a package for *PASERIE* its source code resides on GitHub. 
+The systems that have runtime version of PASERIE installed can then install these packages with simple commands like the following one:
+
+```
+PASERIE/INSTALL GIT_USER(AndreaRibuoli) PACKAGEN(IBMIMBI)
+```
+   
+The installation tool takes care of reading the content of a special file it expects to find in each repository always named **GUIDANCE.TXT**.
+
+```
+*PREREQ   QUINCL              AndreaRibuoli  
+QCLSRC    BUILD     CLLE      IBMIMBI in sviluppo (CALL IBMIMBI/BUILD)
+QCLSRC    CONT_MAIN CLLE      Runs intial panel               
+QCLSRC    CONT_PROM CLLE      F4 on state selection handler               
+QCLSRC    CONT_FILL CLLE      Called by CONT_PROM              
+QCLSRC    CONT_ACTN CLLE      List option exit                
+QCLSRC    CONT_EXIT CLLE      General exit program       
+QCLSRC    CONT_FKEY CLLE      Function key exit               
+. . .
+```
+
+Each record of GUIDANCE.TXT, in the format `10+10+10+50`, instructs to download a source file member.
+
+The following line:
+
+```
+1234567890123456789012345678901234567890123456789012345678901234567890
+|--------||--------||--------||--------------------------------------|
+QCLSRC    CONT_MAIN CLLE      Runs intial panel               
+```
+
+refers to a source file member that resides inside the repository (IBMIMBI) as `QCLSRC/CONT_MAIN.CLLE`.
+
+If the source file name field (the first 10 chars) contains the special value **\*PREREQ** the handling is different. 
+If that is the case the fields that follow direct the installer to submit a pre\-requited new installation. 
+
+
+```
+1234567890123456789012345678901234567890123456789012345678901234567890
+|--------||--------||--------||--------------------------------------|
+*PREREQ   QUINCL              AndreaRibuoli  
+```
+
+In this example a new job will be sumbitted executing:
+
+```
+PASERIE/INSTALL GIT_USER(AndreaRibuoli) PACKAGEN(QUINCL)
+```
+
+Note: passing the **GIT_USER** enables to install packages developed by colleagues under their GitHub's profile.
+
+If the GitHub repository is **private**, the `PASERIE/INSTALL` tool provides support to pass the authentication token.
+In my case I use my own token.
+Should a collegue (authorized to read the project) perform the install a my private project, he/she will use his/her token.
+
+GitHub security will enforce a consistent authentication model.   
+  
+
+As I have written before, I do not have IBM licensed compilers installed in my IBM i system.
+
+So, how was it possible for me to build `PACKAGEN(XMLSERVILE)`?
+
+One of my customers has an IBM i system with RPG ILE compiler installed. 
+My system has version 7.3 installed, the customer one version 7.4.
+
+On my customer system I issued (apart from the token parameters):
+
+```
+PASERIE/INSTALL GIT_USER(AndreaRibuoli) PACKAGEN(XMLSERVILE) TGTRLS(*PRV)
+```
+
+Saving the library on a savefile (remembering `TGTRLS(*PRV)` option) solved my problem:
+restoring the savefile on my system did the job.
+
+Consider that as soon as the opening of XMLSERVILE's GUIDANCE.TXT file is:
+
+```
+*PREREQ   TMKMAKE             AndreaRibuoli
+QCLSRC    BUILD     CLLE      Software di installazione
+QCLSRC    ZZSHLOMO  CLP       description
+QMAKSRC   BUILD     TXT       Software di installazione
+QSQLSRC   XMLSTOREDPSQL       description
+QSRVSRC   XMLSTOREDPBND       description
+. . .
+```
+
+Another pre\-requisite installation was required (`PACKAGEN(TMKMAKE)`).
+
+Once XMLSERVILE was installed on my system I had the opportunity to develop a 
+demonstrative integration to `XMLSTOREDP` service program.
+
+It is called [*invoke_xmlsrv.rb*](invoke_xmlsrv.rb) 
+and reads the XML file provided ([*sample.xml*](sample.xml) performing the procedure call (*iPLUG4K*).
+
+It also demonstrates how to use **Nokogiri gem** to parse the returned XML content.
+
+In the logging I echo the Ruby instructions for using **xpath()** method provided by **Nokogiri::XML** object:
+
+
+```
+bash-5.1$ ./invoke_xmlsrv.rb sample.xml
+doc.xpath('//xmlservice/pgm/parm/ds/data').map{|e| puts "#{e.attr('var')} = #{e.content}"}
+INDS1.DSCHARA = E
+INDS1.DSCHARB = F
+INDS1.DSDEC1 = 333,3330
+INDS1.DSDEC2 = 4444444444,44
+
+doc.xpath('//xmlservice/pgm/success').text
++++ success XMLSERVILE ZZCALL 
+
+doc.xpath('//xmlservice/pgm/return/data').text
+0
+bash-5.1$ 
+```
+
+*... what is new and what is old.*
+
+----
+
 ### 68. to summarize
 
 We have studied how to use ILE service programs from PASE. 
@@ -148,6 +294,8 @@ This is the topic I would like to document in the coming posts.
 I will also investigate the impacts of **shared memory** as provided by teraspaces.
   
 So, stay tuned!
+
+[NEXT-69](#69-to-wander-about)
 
 ----
 

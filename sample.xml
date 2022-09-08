@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<xmlservice>
+  <pgm name="ZZCALL" lib="XMLSERVILE">
+    <parm io="both">
+      <data type="1A" var="INCHARA">a</data>
+    </parm>
+    <parm io="both">
+      <data type="1A" var="INCHARB">b</data>
+    </parm>
+    <parm io="both">
+      <data type="7p4" var="INDEC1">11.1111</data>
+    </parm>
+    <parm io="both">
+      <data type="12p2" var="INDEC2">222.22</data>
+    </parm>
+    <parm io="both">
+      <ds>
+        <data type="1A" var="INDS1.DSCHARA">x</data>
+        <data type="1A" var="INDS1.DSCHARB">y</data>
+        <data type="7p4" var="INDS1.DSDEC1">66.6666</data>
+        <data type="12p2" var="INDS1.DSDEC2">77777.77</data>
+      </ds>
+    </parm>
+    <return>
+      <data type="10i0">0</data>
+    </return>
+  </pgm>
+</xmlservice>
