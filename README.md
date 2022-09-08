@@ -203,7 +203,7 @@ Note: passing the **GIT_USER** enables to install packages developed by colleagu
 
 If the GitHub repository is **private**, the `PASERIE/INSTALL` tool provides support to pass the authentication token.
 In my case I use my own token.
-Should a collegue (authorized to read the project) perform the install a my private project, he/she will use his/her token.
+Should a collegue (authorized to read the project) perform the installation of one of my private projects, he/she will use his/her token.
 
 GitHub security will enforce a consistent authentication model.   
   
