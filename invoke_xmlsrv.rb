@@ -3,8 +3,8 @@ require 'fiddle'
 require 'fiddle/import'
 extend Fiddle::Importer                                                                                               
 raise "Usage: invoke_xmlsrv.rb <xmlfile>" if ARGV.length != 1
-ibmilib = 'XMLSERVILE' # 'XMLSERVICE', 'XMLSERVILE'
-ebcdic =  'IBM280'     # 'IBM037', 'IBM280'
+ibmilib = 'XMLSERVICE' # 'XMLSERVICE', 'XMLSERVILE'
+ebcdic =  'IBM037'     # 'IBM037', 'IBM280'
 myIPC  = '*NA'.encode(ebcdic)
 myCTL  = '*here'.encode(ebcdic)
 script = File.read(ARGV[0])
