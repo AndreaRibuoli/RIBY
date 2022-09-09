@@ -184,7 +184,7 @@ QCLSRC    CONT_MAIN CLLE      Runs intial panel
 refers to a source file member that resides inside the repository (IBMIMBI) as `QCLSRC/CONT_MAIN.CLLE`.
 
 If the source file name field (the first 10 chars) contains the special value **\*PREREQ** the handling is different. 
-If that is the case the fields that follow direct the installer to submit a pre\-requited new installation. 
+If that is the case the fields that follow direct the installer to submit a pre\-required new installation. 
 
 
 ```
