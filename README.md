@@ -296,7 +296,7 @@ literal.cc-    return Result::Error;
 ```
 
 It is not elegant -I admit- but my practical programming approach dissolved the issue by 
-commenting out the **kHugeVal** variables and by replacing the classy **if** test with 
+commenting out the **kHugeVal** variables and by substituting the classy **if** test with 
 a more trivial replacement:
 
 
