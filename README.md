@@ -89,6 +89,7 @@ Let's go!
 67. [to allocate dynamically](#67-to-allocate-dynamically)
 68. [to summarize](#68-to-summarize)
 69. [to wander about](#69-to-wander-about)
+70. [to reinvent wheels](#70-to-reinvent-wheels)
 
 <!---
 
@@ -123,6 +124,231 @@ in previous requests.
 
 --->
 ----
+
+### 70. to reinvent wheels
+
+The Collins dictionary clarifies that: 
+
+*If someone is trying **to reinvent the wheel**, 
+they are trying to do something that has already been done successfully.*
+
+By porting applications to IBM i PASE we are definitely reinventing wheels.
+But we risk not to be able to do this as successfully as the original authors!
+
+Keeping a link with Ruby's evolution has always offered me an **Annotated Executive Summary** of what we should monitor in the Open Source ecosystem.
+
+The forecoming Ruby 3.2.0 version (Preview 2 on 9th of September) is no exception: it introduces **WASI based WebAssembly support**.
+
+This triggered what was my generic interest on WebAssembly to the willingness to port WebAssembly tools in PASE.
+
+I save you all the introduction and address you directly to the **The WebAssembly Binary Toolkit** (*WABT*).
+
+From the [README.md](https://github.com/WebAssembly/wabt/blob/main/README.md) we read that these *tools are intended for use in toolchains or other systems that want to manipulate WebAssembly files*.
+
+And later on: *they are **written in C/C++** and designed for easier integration into other systems*.
+
+
+We start by cloning:
+
+
+```
+git clone --recursive https://github.com/WebAssembly/wabt
+cd wabt
+git submodule update --init
+```
+
+We proceed by checking that **CMake** is installed: `yum list cmake` (and `yum install cmake` if missing).
+
+
+Having *wabt* as the current directory, we follow the README instructions for a build:
+
+
+```
+mkdir build
+cd build
+cmake ..
+cmake --build .
+```
+
+Unfortunately we will fail pretty soon:
+
+```
+-- The C compiler identification is GNU 6.3.0
+-- The CXX compiler identification is GNU 6.3.0
+-- Check for working C compiler: /QOpenSys/pkgs/bin/cc
+-- Check for working C compiler: /QOpenSys/pkgs/bin/cc -- works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Check for working CXX compiler: /QOpenSys/pkgs/bin/c++
+-- Check for working CXX compiler: /QOpenSys/pkgs/bin/c++ -- works
+. . .
+. . .
+Scanning dependencies of target wabt
+[  1%] Building CXX object CMakeFiles/wabt.dir/src/apply-names.cc.o
+In file included from /home/jupyter/2022/WebAssemblyStudy/wabt/include/wabt/apply-names.h:20:0,
+                 from /home/jupyter/2022/WebAssemblyStudy/wabt/src/apply-names.cc:17:
+/home/jupyter/2022/WebAssemblyStudy/wabt/include/wabt/common.h:30:23: fatal error: string_view: No such file or directory
+ #include <string_view>
+                       ^
+compilation terminated.
+gmake[2]: *** [CMakeFiles/wabt.dir/build.make:66: CMakeFiles/wabt.dir/src/apply-names.cc.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:780: CMakeFiles/wabt.dir/all] Error 2
+gmake: *** [Makefile:133: all] Error 2
+```
+
+This means that **GCC 6.3.0** is not enough. 
+
+But we are lucky because if we `yum list gcc*` we find out a GCC10 version is available.
+We can install it with `yum install gcc10` command.
+
+Now we remove previous build directory and start from scratch with a new setting for **CC** and **CXX** environment variables:
+
+```
+cd wabt
+rm -r build
+mkdir build
+cd build
+CC="/QOpenSys/pkgs/bin/gcc-10" CXX="/QOpenSys/pkgs/bin/g++-10" cmake ..
+CC="/QOpenSys/pkgs/bin/gcc-10" CXX="/QOpenSys/pkgs/bin/g++-10" cmake --build .
+```
+
+And now we face a C++ cryptical error message:
+
+```
+[ 13%] Building CXX object CMakeFiles/wabt.dir/src/literal.cc.o
+In file included from /QOpenSys/pkgs/lib/gcc/powerpc-ibm-aix6.1.0.0/10/include/c++/cmath:45,
+                 from /home/jupyter/2022/WebAssemblyStudy/wabt/src/literal.cc:22:
+/home/jupyter/2022/WebAssemblyStudy/wabt/src/literal.cc:43:37: error: 'reinterpret_cast' is not a constant expression
+   43 |   static constexpr float kHugeVal = HUGE_VALF;
+      |                                     ^~~~~~~~~
+/home/jupyter/2022/WebAssemblyStudy/wabt/src/literal.cc:54:37: error: 'reinterpret_cast' is not a constant expression
+   54 |   static constexpr float kHugeVal = HUGE_VAL;
+      |                                     ^~~~~~~~
+gmake[2]: *** [CMakeFiles/wabt.dir/build.make:352: CMakeFiles/wabt.dir/src/literal.cc.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:780: CMakeFiles/wabt.dir/all] Error 2
+gmake: *** [Makefile:133: all] Error 2
+```
+
+We are forced to understand two apparently simple C++ functions:
+
+``` C++
+template <>
+struct FloatTraitsBase<float> {
+  typedef uint32_t Uint;
+  static constexpr int kBits = sizeof(Uint) * 8;
+  static constexpr int kSigBits = 23;
+  static constexpr float kHugeVal = HUGE_VALF;
+  static constexpr int kMaxHexBufferSize = WABT_MAX_FLOAT_HEX;
+  static float Strto(const char* s, char** endptr) { return strtof(s, endptr); }
+};
+
+template <>
+struct FloatTraitsBase<double> {
+  typedef uint64_t Uint;
+  static constexpr int kBits = sizeof(Uint) * 8;
+  static constexpr int kSigBits = 52;
+  static constexpr float kHugeVal = HUGE_VAL;
+  static constexpr int kMaxHexBufferSize = WABT_MAX_DOUBLE_HEX;
+  static double Strto(const char* s, char** endptr) { return strtod(s, endptr); }
+};
+```
+
+First of all we are exposed to the **template** concept.
+In these two structs there is only one template type (`float` in the first and `double` in the second): that's why the angle brackets content is empty (`template <>`).
+
+The `struct` named *FloatTraitsBase* will be defined and initialized differently based on the template type.
+All the equally named members (*Uint*, *kBits*, *kSigBits*, *kHugeVal*, *kMaxHexBufferSize*, *Strto*) will have different definitions and different initializations based on the 
+template type (float .vs. double).
+
+Now, why setting *kSigBits* to 23 (in float's version) is admitted, and setting *kHugeVal* to HUGE_VALF is not?
+
+It was C++ 2011 that introduced the **constant expression** concept, i.e. an expression that in order to be evaluated will not require (explicitly or implicitly) functions or methods that are **not** constant expressions on their turn. 
+
+The compiler is exactly complaining about HUGE_VALF and HUGE_VAL not being constant expressions.
+
+How can this be possible?
+
+Simple.
+
+HUGE_VALF and HUGE_VAL are defined in the AIX include file `/usr/include/math.h` and do not satisfy the C++ requirement for **constexpr** initialization
+(although being defined properly in other C++2011\-friendly platforms).
+
+Now, wait a minute, if IBM hasn't bothered fixing their includes for C++ 2011... why should I?
+
+Searching for **kHugeVal** we discover that it is used in just **one line** of C++ code!
+
+
+```
+bash-5.1$ grep kHugeVal -1 *.*
+literal.cc-  static constexpr int kSigBits = 23;
+literal.cc:  static constexpr float kHugeVal = HUGE_VALF;
+literal.cc-  static constexpr int kMaxHexBufferSize = WABT_MAX_FLOAT_HEX;
+--
+literal.cc-  static constexpr int kSigBits = 52;
+literal.cc:  static constexpr float kHugeVal = HUGE_VAL;
+literal.cc-  static constexpr int kMaxHexBufferSize = WABT_MAX_DOUBLE_HEX;
+--
+literal.cc-  if (endptr != buffer_end ||
+literal.cc:      (value == Traits::kHugeVal || value == -Traits::kHugeVal)) {
+literal.cc-    return Result::Error;
+```
+
+It is not elegant -I admit- but my practical programming approach dissolved the issue by 
+commenting out the **kHugeVal** variables and by replacing the classy **if** test with 
+a more trivial replacement:
+
+
+``` C++
+if (endptr != buffer_end ||
+    (value == HUGE_VALF || value == -HUGE_VALF) ||
+    (value == HUGE_VAL  || value == -HUGE_VAL)) {
+       return Result::Error;
+}
+```
+
+
+You will discover a build issue in linking that is easily fixed adding `set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")` in the *CMakeLists.txt* file.
+
+The final result is encouraging: we are ready to experiment with WebAssembly:
+
+```
+/home/JUPYTER/2022/WebAssemblyStudy
+bash-5.1$ ./wabt/bin/wasm-objdump -d add.wasm
+
+add.wasm:       file format wasm 0x1
+
+Code Disassembly:
+
+0000ce func[0] <__wasm_call_ctors>:
+ 0000cf: 0b                         | end
+0000d1 func[1] <add>:
+ 0000d2: 01 7f                      | local[2] type=i32
+ 0000d4: 23 00                      | global.get 0
+ 0000d6: 41 10                      | i32.const 16
+ 0000d8: 6b                         | i32.sub
+ 0000d9: 22 02                      | local.tee 2
+ 0000db: 20 00                      | local.get 0
+ 0000dd: 36 02 0c                   | i32.store 2 12
+ 0000e0: 20 02                      | local.get 2
+ 0000e2: 20 01                      | local.get 1
+ 0000e4: 36 02 08                   | i32.store 2 8
+ 0000e7: 20 02                      | local.get 2
+ 0000e9: 28 02 0c                   | i32.load 2 12
+ 0000ec: 20 02                      | local.get 2
+ 0000ee: 28 02 0c                   | i32.load 2 12
+ 0000f1: 6c                         | i32.mul
+ 0000f2: 20 02                      | local.get 2
+ 0000f4: 28 02 08                   | i32.load 2 8
+ 0000f7: 6a                         | i32.add
+ 0000f8: 0b                         | end
+```
+
+Next time we will give some practical usage examples.
+Stay tuned!
+
+-----
 
 ### 69. to wander about
 
@@ -266,6 +492,8 @@ bash-5.1$
 ```
 
 *... what is new and what is old.*
+
+[NEXT-70](#70-to-reinvent-wheels)
 
 ----
 
