@@ -345,7 +345,7 @@ Code Disassembly:
  0000f8: 0b                         | end
 ```
 
-Next time we will give some practical usage examples.
+Next time I will give some practical usage examples.
 Stay tuned!
 
 -----
