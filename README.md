@@ -231,7 +231,7 @@ gmake[1]: *** [CMakeFiles/Makefile2:780: CMakeFiles/wabt.dir/all] Error 2
 gmake: *** [Makefile:133: all] Error 2
 ```
 
-We are forced to understand two apparently simple C++ functions:
+We are forced to understand two apparently simple C++ *struct*s:
 
 ``` C++
 template <>
