@@ -146,7 +146,7 @@ On the other hand it is not easy to grasp the opportunity behind *WebAssembly* i
 
 The 19th of April 2022 W3C published the **WebAssembly 2.0 FIRST PUBLIC WORKING DRAFTS** bringing new light on the technological evolution WebAssembly could mean for all of us. 
 
-So why not experiment WebAssembly using IBM i.
+So, why not to experiment WebAssembly using IBM i?
 
 Today I will deliberately split the role of PASE from ILE:
 
