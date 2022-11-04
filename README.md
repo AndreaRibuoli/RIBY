@@ -90,6 +90,7 @@ Let's go!
 68. [to summarize](#68-to-summarize)
 69. [to wander about](#69-to-wander-about)
 70. [to reinvent wheels](#70-to-reinvent-wheels)
+71. [to realize changes occurred](#71-to-realize-changes-occurred)
 
 <!---
 
@@ -123,6 +124,45 @@ in previous requests.
 
 
 --->
+----
+
+### 71. to realize changes occurred
+
+The 5th of December 2019 **W3C** (*World Wide Web Consortium*) released an announcement. 
+The temporal proximity with COVID\-19 **worldwide** awareness made me ignore how relevant the subject of the announcement was:
+
+"Following HTML, CSS and JavaScript, **WebAssembly** becomes the fourth language for the Web which allows code to run in the browser".
+ 
+If we had considered relevant to know the basics of **HTML**, **CSS** and **JavaScript**, from the 6th of December 2019
+we were also supposed to be able to debate about *WebAssembly*.
+
+Curiously, the technological relevance of WebAssembly has been... **being announced by W3C**!
+Its genesis as a collaboration project among vendors like Mozilla, Microsoft, Google, Apple, Fastly, Intel and Red Hat 
+made it available in modern browsers (and elsewhere).
+No plugins are involved: the ability to execute WebAssembly binary\-code is directly integrated in browsers
+(i.e. **more security** and **less malware nightmares*).
+
+On the other hand it is not easy to grasp the opportunity behind *WebAssembly* if you are not \-already\- involved in the **containers's industry** ([read about Bloomberg, BBC, Disney and Amazon](https://www.infoworld.com/article/3651503/the-rise-of-webassembly.html)) 
+
+The 19th of April 2022 W3C published the **WebAssembly 2.0 FIRST PUBLIC WORKING DRAFTS** bringing new light on the technological evolution WebAssembly could mean for all of us. 
+
+So why not experiment WebAssembly using IBM i.
+
+Today I will deliberatly split the role of PASE from ILE:
+
+* I will use **PASE** in the WebAssembly development stages (using *WABT*, *JupyterLab* and *Node.js*) and 
+* I will use **ILE** in the WebAssembly execution phase (accessing *IBM HTTP Server for i* from modern browsers).
+
+You will be surprised to discover that the **Node.js** packaged by IBM Rochester for IBM i PASE \-already\- includes the 
+pre\-requisite functionality to integrate WebAssembly.
+With the appropriate jargon we should say that **Node.js in PASE** is a valid **embedding environment** for WebAssembly.
+
+I will also describe a rare approach to native ILE CGI programming where the source code is **ILE CL only**!
+
+Please wait after the **26th of November** when I will be presenting **WebAssembly and IBM i** (in Italian) at the next [**ITPASS Meeting**](http://www.itpass.org) 
+
+Enjoy!
+
 ----
 
 ### 70. to reinvent wheels
