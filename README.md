@@ -140,7 +140,7 @@ Curiously, the technological relevance of WebAssembly has been... **being announ
 Its genesis as a collaboration project among vendors like Mozilla, Microsoft, Google, Apple, Fastly, Intel and Red Hat 
 made it available in modern browsers (and elsewhere).
 No plugins are involved: the ability to execute WebAssembly binary\-code is directly integrated in browsers
-(i.e. **more security** and **less malware nightmares*).
+(i.e. **more security** and **less malware nightmares**).
 
 On the other hand it is not easy to grasp the opportunity behind *WebAssembly* if you are not \-already\- involved in the **containers's industry** ([read about Bloomberg, BBC, Disney and Amazon](https://www.infoworld.com/article/3651503/the-rise-of-webassembly.html)) 
 
