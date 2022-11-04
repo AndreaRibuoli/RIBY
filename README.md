@@ -142,7 +142,7 @@ made it available in modern browsers (and elsewhere).
 No plugins are involved: the ability to execute WebAssembly binary\-code is directly integrated in browsers
 (i.e. **more security** and **less malware nightmares**).
 
-On the other hand it is not easy to grasp the opportunity behind *WebAssembly* if you are not \-already\- involved in the **containers's industry** ([read about Bloomberg, BBC, Disney and Amazon](https://www.infoworld.com/article/3651503/the-rise-of-webassembly.html)) 
+On the other hand it is not easy to grasp the opportunity behind *WebAssembly* if you are not \-already\- involved in the **containers' industry** ([read about Bloomberg, BBC, Disney and Amazon](https://www.infoworld.com/article/3651503/the-rise-of-webassembly.html)) 
 
 The 19th of April 2022 W3C published the **WebAssembly 2.0 FIRST PUBLIC WORKING DRAFTS** bringing new light on the technological evolution WebAssembly could mean for all of us. 
 
