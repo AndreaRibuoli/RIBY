@@ -90,7 +90,7 @@ Let's go!
 68. [to summarize](#68-to-summarize)
 69. [to wander about](#69-to-wander-about)
 70. [to reinvent wheels](#70-to-reinvent-wheels)
-71. [to realize changes occurred](#71-to-realize-changes-occurred)
+71. [to realize changes had occurred](#71-to-realize-changes-had-occurred)
 
 <!---
 
@@ -126,7 +126,7 @@ in previous requests.
 --->
 ----
 
-### 71. to realize changes occurred
+### 71. to realize changes had occurred
 
 The 5th of December 2019 **W3C** (*World Wide Web Consortium*) released an announcement. 
 The temporal proximity with COVID\-19 **worldwide** awareness made me ignore how relevant the subject of the announcement was:
@@ -387,6 +387,8 @@ Code Disassembly:
 
 Next time I will give some practical usage examples.
 Stay tuned!
+
+[NEXT-71](#71-to-realize-changes-had-occurred)
 
 -----
 
