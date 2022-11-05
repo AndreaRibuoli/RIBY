@@ -148,7 +148,7 @@ The 19th of April 2022 W3C published the **WebAssembly 2.0 FIRST PUBLIC WORKING 
 
 So, why not to experiment WebAssembly using IBM i?
 
-Today I will deliberately split the role of PASE from ILE:
+Today I will deliberately split the role of PASE from the role of ILE:
 
 * I will use **PASE** in the WebAssembly development stages (using *WABT*, *JupyterLab* and *Node.js*) and 
 * I will use **ILE** in the WebAssembly execution phase (accessing *IBM HTTP Server for i* from modern browsers).
