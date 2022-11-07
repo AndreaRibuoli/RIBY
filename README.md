@@ -8162,7 +8162,7 @@ SQLRETURN SQLConnectW (SQLHDBC          hdbc,
 
 Note that passing **SQL_NTS** (-3 = 0xFFFD) stands for *Null Terminated String* and could be passed for the SQLSMALLINTs required.
 
-One of the aspects that I prefers of Ruby is the support for different encodings.
+One of the aspects I prefer of Ruby is the support for different encodings.
 The **UTF\-16BE** one will directly support our needs with SQL Wide APIs.
 
 Let us prepare the argument list types:
