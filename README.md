@@ -154,7 +154,7 @@ You only need to patch the root `CMakeLists.txt` file to support PowerPC:
 
 You will get a fast **read–eval–print loop (REPL)** utility that I will use in my presentation next Saturday.
 
-![WAoi](Waoi.png)
+![WAoi](WAoi.png)
 
 Stay tuned!
 
