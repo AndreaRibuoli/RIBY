@@ -91,6 +91,7 @@ Let's go!
 69. [to wander about](#69-to-wander-about)
 70. [to reinvent wheels](#70-to-reinvent-wheels)
 71. [to realize changes had occurred](#71-to-realize-changes-had-occurred)
+72. [to get confortable](#72-to-get-confortable)
 
 <!---
 
@@ -124,6 +125,39 @@ in previous requests.
 
 
 --->
+----
+
+### 72. to get confortable
+
+Just in case you followed my last two posts on *WebAssembly*, I want to document here another
+successful build in PASE of *a WebAssembly interpreter written in C*.
+
+It is named [**wasm3**](https://github.com/wasm3/wasm3) and I have built it following the same 
+steps adopted for [**wabt**](#70-to-reinvent-wheels):
+
+```
+git clone https://github.com/wasm3/wasm3.git
+export OBJECT_MODE=64
+cd wasm3
+mkdir build
+cd build
+CC="/QOpenSys/pkgs/bin/gcc-10" cmake ..
+CC="/QOpenSys/pkgs/bin/gcc-10" cmake --build .
+```
+
+You only need to patch the root `CMakeLists.txt` file to support PowerPC:
+
+``` cmake
+      ## set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -march=native")
+      set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -mcpu=native -mtune=native")      
+``` 
+
+You will get a fast **read–eval–print loop (REPL)** utility that I will use in my presentation next Saturday.
+
+![WAoi](Waoi.png)
+
+Stay tuned!
+
 ----
 
 ### 71. to realize changes had occurred
