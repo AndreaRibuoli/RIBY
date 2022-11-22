@@ -193,7 +193,7 @@ With the appropriate jargon we should say that **Node.js in PASE** is a valid **
 
 I will also describe a rare approach to native ILE CGI programming where the source code is **ILE CL only**!
 
-Please wait after the **26th of November** when I will be presenting **WebAssembly and IBM i** (in Italian) at the next [**ITPASS Meeting**](http://www.itpass.org) 
+Please wait after the **26th of November** when I will be presenting **WebAssembly on IBM i** (in Italian) at the next [**ITPASS Meeting**](http://www.itpass.org) 
 
 Enjoy!
 
