@@ -148,8 +148,8 @@ CC="/QOpenSys/pkgs/bin/gcc-10" cmake --build .
 You only need to patch the root `CMakeLists.txt` file to support PowerPC:
 
 ``` cmake
-      ## set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -march=native")
-      set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -mcpu=native -mtune=native")      
+## set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -march=native")
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -mcpu=native -mtune=native")      
 ``` 
 
 You will get a fast **read–eval–print loop (REPL)** utility that I will use in my presentation next Saturday.
