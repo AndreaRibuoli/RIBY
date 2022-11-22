@@ -197,6 +197,8 @@ Please wait after the **26th of November** when I will be presenting **WebAssemb
 
 Enjoy!
 
+[NEXT-72](#72-to-get-confortable)
+
 ----
 
 ### 70. to reinvent wheels
