@@ -142,7 +142,7 @@ The only difference is that while WebAssembly formats are well\-documented, save
 I had already written something on the topic [in Italian, more than two years ago](https://www.andrearibuoli.it/wp/2020/08/24/hello-world/) but the study of WebAssembly made me implement
 a **crazy** idea that could trigger a collective interest (possibly from retired IBM i fans!).
 
-Let me breifly describe it. 
+Let me briefly describe it. 
 
 I have created an **ILE CL CGI program supporting JSON**:
  
