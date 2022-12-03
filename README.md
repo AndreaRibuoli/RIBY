@@ -92,6 +92,7 @@ Let's go!
 70. [to reinvent wheels](#70-to-reinvent-wheels)
 71. [to realize changes had occurred](#71-to-realize-changes-had-occurred)
 72. [to get confortable](#72-to-get-confortable)
+73. [to be surprised](#73-to-be-surprised)
 
 <!---
 
@@ -125,6 +126,45 @@ in previous requests.
 
 
 --->
+
+----
+
+### 73. to be surprised
+
+I had my presentation ( *WebAssembly on IBM i* ) the *26th of November*.
+It was appreciated and I felt spurred on experimenting more.
+
+The curious aspect is that understanding WebAssembly binary format expose you to concepts
+very similar to the packaging techniques used by IBM i in generating savefiles for objects and libraries.
+
+The only difference is that while WebAssembly formats are well\-documented, savefiles had been shrouded in mystery.
+
+I had already written something on the topic [in Italian, more than two years ago](https://www.andrearibuoli.it/wp/2020/08/24/hello-world/) but the study of WebAssembly made me implement a
+a **crazy** idea that could trigger a collective interest (possibly from retired IBM i fans!).
+
+Let me breifly describe it. 
+
+I have created an **ILE CL CGI program supporting JSON**:
+ 
+* it is invoked from a browser, receives JSON content to pass through a (library,object,type) triad specified by the user
+  and generates inside the **htdocs** directory a WebAssembly file (.wasm) with a **memory** section that is nothing 
+  more than the binary savefile content of the savefile generated on the fly in QTEMP from a SAVOBJ of the requested object
+  (spilled from the trailing 16 control bytes of each 528-lengthy record)
+    
+Then comes a *vile adaptation* of the **WebAssembly Code Explorer** (https://wasdk.github.io/wasmcodeexplorer/) that 
+instead on showing the wasm contend (using *WasmParser*, that is the real hero there) simply focus on the memory that the 
+WebAssembly module is actually exporting for JavaScript to have access to.
+
+Adding a simple table for my CCSID (Italian 280) completed the tricky final effect!
+
+![SAVEFILE Data Explorer](savf-data-explorer.png)
+
+Given the universal nature of WebAssembly I thought that building a WA/JavaScript library to extract content from savefiles 
+(once trasfered out of IBM i system) could be intriguing. I will start with supporting 
+`*DTS timestamp format` that is frequently used in savefile anc could be a good excersize in using WebAssembly.
+
+If you are interested open an *Issue* to openly discuss the idea.
+
 ----
 
 ### 72. to get confortable
