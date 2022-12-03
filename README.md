@@ -152,7 +152,7 @@ I have created an **ILE CL CGI program supporting JSON**:
   (spilled from the trailing 16 control bytes of each 528-lengthy record)
     
 Then comes a *vile adaptation* of the **WebAssembly Code Explorer** (https://wasdk.github.io/wasmcodeexplorer/) that 
-instead on showing the wasm contend (using *WasmParser*, that is the real hero there) simply focus on the memory that the 
+instead of showing the wasm contend (using *WasmParser*, that is the real hero there) simply focus on the memory that the 
 WebAssembly module is actually exporting for JavaScript to have access to.
 
 Adding a simple table for my CCSID (Italian 280) completed the tricky final effect!
