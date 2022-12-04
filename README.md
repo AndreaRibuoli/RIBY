@@ -198,6 +198,8 @@ You will get a fast **read–eval–print loop (REPL)** utility that I will use 
 
 Stay tuned!
 
+[NEXT-73](#73-to-be-surprised)
+
 ----
 
 ### 71. to realize changes had occurred
