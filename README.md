@@ -161,7 +161,7 @@ Adding a simple table for my CCSID (Italian 280) completed the tricky final effe
 
 Given the universal nature of WebAssembly I thought that building a WA/JavaScript library to extract content from savefiles 
 (once trasfered out of IBM i system) could be intriguing. I will start with supporting 
-`*DTS timestamp format` that is frequently used in savefile and could be a good exercise in using WebAssembly.
+`*DTS timestamp format` that is frequently used in savefileS and could be a good exercise in using WebAssembly.
 
 If you are interested open an *Issue* to openly discuss the idea.
 
