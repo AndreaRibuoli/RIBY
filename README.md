@@ -165,6 +165,31 @@ Given the universal nature of WebAssembly I thought that building a WA/JavaScrip
 
 If you are interested open an *Issue* to openly discuss the idea.
 
+From *JavaScript* the correct calculus for my time zone (*GMT+0100 (CET)*) is:
+
+``` JavaScript
+  outpt.value  = new Date((((((((((((((
+                   sf[0]-128) * 256)
+                     + sf[1]) * 256) 
+                     + sf[2]) * 256)
+                     + sf[3]) * 256)
+                     + sf[4]) * 256)
+                     + sf[5]) * 256)
+                     + sf[6]) / 16000 + 946684800000 - 3600000); 
+
+``` 
+
+Note that:
+
+* I am assuming a new millennium date: I subtract `0x80` to the highest byte (the first)
+* I limit granularity to milliseconds: I divide by 16000
+* I correct for the different base dates: 1/1/2000 for IBM i, 1/1/1970 for JavaScript (i.e. 10957 days, 946684800000 milliseconds )
+* I correct for my timezone ( one hour will be added by JavaScript *Date()* initializer, so I subtract 3600000 milliseconds )
+
+![timestamp](timestamp.png)
+
+We could move all the math involved into WebAssembly, so let us try plugging such logic into our ILE CL CGI object to wasm dumper. 
+
 ----
 
 ### 72. to get confortable
