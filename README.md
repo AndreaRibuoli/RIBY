@@ -278,7 +278,7 @@ Note that:
 
 We could move all the math involved into WebAssembly, so let us try plugging such logic into our ILE CL CGI object to wasm dumper. 
 
-[NEXT-74](#74-to-be-proud)]
+[NEXT-74](#74-to-be-proud)
 
 ----
 
