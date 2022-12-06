@@ -93,6 +93,8 @@ Let's go!
 71. [to realize changes had occurred](#71-to-realize-changes-had-occurred)
 72. [to get confortable](#72-to-get-confortable)
 73. [to be surprised](#73-to-be-surprised)
+74. [to be proud](#74-to-be-proud)
+
 
 <!---
 
@@ -126,6 +128,92 @@ in previous requests.
 
 
 --->
+----
+
+### 74. to be proud
+
+I think it is difficult for me to share the sense of accomplishment for something nobody would consider reasonable.
+But wait. Let me try to explain.
+
+The latest version of my *ILE CL CGI object wasm dumper* comes bundled with my first WebAssembly IBMi-focused function.
+It is exported with the **dts2epo** label. It accepts an offset inside the memory shared between JavaScript (or the WA
+embedding environment) and the .wasm file (the meaningful part of the savefile for a requested IBM i native object). 
+The `dts2epo()` WA API just completed returns a BigInt that can be used to initialize a `Date` instance in 
+JavaScript: e.g. `Date(Number(dts2epo(0)))` 
+
+The WA code I wrote is *independend from the endianess of the system executing it* so that I can run `dts2epo()` using 
+**wasm3** in PASE or using **wasm3** in my MacOS. And it can obviously be run in the browser when called by JavaScript.
+
+This is the output from **wasm-objdump**:
+
+```
+result-2.wasm:  file format wasm 0x1
+
+Section Details:
+
+Type[1]:
+ - type[0] (i32) -> i64
+Function[1]:
+ - func[0] sig=0 <dts2epo>
+Memory[1]:
+ - memory[0] pages: initial=2
+Export[2]:
+ - func[0] <dts2epo> -> "dts2epo"
+ - memory[0] -> "m0"
+Code[1]:
+ - func[0] size=91 <dts2epo>
+Data[1]:
+ - segment[0] memory=0 size=69632 - init i32=0
+  - 0000000: a921 bcb7 ac3b f001 0000 0088 3000 3000  .!...;......0.0.
+  - 0000010: c5f4 c240 f8f2 f0f2 4040 4040 4040 4040  ...@....@@@@@@@@
+  - 0000020: 4040 4040 4040 4040 4040 4040 4040 4040  @@@@@@@@@@@@@@@@
+  - 0000030: 0000 4500 0000 1000 0000 0000 0000 0088  ..E.............
+  - 0000040: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+  - 0000050: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+. . .
+```
+
+These are examples of use of *dts2epo()* from **wasm3** having identified offsets with other timestamps in the *DTS format*:
+
+```
+% ./watools/wasm3 --repl result-2.wasm
+wasm3> dts2epo 0
+Result: 1670279229013
+wasm3> dts2epo 4288
+Result: 1670279229013
+wasm3> dts2epo 8272
+Result: 1670279228997
+wasm3> dts2epo 8320
+Result: 1670279229005
+wasm3> dts2epo 12322
+Result: 1670279229004
+wasm3> dts2epo 16576
+Result: 1670279229013
+wasm3> 
+```
+
+Given the known IBM i OS page size (4KB = 4096), we notice that these timestamps are in the headers of such pages.
+In my example the offsets are:
+
+```
+    0 -     0 =    0
+ 4288 -  4096 =  192
+ 8272 -  8192 =   80
+ 8320 -  8192 =  128
+12322 - 12288 =   34
+16576 - 16384 =  192
+```
+
+Comparing the contents of the pages where the timestamp offsets are the same (192) we notice a regularity:
+a template (`X'FFFFFFFF'`...`'L/D OBJECT DESCRIPTOR   '` ... `'DISK'`) is repeated with varying content.
+
+![header](header.png)
+
+This is another opportunity for a WebAssembly function that I will first prototype in JavaScript.
+It will check that the (expected) constant bytes are identified at the known offsets from the base index provided
+by the caller (similarly to `dts2epo` API) and then it will extract the useful information taking into account
+the big\-endian nature of IBM i object dumps.  
+
 
 ----
 
@@ -189,6 +277,8 @@ Note that:
 ![timestamp](timestamp.png)
 
 We could move all the math involved into WebAssembly, so let us try plugging such logic into our ILE CL CGI object to wasm dumper. 
+
+[NEXT-74](#74-to-be-proud)]
 
 ----
 
