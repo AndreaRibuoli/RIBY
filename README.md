@@ -153,8 +153,7 @@ This is how these headers are explicitly declared
 (at offset 150, where a 24-bytes EBCDIC string specifies **'L/D OBJECT DESCRIPTOR   '**).
 
 At offset 4 we find a 30-bytes EBCDIC string: this is the `name` of the object. 
-The first load/dump object descriptor we encounter in the savefile is not directly related to the object we requested to save:  
-it is there for the **Save/Restore Descriptor Space**. 
+The first load/dump object descriptor we encounter in the savefile is not directly related to the object we requested to save: it is there for the **Save/Restore Descriptor Space**. 
 This contains additional information on the objects that will follow.
 In case of multiple objects (e.g. `SAVLIB`) there can be multiple Save/Restore Descriptor Spaces each followed by the 
 objects it is providing additional information for.
