@@ -94,6 +94,7 @@ Let's go!
 72. [to get confortable](#72-to-get-confortable)
 73. [to be surprised](#73-to-be-surprised)
 74. [to be proud](#74-to-be-proud)
+75. [to carry out a thorough analysis](#75-to-carry-out-a-thorough-analysis)
 
 
 <!---
@@ -128,6 +129,145 @@ in previous requests.
 
 
 --->
+----
+
+### 75. to carry out a thorough analysis
+
+Among the books focused on Ruby I appreciated there was **Ruby Under a Microscope** by *Pat Shaughnessy*.
+My approach to SAVEFILE logic can be consider nothing more than providing **microscope slides** on the topics:
+
+*a thin flat piece of glass used to hold objects for examination under a microscope* (see [Wikipedia](https://en.wikipedia.org/wiki/Microscope_slide))
+
+And in order **to hold** IBM i objects we need them in the serialized status in which they are frozen once saved, preventing any 
+interference by our act of analysis with the object of such analysis. 
+The memory inside a *.wasm* file sounds like an ideal support for such a goal.
+
+The second reason that made me appreciate the .wasm packaging of savefiles is the reusability of WebAssembly code that I can
+*'bundle'* with the actual content. 
+From this perspective WebAssembly appears to be the best approximation of the old dream of IT: writing code only once! 
+We are experts of the benefits of pursuing such an aim: IBM i technology \-although proprietary\- is a good example from 
+this point of view. *Java* came close, too.
+
+The new WA IBMi-focused function I am introducing is called `ldobjdes()` from **load/dump object descriptor**.
+This is how these headers are explicitly declared 
+(at offset 150, where a 24-bytes EBCDIC string specifies **'L/D OBJECT DESCRIPTOR   '**).
+
+At offset 4 we find a 30-bytes EBCDIC string: this is the `name` of the object. 
+The first load/dump object descriptor we encounter in the savefile is not directly related to the object we requested to save:  
+it is there for the **Save/Restore Descriptor Space**. 
+This contains additional information on the objects that will follow.
+In case of multiple objects (e.g. `SAVLIB`) there can be multiple Save/Restore Descriptor Spaces each followed by the 
+objects it is providing additional information for.
+
+The name for these *'service'* load/dump object descriptors is **QDSDSSPC.1**.
+
+At offset 208 we notice a big endian 32-bits integer. 
+In the first header (QDSDSSPC.1) its value is 1, in the second is 2, and so on.
+We will call this number the `sequenceNumber`.
+
+At offset 72 there is another interesting big endian 32-bits integer. 
+Curiously, it is always terminating in **0x7 or 0xF**. 
+The useful record size of a savefile has been 512 bytes from the origin of the system (AS/400 and possibly S/38 too!).
+At the time of CISC architecture (AS/400) the operating system page size was **also** 512 bytes.
+With RISC architecture the OS page size became 4096 bytes: memory pages required *8 records each* in order to be saved.
+The 32-bit integer at offset 72 describes the size occupied by the current object expressed in number of records.
+As soon as the header is using the first 512 bytes (residing in the same page of memory), the remaining records need
+to be consistent with the RISC page size. 
+
+We will call the number at offset 72 the `objectSize`.
+
+Now we know how to walk throught the headers: 
+`(objectSize + 1) * 512` will give us the displacement required to reach the next header.
+
+The new WA IBMi-focused fuction that I am introducing:
+
+* receives an offset in memory, 
+* then checks that this is the initial position of a load/dump object descriptor header (looking at X'FFFFFFFF', 'DISK', etc) 
+* returns an unsigned integer of 64-bits made up of two 32-bits integers: the current `sequenceNumber` (if the check
+  was successful, otherwise 0) and the displacement to reach the end of the object 
+  (i.e. \-possibly\- the initial position of the next header)
+  
+
+```
+result-3.wasm:  file format wasm 0x1
+
+Section Details:
+
+Type[2]:
+ - type[0] (i32) -> i64
+ - type[1] (i32) -> i32
+Function[3]:
+ - func[0] sig=0 <dts2epo>
+ - func[1] sig=0 <ldobjdes>
+ - func[2] sig=1
+Memory[1]:
+ - memory[0] pages: initial=6
+Export[3]:
+ - func[0] <dts2epo> -> "dts2epo"
+ - func[1] <ldobjdes> -> "ldobjdes"
+ - memory[0] -> "m0"
+Code[3]:
+ - func[0] size=91 <dts2epo>
+ - func[1] size=126 <ldobjdes>
+ - func[2] size=10
+Data[1]:
+ - segment[0] memory=0 size=376832 - init i32=0
+  - 0000000: a924 085f 5c02 b001 0000 02e0 3000 3000  .$._\.......0.0.
+  - 0000010: c5f4 c240 f8f2 f0f2 4040 4040 4040 4040  ...@....@@@@@@@@
+  - 0000020: 4040 4040 4040 4040 4040 4040 4040 4040  @@@@@@@@@@@@@@@@
+  - 0000030: 0000 4500 0000 1000 0000 0000 0000 02e0  ..E.............
+```  
+
+This allows walking throught the headers:
+
+```
+% ./watools/wasm3 --repl result-3.wasm
+wasm3> ldobjdes 4096
+Result: 70368744177665
+wasm3> 
+``` 
+
+70368744177665 = 0x400000000001 = (0x4000, 0x1) = (16384, 1)
+
+This means that 4096 + 16384 = 20480
+
+```
+wasm3> ldobjdes 4096
+Result: 70368744177665
+wasm3> ldobjdes 20480
+Result: 70368744177666
+wasm3> 
+``` 
+
+70368744177666 = 0x400000000001 = (0x4000, 0x2) = (16384, 2)
+
+20480 + 16384 = 36864
+
+```
+wasm3> ldobjdes 4096
+Result: 70368744177665
+wasm3> ldobjdes 20480
+Result: 70368744177666
+wasm3> ldobjdes 36864
+Result: 52776558133251
+wasm3> 
+```
+
+52776558133251 = 0x300000000003 = (0x3000, 0x3) = (12288, 3) 
+
+In each header we can convert the *timestamp* using dts2epo WA API.
+The header timestamp is at offset 192 in each header:
+
+36864 + 12288 + 192 = 49344
+
+```
+wasm3> dts2epo 49344
+Result: 1670436976457
+wasm3>
+```
+
+Next time I will show what can be obtained adding a bit of JavaScript. 
+
 ----
 
 ### 74. to be proud
@@ -214,6 +354,7 @@ It will check that the (expected) constant bytes are identified at the known off
 by the caller (similarly to `dts2epo` API) and then it will extract the useful information taking into account
 the big\-endian nature of IBM i object dumps.  
 
+[NEXT-75](#75-to-carry-out-a-thorough-analysis)
 
 ----
 
