@@ -281,14 +281,16 @@ in the savefile. In the example, I explicitly added QTMHHTP1 user by means of **
 
 The server program receives a **CPF3701** that is silently monitored.
 
-But what about the library? And what about the description of the source files as we have only identified members content.
+But what about the library? And what about the description of the source files as we have only identified members' content.
 
 So we discover that relevant parts of objects' description is packaged by the IBM i system inside the save/restore descriptor
 spaces. Being careful we will also discover that some of the objects described inside \*SRDS do not require their own pages:
 what is needed for them to be restored is completely recorded inside \*SRDS.
 
 The next step will be exploring the use of memory when the object type is `X'19DB'`, i.e. we are required to 
-study the **Save/Restore Descriptor Space**.
+study the **Save/Restore Descriptor Space**. And we have also to complete our battleship game !
+
+We will discover that these two topics are intertwined. 
 
 ----
 
