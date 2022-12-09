@@ -214,7 +214,7 @@ The tester application is made of an HTML and a JavaScript file.
 I can request the bundling of savefile generated from a **SAVOBJ** or a **SAVLIB** command.
 The button labeled *extract* takes care of calling the ILE CL CGI program that generates the WA binary file
 in *htdocs* subpath.
-It returns the current system QTIME and the number of record of the savefile generated.
+It returns the current system QTIME and the number of records of the savefile just generated.
 
 ``` javascript
 btn1.addEventListener("click", () => {
