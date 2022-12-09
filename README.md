@@ -210,6 +210,54 @@ We hit another ship!
 
 Now let us write a bit of JavaScript to leverage the WA APIs I introduced in the savefile wasm bundling.   
 
+The tester application is made of an HTML and a JavaScript file.
+I can request the bundling of savefile generated from a **SAVOBJ** or a **SAVLIB** command.
+The button labeled *extract* takes care of calling the ILE CL CGI program that generates the WA binary file
+in *htdocs* subpath.
+It returns the current system QTIME and the number of record of the savefile generated.
+
+``` javascript
+btn1.addEventListener("click", () => {
+  theSave = wasave.options[wasave.selectedIndex].text.padEnd(10, ' ');   
+  theLib = lib.value.padEnd(10, ' ');   
+  theObj = obj.value.padEnd(10, ' ');  
+  theObjType = objType.value.padEnd(7, ' ');   
+  let requestBody = { "LIB": theLib, 
+                      "OBJ": theObj, 
+                      "OBJTYPE": theObjType,  
+                      "CMD": theSave };  
+  fetch("cgi-bin/basics0A.pgm", 
+        { method: "POST", body: JSON.stringify(requestBody)} )
+        .then(response => response.json())  
+        .then(esito => { outtm.value = esito['a'];
+                         outsz.value = esito['b']; });
+}); 
+```
+![tester](tester.png)
+
+The *load* button requests the WASM file and initialize access to the resources required (among those provided by *result.wasm*) 
+
+``` javascript
+btn2.addEventListener("click", () => {
+  WebAssembly
+    .instantiateStreaming(fetch("result.wasm"), importObj)
+    .then((module) => { 
+       membuf = module.instance.exports.m0;
+       loaddump = module.instance.exports.ldobjdes;
+     });
+});
+```
+
+The *view* button allows me to explore the content of the savefile at specific (page, offset) addresses, 
+returning ebcdic and hexdecimal for the specified length.
+
+Once we are positioned at the start of a page header (the first bytes being X'FFFFFFFF') we can also 
+press the *calc* button that will show infos from 8 headers in sequence.
+
+From the example shown we notice that after a new *Save/Restore Descriptor Space* sequence numbering is reset
+starting again from number 1.
+
+
 
 ----
 
