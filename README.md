@@ -255,7 +255,7 @@ wasm3>
 52776558133251 = 0x300000000003 = (0x3000, 0x3) = (12288, 3) 
 
 In each header we can convert the *timestamp* using dts2epo WA API.
-The header timestamp is at offset 192 in each header:
+The header timestamp is at **offset 192** in each header:
 
 36864 + 12288 + 192 = 49344
 
