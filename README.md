@@ -257,7 +257,38 @@ press the *calc* button that will show infos from 8 headers in sequence.
 From the example shown we notice that after a new *Save/Restore Descriptor Space* sequence numbering is reset
 starting again from number 1.
 
+If we look from 5250 at the GOREXX library in the example:
 
+```
+Opz  Oggetto     Tipo      Libreria    Attributo   Testo          
+     PROVA       *PGM      GOREXX      CLLE                       
+     QCLSRC      *FILE     GOREXX      PF                         
+     QREXSRC     *FILE     GOREXX      PF          Procedure REXX 
+     STDIN       *FILE     GOREXX      SAVF                       
+```
+
+The type X'1390' is an internal object type associated to the STDIN savefile.
+
+![dmpsp](dmpsp.png)
+
+Individual members of source files are saved as object type X'0B90':
+
+![qdds](qdds.png)
+
+In the example the \*PGM object is not saved: I want to note here that, as soon as the GCI job is running 
+as user *QTMHHTP1*, default \*PUBLIC's **\*USE** authority will not be enought for the program to be included
+in the savefile. In the example, I explicitly added QTMHHTP1 user by means of **EDTOBJAUT**.
+
+The server program receives a **CPF3701** that is silently monitored.
+
+But what about the library? And what about the description of the source files as we have only identified members content.
+
+So we discover that relevant parts of objects' description is packaged by the IBM i system inside the save/restore descriptor
+spaces. Being careful we will also discover that some of the objects described inside \*SRDS do not require their own pages:
+what is needed for them to be restored is completely recorded inside \*SRDS.
+
+The next step will be exploring the use of memory when the object type is `X'19DB'`, i.e. we are required to 
+study the **Save/Restore Descriptor Space**.
 
 ----
 
