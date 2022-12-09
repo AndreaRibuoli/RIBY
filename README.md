@@ -164,7 +164,7 @@ At **offset 208** we notice a big endian 32-bits integer.
 In the first header (QDSDSSPC.1) its value is 1, in the second is 2, and so on.
 We will call this number the `sequenceNumber`.
 
-At **offset** 72 there is another interesting big endian 32-bits integer. 
+At **offset 72** there is another interesting big endian 32-bits integer. 
 Curiously, it is always terminating in **0x7 or 0xF**. 
 The useful record size of a savefile has been 512 bytes from the origin of the system (AS/400 and possibly S/38 too!).
 At the time of CISC architecture (AS/400) the operating system page size was **also** 512 bytes.
