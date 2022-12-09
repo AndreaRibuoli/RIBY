@@ -95,6 +95,7 @@ Let's go!
 73. [to be surprised](#73-to-be-surprised)
 74. [to be proud](#74-to-be-proud)
 75. [to carry out a thorough analysis](#75-to-carry-out-a-thorough-analysis)
+76. [to fill the gaps again](#76-to-fill-the-gaps-again)
 
 
 <!---
@@ -129,6 +130,87 @@ in previous requests.
 
 
 --->
+
+### 76. to fill the gaps again
+
+Here is another post with a title that is a variation on *filling the gaps*!
+
+This time the gaps are **gaps of information**. 
+
+Of the 512 bytes available for each header in a savefile we know very little by now. 
+
+So let us **play battleship**!
+
+We had just hit 7 *ships*:
+
+1. Eye catcher (always `X'FFFFFFFF'`)
+2. Name
+3. Size 
+4. Header text (always EBCDIC `'L/D OBJECT DESCRIPTOR   '`)
+5. Save target (always EBCDIC `'DISK'`)
+6. Timestamp
+7. Sequence number
+
+|     | --0 | --1 | --2 | --3 | --4 | --5 | --6 | --7 | --8 | --9 | --A | --B | --C | --D | --E | --F |     |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| 00- |  1  |  1  |  1  |  1  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  | 00x |
+| 01- |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  | 01x |
+| 02- |  2  |  2  |  ?  |  ?  |     |     |     |     |     |     |     |     |     |     |     |     | 02x |
+| 03- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 03x |
+| 04- |     |     |     |     |     |     |     |     |  3  |  3  |  3  |  3  |     |     |     |     | 04x |
+| 05- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 05x |
+| 06- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 06x |
+| 07- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 07x |
+| 08- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 08x |
+| 09- |     |     |     |     |     |     |  4  |  4  |  4  |  4  |  4  |  4  |  4  |  4  |  4  |  4  | 09x |
+| 0A- |  4  |  4  |  4  |  4  |  4  |  4  |  4  |  4  |  4  |  4  |  4  |  4  |  4  |  4  |     |     | 0Ax |
+| 0B- |     |     |     |     |     |     |     |     |     |     |  5  |  5  |  5  |  5  |     |     | 0Bx |
+| 0C- |  6  |  6  |  6  |  6  |  6  |  6  |  6  |  6  |     |     |     |     |     |     |     |     | 0Cx |
+| 0D- |  7  |  7  |  7  |  7  |     |     |     |     |     |     |     |     |     |     |     |     | 0Dx |
+| 0E- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 0Ex |
+| 0F- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 0Fx |
+
+<!---
+| 10- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 10x |
+| 11- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 11x |
+| 12- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 12x |
+| 13- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 13x |
+| 14- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 14x |
+| 15- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 15x |
+| 16- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 16x |
+| 17- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 17x |
+| 18- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 18x |
+| 19- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 19x |
+| 1A- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 1Ax |
+| 1B- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 1Bx |
+| 1C- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 1Cx |
+| 1D- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 1Dx |
+| 1E- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 1Ex |
+| 1F- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 1Fx |
+--->
+
+At **offset 34** we find the object type and sub-type in the *Hexadecimal Format* as documented by IBM: [here for **external** types](https://www.ibm.com/docs/en/i/7.4?topic=objects-external-object-types) and
+[here for **internal** ones](https://www.ibm.com/docs/en/i/7.4?topic=ssw_ibm_i_74/rzatk/conObject.html). 
+
+The value `X'19DB'` identified when the name is *QDSDSSPC.1*, as soon as being an internal object type, is 
+found in the second list and stands for **\*SRDS**:
+
+![srds](srds.png)
+
+We hit another ship!
+
+1. Eye catcher (always `X'FFFFFFFF'`)
+2. Name
+3. Size 
+4. Header text (always EBCDIC `'L/D OBJECT DESCRIPTOR   '`)
+5. Save target (always EBCDIC `'DISK'`)
+6. Timestamp
+7. Sequence number
+8. Object type
+
+Now let us write a bit of JavaScript to leverage the WA APIs I introduced in the savefile wasm bundling.   
+
+
 ----
 
 ### 75. to carry out a thorough analysis
