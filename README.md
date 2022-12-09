@@ -277,7 +277,7 @@ Individual members of source files are saved as object type X'0B90':
 
 In the example the \*PGM object is not saved: I want to note here that, as soon as the GCI job is running 
 as user *QTMHHTP1*, default \*PUBLIC's **\*USE** authority will not be enought for the program to be included
-in the savefile. In the example, I explicitly added QTMHHTP1 user by means of **EDTOBJAUT**.
+in the savefile. In the example, I explicitly added QTMHHTP1 user by means of **EDTOBJAUT** for the two source files.
 
 The server program receives a **CPF3701** that is silently monitored.
 
