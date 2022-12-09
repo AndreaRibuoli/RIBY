@@ -182,9 +182,9 @@ The new WA IBMi-focused fuction that I am introducing:
 
 * receives an offset in memory, 
 * then checks that this is the initial position of a load/dump object descriptor header (looking at X'FFFFFFFF', 'DISK', etc) 
-* returns an unsigned integer of 64-bits made up of two 32-bits integers: the current `sequenceNumber` (if the check
-  was successful, otherwise 0) and the displacement to reach the end of the object 
-  (i.e. \-possibly\- the initial position of the next header)
+* returns an unsigned integer of 64-bits made up of two 32-bits integers: the displacement to reach the end of the object 
+  (i.e. \-possibly\- the initial position of the next header) and the current `sequenceNumber` (if the check
+  was successful, otherwise 0)
   
 
 ```
