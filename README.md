@@ -96,6 +96,7 @@ Let's go!
 74. [to be proud](#74-to-be-proud)
 75. [to carry out a thorough analysis](#75-to-carry-out-a-thorough-analysis)
 76. [to fill the gaps again](#76-to-fill-the-gaps-again)
+77. [to continue offline](#77-to-continue-offline)
 
 
 <!---
@@ -131,6 +132,191 @@ in previous requests.
 
 --->
 
+### 77. to continue offline
+
+Now that we have our wasm-bundled savefile we can continue studying savefile format offline. 
+We can still adopt JavaScript but this time we will use it locally by means of **Node.js**.
+
+``` javascript
+const fs = require('fs');
+const bytes = fs.readFileSync('./result-3.wasm');
+WebAssembly.instantiate(new Uint8Array(bytes))
+.then( obj => {
+  let dts2epo = obj.instance.exports.dts2epo;
+  let ts = new Date(Number(dts2epo(4096+192)));
+  console.log(`${ts}`);
+});
+```
+
+```
+% node result-3.js 
+Wed Dec 07 2022 19:16:16 GMT+0100 (Ora standard dell’Europa centrale)
+```
+
+And we can jump from one header to the next:
+
+``` javascript
+const fs = require('fs');
+const bytes = fs.readFileSync('./result-3.wasm');
+WebAssembly.instantiate(new Uint8Array(bytes))
+.then( obj => {
+  let mem = obj.instance.exports.m0;
+  let dts2epo = obj.instance.exports.dts2epo;
+  let ldobjdes = obj.instance.exports.ldobjdes;
+  let current_header = 4096;
+  
+  while ( ( result = ldobjdes(current_header) ) > BigInt(0) ) {
+    let ts  = new Date(Number(dts2epo(current_header+192)));
+    let seq = Number(result & BigInt(0xFFFFFFFF));
+    console.log(`Sequence number: ${seq.toString().padStart(3,'0')}\nwith time-stamp ${ts}`);
+    current_header += Number(result>>BigInt(32));
+  }
+
+});
+```
+
+Following is the log of a wasm-bundled savefile obtained from a SAVOBJ request against a source file 
+with multiple members:
+
+```
+% node result-3a.js
+Sequence number: 001
+with time-stamp Wed Dec 07 2022 19:16:16 GMT+0100 (Ora standard dell’Europa centrale)
+Sequence number: 002
+with time-stamp Wed Dec 07 2022 19:16:16 GMT+0100 (Ora standard dell’Europa centrale)
+Sequence number: 003
+with time-stamp Wed Dec 07 2022 19:16:16 GMT+0100 (Ora standard dell’Europa centrale)
+Sequence number: 004
+with time-stamp Wed Dec 07 2022 19:16:16 GMT+0100 (Ora standard dell’Europa centrale)
+Sequence number: 005
+with time-stamp Wed Dec 07 2022 19:16:16 GMT+0100 (Ora standard dell’Europa centrale)
+Sequence number: 006
+with time-stamp Wed Dec 07 2022 19:16:16 GMT+0100 (Ora standard dell’Europa centrale)
+Sequence number: 007
+with time-stamp Wed Dec 07 2022 19:16:16 GMT+0100 (Ora standard dell’Europa centrale)
+Sequence number: 008
+. . .
+
+```
+
+Add we can focus at specific offsets analysing all the headers.
+ 
+At a first glance **offset 36** sounds interesting:
+
+* it is 0 only for Save/restore descriptor spaces
+* it is the same for members of the same file (\*QDDS)
+* its value is never lower from the previous (with growing sequence number)
+* the lowest value (among those differing from 0) is X'00000070'
+
+It seems to be a pointer (offest) somewhere in the save/restore descriptor space.
+
+The general header (L/D OBJECT DESCRIPTOR) is followed by empty records up to the next page. 
+To find elements consistent with our save command we need to skip to the third page inside the QDSDSSPC.1 
+object.
+ 
+This is a rough approximation.
+
+The second page is actually the first page of a system object in the single/-level store.
+The general structure of a system object is described at page 125 of *FORTRESS ROCHESTER* by Frank G. Soltis.
+The first 32 bytes are the **segment header** and provide segment information.
+
+In my example:
+
+```
+0001001803c00090 098781cd6f-000000
+0001000000000000 098781cd6f-001000
+```
+
+The second address is the address of the **associated space** for the object 
+(the object being the Save/Restore Descriptor Space!). The associated space 
+is the part we are interested in because that is the only area where IBM i operating system 
+is ruling.
+
+So `098781cd6f-001000` describes an offset of 0x001000 (4096) bytes in the same segment: 
+that means to reach it we just need **skipping to the next page**!
+
+The first 0x70 (112) bytes of the associated space for a \*SRDS object contain the most general information about 
+the save command that was executed.
+
+|    | -0 | -1 | -2 | -3 | -4 | -5 | -6 | -7 | -8 | -9 | -A | -B | -C | -D | -E | -F |    |
+|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+| 0- |  1 |  2 |  3 |  3 |  3 |  3 |  3 |  3 |  3 |  3 |  3 |  3 |  3 |  3 |  3 |  3 | 0- |
+| 1- |  3 |  3 |  3 |  3 |  3 |  3 |  3 |  3 |  3 |  3 |  3 |  3 |  3 |  3 |  3 |  3 | 1- |
+| 2- |  4 |  4 |  5 |  5 |  5 |  5 |  5 |  5 |  5 |  5 |  6 |  6 |  6 |  6 |  7 |  7 | 2- |
+| 3- |  7 |  7 |  ? |  8 |  8 |  8 |  8 |  8 |  8 |  8 |  8 |  8 |  9 |  9 | 10 | 10 | 3- |
+| 4- | 10 | 10 | 10 | 10 | 10 | 10 | 10 | 10 | 11 | 11 | 11 | 11 | 12 |    |    |    | 4- |
+| 5- | 13 | 13 | 13 | 13 | 13 | 13 | 13 | 13 | 13 | 13 |    | 14 | 14 | 14 | 14 | 14 | 5- |
+| 6- | 14 | 14 | 14 | 14 | 14 | 15 | 15 | 15 | 15 | 15 | 15 | 15 | 15 |    |    |    | 6- |
+
+Some of them are coded info and we have to collect a number of different cases to gain a clearer view.
+
+ 1. Save command (1=SAVOBJ, 2=SAVLIB)
+ 2. OS Version 
+ 3. Library 
+ 4. Library Type (`X'0401'`)
+ 5. Timestamp (when saved) 
+ 6. Number of objects described in this save/restore descriptor space
+ 7. Number of ?
+ 8. Serial number (9 bytes)
+ 9. ?
+10. attribute 1 (10 bytes)
+11. Total number of dumps including \*SRDS (0 in continuation \*SRDS)
+12. attribute 2 (1 byte)
+13. attribute 3 (10 byte)
+14. attribute 4 (10 byte)
+15. System name (8 byte)
+
+I will now give a simple example of how to refine the information I am providing.
+Let us focus on what I have temporarily labeled as `attribute 1`. 
+It starts at position `X'3E' (62)` and has a maximum length of 10 EBCDIC characters.
+By extracting `X'5ce2e8e2e5c1d3404040'`we easily recognize this is 
+**\*SYSVAL**. With a simple DSPLIB command we notice that `Create authority . . :   *SYSVAL`
+for the library of the object we saved.
+
+To verify we perform a `CHGLIB LIB(GOREXX) CRTAUT(*USE)` and proceed with a new wasm-bundling.
+By re-extracting `X'5ce4e2c54040404040'` **\*USE** we are confimed that those bytes
+are dumping the 'Create Authority' of the library containing the saved object. 
+
+Similarly we can detect that the byte `X'4C' (76)` that I have temporarily labeled as `attribute 2`
+is an EBCDIC char in direct correlation with the *Save while Active* option (`SAVACT`):
+
+| value | meaning   | 
+|:-----:|:--------- |
+| **N** | \*NO      |   
+| **L** | \*LIB     |   
+| **R** | \*SYNCLIB |   
+| **S** | \*SYSDFT  |   
+
+
+At offset 0x70 in the associated space of a Save/Restore Descriptor Space starts the
+content for the saved objects. We have an array of structures of the same size (151 bytes).
+Some fields of this template structure are pointers (offsets) on their turn and the final 
+data pertaining to an object (e.g. the descriptive TEXT we read issuing a WRKOBJ) may be
+scattered in the associated space, requiring us multiple jumps and a bit of scanning
+in order to estract it from a savefile in wasm bundling.
+
+To summarize: *offset 36* is the link between content saved in individual dumps and the corresponding 
+object description inside the \*SRDS.
+
+This is another area where WebAssembly code could really simplify accessing wasm-bundled savefile content
+from JavaScript.
+
+At **offset 82** and **offset 84** there are bytes related to the version of the operating system.
+On a V7R3 system we get X'45004500' for a standard save operation.
+If we specify *TGTRLS(\*PRV)* we get X'45004400'.
+By specifying *V7R1M0* we get X'45004300'.
+This means *offset 82* identifies the level of the operating system where the save operation was performed 
+and *offset 84* the **target release**. 
+
+At **offset 86** there is a 32-bits integer with a size expressed in bytes that seems to be consistent with 
+that of the associated space (at least for \*SRDS objects).
+
+Next time I will give evidence of which informations can be gathered from the 151 bytes I mentioned before.
+These details are all but exciting: they are fundamentally useless because we do not want to compete with the
+reliability of IBM i system functions! 
+Nonetheless they can be useful to give *"life"* to savefiles once offline. 
+  
+
 ### 76. to fill the gaps again
 
 Here is another post with a title that is a variation on *filling the gaps*!
@@ -153,22 +339,22 @@ We had just hit 7 *ships*:
 
 |     | --0 | --1 | --2 | --3 | --4 | --5 | --6 | --7 | --8 | --9 | --A | --B | --C | --D | --E | --F |     |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| 00- |  1  |  1  |  1  |  1  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  | 00x |
-| 01- |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  | 01x |
-| 02- |  2  |  2  |  ?  |  ?  |     |     |     |     |     |     |     |     |     |     |     |     | 02x |
-| 03- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 03x |
-| 04- |     |     |     |     |     |     |     |     |  3  |  3  |  3  |  3  |     |     |     |     | 04x |
-| 05- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 05x |
-| 06- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 06x |
-| 07- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 07x |
-| 08- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 08x |
-| 09- |     |     |     |     |     |     |  4  |  4  |  4  |  4  |  4  |  4  |  4  |  4  |  4  |  4  | 09x |
-| 0A- |  4  |  4  |  4  |  4  |  4  |  4  |  4  |  4  |  4  |  4  |  4  |  4  |  4  |  4  |     |     | 0Ax |
-| 0B- |     |     |     |     |     |     |     |     |     |     |  5  |  5  |  5  |  5  |     |     | 0Bx |
-| 0C- |  6  |  6  |  6  |  6  |  6  |  6  |  6  |  6  |     |     |     |     |     |     |     |     | 0Cx |
-| 0D- |  7  |  7  |  7  |  7  |     |     |     |     |     |     |     |     |     |     |     |     | 0Dx |
-| 0E- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 0Ex |
-| 0F- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 0Fx |
+| 00- |  1  |  1  |  1  |  1  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  | 00- |
+| 01- |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  |  2  | 01- |
+| 02- |  2  |  2  |  ?  |  ?  |     |     |     |     |     |     |     |     |     |     |     |     | 02- |
+| 03- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 03- |
+| 04- |     |     |     |     |     |     |     |     |  3  |  3  |  3  |  3  |     |     |     |     | 04- |
+| 05- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 05- |
+| 06- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 06- |
+| 07- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 07- |
+| 08- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 08- |
+| 09- |     |     |     |     |     |     |  4  |  4  |  4  |  4  |  4  |  4  |  4  |  4  |  4  |  4  | 09- |
+| 0A- |  4  |  4  |  4  |  4  |  4  |  4  |  4  |  4  |  4  |  4  |  4  |  4  |  4  |  4  |     |     | 0A- |
+| 0B- |     |     |     |     |     |     |     |     |     |     |  5  |  5  |  5  |  5  |     |     | 0B- |
+| 0C- |  6  |  6  |  6  |  6  |  6  |  6  |  6  |  6  |     |     |     |     |     |     |     |     | 0C- |
+| 0D- |  7  |  7  |  7  |  7  |     |     |     |     |     |     |     |     |     |     |     |     | 0D- |
+| 0E- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 0E- |
+| 0F- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 0F- |
 
 <!---
 | 10- |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     | 10x |
