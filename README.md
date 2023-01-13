@@ -97,7 +97,7 @@ Let's go!
 75. [to carry out a thorough analysis](#75-to-carry-out-a-thorough-analysis)
 76. [to fill the gaps again](#76-to-fill-the-gaps-again)
 77. [to continue offline](#77-to-continue-offline)
-
+78. [to disassemble the toys](#78-to-disassemble-the-toys)
 
 <!---
 
@@ -131,6 +131,47 @@ in previous requests.
 
 
 --->
+
+### 78. to disassemble the toys
+
+Apart from the surrounding envelope, each object type in a savefile has its own structure. 
+Armed with a toolset to study the internals of the savefile format (i.e my wasm packaging!!),
+I have chosen an IBM i object type to tackle.
+
+Years ago (2001) a talented scientist and programmer (*Leif Svalgaard*) published some notes on **AS/400 Machine-Level Programming**.
+As soon as savefiles are collections of objects active on a system, savefile internals are a direct mapping of the internal structures
+depicted here and there by Leif Svalgaard. 
+
+Having *Frank Soltis*'s **FORTRESS Rochester** at hand, I opted for the **Independent Index** object type
+that Soltis presented after the **Space**. The *space* is the simplest system object occupyng only one segment, the *index* (**\*USRIDX**) is instead using two segments.
+
+Specific of an index is the dump of the binary radix tree packaged inside the 4KB memory pages that optimized (by reducing) the number
+of loads to be executed in a search.
+
+Chapter 25 of the cited Leif's notes is the one focused on *Machine Indexes*: the paragraph on the *Internal Structure of an Index* closes with this sentence: *"Deciphering the remaining control bits we leave as an excercise for the student"*. But it was not that easy!
+
+At page 210 Soltis wrote: *the decision was made in the original S/38 design to create the most efficient index possible and build it into the part of the machine **below** the MI.* 
+
+This reference to S/38 guided me to find the most detailed description on the topic: a 1978 (!) article by *P.H. Howard and K.W. Borgendale* titled **System/38 machine indexing support**. In it we read: *Each node of the decision tree must identify one bit of the search key to be tested and select one of two possible successor paths.*
+
+The effect of this design decision is that we will not find the complete entries in memory because the initial part
+of the key is omitted as long as it can be reconstructed from the path followed along the branch nodes being visited.
+The bytes of the key that are in common with other entries in the chain of nodes are scattered all around tied with the two alternative
+successor paths of involved nodes.
+
+Once I understood how the blocks of 9 or 6 bytes are organized to implement those nodes in an independent index I was able to reuse
+this logic in deciphering **Message files** (**\*MSGF**). 
+
+Message files are also internally using machine indexes: the full entry
+here contains seven bytes for the key (the message ID) and *44 - 7 = 37 bytes* for the value. 
+This value on its turn is a record with pointers (offsets) to elements in the secondary space. 
+
+The messages are also crushed into pieces (words) that are on their turn referenced with an awkward addressing scheme.        
+
+Honestly I saved money in enigmistic magazines... but I spent a good amount of time in deducing logic from exadecimal dumps.
+It was \-actually\- a fashinating experience.                
+
+![msgf](msgf.png)
 
 ### 77. to continue offline
 
