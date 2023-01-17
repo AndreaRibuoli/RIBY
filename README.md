@@ -143,7 +143,7 @@ As soon as savefiles are collections of objects active on a system, savefile int
 depicted here and there by Leif Svalgaard. 
 
 Having *Frank Soltis*'s **FORTRESS Rochester** at hand, I opted for the **Independent Index** object type
-that Soltis presented after the **Space**. The *space* is the simplest system object occupyng only one segment, the *index* (**\*USRIDX**) is instead using two segments.
+that Soltis presented after the **Space**. The *space* is the simplest system object occupying only one segment, the *index* (**\*USRIDX**) is instead using two segments.
 
 Specific of an index is the dump of the binary radix tree packaged inside the 4KB memory pages that optimized (by reducing) the number
 of loads to be executed in a search.
