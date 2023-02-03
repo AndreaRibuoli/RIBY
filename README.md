@@ -98,6 +98,7 @@ Let's go!
 76. [to fill the gaps again](#76-to-fill-the-gaps-again)
 77. [to continue offline](#77-to-continue-offline)
 78. [to disassemble the toys](#78-to-disassemble-the-toys)
+79. [to take the pulse](#79-to-take-the-pulse)
 
 <!---
 
@@ -131,6 +132,145 @@ in previous requests.
 
 
 --->
+
+### 79. to take the pulse
+
+To work with a platform with such a legacy is worrying at times. 
+Many of us resolve the equation setting the variable of the expected number of years at work before being retired:
+although personally wise this kind of judgement cannot be generalized.
+
+When times get rough, the risk of improper balancing on opinions is higher.
+The solution has always been extracting fresh unbiased information.
+
+This abstract concept guided me in a very low level activity I will briefly describe.
+
+As I explained in my previous post I understood the internal format of binary radix tree by means of a confortable
+WebAssembly\-JavaScript environment. This approach allowed me to experiment my guesses on the meaning of an otherwise
+cryptic bunch of bytes. Unfortunately the size of memory handled by WebAssembly posed me issues with bigger message files
+(e.g. QCPFMSG).
+
+So I continued my development having converted my hard-earned knowledge into Ruby scripts.
+The advantage of this approach is that my Ruby build for PASE extends the support for encodings to **'IBM280'** (*Italian EBCDIC*)
+Remember that the Ruby core team accepted only **'IBM037'** encoding [when I proposed my patches](#56-to-support-native-encodings).
+
+When I read a file with binary content I use the binary specification
+
+``` ruby
+f = File.open('seg1.bin', 'rb:binary:binary')
+$tree = f.read()
+f2 = File.open('seg2.bin', 'rb:binary:binary')
+$space = f2.read()
+``` 
+
+When I have a string of bytes (*candidate*) supposed to be an EBCDIC string I print it with:
+
+``` ruby
+puts candidate.dup.force_encoding('IBM280').encode('UTF-8')
+```
+
+So I generated a file with messages from a V7R3 system and a file with the content extracted from the message file with the same name on a V7R4 system. As soon as every message generates two rows, one for the MSGID and one with the message, the **diff** utility is perfectly capable of extracting useful information.
+
+I give you an example with the comparison of **QTCPMSG**. 
+From v7r3 to v7r4 **only two messages** were added: *TCP4054* and *TCP4054*.
+Almost all the updates are due to the lexical change from **"Codice di errore"** (error code) into **"Codice causa"**.
+
+To summarize? It is no surprize that if you are looking for updates in the networking *programming* ability of the platform you have 
+to look at PASE environment. 
+
+Obviously a v7r4 to v7r5 comparison could provide different **fresh unbiased information**!
+ 
+
+```
+664c664
+< MSG(' &1 errore interno TELNET.  Codice causa = &2 ')
+---
+> MSG(' &1 errore interno TELNET.  Codice errore = &2 ')
+1204c1204
+< MSG('Voce gestore errori trap non univoca. ')
+---
+> MSG('Gestore errori trap non univoco. ')
+1343,1346d1342
+< MSGID(TCP4054)
+< MSG('Errore di elaborazione messaggio informativo o trap.  Codice causa &1. ')
+< MSGID(TCP4055)
+< MSG('Utente SNMPv3 &1 non valido. ')
+1686c1682
+< MSG('Si è verificato errore nel file pacchetto IP &1, riga &2. Codice causa &3. ')
+---
+> MSG('Si è verificato errore nel file pacchetto IP &1, riga &2. Codice di errore &3. ')
+2334c2330
+< MSG('Migrazione del server DHCP non riuscita. Codice causa &1. ')
+---
+> MSG('Migrazione del server DHCP non riuscita. Codice di errore &1. ')
+2562c2558
+< MSG('L'area OSPF &1 non è stata aggiunta al file di configurazione. Operazione non riuscita con codice causa &2. ')
+---
+> MSG('L'area OSPF &1 non è stata aggiunta al file di configurazione. Operazione non riuscita con codice err. &2. ')
+2566c2562
+< MSG('L'area OSPF &1 non è stata modificata nel file di configurazione. Operazione non riuscita con codice causa &2. ')
+---
+> MSG('L'area OSPF &1 non è stata modificata nel file di configurazione. Operazione non riuscita con codice err. &2. ')
+2570c2566
+< MSG('L'identificativo area OSPF &1 non è stato eliminato dal file di configurazione. Operazione non riuscita con codice causa &2. ')
+---
+> MSG('L'identificativo area OSPF &1 non è stato eliminato dal file di configurazione. Operazione non riuscita con codice err. &2. ')
+2574c2570
+< MSG('L'intervallo OSPF &1 non è stato aggiunto al file di configurazione. Operazione non riuscita con codice causa &2. ')
+---
+> MSG('L'intervallo OSPF &1 non è stato aggiunto al file di configurazione. Operazione non riuscita con codice err. &2. ')
+2578c2574
+< MSG('L'intervallo OSPF &1 non è stato modificato nel file di configurazione. Operazione non riuscita con codice causa &2. ')
+---
+> MSG('L'intervallo OSPF &1 non è stato modificato nel file di configurazione. Operazione non riuscita con codice err. &2. ')
+2582c2578
+< MSG('L'intervallo OSPF &1 non è stato eliminato dal file di configurazione. Operazione non riuscita con codice causa &2. ')
+---
+> MSG('L'intervallo OSPF &1 non è stato eliminato dal file di configurazione. Operazione non riuscita con codice err. &2. ')
+2588c2584
+< MSG('Gli attributi OSPF non sono stati modificati con esito positivo a causa del codice causa &1 ')
+---
+> MSG('Gli attributi OSPF non sono stati modificati con esito positivo a causa del codice di errore &1 ')
+2592c2588
+< MSG('L'interfaccia OSPF &1 non è stata aggiunta correttamente al file di configurazione. Operazione non riuscita con codice causa &2. ')
+---
+> MSG('L'interfaccia OSPF &1 non è stata aggiunta correttamente al file di configurazione. Operazione non riuscita con codice err. &2. ')
+2598c2594
+< MSG('L'interfaccia OSPF &1 non è stata modificata nel file di configurazione. Operazione non riuscita con codice causa &2. ')
+---
+> MSG('L'interfaccia OSPF &1 non è stata modificata nel file di configurazione. Operazione non riuscita con codice err. &2. ')
+2602c2598
+< MSG('L'interfaccia OSPF &1 non è stata eliminata dal file di configurazione. Operazione non riuscita con codice causa &2. ')
+---
+> MSG('L'interfaccia OSPF &1 non è stata eliminata dal file di configurazione. Operazione non riuscita con codice err. &2. ')
+2618c2614
+< MSG('Il collegamento virtuale OSPF &1 non è stato aggiunto dal file di configurazione. Operazione non riuscita con codice causa &2. ')
+---
+> MSG('Il collegamento virtuale OSPF &1 non è stato aggiunto dal file di configurazione. Operazione non riuscita con codice err. &2. ')
+2622c2618
+< MSG('Il colleg. virtuale OSPF &1 non si è modificato a partire dal file di configurazione. Operazione non riuscita con codice causa &2. ')
+---
+> MSG('Il colleg. virtuale OSPF &1 non si è modificato a partire dal file di configurazione. Operazione non riuscita con codice err. &2. ')
+2626c2622
+< MSG('Il collegamento virtuale OSPF &1 non è stato rimosso dal file di configurazione. Operazione non riuscita con codice causa &2. ')
+---
+> MSG('Il collegamento virtuale OSPF &1 non è stato rimosso dal file di configurazione. Operazione non riuscita con codice err. &2. ')
+2896c2892
+< MSG('LAN virtuale non supportata o non accessibile per la linea &1. ')
+---
+> MSG('Identificativi LAN virtuali non supportati per la linea &1. ')
+4056c4052
+< MSG('Al server &1 viene notificato di modificare l'intervallo di polling. ')
+---
+> MSG('Nessuna risposta ricevuta dal server NTP. ')
+4058c4054
+< MSG('Il client &1 ha ricevuto una risposta anomala dal server &2, codice causa &3. ')
+---
+> MSG('Il client &1 ha ricevuto un attacco di risposta dal server &2. ')
+4074c4070
+< MSG('TCP9186 &1 ricevuto pacchetto dal server &2 &3 ')
+---
+> MSG('TCP9186 &1 ricevuto pacchetto da server &2 &3 ')
+``` 
 
 ### 78. to disassemble the toys
 
@@ -172,6 +312,9 @@ Honestly I saved money in enigmistic magazines... but I spent a good amount of t
 It was \-actually\- a fashinating experience.                
 
 ![msgf](msgf.png)
+
+[NEXT-79](#79-to-take-the-pulse)
+
 
 ### 77. to continue offline
 
