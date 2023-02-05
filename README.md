@@ -171,7 +171,7 @@ puts candidate.dup.force_encoding('IBM280').encode('UTF-8')
 So I generated a file with messages from a V7R3 system and a file with the content extracted from the message file with the same name on a V7R4 system. As soon as every message generates two rows, one for the MSGID and one with the message, the **diff** utility is perfectly capable of extracting useful information.
 
 I give you an example with the comparison of **QTCPMSG**. 
-From v7r3 to v7r4 **only two messages** were added: *TCP4054* and *TCP4054*.
+From v7r3 to v7r4 **only two messages** were added: *TCP4054* and *TCP4055*.
 Almost all the updates are due to the lexical change from **"Codice di errore"** (error code) into **"Codice causa"**.
 
 To summarize? It is no surprize that if you are looking for updates in the networking *programming* ability of the platform you have 
