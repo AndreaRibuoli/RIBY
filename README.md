@@ -157,7 +157,7 @@ The period of instability in the AIX world of the last few years is impacting IB
 
 The IBM i 7.5 PASE \-due to its chosen AIX snapshot\- is missing relevant updates that followed AIX 7.2 TL5 so that we now end up lacking enablements to compile recent versions of GCC. 
 
-After this summer I had hoped to sense the quality of a new Open Source development I consider strategic for IBM i and PASE future: the GCC Front-End For Rust.
+After this summer I had hoped to sense the quality of a new Open Source development I consider strategic for IBM i and PASE future: the **GCC Front-End For Rust**.
 The Rust support (on top of GCC) is not viable now, but we risk to miss it on IBM i 7.5 PASE even when it will be more advanced in its own Open Source development.
 A growing number of Open Source packages are introducing the use of Rust so that critical updates are lacking here and there.
 
