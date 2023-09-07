@@ -99,6 +99,7 @@ Let's go!
 77. [to continue offline](#77-to-continue-offline)
 78. [to disassemble the toys](#78-to-disassemble-the-toys)
 79. [to take the pulse](#79-to-take-the-pulse)
+80. [to write our Christmas letter](#80-to-write-our-christmas-letter)
 
 <!---
 
@@ -132,6 +133,39 @@ in previous requests.
 
 
 --->
+
+### 80. to write our Christmas letter
+
+This has been a period of silent work. 
+
+I had the opportunity to refine my understanding of PASE distributions.
+
+Every new IBM i release IBM Rochester prepares the best snapshot they can of a stable AIX version.
+To avoid introducing instabilities, they are used to thoroughly test&freeze their choice.
+If \-during the lifetime of the specific IBM i release\- the AIX that had got chosen receives updates in the field, those same updates will be missed in PASE.
+You have to wait for the next train: i.e. a new IBM i release with its new (frozen) companion AIX snapshot.
+
+I remember a time when I was working on a Power 8 that was not possible to leverage from GCC because the AIX XCOFF tools distributed with the installed IBM i version were unaware of it: the AIX release got updated in the field (to support Power 8) but PASE had not (being kept in its frozen state).
+
+I was furious at the time.
+
+Now I am just discouraged.
+
+I am saying this because the clouds are gathering again.
+
+The period of instability in the AIX world of the last few years is impacting IBM PASE right now.
+
+The IBM i 7.5 PASE \-due to its chosen AIX snapshot\- is missing relevant updates that followed AIX 7.2 TL5 so that we now end up lacking enablements to compile recent versions of GCC. 
+
+After this summer I had hoped to sense the quality of a new Open Source development I consider strategic for IBM i and PASE future: the GCC Front-End For Rust.
+The Rust support (on top of GCC) is not viable now, but we risk to miss it on IBM i 7.5 PASE even when it will be more advanced in its own Open Source development.
+A growing number of Open Source packages are introducing the use of Rust so that critical updates are lacking here and there.
+
+The patched AIX tools that followed AIX 7.2 TL5 (required to build current GCC properly) risk to be missing.
+
+Given the tight budgets (of the AI era we are living in) IBM Rochester will be faced by the expensive option of breaking with tradition and prepare a PTF that will upgrade PASE.
+It is time time to start writing our letter to Santa Claus!  
+ 
 
 ### 79. to take the pulse
 
@@ -271,6 +305,8 @@ Obviously a v7r4 to v7r5 comparison could provide different **fresh unbiased inf
 ---
 > MSG('TCP9186 &1 ricevuto pacchetto da server &2 &3 ')
 ``` 
+
+[NEXT-80](#80-to-write-our-christmas-letter)
 
 ### 78. to disassemble the toys
 
