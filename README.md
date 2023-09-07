@@ -164,7 +164,7 @@ A growing number of Open Source packages are introducing the use of Rust so that
 The patched AIX tools that followed AIX 7.2 TL5 (required to build current GCC properly) risk to be missing.
 
 Given the tight budgets (of the AI era we are living in) IBM Rochester will be faced by the expensive option of breaking with tradition and prepare a PTF that will upgrade PASE.
-It is time time to start writing our letter to Santa Claus!  
+It is time to start writing our letter to Santa Claus!  
  
 
 ### 79. to take the pulse
