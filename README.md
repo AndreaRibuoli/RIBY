@@ -1324,7 +1324,7 @@ When I re\-engineer a package for *PASERIE* its source code resides on GitHub.
 The systems that have runtime version of PASERIE installed can then install these packages with simple commands like the following one:
 
 ```
-PASERIE/INSTALL GIT_USER(AndreaRibuoli) PACKAGEN(IBMIMBI)
+PASERIE/INSTALL REPO_OWNER(AndreaRIbuoli) REPOSITORY(IBMIMBI)      
 ```
    
 The installation tool takes care of reading the content of a special file it expects to find in each repository always named **GUIDANCE.TXT**.
@@ -1366,7 +1366,7 @@ If that is the case the fields that follow direct the installer to submit a pre\
 In this example a new job will be sumbitted executing:
 
 ```
-PASERIE/INSTALL GIT_USER(AndreaRibuoli) PACKAGEN(QUINCL)
+PASERIE/INSTALL REPO_OWNER(AndreaRIbuoli) REPOSITORY(QUINCL)      
 ```
 
 Note: passing the **GIT_USER** enables to install packages developed by colleagues under their GitHub's profile.
@@ -1388,7 +1388,7 @@ My system has version 7.3 installed, the customer one version 7.4.
 On my customer system I issued (apart from the token parameters):
 
 ```
-PASERIE/INSTALL GIT_USER(AndreaRibuoli) PACKAGEN(XMLSERVILE) TGTRLS(*PRV)
+PASERIE/INSTALL REPO_OWNER(AndreaRIbuoli) REPOSITORY(XMLSERVILE) TGTRLS(*PRV)
 ```
 
 Saving the library on a savefile (remembering `TGTRLS(*PRV)` option) solved my problem:
@@ -10117,7 +10117,7 @@ We will use such a tester making it evolve in order to gather information on how
 | QSRVSRC	     |   [RIBY_SRV](QSRVSRC/RIBY_SRV.BND)   |
 
 These files can be installed automatically if you have **PASERIE** utility installed (by means of
-`PASERIE/INSTALL GIT_USER(AndreaRibuoli) PACKAGEN(RIBY)`). 
+`PASERIE/INSTALL REPO_OWNER(AndreaRIbuoli) REPOSITORY(RIBY)`). 
 Transferring and compiling manually is not complex at all (have a look at [build CL](QCLSRC/BUILD.CLLE) just in case).
 
 ```
