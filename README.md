@@ -159,7 +159,7 @@ when I did not had the clear perception of the heterogeneous environment I would
 Should you give it a try, follow the **README** provided 
 (there is also [a PDF version](https://github.com/AndreaRibuoli/PASERIE/blob/main/README.pdf) of it).
 
-For questions on PASERIE, do not esistate to contact me ( `andrea.ribuoli@yahoo.com` ). Enjoy!
+For questions on PASERIE, do not esitate to contact me ( `andrea.ribuoli@yahoo.com` ). Enjoy!
 
 
 ### 80. to write our Christmas letter
