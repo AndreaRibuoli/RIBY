@@ -100,6 +100,7 @@ Let's go!
 78. [to disassemble the toys](#78-to-disassemble-the-toys)
 79. [to take the pulse](#79-to-take-the-pulse)
 80. [to write our Christmas letter](#80-to-write-our-christmas-letter)
+81. [to stop and think](#81-to-stop-and-think)
 
 <!---
 
@@ -134,6 +135,33 @@ in previous requests.
 
 --->
 
+### 81. to stop and think
+
+Abstraction of memory poses some issues to the IBM i programmer when 
+the built\-in functions provide unexpected heterogeneous behaviors.
+The IBM i documentation is always accurate but I frequently need second readings.
+
+Today I want to draw your attention on the closing paragraph of the on\-line documentation for 
+[the **ILE CL %OFFSET** built\-in function](https://www.ibm.com/docs/en/i/7.5?topic=procedure-offset-built-in-function):
+
+  *The %OFFSET built-in function cannot be used with a pointer variable that addresses teraspace storage.*
+
+First of all, let us think positive...: *we **can** use ILE CL pointer variables to address **TERASPACE** storage!*
+
+But we have to pay attention to avoid `%OFFSET` BIF when treating that teraspace storage from ILE CL.
+
+This lesson I hardly learnt while developing [`PASERIE/INSTALL` tool](https://github.com/AndreaRibuoli/PASERIE), 
+recently made *Public*, where the teraspace memory provided by *libcurl* in PASE is accessed from ILE via CL.
+
+The source code of *GHINSTALL* is clumsy and in need of rework exactly because my development started 
+when I did not had the clear perception of the heterogeneous environment I would have faced!  
+
+Should you give it a try, follow the **README** provided 
+(there is also [a PDF version](https://github.com/AndreaRibuoli/PASERIE/blob/main/README.pdf) of it).
+
+For questions on PASERIE, do not esistate to contact me ( `andrea.ribuoli@yahoo.com` ). Enjoy!
+
+
 ### 80. to write our Christmas letter
 
 This has been a period of silent work. 
@@ -166,6 +194,8 @@ The patched AIX tools that followed AIX 7.2 TL5 (required to build current GCC p
 Given the tight budgets (of the AI era we are living in) IBM Rochester will be faced by the expensive option of breaking with tradition and prepare a PTF that will upgrade PASE.
 It is time to start writing our letter to Santa Claus!  
  
+
+[NEXT-81](#81-to-stop-and-think)
 
 ### 79. to take the pulse
 
