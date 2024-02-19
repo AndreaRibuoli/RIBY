@@ -377,7 +377,7 @@ The messages are also crushed into pieces (words) that are on their turn referen
 Honestly I saved money in enigmistic magazines... but I spent a good amount of time in deducing logic from exadecimal dumps.
 It was \-actually\- a fashinating experience.                
 
-![msgf](msgf.png)
+![msgf](images/msgf.png)
 
 [NEXT-79](#79-to-take-the-pulse)
 
@@ -631,7 +631,7 @@ At **offset 34** we find the object type and sub-type in the *Hexadecimal Format
 The value `X'19DB'` identified when the name is *QDSDSSPC.1*, as soon as being an internal object type, is 
 found in the second list and stands for **\*SRDS**:
 
-![srds](srds.png)
+![srds](images/srds.png)
 
 We hit another ship!
 
@@ -669,7 +669,7 @@ btn1.addEventListener("click", () => {
                          outsz.value = esito['b']; });
 }); 
 ```
-![tester](tester.png)
+![tester](images/tester.png)
 
 The *load* button requests the WASM file and initialize access to the resources required (among those provided by *result.wasm*) 
 
@@ -705,11 +705,11 @@ Opz  Oggetto     Tipo      Libreria    Attributo   Testo
 
 The type X'1390' is an internal object type associated to the STDIN savefile.
 
-![dmpsp](dmpsp.png)
+![dmpsp](images/dmpsp.png)
 
 Individual members of source files are saved as object type X'0B90':
 
-![qdds](qdds.png)
+![qdds](images/qdds.png)
 
 In the example the \*PGM object is not saved: I want to note here that, as soon as the GCI job is running 
 as user *QTMHHTP1*, default \*PUBLIC's **\*USE** authority will not be enought for the program to be included
@@ -945,7 +945,7 @@ In my example the offsets are:
 Comparing the contents of the pages where the timestamp offsets are the same (192) we notice a regularity:
 a template (`X'FFFFFFFF'`...`'L/D OBJECT DESCRIPTOR   '` ... `'DISK'`) is repeated with varying content.
 
-![header](header.png)
+![header](images/header.png)
 
 This is another opportunity for a WebAssembly function that I will first prototype in JavaScript.
 It will check that the (expected) constant bytes are identified at the known offsets from the base index provided
@@ -984,7 +984,7 @@ WebAssembly module is actually exporting for JavaScript to have access to.
 
 Adding a simple table for my CCSID (Italian 280) completed the tricky final effect!
 
-![SAVEFILE Data Explorer](savf-data-explorer.png)
+![SAVEFILE Data Explorer](images/savf-data-explorer.png)
 
 Given the universal nature of WebAssembly I thought that building a WA/JavaScript library to extract content from savefiles 
 (once trasfered out of IBM i system) could be intriguing. I will start with supporting 
@@ -1013,7 +1013,7 @@ Note that:
 * I correct for the different base dates: 1/1/2000 for IBM i, 1/1/1970 for JavaScript (i.e. 10957 days, 946684800000 milliseconds )
 * I correct for my timezone ( one hour will be added by JavaScript *Date()* initializer, so I subtract 3600000 milliseconds )
 
-![timestamp](timestamp.png)
+![timestamp](images/timestamp.png)
 
 We could move all the math involved into WebAssembly, so let us try plugging such logic into our ILE CL CGI object to wasm dumper. 
 
@@ -1048,7 +1048,7 @@ set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -mcpu=native -mtune=native")
 
 You will get a fast **read–eval–print loop (REPL)** utility that I will use in my presentation next Saturday.
 
-![WAoi](WAoi.png)
+![WAoi](images/WAoi.png)
 
 Stay tuned!
 
@@ -1608,7 +1608,7 @@ will trigger the PASE **malloc()** consuming memory we are not freeing.
 
 Let us adopt the 64bit GCC version provided by the team working for Open Source on IBM i.
 
-![](steps.png) 
+![](images/steps.png) 
 
 [NEXT-68](#68-to-summarize)
 
@@ -1812,7 +1812,7 @@ No copy occurred.
 
 In case of a big buffer, content will not be moved around. 
  
-![](couldyou.png)  
+![](images/couldyou.png)  
 
 ##### QP2_TEST4.CLLE
 
@@ -2709,7 +2709,7 @@ irb(main):003:0> p.save!
 irb(main):004:0>
 ```
 
-![](ccsid1208.png)
+![](images/ccsid1208.png)
 
 [NEXT-59](#59-to-test-testing)
 
@@ -2814,7 +2814,7 @@ irb(main):004:0>
 
 CCSID 1144 supports the € sign:
 
-![](neweuro.png)
+![](images/neweuro.png)
 
 We are in full control of native encodings! 
 
@@ -2954,7 +2954,7 @@ CREATE OR REPLACE TABLE products (
   updated_at   timestamp NOT NULL)
 ```
 
-![](clob.png)
+![](images/clob.png)
 
 [NEXT-56](#56-to-support-native-encodings)
 
@@ -2994,7 +2994,7 @@ bash-5.1$ bin/rails db:migrate
 == 20220128134219 CreateReviews: migrated (0.2234s) ===========================
 ```
 
-![](with_decimal.png)
+![](images/with_decimal.png)
 
 This required refinements in the *SQLBindParameter* Ruby integration as soon as binding SQL_DECIMAL type
 asked for special treatment of **precision** and **scale**.
@@ -3019,7 +3019,7 @@ irb(main):013:0>
 
 ```
 
-![](update_decimal.png)
+![](images/update_decimal.png)
 
 [NEXT-55](#55-to-support-character-large-objects)
 
@@ -3161,7 +3161,7 @@ class CreateProducts < ActiveRecord::Migration[7.0]
 end
 ```
 
-![](table_text.png) 
+![](images/table_text.png) 
 
 In a similar fashion we are able to define `change_column_comment` method:
 
@@ -3191,7 +3191,7 @@ end
 
 we obtain:
 
-![](column_text.png)
+![](images/column_text.png)
 
 
 We can let Rails define **associations** with **generate** sub\-commands: 
@@ -3385,9 +3385,9 @@ I will also have to verify if **SQL_ATTR_TIMESTAMP_PREC** actually plays a role 
 == 20220123101634 CreateProducts: migrated (0.0946s) ==========================
 ```
 
-![](ar_internal_metadata.png)
+![](images/ar_internal_metadata.png)
 
-![](schema_migrations.png)
+![](images/schema_migrations.png)
 
 We are still far from a minimal Rails functionality, but now we know how and where to focus attention.
 
@@ -4043,7 +4043,7 @@ end
 
 This is what we get:
 
-![base](base_connection_3.png)  
+![base](images/base_connection_3.png)  
 
 where we can see all the SQL commands actually submitted.
 
@@ -4057,11 +4057,11 @@ By using Rails console we can get rid of all the infrastructure and use the data
 connection directly. 
 The methods I am referring to are directly provided by the `ActiveRecord::Base#connection` class:
 
-![base](base_connection.png)
+![base](images/base_connection.png)
 
 We can inspect the content of the table just created:
 
-![base](stilnovo.png)
+![base](images/stilnovo.png)
 
 Why the file named *NUOVA* is created inside the library named *PROVA*? All the database aspects of Rails project are configured by means of the YAML file named *config/database.yml*.
 One of the parameters in this file is `default_schema`.
@@ -4132,7 +4132,7 @@ There are two aspects worth mentioning in adopting **READ COMMITTED**:
 
 We can specify the desired **isolation level** for each transaction:
 
-![base](base_connection_2.png)
+![base](images/base_connection_2.png)
 
 [NEXT-45](#45-to-gather-more-info)
 
@@ -4239,7 +4239,7 @@ Stay tuned!
 ----
 ### 42. to install Rails 7
 
-![](Rails7.png)
+![](images/Rails7.png)
 
 [NEXT-43](#43-to-fill-the-gap)
 
@@ -4262,7 +4262,7 @@ This release includes [security fixes](https://www.ruby-lang.org/en/news/2021/11
 ----
 ### 40. to install Rails
 
-![](Railsintro.png)
+![](images/Railsintro.png)
 
 It is time to finally play with Rails.
 
