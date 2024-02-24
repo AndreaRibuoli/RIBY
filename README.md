@@ -101,6 +101,7 @@ Let's go!
 79. [to take the pulse](#79-to-take-the-pulse)
 80. [to write our Christmas letter](#80-to-write-our-christmas-letter)
 81. [to stop and think](#81-to-stop-and-think)
+82. [to avoid moving around tagged pointers](#82-to-avoid-moving-around-tagged-pointers)
 
 <!---
 
@@ -134,6 +135,75 @@ in previous requests.
 
 
 --->
+
+### 82. to avoid moving around tagged pointers
+
+In the post titled ["to move around tagged pointers"](#10-to-move-around-tagged-pointers) I explained how to copy memory without destroying 16-byte tagged pointers (when in PASE). Now that I am focusing on **ILE CL** (and its basic support for pointers) that awareness is vital for an effective ILE CL programming. 
+
+In ILE CL there is no *struct* support. Nonetheless there is a relatively common workaround.
+
+We usually define a variable `VAR(&A_VARIABLE)` of type `TYPE(*CHAR)` having the total length of the desired struct.
+
+We then define individual fields of the struct by declaring variables `VAR(&A_SUBFIELD)` 
+with storage attribute `STG(*DEFINED)` and relative positioning `DEFVAR(&A_VARIABLE 17)`. 
+In my example `17` specifies the starting position of the variable `&A_SUBFIELD` from the beginning of the 
+defined\-on variable `&A_VARIABLE`.
+
+Obviously there is no support for scoping so we need *to adopt names for subfields that do not collide with other variables*.
+
+Let us suppose one of those subfileds is of type **pointer** (`TYPE(*PTR)`).
+
+#### **TESTA**
+
+```
+             PGM        PARM(&NAME &SURNAME)                                            
+             DCL        VAR(&NAME) TYPE(*CHAR) LEN(25)                         
+             DCL        VAR(&SURNAME) TYPE(*CHAR) LEN(25)                         
+             DCL        VAR(&GREETING) TYPE(*CHAR) LEN(80)                         
+             DCL        VAR(&CONTROLS) TYPE(*CHAR) LEN(48)                          
+             DCL        VAR(&PTR1) TYPE(*PTR) STG(*DEFINED) DEFVAR(&CONTROLS  1) 
+             DCL        VAR(&PTR2) TYPE(*PTR) STG(*DEFINED) DEFVAR(&CONTROLS 17) 
+             DCL        VAR(&PTR3) TYPE(*PTR) STG(*DEFINED) DEFVAR(&CONTROLS 33) 
+             CHGVAR     VAR(&PTR1) VALUE(%ADDRESS(&NAME))  
+             CHGVAR     VAR(&PTR2) VALUE(%ADDRESS(&SURNAME))  
+             CHGVAR     VAR(&PTR3) VALUE(%ADDRESS(&GREETING))  
+             CALLPRC    PRC('TESTB') PARM((&CONTROLS *BYREF))  
+             SNDPGMMSG  MSG(&GREETING)                    
+ FINE:       ENDPGM   
+```  
+
+To read the content of `&NAME` and `&SURNAME` we need to use a `STG(*BASED)` variable with the 
+corresponding sub\-field variable as our base pointer. 
+To write into `&MESSAGE` the same requirement applies.
+                                                             
+#### **TESTB**
+
+```  
+             PGM        PARM(&CONTROLS)                                           
+             DCL        VAR(&CONTROLS) TYPE(*CHAR) LEN(48)                       
+             DCL        VAR(&PTR1) TYPE(*PTR) STG(*DEFINED) DEFVAR(&CONTROLS  1) 
+             DCL        VAR(&PTR2) TYPE(*PTR) STG(*DEFINED) DEFVAR(&CONTROLS 17) 
+             DCL        VAR(&PTR3) TYPE(*PTR) STG(*DEFINED) DEFVAR(&CONTROLS 33) 
+             DCL        VAR(&NAME) TYPE(*CHAR) STG(*BASED) LEN(25) BASPTR(&PTR1)   
+             DCL        VAR(&SURNAME) TYPE(*CHAR) STG(*BASED) LEN(25) BASPTR(&PTR2)   
+             DCL        VAR(&GREETING) TYPE(*CHAR) STG(*BASED) LEN(80) BASPTR(&PTR3)   
+             CHGVAR     VAR(&GREETING) VALUE('Welcome' *BCAT &NAME *BCAT &SURNAME)               
+ FINE:       ENDPGM                                                               
+```  
+
+```
+CRTCLMOD MODULE(TESTA) SRCFILE(QCLSRC) SRCMBR(TESTA)              
+CRTCLMOD MODULE(TESTB) SRCFILE(QCLSRC) SRCMBR(TESTB) 
+CRTPGM PGM(TEST) MODULE(TESTA TESTB)              
+CALL PGM(TEST) PARM('test')
+```
+
+In general we should note that if anything is passed **\*BYVAL** during a **CALLPRC**, 
+the called procedure could not have been encoded in ILE CL:
+**ILE CL can only receive paramenters passed *\*BYREF* !**
+
+Next time I will build on what we learned today to wrap ILE C **\_R\*** functions.
+
 
 ### 81. to stop and think
 
@@ -1354,7 +1424,7 @@ When I re\-engineer a package for *PASERIE* its source code resides on GitHub.
 The systems that have runtime version of PASERIE installed can then install these packages with simple commands like the following one:
 
 ```
-PASERIE/INSTALL REPO_OWNER(AndreaRIbuoli) REPOSITORY(IBMIMBI)      
+PASERIE/INSTALL REPO_OWNER(AndreaRibuoli) REPOSITORY(IBMIMBI)      
 ```
    
 The installation tool takes care of reading the content of a special file it expects to find in each repository always named **GUIDANCE.TXT**.
@@ -1396,7 +1466,7 @@ If that is the case the fields that follow direct the installer to submit a pre\
 In this example a new job will be sumbitted executing:
 
 ```
-PASERIE/INSTALL REPO_OWNER(AndreaRIbuoli) REPOSITORY(QUINCL)      
+PASERIE/INSTALL REPO_OWNER(AndreaRibuoli) REPOSITORY(QUINCL)      
 ```
 
 Note: passing the **GIT_USER** enables to install packages developed by colleagues under their GitHub's profile.
@@ -1418,7 +1488,7 @@ My system has version 7.3 installed, the customer one version 7.4.
 On my customer system I issued (apart from the token parameters):
 
 ```
-PASERIE/INSTALL REPO_OWNER(AndreaRIbuoli) REPOSITORY(XMLSERVILE) TGTRLS(*PRV)
+PASERIE/INSTALL REPO_OWNER(AndreaRibuoli) REPOSITORY(XMLSERVILE) TGTRLS(*PRV)
 ```
 
 Saving the library on a savefile (remembering `TGTRLS(*PRV)` option) solved my problem:
@@ -10147,7 +10217,7 @@ We will use such a tester making it evolve in order to gather information on how
 | QSRVSRC	     |   [RIBY_SRV](QSRVSRC/RIBY_SRV.BND)   |
 
 These files can be installed automatically if you have **PASERIE** utility installed (by means of
-`PASERIE/INSTALL REPO_OWNER(AndreaRIbuoli) REPOSITORY(RIBY)`). 
+`PASERIE/INSTALL REPO_OWNER(AndreaRibuoli) REPOSITORY(RIBY)`). 
 Transferring and compiling manually is not complex at all (have a look at [build CL](QCLSRC/BUILD.CLLE) just in case).
 
 ```
