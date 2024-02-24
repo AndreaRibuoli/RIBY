@@ -151,7 +151,7 @@ defined\-on variable `&A_VARIABLE`.
 
 Obviously there is no support for scoping so we need *to adopt names for subfields that do not collide with other variables*.
 
-Let us suppose one of those subfileds is of type **pointer** (`TYPE(*PTR)`).
+Let us suppose some of those subfileds are of type **pointer** (`TYPE(*PTR)`).
 
 #### **TESTA**
 
@@ -195,7 +195,6 @@ To write into `&MESSAGE` the same requirement applies.
 CRTCLMOD MODULE(TESTA) SRCFILE(QCLSRC) SRCMBR(TESTA)              
 CRTCLMOD MODULE(TESTB) SRCFILE(QCLSRC) SRCMBR(TESTB) 
 CRTPGM PGM(TEST) MODULE(TESTA TESTB)              
-CALL PGM(TEST) PARM('test')
 ```
 
 In general we should note that if anything is passed **\*BYVAL** during a **CALLPRC**, 
