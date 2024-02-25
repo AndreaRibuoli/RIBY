@@ -151,7 +151,7 @@ defined\-on variable `&A_VARIABLE`.
 
 Obviously there is no support for scoping so we need *to adopt names for subfields that do not collide with other variables*.
 
-Let us suppose some of those subfileds are of type **pointer** (`TYPE(*PTR)`).
+Let us suppose some of those subfields are of type **pointer** (`TYPE(*PTR)`).
 
 #### **TESTA**
 
