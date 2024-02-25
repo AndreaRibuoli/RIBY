@@ -219,7 +219,7 @@ First of all, let us think positive...: *we **can** use ILE CL pointer variables
 
 But we have to pay attention to avoid `%OFFSET` BIF when treating that teraspace storage from ILE CL.
 
-This lesson I hardly learnt while developing [`PASERIE/INSTALL` tool](https://github.com/AndreaRibuoli/PASERIE), 
+This lesson I learnt while developing [`PASERIE/INSTALL` tool](https://github.com/AndreaRibuoli/PASERIE), 
 recently made *Public*, where the teraspace memory provided by *libcurl* in PASE is accessed from ILE via CL.
 
 The source code of *GHINSTALL* is clumsy and in need of rework exactly because my development started 
