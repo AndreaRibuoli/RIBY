@@ -179,7 +179,7 @@ This is ideal to avoid duplication of source describing our structure.
  FINE:       ENDPGM                                                               
 ```  
 
-Now let us apply this programming style in wrapping some of the so\-called *Record Functions for Databae and DDM Files*.
+Now let us apply this programming style in wrapping some of the so\-called *Record Functions for Database and DDM Files*.
 We will focus specifcally on four of them:
 
 * **\_Ropen()** 
@@ -188,7 +188,7 @@ We will focus specifcally on four of them:
 * **\_Rclose()** 
 
 We will have to handle ILE CL pseudo\-structures spefically required by these APIs and we could benefit from using 
-our own control block to hide the complexities implied by the details of each *\-R\* API*, 
+our own control block to hide the complexities implied by the details of each **\_R\*** API, 
 this way simplifying the overall code base.
 
 First of all three of these four APIs (*\_Ropnfbk()*, *\_Rreadn()* and *\_Rclose()*) will require a pointer to 
