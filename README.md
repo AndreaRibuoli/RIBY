@@ -102,6 +102,7 @@ Let's go!
 80. [to write our Christmas letter](#80-to-write-our-christmas-letter)
 81. [to stop and think](#81-to-stop-and-think)
 82. [to avoid moving around tagged pointers](#82-to-avoid-moving-around-tagged-pointers)
+83. [to refine structs](#83-to-refine-structs)
 
 <!---
 
@@ -135,6 +136,159 @@ in previous requests.
 
 
 --->
+
+### 83. to refine structs
+
+From IBM i version 7.1 it is possible to benefit from the *Include CL Source* (**INCLUDE**) command.
+This is ideal to avoid duplication of source describing our structure.
+
+#### **CTLBLOCK**
+
+```
+             DCL        VAR(&CONTROLS) TYPE(*CHAR) LEN(48)                          
+             DCL        VAR(&PTR1) TYPE(*PTR) STG(*DEFINED) DEFVAR(&CONTROLS  1) 
+             DCL        VAR(&PTR2) TYPE(*PTR) STG(*DEFINED) DEFVAR(&CONTROLS 17) 
+             DCL        VAR(&PTR3) TYPE(*PTR) STG(*DEFINED) DEFVAR(&CONTROLS 33) 
+```
+
+#### **TEST2A**
+
+```
+             PGM        PARM(&NAME &SURNAME)                                            
+             DCL        VAR(&NAME) TYPE(*CHAR) LEN(25)                         
+             DCL        VAR(&SURNAME) TYPE(*CHAR) LEN(25)                         
+             DCL        VAR(&GREETING) TYPE(*CHAR) LEN(80)     
+             INCLUDE    SRCMBR(CTLBLOCK)                    
+             CHGVAR     VAR(&PTR1) VALUE(%ADDRESS(&NAME))  
+             CHGVAR     VAR(&PTR2) VALUE(%ADDRESS(&SURNAME))  
+             CHGVAR     VAR(&PTR3) VALUE(%ADDRESS(&GREETING))  
+             CALLPRC    PRC('TESTB') PARM((&CONTROLS *BYREF))  
+             SNDPGMMSG  MSG(&GREETING)                    
+ FINE:       ENDPGM   
+```  
+                                                             
+#### **TEST2B**
+
+```  
+             PGM        PARM(&CONTROLS)                                           
+             INCLUDE    SRCMBR(CTLBLOCK)                    
+             DCL        VAR(&NAME) TYPE(*CHAR) STG(*BASED) LEN(25) BASPTR(&PTR1)   
+             DCL        VAR(&SURNAME) TYPE(*CHAR) STG(*BASED) LEN(25) BASPTR(&PTR2)   
+             DCL        VAR(&GREETING) TYPE(*CHAR) STG(*BASED) LEN(80) BASPTR(&PTR3)   
+             CHGVAR     VAR(&GREETING) VALUE('Welcome' *BCAT &NAME *BCAT &SURNAME)               
+ FINE:       ENDPGM                                                               
+```  
+
+Now let us apply this programming style in wrapping some of the so\-called *Record Functions for Databae and DDM Files*.
+We will focus specifcally on four of them:
+
+* **\_Ropen()** 
+* **\_Ropnfbk()** 
+* **\_Rreadn()** 
+* **\_Rclose()** 
+
+We will have to handle ILE CL pseudo\-structures spefically required by these APIs and we could benefit from using 
+our own control block to hide the complexities implied by the details of each *\-R\* API*, 
+this way simplifying the overall code base.
+
+First of all three of these four APIs (*\_Ropnfbk()*, *\_Rreadn()* and *\_Rclose()*) will require a pointer to 
+a **\_RFILE** structure that is returned by the successful *\_Ropen()* invocation. 
+A pointer to a *\_RFILE* structure will surely be part of our control block that we will pass around 
+the four ILE CL procedures we are about to create (wrapping each of the mentioned APIs).
+
+As soon as the *\_Ropen()* operates on a library\-file\-member name that could involve a resolution process 
+we could prefer to keep a pointer to the original specification as provided by the requester (e.g. `*LIBL/QCLSRC(*LAST)`)
+in our control block.
+
+We could also decide to keep the resolved **library name**, **file name** and **member name** in 
+specific fields of our control block, shielding the other CL procedures from the details of the structure 
+where those same values are returned.  
+
+Also note the alignment adopted (quad\-word) required by IBM i architecture to handle pointers.
+
+#### **R_CTLBLOCK**
+
+```
+             DCL        VAR(&R_CONTROLS) TYPE(*CHAR) LEN(80) 
+             DCL        VAR(&LIB_NAME)   TYPE(*CHAR) STG(*DEFINED) LEN(10) DEFVAR(&R_CONTROLS  1)                        
+             DCL        VAR(&FIL_NAME)   TYPE(*CHAR) STG(*DEFINED) LEN(10) DEFVAR(&R_CONTROLS 11)                         
+             DCL        VAR(&MBR_NAME)   TYPE(*CHAR) STG(*DEFINED) LEN(10) DEFVAR(&R_CONTROLS 21)                         
+             DCL        VAR(&NO_OF_RECS) TYPE(*INT)  STG(*DEFINED) LEN(4)  DEFVAR(&R_CONTROLS 31)                         
+             DCL        VAR(&RECORD_LEN) TYPE(*INT)  STG(*DEFINED) LEN(2)  DEFVAR(&R_CONTROLS 35)                         
+             DCL        VAR(&START_AT)   TYPE(*INT)  STG(*DEFINED) LEN(2)  DEFVAR(&R_CONTROLS 37)                         
+             DCL        VAR(&FULLNAME_P) TYPE(*PTR)  STG(*DEFINED)         DEFVAR(&R_CONTROLS 49) 
+             DCL        VAR(&R_FILE_PTR) TYPE(*PTR)  STG(*DEFINED)         DEFVAR(&R_CONTROLS 65) 
+```
+
+#### **MAIN_FLOW**
+
+```
+             PGM        PARM(&FULLNAME)                                            
+             DCL        VAR(&FULLNAME) TYPE(*CHAR) LEN(80)     
+             DCL        VAR(&NULL) TYPE(*CHAR) LEN(1) VALUE(X'00')     
+             INCLUDE    SRCMBR(R_CTLBLOCK)
+             CHGVAR     VAR(&FULLNAME) VALUE(&FULLNAME *TCAT &NULL)                   
+             CHGVAR     VAR(&FULLNAME_P) VALUE(%ADDRESS(&FULLNAME)) 
+             CHGVAR     VAR(&R_FILE_PTR) VALUE(*NULL)
+             CALLPRC    PRC('R_OPEN')   PARM((&R_CONTROLS *BYREF)) 
+             IF         COND(&R_FILE_PTR *EQ *NULL) THEN(RETURN)
+             CALLPRC    PRC('R_OPNFBK') PARM((&R_CONTROLS *BYREF))  
+             CALLPRC    PRC('R_CLOSE')  PARM((&R_CONTROLS *BYREF)) 
+             SNDPGMMSG  MSG(&LIB_NAME *TCAT '/' *CAT &FIL_NAME *TCAT '(' *CAT &MBR_NAME *TCAT ')')
+ FINE:       ENDPGM   
+```  
+                                                             
+#### **R_OPEN**
+
+```  
+             PGM        PARM(&R_CONTROLS)                                           
+             INCLUDE    SRCMBR(R_CTLBLOCK)   
+             DCL        VAR(&PTR) TYPE(*PTR)                                         
+             DCL        VAR(&FULLNAME) TYPE(*CHAR) STG(*BASED) LEN(80) BASPTR(&PTR)  
+             DCL        VAR(&RETURN_PTR) TYPE(*PTR) ADDRESS(*NULL)
+             CHGVAR     VAR(&PTR) VALUE(&FULLNAME_P)   
+             SNDPGMMSG  MSG('Resolving' *BCAT &FULLNAME)  
+             CALLPRC    PRC('_Ropen') PARM((&FULLNAME *BYREF) ('rr')) RTNVAL(&RETURN_PTR) 
+             MONMSG     MSGID(CPF4101) EXEC(RETURN)
+             IF         COND(&RETURN_PTR *NE *NULL) THEN(CHGVAR VAR(&R_FILE_PTR) VALUE(&RETURN_PTR))
+ FINE:       ENDPGM                                                               
+```  
+
+#### **R_OPNFBK**
+
+```  
+             PGM        PARM(&R_CONTROLS)    
+             DCL        VAR(&XXOPFB_PTR) TYPE(*PTR) 
+             DCL        VAR(&XXOPFB) TYPE(*CHAR) STG(*BASED) LEN(300) BASPTR(&XXOPFB_PTR)
+             DCL        VAR(&XXFIL_NAME) TYPE(*CHAR) STG(*DEFINED) LEN(10) DEFVAR(&XXOPFB   3)                        
+             DCL        VAR(&XXLIB_NAME) TYPE(*CHAR) STG(*DEFINED) LEN(10) DEFVAR(&XXOPFB  13)                        
+             DCL        VAR(&XXREC_LEN)  TYPE(*INT)  STG(*DEFINED) LEN(2)  DEFVAR(&XXOPFB  45) 
+             DCL        VAR(&XXMBR_NAME) TYPE(*CHAR) STG(*DEFINED) LEN(10) DEFVAR(&XXOPFB  49) 
+             DCL        VAR(&XXRECS_NUM) TYPE(*INT)  STG(*DEFINED) LEN(4)  DEFVAR(&XXOPFB  76) 
+             DCL        VAR(&XXSOURCE_I) TYPE(*CHAR) STG(*DEFINED) LEN(1)  DEFVAR(&XXOPFB  83) 
+             INCLUDE    SRCMBR(R_CTLBLOCK)                    
+             CALLPRC    PRC('_Ropnfbk') PARM((&R_FILE_PTR *BYVAL)) RTNVAL(&XXOPFB_PTR) 
+             CHGVAR     VAR(&FIL_NAME)   VALUE(&XXFIL_NAME)
+             CHGVAR     VAR(&LIB_NAME)   VALUE(&XXLIB_NAME)
+             CHGVAR     VAR(&MBR_NAME)   VALUE(&XXMBR_NAME)
+             CHGVAR     VAR(&NO_OF_RECS) VALUE(&XXRECS_NUM)
+             CHGVAR     VAR(&RECORD_LEN) VALUE(&XXREC_LEN)
+             IF         COND(&XXSOURCE_I *EQ 'Y') THEN(CHGVAR VAR(&START_AT) VALUE(13))
+             ELSE       CMD(CHGVAR VAR(&START_AT) VALUE(1))
+ FINE:       ENDPGM                                                               
+```  
+
+#### **R_CLOSE**
+
+```  
+             PGM        PARM(&R_CONTROLS)    
+             INCLUDE    SRCMBR(R_CTLBLOCK) 
+             DCL        VAR(&RETCODE) TYPE(*INT) LEN(4)                   
+             CALLPRC    PRC('_Rclose') PARM((&R_FILE_PTR *BYREF)) RTNVAL(&RETCODE) 
+ FINE:       ENDPGM                                                               
+```  
+
+In the next post I will add the loop to print source records. Stay tuned.
 
 ### 82. to avoid moving around tagged pointers
 
@@ -203,6 +357,7 @@ the called procedure could not have been encoded in ILE CL:
 
 Next time I will build on what we learned today to wrap ILE C **\_R\*** functions.
 
+[NEXT-83](#83-to-refine-structs)
 
 ### 81. to stop and think
 
@@ -230,6 +385,7 @@ Should you give it a try, follow the **README** provided
 
 For questions on PASERIE, do not esitate to contact me ( `andrea.ribuoli@yahoo.com` ). Enjoy!
 
+[NEXT-82](#82-to-avoid-moving-around-tagged-pointers)
 
 ### 80. to write our Christmas letter
 
@@ -261,8 +417,7 @@ A growing number of Open Source packages are introducing the use of Rust so that
 The patched AIX tools that followed AIX 7.2 TL5 (required to build current GCC properly) risk to be missing.
 
 Given the tight budgets (of the AI era we are living in) IBM Rochester will be faced by the expensive option of breaking with tradition and prepare a PTF that will upgrade PASE.
-It is time to start writing our letter to Santa Claus!  
- 
+It is time to start writing our letter to Santa Claus!   
 
 [NEXT-81](#81-to-stop-and-think)
 
