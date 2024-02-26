@@ -103,6 +103,7 @@ Let's go!
 81. [to stop and think](#81-to-stop-and-think)
 82. [to avoid moving around tagged pointers](#82-to-avoid-moving-around-tagged-pointers)
 83. [to refine structs](#83-to-refine-structs)
+84. [to access source files from CL](#84-to-access-source-files-from-cl)
 
 <!---
 
@@ -136,6 +137,61 @@ in previous requests.
 
 
 --->
+
+### 84. to access source files from CL
+
+Let us complete our utility.
+
+We add to **MAIN_FLOW** a `DOFOR` loop invoking `PRC('R_READN')` the known number of times (&NO\_OF\_RECS).
+We pass the `&R_ROW` variable to receive each new record.
+
+#### **MAIN_FLOW**
+
+```
+             DCL        VAR(&FULLNAME) TYPE(*CHAR) LEN(80)     
+             DCL        VAR(&NULL) TYPE(*CHAR) LEN(1) VALUE(X'00')     
+             DCL        VAR(&R_ROW) TYPE(*CHAR) LEN(300)     
+             DCL        VAR(&CUR_REC) TYPE(*INT) LEN(4) 
+             INCLUDE    SRCMBR(R_CTLBLOCK)
+             CHGVAR     VAR(&FULLNAME_P) VALUE(%ADDRESS(&FULLNAME)) 
+             CHGVAR     VAR(&R_FILE_PTR) VALUE(*NULL)
+             CALLPRC    PRC('R_OPEN')   PARM((&R_CONTROLS *BYREF)) 
+             IF         COND(&R_FILE_PTR *EQ *NULL) THEN(RETURN)
+             CALLPRC    PRC('R_OPNFBK') PARM((&R_CONTROLS *BYREF)) 
+             DOFOR      VAR(&CUR_REC) FROM(1) TO(&NO_OF_RECS) BY(1)
+               CALLPRC  PRC('R_READN') PARM((&R_CONTROLS *BYREF) (&R_ROW *BYREF)) 
+               SNDPGMMSG MSG(&R_ROW)
+             ENDDO
+             CALLPRC    PRC('R_CLOSE')  PARM((&R_CONTROLS *BYREF)) 
+             SNDPGMMSG  MSG(&LIB_NAME *TCAT '/' *CAT &FIL_NAME *TCAT '(' *CAT &MBR_NAME *TCAT ')')
+ FINE:       ENDPGM   
+```
+
+#### **R_READN**
+
+```
+             PGM        PARM(&R_CONTROLS &ROW)
+             DCL VAR(&ROW) TYPE(*CHAR) LEN(300)
+             INCLUDE    SRCMBR(R_CTLBLOCK) 
+             DCL VAR(&IOFB_PTR) TYPE(*PTR) ADDRESS(*NULL)
+             DCL VAR(&IOFB_AREA) TYPE(*CHAR) STG(*BASED) LEN(200) BASPTR(&IOFB_PTR)
+             DCL VAR(&BYTES_READ) TYPE(*INT) STG(*DEFINED) LEN(4) DEFVAR(&IOFB_AREA 37)
+             DCL VAR(&NULL) TYPE(*CHAR) LEN(1) VALUE(X'00')
+             DCL VAR(&LEN) TYPE(*INT) LEN(2) 
+             DCL VAR(&DEF_VAL_) TYPE(*INT) LEN(4) VALUE(184549632)
+             CALLPRC PRC('_Rreadn') PARM((&R_FILE_PTR *BYVAL) (&ROW *BYREF) +
+                          (&RECORD_LEN *BYVAL) (&DEF_VAL_ *BYVAL)) RTNVAL(&IOFB_PTR)  
+             IF COND(&BYTES_READ *EQ -1) THEN(DO)
+               CHGVAR     VAR(&ROW) VALUE(&NULL)
+             ENDDO
+             ELSE CMD(DO)  
+               CHGVAR VAR(&LEN) VALUE(&RECORD_LEN + 1 - &START_AT)
+               CHGVAR VAR(&ROW) VALUE(%SST(&ROW &START_AT &LEN) *TCAT &NULL)
+             ENDDO
+ FINE:       ENDPGM                                                               
+```
+
+
 
 ### 83. to refine structs
 
