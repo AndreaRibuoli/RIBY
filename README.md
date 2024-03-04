@@ -340,7 +340,7 @@ Also note the alignment adopted (quad\-word) required by IBM i architecture to h
              PGM        PARM(&R_CONTROLS)    
              INCLUDE    SRCMBR(R_CTLBLOCK) 
              DCL        VAR(&RETCODE) TYPE(*INT) LEN(4)                   
-             CALLPRC    PRC('_Rclose') PARM((&R_FILE_PTR *BYREF)) RTNVAL(&RETCODE) 
+             CALLPRC    PRC('_Rclose') PARM((&R_FILE_PTR *BYVAL)) RTNVAL(&RETCODE) 
  FINE:       ENDPGM                                                               
 ```  
 
