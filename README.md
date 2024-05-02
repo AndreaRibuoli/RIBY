@@ -191,7 +191,7 @@ We pass the `&R_ROW` variable to receive each new record.
  FINE:       ENDPGM                                                               
 ```
 
-
+----
 
 ### 83. to refine structs
 
@@ -345,6 +345,10 @@ Also note the alignment adopted (quad\-word) required by IBM i architecture to h
 ```  
 
 In the next post I will add the loop to print source records. Stay tuned.
+
+[NEXT-84](#84-to-access-source-files-from-cl)
+
+----
 
 ### 82. to avoid moving around tagged pointers
 
