@@ -661,7 +661,6 @@ It was \-actually\- a fashinating experience.
 
 [NEXT-79](#79-to-take-the-pulse)
 
-
 ### 77. to continue offline
 
 Now that we have our wasm-bundled savefile we can continue studying savefile format offline. 
@@ -846,6 +845,9 @@ These details are all but exciting: they are fundamentally useless because we do
 reliability of IBM i system functions! 
 Nonetheless they can be useful to give *"life"* to savefiles once offline. 
   
+[NEXT-78](#78-to-disassemble-the-toys)
+
+-----  
 
 ### 76. to fill the gaps again
 
@@ -1008,6 +1010,8 @@ study the **Save/Restore Descriptor Space**. And we have also to complete our ba
 
 We will discover that these two topics are intertwined. 
 
+[NEXT-77](#77-to-continue-offline)
+
 ----
 
 ### 75. to carry out a thorough analysis
@@ -1145,6 +1149,8 @@ wasm3>
 ```
 
 Next time I will show what can be obtained adding a bit of JavaScript. 
+
+[NEXT-76](#76-to-fill-the-gaps-again)
 
 ----
 
