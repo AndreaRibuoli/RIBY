@@ -415,6 +415,8 @@ Next time I will build on what we learned today to wrap ILE C **\_R\*** function
 
 [NEXT-83](#83-to-refine-structs)
 
+-----
+
 ### 81. to stop and think
 
 Abstraction of memory poses some issues to the IBM i programmer when 
@@ -442,6 +444,8 @@ Should you give it a try, follow the **README** provided
 For questions on PASERIE, do not esitate to contact me ( `andrea.ribuoli@yahoo.com` ). Enjoy!
 
 [NEXT-82](#82-to-avoid-moving-around-tagged-pointers)
+
+-----
 
 ### 80. to write our Christmas letter
 
@@ -476,6 +480,8 @@ Given the tight budgets (of the AI era we are living in) IBM Rochester will be f
 It is time to start writing our letter to Santa Claus!   
 
 [NEXT-81](#81-to-stop-and-think)
+
+-----
 
 ### 79. to take the pulse
 
@@ -618,6 +624,8 @@ Obviously a v7r4 to v7r5 comparison could provide different **fresh unbiased inf
 
 [NEXT-80](#80-to-write-our-christmas-letter)
 
+-----
+
 ### 78. to disassemble the toys
 
 Apart from the surrounding envelope, each object type in a savefile has its own structure. 
@@ -660,6 +668,8 @@ It was \-actually\- a fashinating experience.
 ![msgf](images/msgf.png)
 
 [NEXT-79](#79-to-take-the-pulse)
+
+-----
 
 ### 77. to continue offline
 
