@@ -104,39 +104,83 @@ Let's go!
 82. [to avoid moving around tagged pointers](#82-to-avoid-moving-around-tagged-pointers)
 83. [to refine structs](#83-to-refine-structs)
 84. [to access source files from CL](#84-to-access-source-files-from-cl)
-
-<!---
-
-
-3X. [to customize subsystem](#3X-to-customize-subsystem)
-
-../bin/gcc -maix64 -Wl,-bnolibpath -Wl,-blibpath:/QOpenSys/riby/lib:/usr/lib:/lib -o paseoss_start64 /tmp/paseoss_start32.c
+85. [to play CGI again](#85-to-play-cgi-again)
 
 ----
-### 3X. to customize subsystem
 
-There is [an IBM i Support document](https://www.ibm.com/support/pages/qsqsrvr-subsystem-customization) explaining how
-to set up an application specific subsystem for the -otherwise **QSYSWRK**'s- SQL CLI connection jobs.
-This obviously holds true only when SERVER MODE is active.
+### 85. to play CGI again
 
-There is a corresponding Environment attribute named **SQL\_ATTR\_SERVERMODE\_SUBSYSTEM** that we were not retrieving 
-in previous requests.
+The online **CGI APIs** documentation tells:
 
-| mnemonic | value | description |
-|:-------- |:-----:|:----------- |
-| QP2\_ARG\_END | 0 |The end of the list of argument type values. |
-| QP2\_ARG\_WORD | -1 |   A 4-byte signed or unsigned integer, or a structure or union no longer than four bytes. This value is allowed only when calling a procedure in a 32-bit IBM PASE for i program. |
-| QP2\_ARG\_DWORD | -2 |   An 8-byte signed or unsigned integer, or a structure or union no longer than eight bytes. This value is allowed only when calling a procedure in a 64-bit IBM PASE for i program. |
-| QP2\_ARG\_FLOAT32 | -3 |   A 4-byte floating point number. |
-| QP2\_ARG\_FLOAT64 | -4 |   An 8-byte floating point number. |
-| QP2\_ARG\_PTR32 | -5 |   A 4-byte pointer. The value in the arglist buffer is passed unchanged unless its high-order bits (excluding the lower 16 bits) match the corresponding part of constant QP2\_ARG\_PTR\_TOSTACK (0x0fff0000). In that case, the arglist value is changed to the memory address used for a copy of the buf area plus an offset in the lower 16 bits of the arglist value, and the updated value is passed to the IBM PASE for i procedure. QP2\_ARG\_PTR32 is allowed only when calling a procedure in a 32-bit IBM PASE for i program. |
-| QP2\_ARG\_PTR64 | -6 |   An 8-byte pointer. The value in the arglist buffer is passed unchanged unless its high-order bits (excluding the lower 16 bits) match the corresponding part of constant QP2\_ARG\_PTR\_TOSTACK (0x000000000fff0000). In that case, the arglist value is changed to the memory address used for a copy of the buf area plus an offset in the lower 16 bits of the arglist value, and the updated value is passed to the IBM PASE for i procedure. QP2\_ARG\_PTR64 is allowed only when calling a procedure in a 64-bit IBM PASE for i program. |
-| QP2\_ARG\_TS64 | -7 |   An 8-byte teraspace pointer (must be 8-byte aligned). The value in the arglist buffer is converted to an IBM PASE for i 32-bit or 64-bit IBM PASE for i memory address that is passed as the argument value. The argument passed to the IBM PASE for i function is zero if the teraspace pointer addresses memory at teraspace offset zero, or -1 if the pointer addresses storage the IBM PASE for i program cannot reference. |
-| QP2\_ARG\_SPCPTR | -8 |   A 16-byte space pointer (must be 16-byte aligned). The value in the arglist buffer is converted to an IBM PASE for i 32-bit or 64-bit IBM PASE for i memory address that is passed as the argument value. The argument passed to the IBM PASE for i function is zero if the 16-byte pointer is not a valid space pointer, or -1 if the pointer addresses storage the IBM PASE for i program cannot reference. |
-| QP2\_ARG\_FLOAT128 | -9 |   A 16-byte floating point number. |
+*HTTP Server supports the APIs listed below in **C++**, **REXX**, **ILE C**, 
+**ILE COBOL**, and **ILE RPG** programming languages*
 
+Today I would like to experiment to what extent this is possible also with **Control Language**:
+so that we can ideally add **ILE CL** to that list.
 
---->
+Let us start using **QtmhGetEnv** API:
+
+```
+         PGM  PARM(&RQENV)                                                                   
+         DCL  VAR(&RCVR)    TYPE(*CHAR) LEN(1024)                                            
+         DCL  VAR(&LEN_A)   TYPE(*INT)  LEN(4)  VALUE(1024)                                  
+         DCL  VAR(&LEN_R)   TYPE(*INT)  LEN(4)  VALUE(0)                                     
+         DCL  VAR(&RQENV)   TYPE(*CHAR) LEN(128)                                             
+         DCL  VAR(&LEN_V)   TYPE(*INT)  LEN(4)                                               
+         DCL  VAR(&ERRCDE) TYPE(*CHAR) LEN(16)                                               
+         DCL  VAR(&BYTPRV) TYPE(*INT)  STG(*DEFINED) LEN(4) DEFVAR(&ERRCDE)                  
+         DCL  VAR(&BYTAVL) TYPE(*INT)  STG(*DEFINED) LEN(4) DEFVAR(&ERRCDE 5)                
+         DCL  VAR(&MSGID)  TYPE(*CHAR) STG(*DEFINED) LEN(7) DEFVAR(&ERRCDE 9)                
+         CHGVAR VAR(&LEN_V) VALUE(%SCAN(' ' &RQENV) - 1)                                     
+         CHGVAR VAR(&BYTPRV) VALUE(16)                                                       
+         CALLPRC PRC('QtmhGetEnv') PARM(&RCVR &LEN_A &LEN_R &RQENV &LEN_V &ERRCDE)           
+         IF COND(&LEN_R *GT 0) +                                                             
+           THEN( SNDPGMMSG MSG( %SST(&RQENV 1 &LEN_V) *CAT ' = ' *CAT %SST(&RCVR 1 &LEN_R)) )
+         ELSE CMD(DO)                                                                        
+           IF COND(&BYTAVL *GT 0) THEN(SNDPGMMSG MSG('ERROR = ' *CAT &MSGID))                
+           ELSE CMD( DMPCLPGM )                                                              
+         ENDDO                                                                                        
+THE_END: ENDPGM
+```
+
+```
+CRTCLMOD MODULE(BASIC_01) 
+CRTPGM PGM(BASIC_01) BNDSRVPGM((QHTTPSVR/QZHBCGI)) 
+```
+
+```
+Parameters or command              
+===> CALL PGM(BASIC_01) PARM((LANG))                              
+F3=Exit          F4=Prompt         
+F9=Retrieve      F10=Command entry 
+LANG = /QSYS.LIB/EN_US.LOCALE      
+```
+
+The ability to read environment variables is crucial in CGI programming because the web server starts
+a new job for each request:
+
+* setting a series of **environment variables** \-the CGI program will read\- and 
+* passing the body of a request via the job **standard input** only if the method is *POST*. 
+
+The CGI program will communicate back writing to the job **standard ouput**, 
+eventually describing the returned content by means of headers.
+
+**Apache** project standardized a number of environment variable names. 
+
+**REQUEST_METHOD** value will communicate the CGI program how it was invoked by the browser.
+
+The *IBM i HTTP Server* extended the list of environment variables: [read here](https://www.ibm.com/docs/en/i/7.5?topic=information-environment-variables).
+
+The simplest ILE CL CGI program is solely required to use **QtmhWrStout**:
+
+```
+CALLPRC PRC('QtmhWrStout') PARM(&OUTP &LEN &ERRCDE)
+```
+
+to reply back content to the browser.
+
+So we just need to put the pieces together to convince ourself **ILE CL** can be added to that list.
+
 
 ----
 
@@ -192,6 +236,8 @@ We pass the `&R_ROW` variable to receive each new record.
              ENDDO
  FINE:       ENDPGM                                                               
 ```
+
+[NEXT-85](#85-to-play-cgi-again)]
 
 ----
 
