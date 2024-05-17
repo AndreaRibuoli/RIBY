@@ -237,7 +237,7 @@ We pass the `&R_ROW` variable to receive each new record.
  FINE:       ENDPGM                                                               
 ```
 
-[NEXT-85](#85-to-play-cgi-again)]
+[NEXT-85](#85-to-play-cgi-again)
 
 ----
 
