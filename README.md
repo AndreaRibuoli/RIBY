@@ -105,6 +105,13 @@ Let's go!
 83. [to refine structs](#83-to-refine-structs)
 84. [to access source files from CL](#84-to-access-source-files-from-cl)
 85. [to play CGI again](#85-to-play-cgi-again)
+86. [to leverage BinData gem](#86-to-leverage-bindata-gem)
+
+----
+
+### 86. to leverage BinData gem
+
+![](images/newsteps.png) 
 
 ----
 
