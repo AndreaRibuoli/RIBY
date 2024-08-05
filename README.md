@@ -106,7 +106,7 @@ Let's go!
 84. [to access source files from CL](#84-to-access-source-files-from-cl)
 85. [to play CGI again](#85-to-play-cgi-again)
 86. [to leverage BinData gem](#86-to-leverage-bindata-gem)
-87. [to put IBM i security into perspective](#86-to-put-ibm-i-security-into-perspective)
+87. [to put IBM i security into perspective](#87-to-put-ibm-i-security-into-perspective)
 
 ----
 
