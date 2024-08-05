@@ -106,6 +106,36 @@ Let's go!
 84. [to access source files from CL](#84-to-access-source-files-from-cl)
 85. [to play CGI again](#85-to-play-cgi-again)
 86. [to leverage BinData gem](#86-to-leverage-bindata-gem)
+87. [to put IBM i security into perspective](#86-to-put-ibm-i-security-into-perspective)
+
+----
+
+### 87. to put IBM i security into perspective
+
+In a well known lawsuit concerning a disgraceful use of ChatGPT ( read for example 
+[Judge sanctions lawyers for brief written by A.I. with fake citations](
+https://www.cnbc.com/2023/06/22/judge-sanctions-lawyers-whose-ai-written-filing-contained-fake-citations.html) ) 
+Judge P. Kevin Castel asserted:
+
+<cite>
+Technological advances are commonplace and there is nothing inherently improper about using a reliable artificial intelligence tool for assistance, but existing rules impose a gatekeeping role on attorneys to ensure the accuracy of their filings.
+</cite>
+
+
+From time to time I consider the IBM i operating system and the confidence many of us have on its inherent reliability. 
+
+At the same time I frequently wonder if we have, as professionals that adopt and/or suggest to adopt the platform, 
+an independent \-from IBM\- "gatekeeping role" to ensure the accuracy of the assertion that IBM i is 
+such a highly secure system.
+
+I think, at least morally, we have.
+
+This little assumption would change our approach to IBM i internals in fundament ways.
+
+This little assumption would require independent professionals to share their findings on the topic in 
+a collective effort to document the state of things. 
+
+Here and there I read about attempts to share those findings. 
 
 ----
 
