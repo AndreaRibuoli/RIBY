@@ -118,9 +118,9 @@ https://www.cnbc.com/2023/06/22/judge-sanctions-lawyers-whose-ai-written-filing-
 Judge P. Kevin Castel asserted:
 
 
-<cite>Technological advances are commonplace and there is nothing inherently improper about using a reliable 
+*Technological advances are commonplace and there is nothing inherently improper about using a reliable 
 artificial intelligence tool for assistance, but existing rules impose a gatekeeping role on attorneys 
-to ensure the accuracy of their filings.</cite>
+to ensure the accuracy of their filings.*
 
 
 From time to time I consider the IBM i operating system and the confidence many of us have on its inherent reliability. 
