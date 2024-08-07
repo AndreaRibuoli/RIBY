@@ -131,7 +131,7 @@ such a highly secure system.
 
 I think, at least morally, we have.
 
-This little assumption would change our approach to IBM i internals in fundament ways.
+This little assumption would change our approach to IBM i internals in fundamental ways.
 
 This little assumption would require independent professionals to share their findings on the topic in 
 a collective effort to document the state of things. 
