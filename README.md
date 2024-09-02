@@ -107,6 +107,137 @@ Let's go!
 85. [to play CGI again](#85-to-play-cgi-again)
 86. [to leverage BinData gem](#86-to-leverage-bindata-gem)
 87. [to put IBM i security into perspective](#87-to-put-ibm-i-security-into-perspective)
+88. [to focus on objects](#88-to-focus-on-objects)
+
+----
+
+### 88. to focus on objects
+
+Even the simplest program object created for IBM i from an ILE CL source file member like the following (useless) one:
+
+
+```
+PGM
+DCL    VAR(&VALORE) TYPE(*INT) LEN(4)
+CHGVAR VAR(&VALORE) VALUE(127)
+ENDPGM
+```
+
+gives rise to a complex network of data structures and various chunks of PowerPC code organized in multiple memory segments (3 in the example).
+
+To support this assertion let us filter and sort the detailed information that can be extracted from an SST dump of the **\*PGM** object just created.
+
+Many possible data structures are missing given the choice of ILE CL and the very simple source code example (they are mentioned as `ADDRESS: 0000000000 000000` in the dump).
+
+Nonetheless, the amount of data being generated is impressive:
+
+
+```
+OBJECT SEGMENT HEADER                                           INDEX: 1                                 ADDRESS: 385221CAB1 000000
+WRITABLE PROGRAM HEADER                                                                                  ADDRESS: 385221CAB1 000100
+BOUND PROGRAM HISTORY LOG                                                                                ADDRESS: 385221CAB1 000180
+PROGRAM HEADER                                                                                           ADDRESS: 385221CAB1 001000
+PROGRAM HEADER EXTENSION                                                                                 ADDRESS: 385221CAB1 001100
+PROGRAM VERSION TABLE                                                                                    ADDRESS: 385221CAB1 001200
+ACTIVATION GROUP INFORMATION                                                                             ADDRESS: 385221CAB1 001230
+SEGMENT TABLE EXTENSION                                                                                  ADDRESS: 385221CAB1 0012B0
+SEGMENT TABLE                                                                                            ADDRESS: 385221CAB1 001390
+ACTIVATION HEADER                                                                                        ADDRESS: 385221CAB1 001520
+PBV RELOCATION ARRAY                                                                                     ADDRESS: 385221CAB1 001650
+DEPENDENT SRVPGM ARRAY                                                                                   ADDRESS: 385221CAB1 0016E0
+SRVPGM EXTERNAL OBJECT LIST                                                                              ADDRESS: 385221CAB1 001740
+STATIC FRAME DEF ARRAY                                                                                   ADDRESS: 385221CAB1 001830
+CONSTANT FRAME DEF ARRAY                                                                                 ADDRESS: 385221CAB1 001880
+FUNCTION LOCATOR ARRAY                                                                                   ADDRESS: 385221CAB1 001890
+FUNCTION IMPORT ARRAY                                                                                    ADDRESS: 385221CAB1 0018C0
+UNRESOLVED DIRECT FUNCTION REF ARRAY                                                                     ADDRESS: 385221CAB1 001910
+PROCEDURE TRACEBACK TABLE ANCHOR         MODULE NBR: 1          PROC NBR: 1                              ADDRESS: 385221CAB1 001AB8
+PROCEDURE TRACEBACK TABLE ANCHOR         MODULE NBR: 0          PROC NBR: 0                              ADDRESS: 385221CAB1 001AE0
+PROCEDURE TRACEBACK TABLE ANCHOR         MODULE NBR: 1          PROC NBR: 2                              ADDRESS: 385221CAB1 001E40
+TRACEBACK TABLE                          MODULE NBR: 1          PROC NBR: 1                              ADDRESS: 385221CAB1 001E50
+TRACEBACK TABLE                          MODULE NBR: 1          PROC NBR: 2                              ADDRESS: 385221CAB1 001ED8
+TRACEBACK TABLE                          MODULE NBR: 1          PROC NBR: 3                              ADDRESS: 385221CAB1 001FA8
+TRACEBACK TABLE                          MODULE NBR: 1          PROC NBR: 4                              ADDRESS: 385221CAB1 002040
+TRACEBACK LOCATOR TABLE                                                                                  ADDRESS: 385221CAB1 0020D0
+IMPI RANGE MAP                           MODULE NBR: 1          PROC NBR: 1                              ADDRESS: 385221CAB1 002140
+IMPI RANGE MAP                           MODULE NBR: 1          PROC NBR: 2                              ADDRESS: 385221CAB1 002158
+EXCEPTION HANDLER MAPPING TABLE          MODULE NBR: 1                                                   ADDRESS: 385221CAB1 002180
+EXCEPTION HANDLER DECLARATION TABLE      MODULE NBR: 1                                                   ADDRESS: 385221CAB1 0021C0
+PROCEDURE TRACEBACK TABLE ANCHOR         MODULE NBR: 1          PROC NBR: 3                              ADDRESS: 385221CAB1 002718
+PROCEDURE TRACEBACK TABLE ANCHOR         MODULE NBR: 0          PROC NBR: 0                              ADDRESS: 385221CAB1 002740
+PROCEDURE TRACEBACK TABLE ANCHOR         MODULE NBR: 0          PROC NBR: 0                              ADDRESS: 385221CAB1 002768
+IMPI RANGE MAP                           MODULE NBR: 1          PROC NBR: 3                              ADDRESS: 385221CAB1 002778
+PROCEDURE TRACEBACK TABLE ANCHOR         MODULE NBR: 1          PROC NBR: 4                              ADDRESS: 385221CAB1 002838
+IMPI RANGE MAP                           MODULE NBR: 1          PROC NBR: 4                              ADDRESS: 385221CAB1 002848
+BINDER GLUE CODE TABLE                                                                                   ADDRESS: 385221CAB1 002860
+TRACEBACK TABLE                          MODULE NBR: 0          PROC NBR: 0                              ADDRESS: 385221CAB1 0028F0
+TRACEBACK TABLE                          MODULE NBR: 0          PROC NBR: 0                              ADDRESS: 385221CAB1 002960
+TRACEBACK TABLE                          MODULE NBR: 0          PROC NBR: 0                              ADDRESS: 385221CAB1 0029D0
+MODULE TABLE                                                                                             ADDRESS: 385221CAB1 002A40
+MODULE OBSERVABILITY INFORMATION         MODULE NBR: 1                                                   ADDRESS: 385221CAB1 002A80
+MODULE HEADER                            MODULE NBR: 1                                                   ADDRESS: 385221CAB1 002B00
+MODULE HEADER EXTENSION                  MODULE NBR: 1                                                   ADDRESS: 385221CAB1 002C00
+PROCEDURE TABLE                          MODULE NBR: 1                                                   ADDRESS: 385221CAB1 002D00
+PROCEDURE EXTENSION TABLE                MODULE NBR: 1                                                   ADDRESS: 385221CAB1 002F50
+PROGRAM MAINTENANCE HEADER                                                                               ADDRESS: 385221CAB1 0030E0
+PROGRAM OBSERVABILITY INFO HEADER                                                                        ADDRESS: 385221CAB1 003160
+VERSION TABLE                            MODULE NBR: 1                                                   ADDRESS: 385221CAB1 0031B0
+ENTRY POINT LOCATION TABLE               MODULE NBR: 1                                                   ADDRESS: 385221CAB1 003230
+VLIC POINTER LOCATION TABLE              MODULE NBR: 1                                                   ADDRESS: 385221CAB1 003280
+CALL INTERNAL PROCEDURE TABLE            MODULE NBR: 1                                                   ADDRESS: 385221CAB1 0032E0
+DIRECT CALL FLOW INIT TABLE              MODULE NBR: 1                                                   ADDRESS: 385221CAB1 003300
+DIRECT CALL SITE INFO TABLE              MODULE NBR: 1                                                   ADDRESS: 385221CAB1 003328
+CALL INTERFACE INFORMATION COMPONENT     MODULE NBR: 1                                                   ADDRESS: 385221CAB1 003388
+PROCEDURE OFFSET TO INTERFACE TABLE      MODULE NBR: 1          PROC NBR: 1                              ADDRESS: 385221CAB1 003420
+PROCEDURE OFFSET TO INTERFACE TABLE      MODULE NBR: 1          PROC NBR: 2                              ADDRESS: 385221CAB1 003440
+PROCEDURE OFFSET TO INTERFACE TABLE      MODULE NBR: 1          PROC NBR: 3                              ADDRESS: 385221CAB1 003460
+PROCEDURE OFFSET TO INTERFACE TABLE      MODULE NBR: 1          PROC NBR: 4                              ADDRESS: 385221CAB1 003480
+PROGRAM STRING DIRECTORY                                                                                 ADDRESS: 385221CAB1 0034A0
+
+OBJECT SEGMENT HEADER                                           INDEX: 2                                 ADDRESS: 1FE0069CFC 000000
+MODULE CONSTANTS                         MODULE NBR: 1                                                   ADDRESS: 1FE0069CFC 001200
+STATEMENT OFFSET MAP                     MODULE NBR: 1          PROC NBR: 2                              ADDRESS: 1FE0069CFC 002000
+PROCEDURE STATEMENT TABLE                MODULE NBR: 1          PROC NBR: 2                              ADDRESS: 1FE0069CFC 002028
+MODULE STRING DIRECTORY                  MODULE NBR: 1                                                   ADDRESS: 1FE0069CFC 002050
+BINDING INFORMATION HEADER               MODULE NBR: 1                                                   ADDRESS: 1FE0069CFC 002118
+PROCEDURE IMPORTS TABLE                  MODULE NBR: 1                                                   ADDRESS: 1FE0069CFC 0021D8
+PROCEDURE EXPORTS TABLE                  MODULE NBR: 1                                                   ADDRESS: 1FE0069CFC 002248
+MODULE CONSTANTS FROM MBV TABLE          MODULE NBR: 1                                                   ADDRESS: 1FE0069CFC 002268
+SYSTEM DATA IMPORTS TABLE                MODULE NBR: 1                                                   ADDRESS: 1FE0069CFC 002288
+REF MBV TABLE                            MODULE NBR: 1                                                   ADDRESS: 1FE0069CFC 0022A8
+CALL EXTERNAL PROC TABLE                 MODULE NBR: 1                                                   ADDRESS: 1FE0069CFC 002398
+STATIC STORAGE INFORMATION HEADER        MODULE NBR: 1                                                   ADDRESS: 1FE0069CFC 002408
+MODULE STATIC STORAGE FRAME DESCR TABLE  MODULE NBR: 1                                                   ADDRESS: 1FE0069CFC 002490
+REFERENCE FRAME TABLE                    MODULE NBR: 1                                                   ADDRESS: 1FE0069CFC 0024F8
+
+OBJECT SEGMENT HEADER                                           INDEX: 3                                 ADDRESS: 076DEB6F47 000000
+PROCEDURE BREAKPOINT TABLE               MODULE NBR: 1          PROC NBR: 2                              ADDRESS: 076DEB6F47 000020
+MODULE DICTIONARY MAPPING TABLE          MODULE NBR: 1                                                   ADDRESS: 076DEB6F47 000050
+MODULE CREATION TEMPLATE                 MODULE NBR: 1                                                   ADDRESS: 076DEB6F47 000410
+MODULE DICTIONARY COMPONENT              MODULE NBR: 1                                                   ADDRESS: 076DEB6F47 000610
+MODULE ALIAS COMPONENT                   MODULE NBR: 1                                                   ADDRESS: 076DEB6F47 003230
+MODULE TYPE INFORMATION COMPONENT        MODULE NBR: 1                                                   ADDRESS: 076DEB6F47 003530
+MODULE LITERAL POOL COMPONENT            MODULE NBR: 1                                                   ADDRESS: 076DEB6F47 003560
+MODULE INSTRUCTION COMPONENT             MODULE NBR: 1                                                   ADDRESS: 076DEB6F47 003630
+MODULE BINDING SPECIFICATIONS COMPONENT  MODULE NBR: 1                                                   ADDRESS: 076DEB6F47 003EC0
+PROGRAM CREATION TEMPLATE                                                                                ADDRESS: 076DEB6F47 003F80
+SYMBOL RESOLUTION LIST REF EXTENSION                                                                     ADDRESS: 076DEB6F47 004180
+SECONDARY ASSOC SPACE LIST REF EXTENSION                                                                 ADDRESS: 076DEB6F47 004210
+```
+
+We notice that the second and third segments are focused on procedure number 2 (`PROC NBR: 2`) of module number 1 (`MODULE NBR: 1`) only.
+
+This is the element directly linked with our ILE CL source code.
+
+Actually the first segment contains extra pieces of PowerPC code that SST dump can present in the PowerPC assembly syntax. 
+
+As Frank Soltis wrote in his **Fortress ROCHESTER**: *They [the objects] are also one of many reasons that the iSerie [IBM i] enjoys almost\-legendary reputation for rock\-solid security and integrity.*
+
+This is a fascinating topic I would like to expand in future posts.
+
+
+ 
+
 
 ----
 
