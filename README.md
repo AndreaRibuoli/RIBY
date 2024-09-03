@@ -231,7 +231,7 @@ This is the element directly linked with our ILE CL source code.
 
 Actually the first segment contains extra pieces of PowerPC code that SST dump can present in the PowerPC assembly syntax. 
 
-As Frank Soltis wrote in his **Fortress ROCHESTER**: *They [the objects] are also one of many reasons that the iSerie [IBM i] enjoys almost\-legendary reputation for rock\-solid security and integrity.*
+As Frank Soltis wrote in his **Fortress ROCHESTER**: *They [the objects] are also one of many reasons that the iSeries [IBM i] enjoys almost\-legendary reputation for rock\-solid security and integrity.*
 
 This is a fascinating topic I would like to expand in future posts.
 
