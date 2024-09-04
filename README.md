@@ -108,8 +108,92 @@ Let's go!
 86. [to leverage BinData gem](#86-to-leverage-bindata-gem)
 87. [to put IBM i security into perspective](#87-to-put-ibm-i-security-into-perspective)
 88. [to focus on objects](#88-to-focus-on-objects)
+89. [to raise new questions](#89-to-raise-new-questions)
 
 ----
+
+### 89. to raise new questions
+
+Let us play a bit with our last simple test ILE CL source code. 
+
+```
+PGM
+DCL    VAR(&VALORE) TYPE(*INT) LEN(4)
+CHGVAR VAR(&VALORE) VALUE(19566)
+ENDPGM
+```
+
+We have changed our assignment statement (`CHGVAR`) for variable **\&VALORE** with the new value **19566** 
+
+Once recompiled the program, we will dump to printer the object created with **options 1 and 3** of the following SST menu:
+
+![](images/sst_choice.png) 
+
+We then open the hexadecimal dump searching for **<>** string:
+
+```
+                                                     Visualizzazione file di spool                                                  
+ File  . . . . . :   QPCSMPRT                                                                             Pagina/Riga 3/6           
+ Controllo . . . .                                                                                        Colonne     1 - 130       
+ Ricerca . . . . .   <>                                                                                                             
+ *...+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+....0....+....1....+....2....+....3 
+ 3E4E0EA73F 001D20 +1D20   7AF7C1C67C0103E6  62F8000063990000   FB1FFDF2EAC20020  3B7600983B4000A2 *:7AF§..WÂ8..Är..Û.Ù2²B...Î.q. . 
+ 3E4E0EA73F 001D40 +1D40   7B5AC1C67C0103E6  FB5FFE123B804C6E   939FFDE482FD00B0  833D00B4831D00B8 *£éAF§..WÛ^Ú..Ø<>l¤ÙUbÙ.¢c..©c.. 
+ 3E4E0EA73F 001D60 +1D60   82DD00BC837D00C0  A35D00C4937FFF4A   B35FFF4E92FFFF3A  933FFF3E931FFF42 *b`.¯c'.àt).Dl".°·^.+k...l...l.. 
+```
+
+In the example we identify a group of four bytes (`3B804C6E`) where **4C** and **6E** are the EBCDIC for **\<** and **\>** respectively.
+
+Now we open the disassembled dump (the one obtained using option 3) searching for the four bytes just identified:
+ 
+```
+                                                     Visualizzazione file di spool                                                  
+ File  . . . . . :   QPCSMPRT                                                                             Pagina/Riga 28/49         
+ Controllo . . . .                                                                                        Colonne     1 - 130       
+ Ricerca . . . . .   3B804C6E                                                                                                       
+ *...+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+....0....+....1....+....2....+....3 
+ 3E4E0EA73F 001D48     000248    FB5FFE12          STQ 26,0XFE10(31)                                                                
+ 3E4E0EA73F 001D4C     00024C    3B804C6E          ADDI 28,0,19566                                                                  
+ 3E4E0EA73F 001D50     000250    939FFDE4          STW 28,0XFDE4(31)                                                                
+```
+
+The *PowerPC* assembly instruction `ADDI 28,0,19566` directly derives from our *ILE CL* `CHGVAR VAR(&VALORE) VALUE(19566)`.
+
+Many lines above there is the beginning of the "RISC" instruction stream:
+
+```
+RISC INSTRUCTIONS (TEST01                                                      
+     ADDRESS        LOCATION    OBJECT TEXT       SOURCE STATEMENT             
+***** ENTRY POINT *****                                                        
+3E4E0EA73F 001B00     000000    FAC1FF10          STD 22,0XFF10(1)             
+``` 
+
+If we search for `3E4E0EA73F 001B00` in the spool we will also find it mentioned as the entry point for **procedure two**
+( `INDEX NUMBER     2` ) in the *PROCEDURE TABLE* of **module one** ( `MODULE NBR: 1` ):
+
+
+```
+Ricerca . . . . .   3E4E0EA73F 001B00                                                                                              
+*...+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8....+....9....+....0....+....1....+....2....+....3 
+PROCEDURE TABLE                          MODULE NBR: 1                                                   ADDRESS: 3E4E0EA73F 002D0 
+MODULE: TEST01                                                                                                                     
+    TABLE SIZE       00000250       TABLE ENTRY CNT  00000004       RESERVED         0000000000000000                              
+
+ . . .
+
+    INDEX NUMBER     2              VERSION          00             PROC TYPE        01             PROC BDY         01            
+    PROC FLAGS       00             PROC LEX SCOPE   0001           PROC PARML MASK  0000           PROC SIZE        00000350      
+    ENTRY PT OFFSET  00000000       ENTRY POINT      3E4E0EA73F 001B00                                                             
+    MOD HDR PTR      3E4E0EA73F 002B00                              PROC START PTR   3E4E0EA73F 001B00                             
+```
+
+These steps as a whole confirm my assertion (in previous post) that in this example procedure 2 of module 1 it the one directly 
+derived from the ILE CL source code. 
+
+What are the extra information archived in the second and third segments of our program object?
+
+Let us devote a new post for answering this question. 
+
 
 ### 88. to focus on objects
 
