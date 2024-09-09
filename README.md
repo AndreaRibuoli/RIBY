@@ -224,7 +224,7 @@ A relevant note about **CL** is that:
 We will find instead an **OPM INSTRUCTION STREAM COMPONENT** section.
 
 The ILE intermediate language \-known by SST\- is missing for an OPM program.
-AT a lower level in the implementation, in place of the seven PowerPC assembly chuncks of our ILE example, we will find a unique PowerPC instruction stream.
+At a lower level in the implementation, in place of the seven PowerPC assembly chuncks of our ILE example, we will find a unique PowerPC instruction stream.
 
 To summarize we could say that **Integrated** Language Environment meant having introduced support 
 for mudules of data and procedures but developers lost the freedom to address programmatically an equivalent of the Machine Interface.
