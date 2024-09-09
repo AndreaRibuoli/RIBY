@@ -109,8 +109,126 @@ Let's go!
 87. [to put IBM i security into perspective](#87-to-put-ibm-i-security-into-perspective)
 88. [to focus on objects](#88-to-focus-on-objects)
 89. [to raise new questions](#89-to-raise-new-questions)
+90. [to descend into the cave](#90-to-descend-into-the-cave)
 
 ----
+
+## 90. to descend into the cave
+
+
+Using the numerical value adopted in our assignment (19566) we easily identify where literals are kept:
+
+```
+MODULE LITERAL POOL COMPONENT            MODULE NBR: 1                                                   ADDRESS: 0D69D84BD5 003560
+MODULE: TEST01                                                                                                                    
+    LENGTH           201            VERSION          1              EXTEND SIZE      -1             RESERVED         00000000     
+0D69D84BD5 003000        DISK UNIT  0006 DISK PAGE  01094F33                                                                      
+0D69D84BD5 003560 +0000   000000C900000001  FFFFFFFF00000000   0000000000000000  0000000000000000 *...I............................*
+0D69D84BD5 003580 +0020   0000000000000000  019566000000000F   FFFFFFFF40404040  4040404040400100 *.........nÃ.........          ..*
+0D69D84BD5 0035A0 +0040   0000000000000000  0000000000000000   0000000000000000  0000800000000000 *..........................Ø.....*
+0D69D84BD5 0035C0 +0060   00000000C3D7C6F0  F8F0F40000000001   8080870000000001  80813C0000000001 *....CPF0804.....ØØg.....Øa......*
+0D69D84BD5 0035E0 +0080   80810F0010400080  8000000020000000   0000000000000000  0000000000000000 *Øa... .ØØ.......................*
+0D69D84BD5 003600 +00A0   0000000000000000  0000000020000000   0000000001000000  0000000000000000 *................................*
+0D69D84BD5 003620 +00C0   0000000000000000  00                                                    *.........                       *
+```
+
+Searching for the address of *MODULE LITERAL POOL COMPONENT* (in this example `0D69D84BD5 003560`) we also identify the **MODULE OBSERVABILITY INFORMATION** structure which refers to the *MODULE LITERAL POOL COMPONENT* structure by means of an address labeled **LIT POOL PTR**.
+
+```
+MODULE OBSERVABILITY INFORMATION         MODULE NBR: 1                                                   ADDRESS: 3E4E0EA73F 002A80
+MODULE: TEST01                                                                                                                     
+    VERSION          00             RESERVED         00000000000000                                                                
+    CRTMOD TMPL PTR  0D69D84BD5 000410                              DICTIONARY PTR   0D69D84BD5 000610                             
+    ALIAS PTR        0D69D84BD5 003230                              TYPE INFO PTR    0D69D84BD5 003530                             
+    LIT POOL PTR     0D69D84BD5 003560                              INSTRUCTION PTR  0D69D84BD5 003630                             
+    INIT PTR         0000000000 000000                              BIND SPEC PTR    0D69D84BD5 003EC0                             
+    DMT PTR          0D69D84BD5 000050                              TMPL EXT SEGOFF  0000000000000000                              
+    BBP SEGOFF       0000000000000000                               FUNC PRO SEGOFF  0000000000000000                              
+    CLASS 1 OBS CRT  0FD00000       OBS EXIST NOW    FFD00000       OBS DELETABLE    00000000                                      
+    RESERVED         000000000000000000000000                                                                                      
+```
+
+Searching for "19566" string we will also identify the source code in the secondary associated space linked to the third segment (we compiled using default settings):
+
+```
+SECONDARY ASSOCIATED SPACE               SPACE SIZE: 20480      INDEX: 3                                 ADDRESS: 132F50674C 00000 
+132F50674C 000000        DISK UNIT  0001 DISK PAGE  00A1BD91                                                                       
+132F50674C 000000 +0000   00190028038000B1  3E4E0EA73F000000   0001000000000000  132F50674C001000 *.....Ø.#.+.x..............&Å<...* 
+132F50674C 000020 +0020   B800000040001000  0000000300000000   0000000000000000  0000000000000000 *½... ...........................*
+132F50674C 000040 +0040   0000000000000000  0000000000000000   0000000000000000  0000000000000000 *................................* 
+                      125 LINES 132F50674C 000060 +0060 TO 132F50674C 000FE0 +0FE0 SAME AS ABOVE                                   
+132F50674C 001000        DISK UNIT  0001 DISK PAGE  00A1BD92                                                                       
+132F50674C 001000 +1000   0002000200000000  006400000003D7C7   D4000000C8000000  22C4C3D340E5C1D9 *.........À....PGM...H....DCL VAR* 
+132F50674C 001020 +1020   4D50E5C1D3D6D9C5  5D40E3E8D7C54D5C   C9D5E35D40D3C5D5  4DF45D0000012C00 *(&VALORE) TYPE(*INT) LEN(4).....* 
+132F50674C 001040 +1040   000020C3C8C7E5C1  D940E5C1D94D50E5   C1D3D6D9C55D40E5  C1D3E4C54DF1F9F5 *...CHGVAR VAR(&VALORE) VALUE(195* 
+132F50674C 001060 +1060   F6F65D0000019000  000006C5D5C4D7C7   D400000000000000  0000000000000000 *66)...[....ENDPGM...............* 
+132F50674C 001080 +1080   0000000000000000  0000000000000000   0000000000000000  0000000000000000 *................................* 
+```
+
+We can rearrange the data (starting at 0x1000) and easily recognize the sequence of variable\-length records archiving the lines of our source code member:
+
+```
+0002-0002-0000
+                       P G M   
+00000064 - 00000003 - D7C7D4
+                       D C L   V A R ( & V A L O R E )   T Y P E ( * I N T )   L E N ( 4 )   
+000000C8 - 00000022 - C4C3D340E5C1D94D50E5C1D3D6D9C55D40E3E8D7C54D5CC9D5E35D40D3C5D54DF45D
+                       C H G V A R   V A R ( & V A L O R E )   V A L U E ( 1 9 5 6 6 )
+0000012C - 00000020 - C3C8C7E5C1D940E5C1D94D50E5C1D3D6D9C55D40E5C1D3E4C54DF1F9F5F6F65D
+                       E N D P G M
+00000190 - 00000006 - C5D5C4D7C7D4
+```
+
+
+The address `132F50674C 001000` is referenced from elsewhere:
+
+```
+PRIMARY ASSOCIATED SPACE                 SPACE SIZE: 8192                                                ADDRESS: 1C85A1F06B 00000 
+1C85A1F06B 000000        DISK UNIT  0004 DISK PAGE  006115EA                                                                       
+1C85A1F06B 000000 +0000   00020010038000B1  3E4E0EA73F000000   0001000000000000  1C85A1F06B001000 *.....Ø.#.+.x.............eì0,...* 
+1C85A1F06B 000020 +0020   041386C2B6001000  00000000000001D0   2BA16B9501001000  0000000000000000 *..fB¶..........è.ì,n............*
+1C85A1F06B 000040 +0040   132F50674C001000  0000000000000000   0000000000000000  0000000000000000 *..&Å<...........................*
+1C85A1F06B 000060 +0060   0000000000000000  0000000000000000   0000000000000000  0000000000000000 *................................*
+```
+
+This seams to be a relevant structure similar to those displayed by SST dump for other aspects of a PGM object, it includes various links:
+
+* `3E4E0EA73F 000000`  OBJECT SEGMENT HEADER (INDEX #1) 
+* `1C85A1F06B 001000`  PRIMARY ASSOCIATED SPACE 
+* `041386C2B6 001000`  PACKED SECONDARY ASSOCIATED SPACE (INDEX #1)
+* `2BA16B9501 001000`  SECONDARY ASSOCIATED SPACE (INDEX #2)
+* `132F50674C 001000`  SECONDARY ASSOCIATED SPACE (INDEX #3)
+
+The consideration here is that SST **ignores the inner meaning** of these elements of the \*PGM objects: this is consistent with the layered architecture of IBM i.
+
+We verified that the *SECONDARY ASSOCIATED SPACE (INDEX #3)* is relevant for archiving the source file member.
+
+Similarly we could check that the *SECONDARY ASSOCIATED SPACE (INDEX #2)* keeps data concerning the **HLL Symbol Table** (where `&VALORE` is visible).
+While *PACKED SECONDARY ASSOCIATED SPACE (INDEX #1)* keeps data about DEBUG DATA and CL SRC descriptors.
+
+From the MODULE OBSERVABILITY INFORMATION previously shown we can follow the **INSTRUCTION PTR** link directing us to the relevant **MODULE INSTRUCTION COMPONENT**.
+
+Here we find **the intermediate representation of our program** as translated by the specific ILE compiler adopted (ILE CL in this example).
+
+I consider this layer the ILE evolution of the OPM **Machine Interface** language. 
+
+But while **MI** was documented by IBM, I was not able to find references to this "ILE" intermediate language. 
+
+All the IBM i compilers need to address its syntax and semantic. And that is why I consider this topic so fascinating. 
+
+A relevant note about **CL** is that:
+
+* while ILE CL generates the MODULE OBSERVABILITY INFORMATION structure with the link to the high level instructions (*INSTRUCTION PTR*)
+* by creating an OPM program using **CRTCLPGM** (over the same source member) the dump extracted from the new \*PGM object will show an empty MODULE OBSERVABILITY INFORMATION structure.
+
+We will find instead an **OPM INSTRUCTION STREAM COMPONENT** section.
+
+The ILE intermediate language \-known by SST\- is missing for an OPM program.
+AT a lower level in the implementation, in place of the seven PowerPC assembly chuncks of our ILE example, we will find a unique PowerPC instruction stream.
+
+To summarize we could say that **Integrated** Language Environment meant having introduced support 
+for mudules of data and procedures but developers lost the freedom to address programmatically an equivalent of the Machine Interface.
+IBM put everything under control of their suite of ILE compilers.  
 
 ### 89. to raise new questions
 
