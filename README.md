@@ -312,6 +312,7 @@ What are the extra information archived in the second and third segments of our 
 
 Let us devote a new post for answering this question. 
 
+[NEXT_90](#90-to-descend-into-the-cave)
 
 ### 88. to focus on objects
 
@@ -437,9 +438,7 @@ As Frank Soltis wrote in his **Fortress ROCHESTER**: *They [the objects] are als
 
 This is a fascinating topic I would like to expand in future posts.
 
-
- 
-
+[NEXT_89](#89-to-raise-new-questions)
 
 ----
 
@@ -471,11 +470,15 @@ a collective effort to document the state of things.
 
 Here and there I read about attempts to share those findings. 
 
+[NEXT_88](#88-to-focus-on-objects)
+
 ----
 
 ### 86. to leverage BinData gem
 
 ![](images/newsteps.png) 
+
+[NEXT_87](#87-to-put-ibm-i-security-into-perspective)
 
 ----
 
@@ -552,6 +555,7 @@ to reply back content to the browser.
 
 So we just need to put the pieces together to convince ourself **ILE CL** can be added to that list.
 
+[NEXT_86](#86-to-leverage-bindata-gem)
 
 ----
 
