@@ -230,6 +230,8 @@ To summarize we could say that **Integrated** Language Environment meant having 
 for mudules of data and procedures but developers lost the freedom to address programmatically an equivalent of the Machine Interface.
 IBM put everything under control of their suite of ILE compilers.  
 
+----
+
 ### 89. to raise new questions
 
 Let us play a bit with our last simple test ILE CL source code. 
@@ -313,6 +315,8 @@ What are the extra information archived in the second and third segments of our 
 Let us devote a new post for answering this question. 
 
 [NEXT_90](#90-to-descend-into-the-cave)
+
+----
 
 ### 88. to focus on objects
 
