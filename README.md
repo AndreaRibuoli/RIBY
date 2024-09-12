@@ -227,7 +227,7 @@ The ILE intermediate language \-known by SST\- is missing for an OPM program.
 At a lower level in the implementation, in place of the seven PowerPC assembly chuncks of our ILE example, we will find a unique PowerPC instruction stream.
 
 To summarize we could say that **Integrated** Language Environment meant having introduced support 
-for mudules of data and procedures but developers lost the freedom to address programmatically an equivalent of the Machine Interface.
+for modules of data and procedures but developers lost the freedom to address programmatically an equivalent of the Machine Interface.
 IBM put everything under control of their suite of ILE compilers.  
 
 ----
