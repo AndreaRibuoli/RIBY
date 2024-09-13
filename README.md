@@ -110,6 +110,72 @@ Let's go!
 88. [to focus on objects](#88-to-focus-on-objects)
 89. [to raise new questions](#89-to-raise-new-questions)
 90. [to descend into the cave](#90-to-descend-into-the-cave)
+91. [to get started](#91-to-get-started)
+
+----
+
+## 91. to get started
+
+
+*In textual criticism, **collation** is the process of comparing differing manuscripts or editions of the same work in order to establish a corrected text.* (Oxford Reference)
+
+We will use this *philological* approach to understand how the ILE intermediate language keeps track of aspects derived from 
+the specific source language (ILE CL, in my example) and so enable it to generate the PowerPC instructions.
+
+Very specifically I will describe how I determined which are the instructions in MODULE INSTRUCTION COMPONENT that are
+responsible of implementing the conversion from ILE CL:
+
+
+```
+CHGVAR VAR(&VALORE) VALUE(19566)
+```
+
+into PowerPC:
+
+```
+ADDI 28,0,19566
+```
+
+First of all I compared the ILE intermediate flow in the disassembled dump of the original \*PGM versus a newer program having an additional 
+assignment (`CHGVAR VAR(&VALORE2) VALUE(28236)`). This enabled me to rapidly identify a sequence of OPCODEs that were repeated:
+
+`SBDY, LAB, LDA1, STR1, LDA1, STR1, LOD1, SHFD, CVPDSB, STR1, LAB`
+ 
+We already saw that the value **19566** was kept in the *MODULE LITERAL POOL COMPONENT* as a packed decimal (using 0-9 interval inside 0-F full semi byte range). 
+
+So I was caught by the mnemonic **CVPDSB**: my *conjecture* was interpreting it as **Convert Packed Decimal into Signed (multi\-)Byte**. 
+In the occurrences of *CVPDSB* the *OPERAND 1* was passed as **4**.  
+
+To confirm the correctness of my hypothesis I verified that changing the **DCL** into `DCL VAR(&VALORE) TYPE(*INT) LEN(8)` the *OPERAND 1* was set to **8**.
+
+The obvious next step was trying with `DCL VAR(&VALORE) TYPE(*INT) LEN(2)`.
+And the surprise was to discover the meaning of a second opcode!
+
+```
+OPCODE           CVPDSB                                         OPERAND 1        8
+OPCODE           CVSBSB                                         OPERAND 1        2
+```
+
+So I deduced that CVPDSB admits operand values 4 or 8, not 2.
+To reduce the size of signed multi\-byte a new opcode is available: **CVSBSB**.
+
+Needless to say that `DCL VAR(&VALORE) TYPE(*UINT) LEN(2)` brings us extra knowledge:
+
+```
+OPCODE           CVPDUB                                         OPERAND 1        8
+OPCODE           CVUBUB                                         OPERAND 1        2
+```
+
+Here we are with a rudimentary **ILE Module Instruction Reference** (!!) willing to grow. 
+
+|   OPCODE   | Meaning                                       |
+|:----------:|:--------------------------------------------- |          
+| **CVPDSB** | *Convert Packed Decimal into Signed Byte*     |                                  
+| **CVSBSB** | *Convert Signed Byte into Signed Byte*        |                                
+| **CVPDUB** | *Convert Packed Decimal into Unsigned Byte*   |                                   
+| **CVUBUB** | *Convert Unsigned Byte into Unsigned Byte*    |                                 
+
+
 
 ----
 
@@ -229,6 +295,8 @@ At a lower level in the implementation, in place of the seven PowerPC assembly c
 To summarize we could say that **Integrated** Language Environment meant having introduced support 
 for modules of data and procedures but developers lost the freedom to address programmatically an equivalent of the Machine Interface.
 IBM put everything under control of their suite of ILE compilers.  
+
+[NEXT_91](#91-to-get-started)
 
 ----
 
