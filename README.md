@@ -122,7 +122,7 @@ If you had the opportunity to study a bit of *WebAssembly* you should have reali
 that understanding the **WebAssembly Text Format** goes together with understanding 
 the **WebAssembly abstract machine**.
 
-In studying Ruby you also discover that, behind he scenes, Ruby is actually **compiling**
+In studying Ruby you also discover that, behind the scenes, Ruby is actually **compiling**
 each script (not just *interpreting*) dynamically generating a series of bytecode instructions suited for its internal
 virtual machine.
 
