@@ -152,7 +152,7 @@ Its **LENGTH** field will be `00000004` or `00000008` consistently with the ILE 
 
 The **DATA TYPE** will be **1** for `TYPE(*INT)` and **2** for `TYPE(*UINT)`.
 
-The adoption of **ID**s for operators reduces the number of OPCODEs needed by the intermediate language because the actual PowerPC instruction stream will be generated having searched the attributes associated with the ID in the module dictionary.
+The adoption of **ID**s for operands reduces the number of OPCODEs needed by the intermediate language because the actual PowerPC instruction stream will be generated having searched the attributes associated with the ID in the module dictionary.
 
 Re-generating the PowerPC code from the MODULE INSTRUCTION COMPONENT is actually the fanciest IBM i feature: being able to 
 automatically upgrade programs to the latest version of the operating system without involving the original developers.
