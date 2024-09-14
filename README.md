@@ -111,6 +111,51 @@ Let's go!
 89. [to raise new questions](#89-to-raise-new-questions)
 90. [to descend into the cave](#90-to-descend-into-the-cave)
 91. [to get started](#91-to-get-started)
+92. [to increase awareness](#92-to-increase-awareness)
+
+----
+
+## 92. to increase awareness
+
+
+If you had the opportunity to study a bit of *WebAssembly* you should have realized
+that understanding the **WebAssembly Text Format** goes together with understanding 
+the **WebAssembly abstract machine**.
+
+In studying Ruby you also discover that, behind he scenes, Ruby is actually **compiling**
+each script (not just *interpreting*) dynamically generating a series of bytecode instructions suited for its internal
+virtual machine.
+
+Surprisingly, the instructions in the *(ILE) MODULE INSTRUCTION COMPONENT* are to be considered executed on a stack virtual machine, too.
+
+When we read `CVPDSB 4` we have to consider the instruction as consuming a packed decimal currently on the stack and inserting 
+the result of that conversion into the same stack.
+
+If the instruction that follows is `STR1 201` we have to assume that the value on top 
+of the stack is now consumed and stored into something identified with *201*.
+
+What is **201**?
+
+In the *MODULE OBSERVABILITY INFORMATION* (where we identified initially the label *LIT POOL PTR* and then
+the label *INSTRUCTION PTR*) we also find a pointer labeled **DICTIONARY PTR**:
+we find the **201 ID** exactly inside the referenced **MODULE DICTIONARY COMPONENT**:
+
+
+```
+ID               201            ENTRY TYPE       DATA OBJ       DATA TYPE        1              STORAGE CLASS    4        
+SCOPE            1              OWNER            2              OFFSET           0              LENGTH           00000008 
+ALIAS UNION      0              RESERVED 1       00000000       FLAGS            70008000       FLAGS 2          80       
+ALIGNMENT        0                                                                                                        
+```
+
+Its **LENGTH** field will be `00000004` or `00000008` consistently with the ILE CL DCL's **LEN** value adopted.  
+
+The **DATA TYPE** will be **1** for `TYPE(*INT)` and **2** for `TYPE(*UINT)`.
+
+The adoption of **ID**s for operators reduces the number of OPCODEs needed by the intermediate language because the actual PowerPC instruction stream will be generated having searched the attributes associated with the ID in the module dictionary.
+
+Re-generating the PowerPC code from the MODULE INSTRUCTION COMPONENT is actually the fanciest IBM i feature: being able to 
+automatically upgrade programs to the latest version of the operating system without involving the original developers.
 
 ----
 
@@ -175,7 +220,7 @@ Here we are with a rudimentary **ILE Module Instruction Reference** (!!) willing
 | **CVPDUB** | *Convert Packed Decimal into Unsigned Byte*   |                                   
 | **CVUBUB** | *Convert Unsigned Byte into Unsigned Byte*    |                                 
 
-
+[NEXT_92](#92-to-increase-awareness)
 
 ----
 
