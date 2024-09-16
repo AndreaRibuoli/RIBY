@@ -129,7 +129,7 @@ in its hexadecimal format.
 
 We identified an (ILE) module instruction starting with `CALLBP 215 ...`
 
-Following the tips in previous post we identify the following entry in the *MODULE DICTIONARY COMPONENT*:
+Using the tips in previous post we identify this entry in the *MODULE DICTIONARY COMPONENT*:
 
 ```
 ID               215            ENTRY TYPE       PROCEDURE      DATA TYPE        23             PROCEDURE TYPE   2   
@@ -138,8 +138,7 @@ ALIAS UNION      0              RETURN LENGTH    4              RESERVED 1      
 LINKAGE          1              FLAGS            0058                                                                
 ```
 
-Now let us suppose the following is our current PROCEDURE IMPORTS TABLE: 
-
+Now let us suppose this is the current PROCEDURE IMPORTS TABLE content: 
 
 ```
     TABLE SIZE       00000090       TABLE ENTRY CNT  00000008       TABLE VERSION    00             RESERVED         0000000000000 
@@ -156,7 +155,7 @@ Now let us suppose the following is our current PROCEDURE IMPORTS TABLE:
 
 An (ILE) module instruction `CALLBP 215 ...` will match **the entry with index 4** as soon as **215** corresponds to `X'000000D7'`.
 
-Now using the corresponding `STRING ID` (X'00000064') as an offset inside the **MODULE STRING DIRECTORY**: 
+Now using the index 4 `STRING ID` (X'00000064') as an offset inside the **MODULE STRING DIRECTORY**: 
 
 ```
  MODULE STRING DIRECTORY                  MODULE NBR: 1                                                 
@@ -173,7 +172,7 @@ Now using the corresponding `STRING ID` (X'00000064') as an offset inside the **
  13589FF292 002180 +00E0   9687F2                                                                  *og2                             *
 ```
 
-we will identify a length-string field `0000000A-D897F2D9A495D781A285` confirming us that the ILE CL statement was 
+we identify a length-string field `0000000A-D897F2D9A495D781A285` confirming us that the procedure in our ILE CL statement was 
 
 `CALLPRC PRC('Qp2RunPase') ...`
 
