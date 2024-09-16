@@ -122,7 +122,7 @@ Let us suppose to introduce a `CALLPRC` statement in our ILE CL source (test) pr
 
 How will it translate in the *(ILE) MODULE INSTRUCTION COMPONENT* stream?
 
-We can easily identify a corresponding **CALLBP* instruction (**Call Bound Procedure**).
+We can easily identify a corresponding **CALLBP** instruction (**Call Bound Procedure**).
 
 The decimal value dumped as `OPERAND 1` in the mentioned *CALLBP* will be listed in the **PROCEDURE IMPORTS TABLE**
 in its hexadecimal format.
