@@ -112,7 +112,7 @@ Let's go!
 90. [to descend into the cave](#90-to-descend-into-the-cave)
 91. [to get started](#91-to-get-started)
 92. [to increase awareness](#92-to-increase-awareness)
-93. [to increase awareness again](#93-to-increase-awareness again)
+93. [to increase awareness again](#93-to-increase-awareness-again)
 
 ----
 
