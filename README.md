@@ -112,6 +112,87 @@ Let's go!
 90. [to descend into the cave](#90-to-descend-into-the-cave)
 91. [to get started](#91-to-get-started)
 92. [to increase awareness](#92-to-increase-awareness)
+93. [to increase awareness again](#93-to-increase-awareness again)
+
+----
+
+## 93. to increase awareness again
+
+Let us suppose to introduce a `CALLPRC` statement in our ILE CL source (test) program.
+
+How will it translate in the *(ILE) MODULE INSTRUCTION COMPONENT* stream?
+
+We can easily identify a corresponding **CALLBP* instruction (**Call Bound Procedure**).
+
+The decimal value dumped as `OPERAND 1` in the mentioned *CALLBP* will be listed in the **PROCEDURE IMPORTS TABLE**
+in its hexadecimal format.
+
+We identified an (ILE) module instruction starting with `CALLBP 215 ...`
+
+Following the tips in previous post we identify the following entry in the *MODULE DICTIONARY COMPONENT*:
+
+```
+ID               215            ENTRY TYPE       PROCEDURE      DATA TYPE        23             PROCEDURE TYPE   2   
+SCOPE            1              OWNER            0              LABEL COUNT      0              INSTRUCTION CNT  0   
+ALIAS UNION      0              RETURN LENGTH    4              RESERVED 1       00             RETURN TYPE      1   
+LINKAGE          1              FLAGS            0058                                                                
+```
+
+Now let us suppose the following is our current PROCEDURE IMPORTS TABLE: 
+
+
+```
+    TABLE SIZE       00000090       TABLE ENTRY CNT  00000008       TABLE VERSION    00             RESERVED         0000000000000 
+    INDEX NUMBER      DICTIONARY ID     STRING ID         ENTRY PT MBV ID   IMP PROC ATTRS    RESERVED          CALL PARML MASK    
+    1                 00000037          00000029          00000009          80                00                0000               
+    2                 00000077          0000004A          00000000          00                00                0000               
+    3                 0000007B          00000057          00000006          80                00                0000               
+    4                 000000D7          00000064          00000005          80                00                0000               
+    5                 000000DC          00000072          00000007          80                00                0000               
+    6                 00000168          000000A8          0000000B          00                00                0000               
+    7                 00000170          000000BD          0000000A          00                00                0000               
+    8                 00000172          000000CE          00000002          80                00                0000        
+```       
+
+An (ILE) module instruction `CALLBP 215 ...` will match **the entry with index 4** as soon as **215** corresponds to `X'000000D7'`.
+
+Now using the corresponding `STRING ID` (X'00000064') as an offset inside the **MODULE STRING DIRECTORY**: 
+
+```
+ MODULE STRING DIRECTORY                  MODULE NBR: 1                                                 
+ MODULE: TEST01                                                                                                                     
+     DIR LENGTH       227            RESERVED         000000000000000000000000                                                      
+ 13589FF292 002000        DISK UNIT  0004 DISK PAGE  0109ED7A                                                                       
+ 13589FF292 0020A0 +0000   000000E300000000  0000000000000000   000000076DC3D36D  D7C5D700000006E3 *...T................_CL_PEP....T* 
+ 13589FF292 0020C0 +0020   C5E2E3F0F1000000  0000000007C3C5C5   C7D6E3D600000012  D883936DD8C3D3C3 *EST01........CEEGOTO....Qcl_QCLC* 
+ 13589FF292 0020E0 +0040   D3D5E4D76D8985A7  89A300000009D883   936DC3C8D2C2C900  000009D883936DD3 *LNUP_iexit....Qcl_CHKBI....Qcl_L* 
+ 13589FF292 002100 +0060   92D3C4C10000000A  D897F2D9A495D781   A2850000000AD897  F2C59584D781A285 *kLDA....Qp2RunPase....Qp2EndPase* 
+ 13589FF292 002120 +0080   00000024D8C3D36D  C6A49583A3899695   6DC3888583926DC5  A7838597A3899695 *....QCL_Function_Check_Exception* 
+ 13589FF292 002140 +00A0   6DC8819584938599  00000011D840D3C5   409385C4858681A4  93A3C588F2000000 *_Handler....Q LE leDefaultEh2...* 
+ 13589FF292 002160 +00C0   0DD840D3C5409385  C284A8C388F20000   0011D840D3C54093  85C284A8C5978993 *.Q LE leBdyCh2....Q LE leBdyEpil* 
+ 13589FF292 002180 +00E0   9687F2                                                                  *og2                             *
+```
+
+we will identify a length-string field `0000000A-D897F2D9A495D781A285` confirming us that the ILE CL statement was 
+
+`CALLPRC PRC('Qp2RunPase') ...`
+
+Now suppose we introduced 2 **CALLPRC** in our ILE CL source file member.
+
+We could expect to find 2 **CALLBP** in the *(ILE) MODULE INSTRUCTION COMPONENT* but many more are there:
+
+```
+    OFFSET           00000090       OPCODE           CALLBP                                         OPERAND 1        2
+    OFFSET           000000DC       OPCODE           CALLBP                                         OPERAND 1        370
+    OFFSET           000008F8       OPCODE           CALLBP                                         OPERAND 1        215
+    OFFSET           00000984       OPCODE           CALLBP                                         OPERAND 1        123
+    OFFSET           00000A58       OPCODE           CALLBP                                         OPERAND 1        220
+    OFFSET           00000DA8       OPCODE           CALLBP                                         OPERAND 1        123
+    OFFSET           00000F38       OPCODE           CALLBP                                         OPERAND 1        55
+    OFFSET           00000FAC       OPCODE           CALLBP                                         OPERAND 1        55
+```
+    
+Answering this will require a new post.
 
 ----
 
