@@ -237,6 +237,8 @@ The adoption of **ID**s for operands reduces the number of OPCODEs needed by the
 Re-generating the PowerPC code from the MODULE INSTRUCTION COMPONENT is actually the fanciest IBM i feature: being able to 
 automatically upgrade programs to the latest version of the operating system without involving the original developers.
 
+[NEXT_93](#93-to-increase-awareness-again)
+
 ----
 
 ## 91. to get started
@@ -500,7 +502,7 @@ MODULE: TEST01
     MOD HDR PTR      3E4E0EA73F 002B00                              PROC START PTR   3E4E0EA73F 001B00                             
 ```
 
-These steps as a whole confirm my assertion (in previous post) that in this example procedure 2 of module 1 it the one directly 
+These steps as a whole confirm my assertion (in previous post) that in this example procedure 2 of module 1 is the one directly 
 derived from the ILE CL source code. 
 
 What are the extra information archived in the second and third segments of our program object?
