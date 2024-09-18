@@ -113,6 +113,50 @@ Let's go!
 91. [to get started](#91-to-get-started)
 92. [to increase awareness](#92-to-increase-awareness)
 93. [to increase awareness again](#93-to-increase-awareness-again)
+94. [to receive help from the past](#94-to-receive-help-from-the-past)
+
+----
+
+## 94. to receive help from the past
+
+From the *PROCEDURE IMPORTS TABLE* of previous post we extract `DICTIONARY ID` and `STRING ID` columns. 
+We then add:
+
+* a column on the left for the decimal representation of dictionary id and 
+* a column on the right with the names referenced by the string ids in the *MODULE STRING DIRECTORY*.
+
+
+```
+DEC    DICTIONARY ID     STRING ID   NAME
+---------------------------------------------------
+ 55    00000037          00000029    'CEEGOTO'
+119    00000077          0000004A    'Qcl_CHKBI'
+123    0000007B          00000057    'Qcl_LkLDA'
+215    000000D7          00000064    'Qp2RunPase'
+220    000000DC          00000072    'Qp2EndPase'
+260    00000168          000000A8    'Q LE leDefaultEh2'
+368    00000170          000000BD    'Q LE leBdyCh2'
+370    00000172          000000CE    'Q LE leBdyEpilog2'
+```
+
+`CALLBP 215` and `CALLBP 220` are the only *CALLBP* opcodes triggered by our ILE CL `CALLPRC` statements.
+The remaining calls are the result of ILE CL implementation of its environment for program execution in IBM i jobs.
+
+But there is something more. 
+
+We will be surprised to identify a number of cryptic **CALLBI** opcodes and operands: what kind of calls are these? 
+**BI** stands for *Built\-in* but this is not one of my conjectures.
+
+Years ago a series of articles were authored by **Junlei Li** for *MC Press*.
+[One of them](https://www.mcpressonline.com/programming/rpg/a-more-complete-view-of-the-machine-interface-of-ibm-i) is specifically focused on the role of **CALLBI**. 
+Junlei Li also gave historical hints on the genesis of **NMI**: the **New Machine Interface**. 
+
+*NMI* is \-accordingly\- the appropriate name for the intermediate language (and the *stack\-based virtual machine* model) used as the unifying layer for the various ILE languages.
+
+We can read in the mentioned article that the third operand of each *CALLBI* is a number identifying the specific **system built\-in**.
+
+The *mnemonic* for the corresponding instruction is not explicit in any element of the \*PGM object:
+it is actually part of IBM i operating system documentation and Junlei Li's article is very specific on this topic.
 
 ----
 
