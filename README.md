@@ -114,6 +114,162 @@ Let's go!
 92. [to increase awareness](#92-to-increase-awareness)
 93. [to increase awareness again](#93-to-increase-awareness-again)
 94. [to receive help from the past](#94-to-receive-help-from-the-past)
+95. [to conduct the experiment](#95-to-conduct-the-experiment)
+
+----
+
+## 95. to conduct the experiment
+
+Now that we have collected few facts on the **NMI** it would be time to approach the full content of a **MODULE INSTRUCTION COMPONENT**:
+this would be useful to understand how far I am from a real understanding!
+
+But before going deep in this analysis it is savvy not to forget the original objective.
+
+I closed [a previous post](#92-to-increase-awareness) singing the praises of IBM i ability in **re\-generating the PowerPC code from the MODULE INSTRUCTION COMPONENT**. 
+
+This is, for sure, not achieved by *recompiling from source*: this process occurs even on systems where the compilers are not installed!
+
+I also suspect this cannot be *a full backend compiler stage*: I do not expect, for example, the system to re\-arrange the *MODULE LITERAL POOL COMPONENT*, or the *MODULE STRING DIRECTORY*. 
+There is no syntax in the *MODULE INSTRUCTION COMPONENT* that appears to describe our variables; they were already packed in order for the *MODULE INSTRUCTION COMPONENT* to \-potentially\- access them.
+
+So my hypothesis is that re\-generation of PowerPC code from *MODULE INSTRUCTION COMPONENT* keeps all the other surrounding components unchanged: it actually reuses the instruction component, too, without modifications. 
+But those instruction, once disassembled, are expressed in a syntax the programmer could comprehend (the same situation occurs with *WebAssembly Text Format*).
+
+My point is that only the executable instructions are translated again into PowerPC code starting from their relatively high level syntax.
+Presumably there was an intermediate syntax also for the other components that were derived from the ILE CL source code (consider the **DCL** statements). Should these statements have existed, they are not archived with the program object.
+
+**The independence of OPCODEs from the types of operands** plays a fundamental role here: the **re**\-generation will **re**\-discover each operand's type from the dictionary, emitting new (or the same) correct PowerPC instructions accordingly.
+
+I am looking for a convincing trial.
+
+Let us consider an ILE CL example where we have two integer of different lengths (4 and 8) involved in few operations.
+Once the \*PGM is generated we want **to patch the MODULE INSTRUCTION COMPONENT (via SST)** switching the dictionary ids of the 2 integers doing this only where they are used as operands in the *MODULE INSTRUCTION COMPONENT*. 
+I will then find a way to regenerate the program from its observability.   
+
+Right now let us conduct the minimal planned experiment.
+
+``` CL
+             PGM     
+             DCL      VAR(&VALORE1)     TYPE(*INT) LEN(4)
+             DCL      VAR(&VALORE2)     TYPE(*INT) LEN(8)
+             CHGVAR   VAR(&VALORE1)   VALUE(19566) 
+             CHGVAR   VAR(&VALORE2)   VALUE(28236)
+THE_END:     ENDPGM
+```
+
+The first **CVPDSB** (operand 4) instruction is followed by a `STR1 201`:
+
+```
+OFFSET           00000410       OPCODE           CVPDSB                                         OPERAND 1        4     
+OFFSET           00000418       OPCODE           STR1                                           OPERAND 1        201   
+```
+
+The second **CVPDSB** (operand 8) instruction is followed by a `STR1 202`:
+
+```
+OFFSET           00000478       OPCODE           CVPDSB                                         OPERAND 1        8   
+OFFSET           00000480       OPCODE           STR1                                           OPERAND 1        202 
+```
+
+In PowerPC we have respectively:
+
+```
+000254    3B804C6E          ADDI 28,0,19566   
+000258    939FFDE4          STW 28,0XFDE4(31) 
+```
+and
+
+```
+000290    3B806E4C          ADDI 28,0,28236   
+000294    FB9FFDE8          STD 28,0XFDE8(31) 
+``` 
+
+Note the different use of **STW** and **STD**.
+
+Our plan is to replace the operand of the first CVPDSB with **8** and the operand of the following STR1 with **202**, 
+the operand of the second CVPDSB with **4** and the operand of the following STR1 with **201**.
+
+To prepare the changes we need to identify the addresses involved and the current content.
+
+The relative offset of the first CVPDSB is 0x410 and the instruction requires 8 bytes (it has one operand).
+Starting at `0B429628E8 003710` we will look for the eight bytes at `0B429628E8 003B20`.
+The first four should identify the **opcpde**, the second four **operand 1**
+
+  `00000057` `00000004`
+  
+Consistently offset 0x478 brings to:
+
+  `00000057` `00000008`
+  
+If we add the 8 bytes just following each CVPDSB instruction, we add the STR1 operations:
+
+*  `00000057` `00000004` `00000023` `000000C9`
+*  `00000057` `00000008` `00000023` `000000CA`
+
+Our change will be:
+
+*  `00000057` `00000008` `00000023` `000000CA`  
+*  `00000057` `00000004` `00000023` `000000C9`  
+
+Let's use `STRSST` to patch our program (needless to say this kind of operations are dangerous and I assume the reader is serious enough!).
+
+Then we dump the object again.
+
+So we read:
+
+```
+OFFSET           00000410       OPCODE           CVPDSB                                         OPERAND 1        8    
+OFFSET           00000418       OPCODE           STR1                                           OPERAND 1        202  
+```
+
+```
+OFFSET           00000478       OPCODE           CVPDSB                                         OPERAND 1        4    
+OFFSET           00000480       OPCODE           STR1                                           OPERAND 1        201  
+```
+
+The PowerPC is still unchanged:
+ 
+``` 
+000254    3B804C6E          ADDI 28,0,19566    
+000258    939FFDE4          STW 28,0XFDE4(31)  
+```
+
+```
+000290    3B806E4C          ADDI 28,0,28236    
+000294    FB9FFDE8          STD 28,0XFDE8(31)  
+```
+
+Now we execute: `CHGPGM PGM(TEST01) FRCCRT(*YES)` and proceed with a new dump:
+
+```
+000254    3B804C6E          ADDI 28,0,19566     
+000258    FB9FFDE8          STD 28,0XFDE8(31)  
+```
+ 
+```
+000290    3B806E4C          ADDI 28,0,28236    
+000294    939FFDE4          STW 28,0XFDE4(31)  
+```
+
+We have reversed the **STW/STD** sequence in the PowerPC because we addressed integer variables of different sizes
+in the *NMI MODULE INSTRUCTION COMPONENT* ( IBM i have actually used brand new segments for the program object ). 
+
+The hypothesis is confirmed.
+
+We could infer that the classification of data types (the numbers that are assigned to the data types and that appear in the dictionary) should be consistent among different releases of the IBM i operating system. 
+Something can be added but **no data type number should be removed or reassigned** (versioning this process could end up in a nightmare).
+
+This triggers my interest in the component named **MODULE TYPE INFORMATION COMPONENT** (accessed with *TYPE INFO PTR*).
+
+As long as special data types are **"described"** in independent components, they are not tied to specific operation codes.
+ 
+Many other curiosities and questions arise: 
+
+* which are the abilities of ILE in describing data structures? 
+* how does this intermediate ILE layer support C unions? or C bit fields?
+* was this ILE (demanding) architecture responsible for ILE C++ struggling in keeping the pace with C++ ISO standards?
+
+I do not know if I will be able to provide answers, but I like these questions. Do you?
 
 ----
 
@@ -157,6 +313,8 @@ We can read in the mentioned article that the third operand of each *CALLBI* is 
 
 The *mnemonic* for the corresponding instruction is not explicit in any element of the \*PGM object:
 it is actually part of IBM i operating system documentation and Junlei Li's article is very specific on this topic.
+
+[NEXT_95](#95-to-conduct-the-experiment)
 
 ----
 
