@@ -193,7 +193,7 @@ To prepare the changes we need to identify the addresses involved and the curren
 
 The relative offset of the first CVPDSB is 0x410 and the instruction requires 8 bytes (it has one operand).
 Starting at `0B429628E8 003710` we will look for the eight bytes at `0B429628E8 003B20`.
-The first four should identify the **opcpde**, the second four **operand 1**
+The first four should identify the **opcode**, the second four **operand 1**
 
   `00000057` `00000004`
   
