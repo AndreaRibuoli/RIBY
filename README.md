@@ -127,21 +127,15 @@ Once again I will open **Fortress Rochester** book.
 Starting with page 140, a high level description of **Integrated Language Environment** occurs.
 At page 142 we read:
 
-<cite>
-The ILE compiler front end produces a common intermediate form called W-code.
-<cite/>
+*The ILE compiler front end produces a common intermediate form called W-code.*
 
 Considering what follows I would rephrase as: 
 
-<cite>
-Each ILE compiler front end produces a common intermediate form called W-code.
-<cite/>
+*Each ILE compiler front end produces a common intermediate form called W-code.*
 
 Later on we read:
 
-<cite>
-The back end of these compilers is called CUBE-3 ... (it) generates the ILE program template directly.
-<cite/>
+*The back end of these compilers is called **CUBE-3** ... (it) generates the ILE program template directly.*
 
 You probably know about SQL Views introduced in the last few years. Let us try executing the following query:
 
