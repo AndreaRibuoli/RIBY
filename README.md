@@ -117,8 +117,43 @@ Let's go!
 93. [to increase awareness again](#93-to-increase-awareness-again)
 94. [to receive help from the past](#94-to-receive-help-from-the-past)
 95. [to conduct the experiment](#95-to-conduct-the-experiment)
+96. [to refine ideas](#96-to-refine-ideas)
 
 ----
+
+## 96. to refine ideas
+
+Once again I will open **Fortress Rochester** book. 
+Starting with page 140, a high level description of **Integrated Language Environment** occurs.
+At page 142 we read:
+
+<cite>
+The ILE compiler front end produces a common intermediate form called W-code.
+<cite/>
+
+Considering what follows I would rephrase as: 
+
+<cite>
+Each ILE compiler front end produces a common intermediate form called W-code.
+<cite/>
+
+Later on we read:
+
+<cite>
+The back end of these compilers is called CUBE-3 ... (it) generates the ILE program template directly.
+<cite/>
+
+You probably know about SQL Views introduced in the last few years. Let us try executing the following query:
+
+``` SQL
+select * from qsys2.message_file_data where message_text like '%CUBE%'
+```
+We get:
+
+![](images/CUBE-3.png)
+
+So **QSYS/QCWXMSG** will be the new resource to tackle!
+
 
 ## 95. to conduct the experiment
 
