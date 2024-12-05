@@ -1,3 +1,5 @@
+
+
 # RIBY
 Tips for **Ruby 3.0** in *powerpc-os400*
 
@@ -118,8 +120,85 @@ Let's go!
 94. [to receive help from the past](#94-to-receive-help-from-the-past)
 95. [to conduct the experiment](#95-to-conduct-the-experiment)
 96. [to refine ideas](#96-to-refine-ideas)
+97. [to refine ideas again](#97-to-refine-ideas-again)
 
 ----
+
+## 97. to refine ideas again
+
+In the previous post we identified the *CUBE-3 MESSAGE FILE*:
+
+![QCWXMSG](images/qcwxmsg.png)
+
+And now? How can we gain extra information from this fact?
+
+The [DSPPGMREF](https://www.ibm.com/docs/en/i/7.5?topic=ssw_ibm_i_75/cl/dsppgmref.html) does not report programs' dependencies for message files (except for objects of *CSP* program type).
+
+I usually adopt *"brute"* techniques that sometimes seem to serve the purpose.
+What happens if we move *QCWXMSG* away from *QSYS* (in a library that is not in library list) and then try compiling an ILE source?  
+
+```
+CRTLIB LIB(PARKING)
+MOVOBJ OBJ(QSYS/QCWXMSG) OBJTYPE(*MSGF) TOLIB(PARKING)
+```
+
+There are situations where we can induce an error stating **Message file QCWXMSG in \*LIBL not found** and so identifying one of the programs that use the message file `QSYS/QCWXMSG`: 
+the first I identified is **QWXCRTMD**
+
+```
+Dal programma  . . . . . . . . :   QMHMFSRH       
+  Dalla libreria . . . . . . . :     QSYS         
+  Istruzione . . . . . . . . . :     0287         
+                                                  
+Al programma . . . . . . . . . :   QWXCRTMD       
+  Alla libreria  . . . . . . . :     QSYS         
+  Al modulo  . . . . . . . . . :     QWXCMSG      
+  Alla procedura . . . . . . . :     send_message 
+  All'istruzione . . . . . . . :     68           
+```
+
+Having moved back in QSYS the message file (`MOVOBJ OBJ(PARKING/QCWXMSG) OBJTYPE(*MSGF) TOLIB(QSYS)`), we now proceed creating a library for our experiments.
+I named it **CUBETTO** that is the Italian word for *small cube*, typically *ice cube*.
+
+We will initially compile an **OPM** (*Original Program Model*) CL program into CUBETTO library from the simple source:
+
+```
+PGM
+SNDPGMMSG MSG('Tommy can you hear me?')
+ENDPGM
+```
+
+```
+CRTCLPGM PGM(CUBETTO/QWXCRTMD) SRCMBR(TOMMY)          
+```
+
+Then we park the original QWXCRTMD program in a safe library: `MOVOBJ OBJ(QSYS/QWXCRTMD) OBJTYPE(*PGM) TOLIB(PARKING)`
+
+Now we introduce our dummy-clone:  `MOVOBJ OBJ(CUBETTO/QWXCRTMD) OBJTYPE(*PGM) TOLIB(QSYS)`
+
+
+A simple `CRTCLMOD MODULE(TOMMY)` will produce a dump.
+
+In the job log we will identify an `MCH0802` severity\-40 error because the program **QCLCRPGM** made an attempt to call *QWXCRTMD* with **10 parameters**.
+
+
+If we induce an ILE C compilation with a generic SQL `create procedure` we will face another crash:
+
+```
+RUNSQL SQL('CREATE PROCEDURE A () BEGIN END')
+```
+
+This time in the job log the `MCH0802` severity\-40 error occurs because the program **QCZCCPP** made an attempt to call *QWXCRTMD* with **8 parameters**
+
+Let us restore the correct environment: 
+
+```
+MOVOBJ OBJ(QSYS/QWXCRTMD) OBJTYPE(*PGM) TOLIB(CUBETTO)
+MOVOBJ OBJ(PARKING/QWXCRTMD) OBJTYPE(*PGM) TOLIB(QSYS)
+```
+
+Next time we will move deeper in our understanding but right now we are confident that the block labeled "CUBE-3" in FIGURE 9.3 (page 142) of *FORTRESS Rochester* by Frank Soltis
+is implemented by **QSYS/QWXCRTMD** program: it accepts input from different ILE front-ends (we experimented with ILE CL and ILE C) and \-said with Soltis's words\- *"generates the ILE program template directly"*.
 
 ## 96. to refine ideas
 
