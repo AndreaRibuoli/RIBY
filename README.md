@@ -121,8 +121,53 @@ Let's go!
 95. [to conduct the experiment](#95-to-conduct-the-experiment)
 96. [to refine ideas](#96-to-refine-ideas)
 97. [to refine ideas again](#97-to-refine-ideas-again)
+98. [to learn from details](#98-to-learn-from-details)
 
 ----
+
+## 98. to learn from details
+
+From time to time *Known Issue*s from IBM web site offer us useful content.
+I am focusing on **SE74524** documenting a misterious severity\-40 error (`MCH4227: Instruction stream not valid.`) 
+occurring on an apparently innocuous instruction introduced in a ILE CL source file we do not have access to.
+
+Let us start from the **Temporary workaround**:
+
+```
+Comment out the line of "COPYRIGHT TEXT('OPTUM 2020')"          
+And compile with CRTCLPGM (OPM)                                 
+```
+
+Commenting out the `COPYRIGHT` instruction is a simple pre\-requisite to the following \-crucial\- action: using **OPM**.
+
+In many situations an ILE CL source (CLLE) is using instructions perfectly valid for an OPM CL source (CL).
+The fix here was to switch from **CLLE** to **CL** (i.e. from `CRTBNDCL` to `CRTCLPGM`).
+With the OPM approach the source if processed to generate the **IRP** (*Intermediate Representation of a Program**).
+*"essentially the assembler form of the MI instructions"* (Soltis, page 138).
+To support this original approach **Magic** was introduced: the MI output is later converted into ILE MI template.
+
+Following this path the specific error was not occurring. 
+It was clearly an error in the ILE CL compiler that was properly fixed by IBM support in subsequent PTFs.
+
+The *Problem conclusion* gives an explanation (I slightly rephased it): 
+
+*When converting a character variable to numeric variable, 
+and the numeric variable is a defined variable, 
+which on its turn is defined on a based variable, 
+the ILE CL compiler did not handle that situation correctly and an internal error occurred.*
+
+This is business\-as\-usual and a PTF (SI74649 in this situation) normally fixes the issue (and is possibly superseded on its turn).
+
+What interested me here is another message:
+
+```
+File QWXDUMP in library QTEMP changed.
+```
+
+Clearly, when this rare errors occur, the system dumps precious data that could help us in our understanding of the internals.  
+
+Will it be possible for us to **force** such a dump?
+
 
 ## 97. to refine ideas again
 
