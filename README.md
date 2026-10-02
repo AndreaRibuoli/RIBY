@@ -122,6 +122,41 @@ Let's go!
 96. [to refine ideas](#96-to-refine-ideas)
 97. [to refine ideas again](#97-to-refine-ideas-again)
 98. [to learn from details](#98-to-learn-from-details)
+99. [to approach the end](#99-to-approach-the-end)
+
+----
+
+## 99. to approach the end
+
+This README is looking for a decent end.
+
+I wrote down many notes about the use of a PASE build of Ruby interpreter.
+But this offered me the opportunity to share my findings (actually experiments)
+on how peculiar is the single-level store for the IBM i programmer.
+
+This brought a new light over ILE compilers too.
+
+You can understand why a pointer inside an ILE CL string passed as the first parameter
+in a CALLPRC is kept valid but not if the same string is passsed as the second parameter.
+
+I always avoided AI in writing this README, but today I have to report a lucky finding.
+
+I was querying Google (AI mode) about W-Code and the possibility to retain/dump that
+fashinating intermediate representation of programs that is used to later produce 
+the \*MODULE objects.
+
+Surprisingly the answer was:
+
+*"There are several advanced and undocumented (or barely documented) LICOPT (Licensed Internal Code Options) values used by the IBM i optimizing translator. Because these options directly instruct the code generator (W-Code translator) on how to build and optimize MI (Machine Interface) programs, IBM rarely publishes them outside of specific development contexts, PTF cover letters, or internal lab notes."*
+
+The question I posed while ending my previous post ( *Will it be possible for us to **force** such a dump?* )
+was answered by AI \-plainly\- for the other compilers (I still don't know how to force the dump with ILE CL). 
+
+``` CL
+LICOPT('DUMP_WCODE_BEFORE_OPT')
+```
+
+It is time for me to be retired... **The Times They Are A-Changin'**
 
 ----
 
@@ -168,6 +203,9 @@ Clearly, when this rare errors occur, the system dumps precious data that could 
 
 Will it be possible for us to **force** such a dump?
 
+[NEXT_99](#99-to-approach-the-end)
+
+----
 
 ## 97. to refine ideas again
 
@@ -245,6 +283,10 @@ MOVOBJ OBJ(PARKING/QWXCRTMD) OBJTYPE(*PGM) TOLIB(QSYS)
 Next time we will move deeper in our understanding but right now we are confident that the block labeled "CUBE-3" in FIGURE 9.3 (page 142) of *FORTRESS Rochester* by Frank Soltis
 is implemented by **QSYS/QWXCRTMD** program: it accepts input from different ILE front-ends (we experimented with ILE CL and ILE C) and \-said with Soltis's words\- *"generates the ILE program template directly"*.
 
+[NEXT_98](#98-to-learn-from-details)
+
+----
+
 ## 96. to refine ideas
 
 Once again I will open **Fortress Rochester** book. 
@@ -272,6 +314,9 @@ We get:
 
 So **QSYS/QCWXMSG** will be the new resource to tackle!
 
+[NEXT_97](#97-to-refine-ideas-again)
+
+----
 
 ## 95. to conduct the experiment
 
@@ -425,6 +470,8 @@ Many other curiosities and questions arise:
 * was this ILE (demanding) architecture responsible for ILE C++ struggling in keeping the pace with C++ ISO standards?
 
 I do not know if I will be able to provide answers, but I like these questions. Do you?
+
+[NEXT_96](#96-to-refine-ideas)
 
 ----
 
