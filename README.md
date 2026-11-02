@@ -123,6 +123,193 @@ Let's go!
 97. [to refine ideas again](#97-to-refine-ideas-again)
 98. [to learn from details](#98-to-learn-from-details)
 99. [to approach the end](#99-to-approach-the-end)
+00. [to start over elsewhere](#00-to-start-over-elsewhere)
+
+----
+
+## 00. to start over elsewhere
+
+In the previous post I introduced the precious `LICOPT` option of CRTxxxMOD commands.
+Let me introduce its role in understanding *QWXDUMP* format.
+
+Passing a generic value to LICOPT blocks CRTCMOD compilation, too.
+Still generating the QWXDUMP.
+
+So we can then copy the dump file from QTEMP to IFS.
+
+```
+CPY OBJ('/QSYS.LIB/QTEMP.LIB/QWXDUMP.FILE/QWXDUMP.MBR')
+```
+
+From PASE we can then proceed with:
+
+```
+cd MyLAB
+mv ../QWXDUMP.MBR QWXDUMP_1.FILE
+```
+
+Repeating with a slightly different LICOPT argument and we can proceed again 
+with the `CPY` command and \-from PASE\- with:
+
+```
+mv ../QWXDUMP.MBR QWXDUMP_2.FILE
+```
+
+Let us compare the QWXDUMP obtained with `LICOPT('ABCDEF')` .vs. `LICOPT('FEDCBA')`:
+
+```
+hexdump QWXDUMP_1.FILE > fromAtoF.txt
+hexdump QWXDUMP_2.FILE > fromFtoA.txt
+diff fromFtoA.txt fromAtoF.txt
+
+345c345
+< 00015a0 0000 0018 0046 0045 0044 0043 0042 0041
+---
+> 00015a0 0000 0018 0041 0042 0043 0044 0045 0046
+```
+
+The only differences are in the **UTF-16 strings** directly derived from `ABCDEF` .vs. `FEDCBA`.
+
+If we do not keep same argument lengths, the binary files rapidly diverges but in a way that offers us a cue. The total content should increase of 4 bytes (the extra **GH** chars translate into `X'00470048'`).
+
+Following is the starting diff output from hexdumps involving `LICOPT('ABCDEFGH')` .vs. the previous `LICOPT('ABCDEF')`. The first two refers to the size of the fourth section as listed in the opening array of INT4 values:
+
+
+`1c1`
+
+`< 0000000 0000 1048 0000 004c 0000 03f4` **`0000 050c`**
+
+`---`
+
+`> 0000000 0000 1048 0000 004c 0000 03f4` **`0000 0508`**
+
+
+`6c6`
+
+`< 0000070` **`0000 050c`** `0010 2409 0000 0002 0000 0000`
+
+`---`
+
+`> 0000070` **`0000 0508`** `0010 2409 0000 0002 0000 0000`
+
+
+```
+( 0x00001048, 0x0000004c, 0x000003f4, 0x0000050c )
+(       4168,         76,       1012,       1292 )
+( 0x00001048, 0x0000004c, 0x000003f4, 0x00000508 )
+(       4168,         76,       1012,       1288 )
+```
+
+The third difference (before many others) is much more specific: 
+it is detailing a smaller size change: from 0x0010 (16) becoming 0x0014 (20).
+
+`31c31`
+
+`< 0000200 0000 0000 1500 0000 000c 4c0c` **`0000 0014`**
+
+`---`
+
+`< 0000200 0000 0000 1500 0000 000c 4c0c` **`0000 0010`**
+
+As soon as 16 and 20 are 4 bytes more than the *UTF-16 strings* we are 
+comparing (representing **ABCDEF** and **ABCDEFGH** with 2 bytes per character),
+we could consider 16 and 20 as the sizes of a data structure where the UTF-16 strings is pre-qualified by the value `0x00000018` (**24** INT4).
+
+The 4 bytes following this \-supposed\- struct length are in the example `0x00000006`.
+
+After many observations we can realize that this value is consistently the **offset** on the qualified string
+inside the fourth block of data (the only one increasing when we extend the argument of LICOPT).
+
+This also focus our attention on the twelve bytes unit including the length and the offset of the LICOPT struct argument:
+
+```
+000c4c0c 00000014 00000006
+```
+
+Where the **'000c'** at the beginning could reasonably be the size of this minimal unit of information.
+
+There are a series of `X'000c4c0c'` one after the other, all of them part of a 12 bytes element.
+
+It is time for my last Ruby script in this repository!
+
+This script is supposed to pull apart all the X'000C4C0C'\-structs identified in the first block of data
+retrieving the qualifier and the content referenced in the fourth block.
+We will then notice that some of the referenced elements in the fourth block are *UTF-16 strings*, others are
+*EBCDIC*, others are integer and still others are pure *binary* data.
+
+``` Ruby
+#! /QOpenSys/pkgs/bin/ruby 
+RAW = File.open("#{ARGV[0]}", 'rb').read
+
+l1, l2, l3, l4 = RAW[0..15].unpack("LLLL")
+
+unitAstart = 80  
+unitBstart = 80 + l1  
+unitCstart = 80 + l1 + l2  
+unitDstart = 80 + l1 + l2 + l3 
+
+STREAM_A = RAW[unitAstart..(unitBstart-1)]
+STREAM_B = RAW[unitBstart..(unitCstart-1)]
+STREAM_C = RAW[unitCstart..(unitDstart-1)]
+STREAM_D = RAW[unitDstart..(unitDstart+l4-1)]
+
+current_offset = 0
+while (current_offset < l1)
+  len, code1, code2 = STREAM_A[current_offset..(current_offset+3)].unpack("SCC") 
+  case code1
+    when 0x4c
+      case code2
+        when 0x0c
+          st_len, st_offset = STREAM_A[(current_offset+4)..(current_offset+len-1)].unpack("LL")
+          type = STREAM_D[(st_offset)..(st_offset+3)].unpack("L")[0]
+          name = ''
+          case type
+            when 3, 11
+              name = STREAM_D[(st_offset+4)..(st_offset+st_len-1)].unpack("L")[0].to_s
+            when 24 
+              name = STREAM_D[(st_offset+4)..(st_offset+st_len-1)]
+              name = "'#{name.force_encoding("UTF-16BE").encode("UTF-8")}'"
+            when 4, 5, 7, 8, 10, 12, 16 
+              name = STREAM_D[(st_offset+4)..(st_offset+st_len-1)]
+              name = "'#{name.force_encoding("IBM037").encode("UTF-8")}'"
+            when 15
+              name = STREAM_D[(st_offset+6)..(st_offset+st_len-1)]
+              name = "X'1937' + '#{name.force_encoding("IBM037").encode("UTF-8")}'"
+            else  
+              name = STREAM_D[(st_offset+4)..(st_offset+st_len-1)].unpack("H*")[0].upcase
+              name = "X'#{name}'"
+          end    
+          puts "Type #{type} = #{name}"
+      end    
+  end    
+  current_offset += len
+end
+```
+
+This is what we get in my example:
+
+```
+Type 4 = 'HELLOWORLDQTEMP     '
+Type 5 = '5769CX2'
+Type 10 = '*LIBCRTAUT'
+Type 11 = 37
+Type 6 = X'0005000000000000000000000000000000000000'
+Type 3 = 65535
+Type 7 = 'V7R3M0'
+Type 8 = 'V7R3M0'
+Type 9 = X'AE440D4EFAD33C48'
+Type 16 = '*HEX                *JOBRUN   '
+Type 15 = X'1937' + 'QC2LE     QSYS      '
+Type 12 = 'CLE'
+Type 24 = 'ABCDEF'
+Type 1441792 = X'0000000200000001001600000000000400000001'
+Type 1441792 = X'0000000400000001'
+```
+
+We recognize many of the values and we can play with CRTCMOD options to see the changes reflected here.
+This could be the starting point of a new GitHub repository...
+
+For **RIBY** one this is **THE END**!
 
 ----
 
@@ -137,7 +324,7 @@ on how peculiar is the single-level store for the IBM i programmer.
 This brought a new light over ILE compilers too.
 
 You can understand why a pointer inside an ILE CL string passed as the first parameter
-in a CALLPRC is kept valid but not if the same string is passsed as the second parameter.
+in a CALLPRC is kept valid but not if the same string is passed as the second parameter.
 
 I always avoided AI in writing this README, but today I have to report a lucky finding.
 
